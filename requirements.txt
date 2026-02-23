@@ -1,0 +1,24 @@
+# Core
+langchain>=0.1.0
+langchain-community>=0.0.10
+langgraph>=0.0.20
+neo4j>=5.17.0
+langchain-neo4j>=0.1.0
+
+# LLM Providers (Multi-Agent)
+langchain-openai>=0.0.5
+langchain-groq>=0.0.1
+
+# Memory
+zep-cloud>=1.0.0
+
+# Validation & Utils
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+python-dotenv>=1.0.0
+streamlit>=1.30.0
+
+# Embeddings (Local)
+sentence-transformers>=2.2.2
+
+python-dotenv==1.2.1
