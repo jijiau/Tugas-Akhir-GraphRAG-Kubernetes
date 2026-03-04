@@ -1,2 +1,11 @@
+# Logs
+logs/
+*.log
+
+# Reports
+validation_report.json
+semantic_rules_execution.log
+
+# Environment
 .env
-venv
+venv/

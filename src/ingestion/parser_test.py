@@ -1,24 +1,14 @@
 """
-Swagger Graph Builder with Semantic Stopping Logic
-===================================================
-Implements 3-Pass Architecture for safe, cycle-free graph construction.
+Swagger Graph Builder for Kubernetes YAML Configuration Generation
+===================================================================
+Implements 3-Pass Architecture (+ 2.5) for safe, cycle-free graph construction.
 
 SCOPE:
-    ✅ INGEST: definitions (K8s resource schemas for YAML)
-       ├─ Properties & $ref (Pass 2)
-       ├─ allOf/oneOf/anyOf inheritance (Pass 2.5) ← STILL INCLUDED
-       └─ Semantic YAML patterns (Pass 3)
-    
-    ❌ SKIP: paths (HTTP API specs - handled by kubectl)
-       └─ REST endpoints, HTTP methods, API operations
+    ✅ Ingest: definitions (K8s resource schemas for YAML)
+    ❌ Skip: paths (HTTP API specs - handled by kubectl)
 
-Use Case:
-    - User asks: "How to create a Deployment?"
-    - System generates: Valid Kubernetes YAML configuration
-    - User applies: kubectl apply -f generated.yaml
-       
 Key Features:
-    - Safe Truncation (preserves WARNING/DEPRECATED info)
+    - Smart Truncation (preserves WARNING/DEPRECATED info)
     - Primitive Truncation (stores primitives as properties, not nodes)
     - GVK Detection (identifies root K8s resources)
     - Edge Metadata (is_array, is_map, is_required for YAML validation)
@@ -29,15 +19,12 @@ Key Features:
 import json
 import os
 from typing import Set, Dict, Any, List
-from src.graph.neo4j_client import Neo4jClient
 from datetime import datetime
-from src.utils.text_utils import safe_truncate_description
-
+from src.graph.neo4j_client import Neo4jClient
 
 # ============================================
 # CONSTANTS
 # ============================================
-# --- Semantic Stopping & Filtering Configuration ---
 PRIMITIVE_TYPES = {"string", "integer", "number", "boolean", "array", "object"}
 
 IGNORE_LIST = {
@@ -50,6 +37,74 @@ IGNORE_LIST = {
     "io.k8s.apimachinery.pkg.apis.meta.v1.RawExtension",
 }
 
+
+# ============================================
+# HELPER FUNCTIONS
+# ============================================
+def smart_truncate_description(desc: str, original_length: int = None, max_length: int = 2000) -> str:
+    """
+    Intelligently truncate description while preserving critical information.
+    
+    Priority Order:
+    1. Keep WARNING, DEPRECATED, SECURITY notices (even if at end)
+    2. Truncate at sentence boundary (not mid-sentence)
+    3. Preserve first 2000 chars as baseline
+    
+    Args:
+        desc: Original description text
+        original_length: Length of original description (for ellipsis check)
+        max_length: Maximum characters to keep (default: 2000)
+    
+    Returns:
+        Truncated description with critical info preserved
+    """
+    if not desc:
+        return 'No description provided.'
+    
+    # Store original length if not provided
+    if original_length is None:
+        original_length = len(desc)
+    
+    # If already within limit, return as-is
+    if len(desc) <= max_length:
+        return desc
+    
+    # === Priority 1: Find Critical Keywords ===
+    critical_keywords = [
+        "WARNING", "DEPRECATED", "NOTE", "IMPORTANT", 
+        "SECURITY", "CAUTION", "OBSOLETE", "REMOVED"
+    ]
+    
+    # Check if critical info exists AFTER truncation point
+    for keyword in critical_keywords:
+        pos = desc.find(keyword, max_length - 500)  # Search near the end
+        if pos != -1 and pos > max_length - 500:
+            # Found critical info, extend to include it
+            extended_max = min(pos + 300, len(desc))
+            desc = desc[:extended_max]
+            break
+    
+    # === Priority 2: Truncate at Sentence Boundary ===
+    if len(desc) > max_length:
+        truncated = desc[:max_length]
+        # Find last sentence-ending punctuation
+        last_period = truncated.rfind('.')
+        last_newline = truncated.rfind('\n')
+        
+        # Use whichever is closer to the end (but not too far back)
+        boundary = max(last_period, last_newline)
+        if boundary > max_length - 200:  # Within last 200 chars
+            desc = truncated[:boundary + 1]
+        else:
+            desc = truncated
+    
+    # === Priority 3: Add Ellipsis if Truncated ===
+    if len(desc) < original_length:
+        desc = desc.rstrip() + "..."
+    
+    return desc
+
+
 # ============================================
 # MAIN CLASS
 # ============================================
@@ -58,9 +113,12 @@ class SwaggerGraphBuilder:
     Builds a Neo4j Knowledge Graph from Kubernetes Swagger/OpenAPI spec.
     
     Architecture:
-        Pass 1: Create all Definition nodes (no relationships)
-        Pass 2: Create HAS_PROPERTY edges based on $ref
-        Pass 3: Create semantic edges (MANAGES_POD, CLAIMS_VOLUME, etc.)
+        Pass 1: Create all Definition nodes (with smart truncation)
+        Pass 2: Create HAS_PROPERTY edges based on $ref (with metadata)
+        Pass 2.5: Create inheritance edges (allOf/oneOf/anyOf)
+        Pass 3: Create semantic edges (YAML configuration patterns)
+    
+    SCOPE: YAML Configuration Generation (Infrastructure as Code)
     """
     
     def __init__(self, swagger_path: str):
@@ -80,12 +138,10 @@ class SwaggerGraphBuilder:
             data = json.load(f)
             # ✅ ONLY definitions (K8s resource schemas)
             self.definitions = data.get('definitions', {})
-            # ❌ REMOVE paths (HTTP API specs - handled by kubectl)
-            # self.paths = data.get('paths', {})
+            # ❌ SKIP paths (HTTP API specs - handled by kubectl)
         
         print(f"   ✓ Loaded {len(self.definitions)} resource definitions")
         print(f"   ⚠️  Skipped HTTP paths (kubectl handles API execution)")
-
 
     def ingest(self):
         """
@@ -97,7 +153,7 @@ class SwaggerGraphBuilder:
         print(f"🎯 Scope: Kubernetes YAML Configuration (Infrastructure as Code)")
         print()
 
-        # ⚠️  Cleaning existing graph data...
+        # Clean database
         print("⚠️  Cleaning existing graph data...")
         self.db.execute_query("MATCH (n) DETACH DELETE n")
         print("   ✓ Database cleared")
@@ -123,17 +179,20 @@ class SwaggerGraphBuilder:
         self._pass_3_build_semantic_edges()
         print()
 
+        # ❌ REMOVED: Pass 4 (API Endpoints - not needed for YAML generation)
+
         print("✅ Ingestion Complete! The Kubernetes YAML Graph is ready.")
 
     def _pass_1_create_nodes(self):
         """
-        PASS 1: Create all Definition nodes.
-        FIXED: Proper GVK kind extraction
+        PASS 1: Iterate all definitions and create standalone nodes.
+        Uses Smart Truncation to preserve critical information.
         """
         created_count = 0
         skipped_count = 0
         
         for full_name, schema in self.definitions.items():
+            # Semantic Stop: Skip ignored definitions
             if full_name in IGNORE_LIST:
                 skipped_count += 1
                 continue
@@ -144,19 +203,19 @@ class SwaggerGraphBuilder:
             # 2. Detect Root Object via GVK (Group-Version-Kind)
             gvk_list = schema.get("x-kubernetes-group-version-kind", [])
             is_root = len(gvk_list) > 0
-            
-            # ✅ FIX: Extract kind properly
-            if is_root and gvk_list[0] and isinstance(gvk_list[0], dict):
-                kind = gvk_list[0].get("kind", short_name)
-            else:
-                kind = "SubResource"
+            kind = gvk_list[0].get("kind", short_name) if is_root else "SubResource"
 
-            # 3. Get Description (FULL, with defensive safety cap)
+            # 3. Smart Truncate Description
             original_desc = schema.get('description', 'No description provided.')
-            desc = safe_truncate_description(original_desc, hard_limit=4000)
-            
             original_length = len(original_desc)
-            was_truncated = len(desc) < original_length
+            desc = smart_truncate_description(
+                desc=original_desc,
+                original_length=original_length,
+                max_length=2000
+            )
+            
+            # Track truncation metadata for thesis
+            was_truncated = original_length > 2000
 
             # 4. Create Node
             self.db.execute_query("""
@@ -181,10 +240,11 @@ class SwaggerGraphBuilder:
             
             created_count += 1
             
+            # Progress indicator every 500 nodes
             if created_count % 500 == 0:
                 print(f"      Processed {created_count} definitions...")
 
-        # Add K8sResource label to root resources
+        # Add K8sResource label to root resources for faster querying
         self.db.execute_query("""
             MATCH (d:Definition {is_root: true})
             SET d:K8sResource
@@ -205,7 +265,7 @@ class SwaggerGraphBuilder:
                 continue
 
             properties = schema.get('properties', {})
-            # === Track required fields for valid YAML generation ===
+            # Track required fields for valid YAML generation
             required_fields = schema.get('required', [])
             primitive_props = {}
 
@@ -234,7 +294,7 @@ class SwaggerGraphBuilder:
                     if isinstance(add_props, dict):
                         if '$ref' in add_props:
                             ref = add_props['$ref']
-                            is_map = True  # === NEW: Mark as map ===
+                            is_map = True
                         elif add_props.get('type') in PRIMITIVE_TYPES:
                             primitive_props[field_name] = f"map_of_{add_props.get('type')}"
                             primitive_count += 1
@@ -249,7 +309,7 @@ class SwaggerGraphBuilder:
                 elif ref:
                     target_name = ref.split("/")[-1]
                     if target_name not in IGNORE_LIST:
-                        # === ENHANCED: Track is_array, is_map, is_required on edge ===
+                        # Track is_array, is_map, is_required on edge
                         self.db.execute_query("""
                             MATCH (source:Definition {id: $source_id})
                             MATCH (target:Definition {id: $target_id})
@@ -263,7 +323,7 @@ class SwaggerGraphBuilder:
                             "field_name": field_name,
                             "is_array": is_array,
                             "is_map": is_map,
-                            "is_required": is_required  # === NEW ===
+                            "is_required": is_required
                         })
                         edge_count += 1
 
@@ -284,7 +344,7 @@ class SwaggerGraphBuilder:
     def _pass_2b_create_inheritance_edges(self):
         """
         PASS 2.5: Create inheritance relationships from allOf/oneOf/anyOf.
-        FIXED: Proper $ref extraction from allOf/oneOf/anyOf arrays
+        CRITICAL for Kubernetes schema understanding (e.g., Deployment extends ObjectReference).
         """
         inheritance_count = 0
         union_count = 0
@@ -295,29 +355,26 @@ class SwaggerGraphBuilder:
             
             # === 1. Handle allOf (Inheritance/Composition) ===
             all_of = schema.get('allOf', [])
-            if isinstance(all_of, list):
-                for item in all_of:
-                    if isinstance(item, dict) and '$ref' in item:
-                        ref = item['$ref']
-                        parent_name = ref.split('/')[-1]
-                        if parent_name not in IGNORE_LIST:
-                            self.db.execute_query("""
-                                MATCH (child:Definition {id: $child_id})
-                                MATCH (parent:Definition {id: $parent_id})
-                                MERGE (child)-[:EXTENDS]->(parent)
-                            """, {
-                                "child_id": full_name,
-                                "parent_id": parent_name
-                            })
-                            inheritance_count += 1
+            for parent_ref in all_of:
+                if '$ref' in parent_ref:
+                    parent_name = parent_ref['$ref'].split('/')[-1]
+                    if parent_name not in IGNORE_LIST:
+                        self.db.execute_query("""
+                            MATCH (child:Definition {id: $child_id})
+                            MATCH (parent:Definition {id: $parent_id})
+                            MERGE (child)-[:EXTENDS]->(parent)
+                        """, {
+                            "child_id": full_name,
+                            "parent_id": parent_name
+                        })
+                        inheritance_count += 1
             
-            # === 2. Handle oneOf (Union Types) ===
+            # === 2. Handle oneOf (Union Types - Important for Volumes, etc.) ===
             one_of = schema.get('oneOf', [])
-            if isinstance(one_of, list):
-                for item in one_of:
-                    if isinstance(item, dict) and '$ref' in item:
-                        ref = item['$ref']
-                        option_name = ref.split('/')[-1]
+            if one_of:
+                for option_ref in one_of:
+                    if '$ref' in option_ref:
+                        option_name = option_ref['$ref'].split('/')[-1]
                         if option_name not in IGNORE_LIST:
                             self.db.execute_query("""
                                 MATCH (union:Definition {id: $union_id})
@@ -329,23 +386,21 @@ class SwaggerGraphBuilder:
                             })
                             union_count += 1
             
-            # === 3. Handle anyOf ===
+            # === 3. Handle anyOf (Similar to oneOf but allows multiple) ===
             any_of = schema.get('anyOf', [])
-            if isinstance(any_of, list):
-                for item in any_of:
-                    if isinstance(item, dict) and '$ref' in item:
-                        ref = item['$ref']
-                        option_name = ref.split('/')[-1]
-                        if option_name not in IGNORE_LIST:
-                            self.db.execute_query("""
-                                MATCH (base:Definition {id: $base_id})
-                                MATCH (option:Definition {id: $option_id})
-                                MERGE (base)-[:ANY_OF]->(option)
-                            """, {
-                                "base_id": full_name,
-                                "option_id": option_name
-                            })
-                            union_count += 1
+            for option_ref in any_of:
+                if '$ref' in option_ref:
+                    option_name = option_ref['$ref'].split('/')[-1]
+                    if option_name not in IGNORE_LIST:
+                        self.db.execute_query("""
+                            MATCH (base:Definition {id: $base_id})
+                            MATCH (option:Definition {id: $option_id})
+                            MERGE (base)-[:ANY_OF]->(option)
+                        """, {
+                            "base_id": full_name,
+                            "option_id": option_name
+                        })
+                        union_count += 1
         
         print(f"   ✓ Created {inheritance_count} inheritance edges (EXTENDS)")
         print(f"   ✓ Created {union_count} union edges (oneOf/anyOf)")
@@ -353,91 +408,99 @@ class SwaggerGraphBuilder:
     def _pass_3_build_semantic_edges(self):
         """
         PASS 3: YAML Configuration Pattern Engine.
-        FIXED: Use id (full_name) instead of name for matching
+        Focus: Relationships needed for generating valid Kubernetes YAML manifests.
+        
+        Removed: API operations, runtime behavior, garbage collection (kubectl handles these)
+        Kept: YAML structure, required fields, spec hierarchy, configuration references
         """
         semantic_rules = [
-            # === WORKLOAD HIERARCHY ===
+            # ==================== WORKLOAD HIERARCHY (YAML Structure) ====================
             ("Deployment → PodTemplate", """
-                MATCH (d:Definition {kind: 'Deployment'})-[:HAS_PROPERTY {name: 'spec'}]->(spec)
-                MATCH (spec)-[:HAS_PROPERTY {name: 'template'}]->(t)
+                MATCH (d:Definition {kind: 'Deployment'})-[:HAS_PROPERTY {name: 'spec'}]->(spec:Definition)
+                MATCH (spec)-[:HAS_PROPERTY {name: 'template'}]->(t:Definition)
                 MERGE (d)-[:CONTAINS_POD_TEMPLATE]->(t)
             """),
             ("ReplicaSet → PodTemplate", """
-                MATCH (rs:Definition {kind: 'ReplicaSet'})-[:HAS_PROPERTY {name: 'spec'}]->(spec)
-                MATCH (spec)-[:HAS_PROPERTY {name: 'template'}]->(t)
+                MATCH (rs:Definition {kind: 'ReplicaSet'})-[:HAS_PROPERTY {name: 'spec'}]->(spec:Definition)
+                MATCH (spec)-[:HAS_PROPERTY {name: 'template'}]->(t:Definition)
                 MERGE (rs)-[:CONTAINS_POD_TEMPLATE]->(t)
             """),
             ("DaemonSet → PodTemplate", """
-                MATCH (ds:Definition {kind: 'DaemonSet'})-[:HAS_PROPERTY {name: 'spec'}]->(spec)
-                MATCH (spec)-[:HAS_PROPERTY {name: 'template'}]->(t)
+                MATCH (ds:Definition {kind: 'DaemonSet'})-[:HAS_PROPERTY {name: 'spec'}]->(spec:Definition)
+                MATCH (spec)-[:HAS_PROPERTY {name: 'template'}]->(t:Definition)
                 MERGE (ds)-[:CONTAINS_POD_TEMPLATE]->(t)
             """),
             ("Job → PodTemplate", """
-                MATCH (j:Definition {kind: 'Job'})-[:HAS_PROPERTY {name: 'spec'}]->(spec)
-                MATCH (spec)-[:HAS_PROPERTY {name: 'template'}]->(t)
+                MATCH (j:Definition {kind: 'Job'})-[:HAS_PROPERTY {name: 'spec'}]->(spec:Definition)
+                MATCH (spec)-[:HAS_PROPERTY {name: 'template'}]->(t:Definition)
                 MERGE (j)-[:CONTAINS_POD_TEMPLATE]->(t)
             """),
             ("CronJob → JobTemplate", """
-                MATCH (cj:Definition {kind: 'CronJob'})-[:HAS_PROPERTY {name: 'spec'}]->(spec)
-                MATCH (spec)-[:HAS_PROPERTY {name: 'jobTemplate'}]->(j)
+                MATCH (cj:Definition {kind: 'CronJob'})-[:HAS_PROPERTY {name: 'spec'}]->(spec:Definition)
+                MATCH (spec)-[:HAS_PROPERTY {name: 'jobTemplate'}]->(j:Definition)
                 MERGE (cj)-[:CONTAINS_JOB_TEMPLATE]->(j)
             """),
 
-            # === STATEFUL STORAGE ===
+            # ==================== STATEFUL STORAGE (YAML Volume Claims) ====================
             ("StatefulSet → VolumeClaimTemplates", """
-                MATCH (s:Definition {kind: 'StatefulSet'})-[:HAS_PROPERTY {name: 'spec'}]->(spec)
-                MATCH (spec)-[:HAS_PROPERTY {name: 'volumeClaimTemplates'}]->(pvc)
+                MATCH (s:Definition {kind: 'StatefulSet'})-[:HAS_PROPERTY {name: 'spec'}]->(spec:Definition)
+                MATCH (spec)-[:HAS_PROPERTY {name: 'volumeClaimTemplates'}]->(pvc:Definition)
                 MERGE (s)-[:CLAIMS_VOLUME]->(pvc)
             """),
+            ("PVC → StorageClass", """
+                MATCH (pvc:Definition {kind: 'PersistentVolumeClaim'})-[:HAS_PROPERTY {name: 'spec'}]->(spec:Definition)
+                MATCH (spec)-[:HAS_PROPERTY {name: 'storageClassName'}]->(sc:Definition)
+                MERGE (pvc)-[:USES_STORAGE_CLASS]->(sc)
+            """),
             ("PodSpec → Volumes", """
-                MATCH (p:Definition {id: 'io.k8s.api.core.v1.PodSpec'})-[:HAS_PROPERTY {name: 'volumes'}]->(v)
+                MATCH (p:Definition {name: 'io.k8s.api.core.v1.PodSpec'})-[:HAS_PROPERTY {name: 'volumes'}]->(v:Definition)
                 MERGE (p)-[:MOUNTS_VOLUME]->(v)
             """),
             ("PodSpec → Containers", """
-                MATCH (p:Definition {id: 'io.k8s.api.core.v1.PodSpec'})-[:HAS_PROPERTY {name: 'containers'}]->(c)
+                MATCH (p:Definition {name: 'io.k8s.api.core.v1.PodSpec'})-[:HAS_PROPERTY {name: 'containers'}]->(c:Definition)
                 MERGE (p)-[:HAS_CONTAINER]->(c)
             """),
 
-            # === CONFIGURATION ===
-            ("Container → ConfigMap", """
-                MATCH (c:Definition {id: 'io.k8s.api.core.v1.Container'})-[:HAS_PROPERTY {name: 'envFrom'}]->(e)
+            # ==================== CONFIGURATION (YAML ConfigMaps & Secrets) ====================
+            ("Container → ConfigMap Reference", """
+                MATCH (c:Definition {name: 'io.k8s.api.core.v1.Container'})-[:HAS_PROPERTY {name: 'envFrom'}]->(e:Definition)
                 MERGE (c)-[:LOADS_CONFIGMAP]->(e)
             """),
-            ("PodSpec → Secret", """
-                MATCH (p:Definition {id: 'io.k8s.api.core.v1.PodSpec'})-[:HAS_PROPERTY {name: 'imagePullSecrets'}]->(s)
+            ("PodSpec → Secret Reference", """
+                MATCH (p:Definition {name: 'io.k8s.api.core.v1.PodSpec'})-[:HAS_PROPERTY {name: 'imagePullSecrets'}]->(s:Definition)
                 MERGE (p)-[:USES_SECRET]->(s)
             """),
 
-            # === NETWORKING ===
+            # ==================== NETWORKING (YAML Service & Ingress) ====================
             ("Service → Pod Selector", """
-                MATCH (svc:Definition {kind: 'Service'})-[:HAS_PROPERTY {name: 'spec'}]->(spec)
-                MATCH (spec)-[:HAS_PROPERTY {name: 'selector'}]->(sel)
+                MATCH (svc:Definition {kind: 'Service'})-[:HAS_PROPERTY {name: 'spec'}]->(spec:Definition)
+                MATCH (spec)-[:HAS_PROPERTY {name: 'selector'}]->(sel:Definition)
                 MERGE (svc)-[:SELECTS_POD]->(sel)
             """),
-            ("Ingress → Service", """
-                MATCH (i:Definition {kind: 'Ingress'})-[:HAS_PROPERTY {name: 'spec'}]->(spec)
-                MATCH (spec)-[:HAS_PROPERTY {name: 'rules'}]->(r)
+            ("Ingress → Service Route", """
+                MATCH (i:Definition {kind: 'Ingress'})-[:HAS_PROPERTY {name: 'spec'}]->(spec:Definition)
+                MATCH (spec)-[:HAS_PROPERTY {name: 'rules'}]->(r:Definition)
                 MERGE (i)-[:ROUTES_TO_SERVICE]->(r)
             """),
 
-            # === RBAC ===
+            # ==================== RBAC (YAML Role Bindings) ====================
             ("RoleBinding → Role", """
-                MATCH (rb:Definition {kind: 'RoleBinding'})-[:HAS_PROPERTY {name: 'roleRef'}]->(r)
+                MATCH (rb:Definition {kind: 'RoleBinding'})-[:HAS_PROPERTY {name: 'roleRef'}]->(r:Definition)
                 MERGE (rb)-[:BINDS_ROLE]->(r)
             """),
             ("RoleBinding → ServiceAccount", """
-                MATCH (rb:Definition {kind: 'RoleBinding'})-[:HAS_PROPERTY {name: 'subjects'}]->(sa)
+                MATCH (rb:Definition {kind: 'RoleBinding'})-[:HAS_PROPERTY {name: 'subjects'}]->(sa:Definition)
                 MERGE (rb)-[:BINDS_SERVICE_ACCOUNT]->(sa)
             """),
             ("PodSpec → ServiceAccount", """
-                MATCH (p:Definition {id: 'io.k8s.api.core.v1.PodSpec'})-[:HAS_PROPERTY {name: 'serviceAccountName'}]->(sa)
+                MATCH (p:Definition {name: 'io.k8s.api.core.v1.PodSpec'})-[:HAS_PROPERTY {name: 'serviceAccountName'}]->(sa:Definition)
                 MERGE (p)-[:USES_SERVICE_ACCOUNT]->(sa)
             """),
 
-            # === AUTOSCALING ===
+            # ==================== AUTOSCALING (YAML HPA Config) ====================
             ("HPA → Scale Target", """
-                MATCH (h:Definition {kind: 'HorizontalPodAutoscaler'})-[:HAS_PROPERTY {name: 'spec'}]->(spec)
-                MATCH (spec)-[:HAS_PROPERTY {name: 'scaleTargetRef'}]->(t)
+                MATCH (h:Definition {kind: 'HorizontalPodAutoscaler'})-[:HAS_PROPERTY {name: 'spec'}]->(spec:Definition)
+                MATCH (spec)-[:HAS_PROPERTY {name: 'scaleTargetRef'}]->(t:Definition)
                 WHERE t.kind IN ['Deployment', 'StatefulSet', 'DaemonSet', 'ReplicaSet']
                 MERGE (h)-[:SCALES_RESOURCE]->(t)
             """),
@@ -475,10 +538,7 @@ class SwaggerGraphBuilder:
                 print(f"      • {skip['rule']}")
                 print(f"        Reason: {skip['error']}")
         
-        # Save log
-        import json
-        from datetime import datetime
-        
+        # Save to single log file (overwrite every run)
         report_path = "logs/semantic_rules_execution.log"
         os.makedirs("logs", exist_ok=True)
         
@@ -489,11 +549,18 @@ class SwaggerGraphBuilder:
             "executed": executed_count,
             "skipped": skipped_count,
             "executed_rules": executed_rules,
-            "skipped_rules": skipped_rules
+            "skipped_rules": skipped_rules,
+            "removed_rules": [
+                "PVC → PV (runtime binding)",
+                "NetworkPolicy → Pod (advanced)",
+                "Resource → Namespace (separate manifest)",
+                "Parent → Child (garbage collection)",
+                "Deployment → ReplicaSet (implementation detail)"
+            ]
         }
         
         with open(report_path, 'w', encoding='utf-8') as f:
             json.dump(report_data, f, indent=2, ensure_ascii=False)
         
         print()
-        print(f"   💾 Execution log saved to: {report_path}")
+        print(f"   💾 Execution log saved to: {report_path} (overwritten)")
