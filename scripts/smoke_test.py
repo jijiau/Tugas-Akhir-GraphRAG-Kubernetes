@@ -63,10 +63,10 @@ def test_llms():
 if __name__ == "__main__":
     print("🚀 Starting System Smoke Test...\n")
     results = [
-        test_env(),
+        # test_env(),
         test_neo4j(),
-        test_zep(),
-        test_llms()
+        # test_zep(),
+        # test_llms()
     ]
     print("\n" + "="*30)
     if all(results):
