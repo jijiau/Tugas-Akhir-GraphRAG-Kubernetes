@@ -54,7 +54,9 @@ CLUSTER_SCOPED_RESOURCES = {
     "PriorityClass", "CSIDriver", "CSINode", "VolumeAttachment",
     "RuntimeClass", "APIService", "MutatingWebhookConfiguration",
     "ValidatingWebhookConfiguration", "ValidatingAdmissionPolicy",
-    "ValidatingAdmissionPolicyBinding",
+    "ValidatingAdmissionPolicyBinding", "CertificateSigningRequest", 
+    "IngressClass", "FlowSchema", "PriorityLevelConfiguration", 
+    "SelfSubjectAccessReview", "SubjectAccessReview", "TokenReview"
 }
 
 # ============================================
