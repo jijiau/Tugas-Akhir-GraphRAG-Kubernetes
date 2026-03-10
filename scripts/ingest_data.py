@@ -5,28 +5,28 @@ Parses the Kubernetes OpenAPI spec to build a Knowledge Graph for
 YAML Infrastructure-as-Code generation.
 
 SCOPE:
-    ✅ Ingest: definitions (K8s resource schemas for YAML)
-       ├─ Properties & $ref (Pass 2)
-       ├─ allOf/oneOf/anyOf inheritance (Pass 2.5)
-       └─ Semantic YAML patterns (Pass 3)
-    
-    ❌ Skip: paths (HTTP API specs - handled by kubectl)
+✅ Ingest: definitions (K8s resource schemas for YAML)
+├─ Properties & $ref (Pass 2)
+├─ allOf/oneOf/anyOf inheritance (Pass 2.5)
+└─ Semantic YAML patterns (Pass 3)
+
+❌ Skip: paths (HTTP API specs - handled by kubectl)
 
 Use Case:
-    - User asks: "How to create a Deployment?"
-    - System generates: Valid Kubernetes YAML configuration
-    - User applies: kubectl apply -f generated.yaml
+- User asks: "How to create a Deployment?"
+- System generates: Valid Kubernetes YAML configuration
+- User applies: kubectl apply -f generated.yaml
 
 Why Inheritance (Pass 2.5) is INCLUDED:
-    - allOf defines YAML field structure (metadata, spec, status)
-    - oneOf defines valid alternatives (volume types, probe types)
-    - Critical for generating VALID YAML (not just API calls)
+- allOf defines YAML field structure (metadata, spec, status)
+- oneOf defines valid alternatives (volume types, probe types)
+- Critical for generating VALID YAML (not just API calls)
 
 Usage:
-    python scripts/ingest_data.py
+python scripts/ingest_data.py
 
 Post-Ingestion:
-    python scripts/validate_graph.py  # Run validation separately
+python scripts/validate_graph.py  # Run validation separately
 """
 
 import os
