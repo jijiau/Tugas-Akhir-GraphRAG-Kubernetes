@@ -1,232 +1,436 @@
 \cleardoublepage % memastikan bab baru dimulai di halaman ganjil (kanan)
+
 \chapter{STUDI LITERATUR}
 \label{chap:studi-literatur}
-\section{Tentang Studi Literatur}
-Studi literatur biasanya berisi tentang tinjauan pustaka, landasan teori, dan penelitian-penelitian terdahulu yang relevan dengan topik tugas akhir yang dikerjakan.
-Dalam subbab ini, penulis diharapkan dapat menjelaskan:
+
+\section{Arsitektur \textit{Cloud} Modern dan Tantangan Kompleksitas}
+
+Pergeseran paradigma dari arsitektur monolitik menuju layanan mikro (\textit{microservices}) kini telah menjadi fondasi utama dalam pengembangan aplikasi \textit{cloud-native} modern. Berbeda dengan pendekatan arsitektur tradisional, gaya arsitektur layanan mikro mendistribusikan logika bisnis secara masif ke dalam puluhan hingga ratusan layanan kecil independen. Distribusi fungsionalitas ini memunculkan kebutuhan akan mekanisme penerapan (\textit{deployment}) mandiri. Sebagai solusi, layanan mikro secara alami terintegrasi dengan platform berbasis kontainer karena setiap layanan dapat dikemas dan didistribusikan di dalam kontainernya masing-masing \parencite{soldani_pains_2018}. Walaupun memberikan keuntungan operasional yang signifikan berupa portabilitas lintas \textit{cloud}, skalabilitas tingkat tinggi, dan kebebasan pemilihan teknologi bagi pengembang, ekosistem kontainer ini memunculkan paradoks kompleksitas baru \parencite{soldani_pains_2018}. 
+
+Dalam lingkungan terdistribusi yang melibatkan banyak kontainer ini, orkestrasi penerapan layanan mikro menjadi sebuah tantangan tersendiri. Setiap layanan mikro di dalam kontainer berkomunikasi melalui mekanisme antarmuka pemrograman aplikasi (API) seperti protokol HTTP. Spesifikasi API beserta konfigurasi orkestrasinya bertindak sebagai kontrak komunikasi esensial antar-layanan \parencite{soldani_pains_2018}. Kontrak struktural ini sama sekali tidak boleh dilanggar guna menjaga stabilitas operasional serta memastikan layanan-layanan tersebut dapat terus saling berinteraksi secara dinamis \parencite{soldani_pains_2018}. Ketergantungan yang sangat ketat di bawah kendali sistem orkestrasi ini menuntut pemahaman komprehensif terhadap interaksi antar-layanan sebagai kunci utama keberhasilan operasional aplikasi \textit{cloud}. 
+
+Akibatnya, dokumentasi API dan manifes konfigurasi orkestrasi mengalami lonjakan kompleksitas. Sebagaimana diidentifikasi oleh \textcite{soldani_pains_2018}, pemahaman kognitif yang keliru terhadap arsitektur dan interaksi kontrak API ini sering kali berujung pada kegagalan operasional. Jika tidak diisolasi dengan tepat dalam sistem orkestrasi, kegagalan komunikasi pada satu layanan mikro dapat memicu rentetan kegagalan pada layanan lain yang bergantung padanya. Kondisi ini pada akhirnya menghasilkan fenomena kegagalan sistem berantai (\textit{cascading failures}) yang melumpuhkan seluruh aplikasi \parencite{soldani_pains_2018}.
+
+\section{Kubernetes: Platform Orkestrasi Kontainer untuk Aplikasi \textit{Cloud-Native}}
+
+Kubernetes merupakan platform orkestrasi kontainer yang dirancang untuk mengotomatisasi proses \textit{deployment}, \textit{scaling}, dan manajemen aplikasi berbasis kontainer dalam lingkungan \textit{cloud-native} \parencite{kubernetes_docs}. Platform ini menyediakan mekanisme deklaratif berbasis konfigurasi yang memungkinkan pengguna mendefinisikan keadaan sistem yang diinginkan (\textit{desired state}) melalui berkas konfigurasi, sementara Kubernetes menjaga agar keadaan tersebut tetap terpenuhi melalui rangkaian komponen pengendali (\textit{controller loops}).
+
+\subsection{Gambaran Umum Arsitektur}
+
+Arsitektur Kubernetes dibangun atas konsep klaster yang terdiri dari dua kelompok komponen utama, yaitu \textit{Control Plane} dan \textit{Worker Nodes}. \textit{Control Plane} berfungsi sebagai pengendali utama yang membuat keputusan bisnis aplikasi, misalnya penjadwalan, pemantauan, serta konsistensi status. \textit{Worker Nodes} merupakan entitas komputasi fisik/virtual yang menjalankan kontainer sebagai satuan aplikasi. Kedua komponen ini berkomunikasi secara internal melalui API server yang menjadi pintu utama seluruh permintaan sistem.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{justification=centering}
+    \includegraphics[width=1.00\textwidth]{images/arsi-kube.png}
+    \caption{Arsitektur klaster Kubernetes yang terdiri atas \textit{Control Plane} dan \textit{Worker Nodes}, dihubungkan melalui \textit{kube-apiserver} \parencite{kubernetes_docs}}
+    \label{fig:kubernetes-architecture}
+\end{figure}
+
 \begin{enumerate}
-  \item Landasan teori yang diperoleh dari literatur yang akan digunakan untuk menyelesaikan persoalan TA;
-  \item Pengetahuan tentang kasus yang akan dikaji; dan
-  \item Penelitian atau solusi terkait untuk mengetahui posisi persoalan dan berbagai solusi yang memungkinkan untuk diterapkan berdasarkan hasil studi literatur ini.
+    \item \textbf{\textit{Control Plane}}\\
+    Control Plane bertanggung jawab mengelola keadaan (\textit{state}) klaster secara keseluruhan. Komponen utamanya meliputi,
+    \begin{enumerate}[a.]
+        \item \textbf{kube-apiserver} sebagai gerbang akses seluruh operasi manipulasi objek konfigurasi melalui API, 
+        \item \textbf{etcd} sebagai basis data \textit{key-value} yang menyimpan informasi konfigurasi dan status, 
+        \item \textbf{kube-scheduler} yang menentukan Node penempatan Pod berdasarkan ketersediaan sumber daya, 
+        \item \textbf{kube-controller-manager} yang berisi sekumpulan kontroler untuk menjaga kesesuaian antara kondisi aktual dan \textit{desired state}. Melalui mekanisme deklaratif ini, Kubernetes secara otomatis memperbaiki status objek yang tidak sesuai dan memastikan setiap aplikasi berjalan sesuai aturan konfigurasi yang ditentukan.
+    \end{enumerate}
+    \item \textbf{\textit{Worker Nodes}}\\
+    Worker Nodes merupakan lapisan eksekusi tempat aplikasi berjalan dalam bentuk Pod. Node terdiri atas tiga komponen inti: 
+    \begin{enumerate}[a.]
+        \item \textbf{kubelet} yang bertugas mengeksekusi Pod sesuai \textit{specification} yang diterima dari \textit{Control Plane},
+        \item \textbf{kube-proxy} yang menyediakan layanan \textit{network forwarding} dan \textit{load balancing} sederhana antar Pod dalam klaster, 
+        \item \textbf{\textit{container runtime}} yang bertanggung jawab menjalankan kontainer. Dengan demikian, Node menjalankan komputasi terdistribusi yang dikontrol oleh \textit{Control Plane} melalui komunikasi berbasis API.
+    \end{enumerate}
 \end{enumerate}
-Jadi, studi literatur ini bukan sekadar rangkuman dari berbagai sumber referensi, tetapi harus diolah dan disajikan secara sistematis sehingga dapat memberikan gambaran yang jelas tentang landasan teori dan penelitian-penelitian terdahulu yang relevan dengan topik tugas akhir.
 
-Penulisan studi literatur yang baik dimulai dari penjelasan tentang kasus yang akan dikaji, kemudian diikuti dengan penjelasan tentang teori-teori yang relevan, dan diakhiri dengan tinjauan terhadap penelitian-penelitian terdahulu yang berkaitan dengan topik tugas akhir.
-Misalnya, jika topik tugas akhir adalah tentang masalah klasifikasi biji kopi berdasarkan citra kopi, 
-penulis dapat memulai dengan menjelaskan terlebih dahulu tentang karakteristik biji kopi, masalah dalam melakukan klasifikasi biji kopi, 
-kemudian menjelaskan tentang berbagai metode berbasis komputer yang dapat digunakan untuk mengklasifikasikan biji kopi berdasarkan citranya, 
-metode terbaik yang memungkinkan untuk diterapkan, teori-teori dasar tentang metode tersebut, dan diakhiri dengan tinjauan terhadap penelitian-penelitian terdahulu yang menggunakan metode untuk klasifikasi citra.
+\subsection{\textit{Resource Model} dan Hierarki}
 
-Dalam studi literatur, biasanya banyak penjelasan tentang teori-teori yang disertai dengan rumus atau persamaan matematika, gambar, tabel, algoritma, pseudocode, atau kode program.
-Oleh karena itu, pada subbab berikut akan dijelaskan beberapa hal teknis terkait format penulisan dokumen tugas akhir.
+Dalam \textit{resource model} Kubernetes, terdapat beberapa objek inti pembangun aplikasi yang paling sering digunakan:
 
-\section{Format Penulisan Gambar, Tabel, Rumus, dan Kode Program}
-Berikut adalah beberapa contoh penulisan gambar, tabel, rumus, dan kode program yang sesuai dengan format penulisan tugas akhir.
-\subsection{Penulisan Gambar}
-Contoh gambar dapat dilihat pada Gambar \ref{fig:jaringan} dan Gambar \ref{fig:jaringan2}.
-Secara vertikal, gambar biasanya diletakkan di bagian atas halaman (\textit{top}) atau di bagian bawah halaman (\textit{bottom}).
-Gambar tidak harus diletakkan tepat di tempat gambar tersebut disebutkan pertama kali dalam teks,
-tetapi dapat diletakkan di halaman berikutnya jika tidak muat di halaman yang sama. Pada contoh ini, kedua gambar diletakkan di bagian atas halaman 
-menggunakan opsi \texttt{[t]} pada lingkungan \texttt{figure}, namun pada halaman yang berbeda, meskipun disebutkan di halaman yang sama akibat ruang yang terbatas. 
+\begin{itemize}
+    \item \textbf{\textit{Pod}}: Unit komputasi terkecil sebagai pembungkus kontainer aplikasi
+    \item \textbf{\textit{Deployment}}: Pengatur replika dan proses pembaruan versi untuk mencapai ketersediaan tinggi
+    \item \textbf{\textit{Service}}: Penyedia titik akses jaringan yang stabil untuk aplikasi di dalam \textit{Pod}
+    \item \textbf{\textit{Ingress}}: Pengatur rute lalu lintas eksternal masuk ke dalam klaster
+    \item \textbf{\textit{ConfigMap}}: Penyimpan variabel lingkungan dan konfigurasi non-sensitif
+    \item \textbf{\textit{Secret}}: Pengelola data sensitif seperti kredensial dan token
+    \item \textbf{\textit{PersistentVolumeClaim}}: Permintaan penyimpanan persisten untuk data yang harus bertahan
+    \item \textbf{\textit{ServiceAccount}}: Identitas yang digunakan oleh \textit{Pod} untuk berinteraksi dengan API server
+    \item \textbf{\textit{Role}} dan \textbf{\textit{RoleBinding}}: Kontrol akses berbasis peran (RBAC)
+    \item \textbf{\textit{HorizontalPodAutoscaler}}: Pengatur skala otomatis berdasarkan metrik penggunaan
+\end{itemize}
 
-Penyebutan judul gambar dalam teks menggunakan perintah \texttt{ref}, misalnya Gambar \texttt{\\ref\{fig:jaringan\}}.
-Gunakan huruf kapital pada kata "Gambar" saat menyebutkan gambar dalam teks.
+Antar-objek ini saling terikat melalui berbagai jenis relasi yang dapat dikategorikan sebagai berikut:
 
-\begin{figure}[t] % pilihan opsi yang disarankan: t = top, b = bottom, h = here
-  \caption{Contoh peletakan gambar di bagian atas halaman} 
-	\label{fig:jaringan}
-    	\includegraphics[width=0.7\textwidth]{images/gambar1.png}
-\end{figure}
+\begin{enumerate}
+    \item \textbf{Relasi Struktural (\textit{Structural Relationships})}
+    \begin{itemize}
+        \item \texttt{HAS\_PROPERTY}: Hubungan antara objek induk dengan properti skema yang dimilikinya (misal: \textit{Deployment} memiliki properti \textit{spec})
+        \item \texttt{EXTENDS}: Hubungan pewarisan skema dari mekanisme \texttt{allOf} (misal: \textit{Deployment} extends \textit{ObjectMeta})
+        \item \texttt{ONE\_OF}: Hubungan tipe union yang mengharuskan pemilihan satu dari beberapa opsi (misal: \textit{Volume} memilih satu sumber penyimpanan)
+        \item \texttt{ANY\_OF}: Hubungan tipe alternatif yang memungkinkan satu atau lebih opsi (misal: \textit{EnvFromSource} dapat menggunakan \textit{ConfigMap} atau \textit{Secret})
+    \end{itemize}
+    
+    \item \textbf{Relasi Workload (\textit{Workload Relationships})}
+    \begin{itemize}
+        \item \texttt{CONTAINS\_POD\_TEMPLATE}: Hubungan antara controller (\textit{Deployment}, \textit{ReplicaSet}, \textit{DaemonSet}, \textit{StatefulSet}, \textit{Job}) dengan template \textit{Pod} yang dikelolanya
+        \item \texttt{CONTAINS\_JOB\_TEMPLATE}: Hubungan antara \textit{CronJob} dengan template \textit{Job} yang dijadwalkan
+        \item \texttt{HAS\_CONTAINER}: Hubungan antara \textit{PodSpec} dengan definisi \textit{Container} yang dijalankan di dalamnya
+    \end{itemize}
+    
+    \item \textbf{Relasi Penyimpanan (\textit{Storage Relationships})}
+    \begin{itemize}
+        \item \texttt{CLAIMS\_VOLUME}: Hubungan antara \textit{StatefulSet} dengan \textit{PersistentVolumeClaim} untuk penyimpanan persisten
+        \item \texttt{MOUNTS\_VOLUME}: Hubungan antara \textit{PodSpec} dengan \textit{Volume} yang di-mount ke kontainer
+        \item \texttt{USES\_STORAGE\_CLASS}: Hubungan antara \textit{PersistentVolumeClaim} dengan \textit{StorageClass} yang menentukan jenis penyimpanan
+    \end{itemize}
+    
+    \item \textbf{Relasi Konfigurasi (\textit{Configuration Relationships})}
+    \begin{itemize}
+        \item \texttt{LOADS\_CONFIGMAP}: Hubungan antara \textit{Container} dengan \textit{ConfigMap} yang digunakan untuk injeksi konfigurasi
+        \item \texttt{USES\_SECRET}: Hubungan antara \textit{PodSpec} dengan \textit{Secret} untuk data sensitif
+    \end{itemize}
+    
+    \item \textbf{Relasi Jaringan (\textit{Networking Relationships})}
+    \begin{itemize}
+        \item \texttt{SELECTS\_POD}: Hubungan antara \textit{Service} dengan \textit{Pod} yang dipilih melalui label selector
+        \item \texttt{ROUTES\_TO\_SERVICE}: Hubungan antara \textit{Ingress} dengan \textit{Service} tujuan rute lalu lintas
+    \end{itemize}
+    
+    \item \textbf{Relasi RBAC (\textit{Role-Based Access Control Relationships})}
+    \begin{itemize}
+        \item \texttt{BINDS\_ROLE}: Hubungan antara \textit{RoleBinding}/\textit{ClusterRoleBinding} dengan \textit{Role}/\textit{ClusterRole} yang diikat
+        \item \texttt{BINDS\_SERVICE\_ACCOUNT}: Hubungan antara \textit{RoleBinding}/\textit{ClusterRoleBinding} dengan \textit{ServiceAccount} yang diberi izin
+        \item \texttt{USES\_SERVICE\_ACCOUNT}: Hubungan antara \textit{PodSpec} dengan \textit{ServiceAccount} yang digunakan untuk identitas
+    \end{itemize}
+    
+    \item \textbf{Relasi Autoscaling (\textit{Autoscaling Relationships})}
+    \begin{itemize}
+        \item \texttt{SCALES\_RESOURCE}: Hubungan antara \textit{HorizontalPodAutoscaler} dengan workload target (\textit{Deployment}, \textit{StatefulSet}, \textit{ReplicaSet}) yang diskalakan
+    \end{itemize}
+\end{enumerate}
 
-Gambar, grafik, atau ilustrasi harus memiliki keterangan atau judul (\textit{caption}) yang menjelaskan isi gambar tersebut. 
-Secara horisontal, gambar dan judulnya diposisikan di tengah. Nomor gambar tidak diakhiri tanda baca.
-Judul gambar diletakkan di bawah gambar dan ditulis dengan huruf kecil kecuali huruf pertama pada kalimat judul. 
-Kalimat judul yang panjang dapat ditulis dalam beberapa baris seperti pada Gambar \ref{fig:jaringan2}.
+Pemetaan relasi kepemilikan (\textit{ownership}) dan ketergantungan fungsional (\textit{dependencies}) inilah yang akan secara langsung dikonversi menjadi skema graf pengetahuan (\textit{knowledge graph}) pada penelitian ini. Sebagai contoh, sebuah \textit{Deployment} secara hierarkis memiliki sub-sumber daya \textit{PodSpec} melalui relasi \texttt{CONTAINS\_POD\_TEMPLATE}, dan \textit{Pod} tersebut memiliki ketergantungan operasional terhadap \textit{ConfigMap} tertentu melalui relasi \texttt{LOADS\_CONFIGMAP}. Total terdapat 21 jenis edge yang terdistribusi dalam 7 kategori relasi, membentuk ontologi lengkap untuk generasi YAML Kubernetes.
+\subsection{Manifes YAML dan \textit{Infrastructure as Code}}
 
-Ukuran gambar yang ditampilkan dapat diatur dengan mengubah nilai \textit{width} dalam sintaks \textit{includegraphics}. 
-Gambar \ref{fig:jaringan} memiliki lebar 70\% dari lebar teks, sedangkan Gambar \ref{fig:jaringan2} memiliki lebar 90\% dari lebar teks.
- 
+Pengembang berinteraksi dengan model sumber daya Kubernetes melalui pendekatan \textit{Infrastructure as Code} (IaC) \parencite{k8s_docs_concepts}. Pendekatan ini mewajibkan pengguna untuk mendeklarasikan wujud infrastruktur yang diinginkan (\textit{desired state}) ke dalam bentuk dokumen teks berformat YAML. Setiap manifes YAML standar wajib memiliki empat atribut struktural utama agar dapat diterima oleh API Kubernetes:
+\begin{enumerate}
+    \item \texttt{apiVersion}: Menentukan versi skema API pembungkus objek.
+    \item \texttt{kind}: Mendefinisikan jenis entitas sumber daya.
+    \item \texttt{metadata}: Memuat data identifikasi unik seperti nama, label pengelompokan, dan \textit{namespace}.
+    \item \texttt{spec}: Berisi spesifikasi teknis rinci penentu sifat dan bentuk hierarki objek tersebut.
+\end{enumerate}
 
-\begin{figure}[t] 
-  \caption{Contoh peletakan gambar dengan judul yang panjang sehingga ditulis dalam beberapa baris} 
-	\label{fig:jaringan2}
-    	\includegraphics[width=0.9\textwidth]{images/gambar1.png}
-\end{figure}
+Penyusunan manifes YAML menuntut pemahaman terkait batasan skema. Pengembang harus bisa membedakan secara presisi antara ruas wajib (\textit{required}) penentu validitas dan ruas opsional (\textit{optional}) penambah fitur khusus. Praktik terbaik (\textit{best practices}) dalam penulisan IaC menyarankan modularitas dokumen, konsistensi penggunaan label, dan pemisahan logika aplikasi dari data konfigurasi. Sebuah struktur manifes YAML yang mematuhi kelengkapan ruas wajib (\textit{field requirements}) dan valid secara sintaksis inilah yang menjadi representasi target luaran yang akan dibangkitkan oleh sistem generasi pada penelitian ini.
 
-Pastikan gambar yang digunakan memiliki resolusi yang cukup tinggi agar tidak pecah atau buram saat dicetak. 
-Gambar umumnya tidak tajam dan tulisan tidak jelas atau kabur jika gambar tersebut:
+\section{\textit{Large Language Models} (LLM)}
+\subsection{Definisi dan Kapabilitas}
+\textit{Large Language Model} (LLM) merupakan model kecerdasan buatan berbasis jaringan saraf berskala besar yang dilatih pada korpus teks \textit{multi-domain} untuk mempelajari representasi bahasa alami secara mendalam \parencite{wan2025empowering}. Melalui proses pelatihan tersebut, LLM mampu menginterpretasikan konteks linguistik yang kompleks serta menghasilkan keluaran berupa teks yang koheren, kontekstual, dan adaptif terhadap berbagai jenis tugas seperti \textit{question answering}, penalaran, serta peringkasan teks. 
+
+Meskipun unggul dalam pemahaman bahasa alami, LLM memiliki keterbatasan faktual yang signifikan ketika diterapkan pada domain teknis, terutama terhadap pengetahuan yang presisi, bersifat prosedural, serta memerlukan landasan ontologis. Beberapa keterbatasan yang disorot oleh \textcite{wan2025empowering} meliputi,
 \begin{enumerate}[a.]
-  \item diperoleh dari hasil cropping pada suatu halaman buku atau situs web;
-  \item hasil pembesaran gambar yang gambar aslinya sebenarnya berukuran kecil; atau
-  \item disimpan dalam resolusi kecil
-\end{enumerate}
-Ketidakjelasan gambar ini dapat dilihat pada garis-garis diagram yang tidak tegas dan tulisan-tulisan dalam gambar yang tampak kabur dan kurang jelas terbaca.
-
-Untuk mendapatkan gambar yang tidak kabur (\textit{blur}), langkah-langkah berikut dapat digunakan:
-\begin{enumerate}[(a)]
-\item Hindari \textit{screenshot}. Gambar yang didapat di suatu pustaka atau referensi sebaiknya digambar ulang (tidak perlu sama persis), misalnya menggunakan PowerPoint, Canva, Figma, draw.io, atau yang lainnya.
-\item Jika diagram atau ilustrasi digambar menggunakan draw.io, saat gambar disimpan ke format PNG atau JPG (\textit{export as}), lakukan \textit{zoom} ke minimal 300\% (\textit{the default value is} 100\%). 
-\item Jika diagram digambar dengan menggunakan \texttt{PowerPoint} atau aplikasi yang mengolah gambar vektor lainnya, gambar dapat langsung disimpan asalkan resolusinya tinggi.
+    \item \textit{Hallucination}, yaitu kemampuan menghasilkan jawaban yang secara linguistik meyakinkan tetapi tidak memiliki landasan fakta yang jelas sehingga berisiko menyesatkan proses pengambilan keputusan teknis.
+    \item Keterbatasan cakupan pengetahuan, LLM hanya mengandalkan data pelatihan awal sehingga tidak selalu mencakup informasi domain yang mutakhir.
+    \item Ketiadaan atribusi sumber, yaitu LLM tidak dapat memberikan justifikasi atau referensi eksplisit terhadap jawaban yang dihasilkan.
 \end{enumerate}
 
-\subsection{Penulisan Tabel}
-Format penulisan tabel hampir sama dengan format penulisan gambar. Bedanya adalah judul tabel diletakkan di atas tabel, bukan di bawah tabel seperti pada gambar.
-Ada tabel yang bisa dimuat dalam satu halaman (tabel pendek) dan ada tabel panjang yang yang tidak muat dalam satu halaman. Kedua jenis tabel tersebut disusun dengan cara yang berbeda.
-Jika tabel sangat panjang, gunakan paket \textit{longtable} untuk membuat tabel yang dapat terpotong ke halaman berikutnya.
-Namun, jika tabel dapat dimuat dalam satu halaman, gunakan lingkungan \textit{table} biasa, tidak menggunakan \textit{longtable}.
-Usahakan tabel dapat ditulis dalam satu halaman, tidak terpotong ke halaman berikutnya, jika memungkinkan.
+Keterbatasan tersebut menjadi alasan utama perlunya integrasi antara LLM dan arsitektur \textit{retrieval-augmented generation} (RAG).
 
-\subsubsection{Penulisan Tabel Pendek}
-Contoh tabel pendek dapat dilihat pada Tabel \ref{tab:tabel1}, \ref{tab:tabel2}, dan \ref{tab:tabel3}. 
-Pada kedua table ini, tabel dan judulnya diposisikan di tengah secara horisontal dan 
-judul tabel diletakkan di atas tabel. Secara vertikal, tabel sebaiknya diletakkan di bagian atas atau bawah halaman.
+\subsection{\textit{Prompt Engineering}}
 
-Penyebutan judul tabel dalam teks menggunakan perintah \texttt{ref}, misalnya Tabel \ref{tab:tabel1}.
-Gunakan huruf kapital pada kata "Tabel" saat menyebutkan tabel dalam teks.
+\textit{Prompt engineering} merupakan teknik perancangan instruksi masukan bagi LLM untuk mengendalikan keluaran model berdasarkan tujuan tugas, cakupan konteks, serta batasan informasi yang diizinkan \parencite{wan2025empowering}. Dalam domain teknis, teknik ini tidak hanya berperan sebagai instruksi linguistik, tetapi juga sebagai representasi pengetahuan eksplisit yang mendefinisikan bagaimana LLM harus memanfaatkan sumber informasi domain.
 
-Tabel \ref{tab:tabel1} menggunakan paket \textit{tabularx} untuk mengatur lebar kolom secara fleksibel. 
-Selain itu, tabel ini juga menggunakan \textit{threeparttable} untuk menambahkan catatan kaki pada tabel 
-dan opsi \texttt{X} agar lebar kolom fleksibel menyesuaikan lebar tabel.
-Catatan kaki pada tabel ini menggunakan perintah \texttt{tablenotes} yang disediakan oleh paket \textit{threeparttable}.
-Catatan kaki pada tabel ini menggunakan perintah \texttt{\textbackslash footnotemark} dan \texttt{\textbackslash footnotetext} untuk menambahkan catatan kaki pada tabel.
+Efektivitas keluaran LLM dipengaruhi secara signifikan oleh strategi \textit{prompt engineering} berikut,
+\begin{enumerate}[a.]
+    \item Spesifikasi tugas yang eksplisit, termasuk definisi peran model dan batasan prosedural, misalnya instruksi untuk membatasi jawaban pada proses manufaktur tertentu.
+    \item Penyediaan konteks terstruktur, melalui penyisipan entitas domain, hubungan semantik, serta cuplikan dokumen terkait yang relevan dengan pertanyaan.
+    \item Pemberian batasan (\textit{constraint injection}) yang secara eksplisit membatasi ruang solusi berdasarkan pengetahuan terbatas dalam dokumen yang valid.
+    \item Penyusunan format jawaban, misalnya dalam bentuk tabel, daftar berhierarki, atau penjelasan berbasis pembuktian prosedural.
+\end{enumerate}
 
-Tabel \ref{tab:tabel2} menggunakan format standar \texttt{| l | c | r |}. 
-Tabel \ref{tab:tabel3} menggunakan lebar kolom tetap (\textit{fixed width}) menggunakan \texttt{p\{width\}}.
+Strategi tersebut tidak hanya mengontrol keluaran, tetapi juga mencegah LLM menafsirkan konteks di luar pengetahuan domain sehingga berperan sebagai mekanisme mitigasi terhadap fenomena \textit{hallucination}.
 
-\begin{table} 
-  \centering
-    \begin{threeparttable}[t] % threeparttable agar bisa menambahkan catatan kaki pada tabel
-    \caption{Contoh tabel yang menggunakan \texttt{tabularx} untuk mengatur lebar kolom secara fleksibel. 
-    Selain itu, tabel ini juga menggunakan \texttt{threeparttable} untuk menambahkan catatan kaki pada tabel 
-    dan opsi \texttt{X} agar lebar kolom fleksibel menyesuaikan lebar tabel.}
-    \label{tab:tabel1}
-    \begin{tabularx}{0.6\textwidth}{| c | X| l | r @{}|} % @{} removes extra space at edges, X makes the column flexible width
-	    \hline
-	    No & Nama 	& Satuan 		& Harga \\
-	    \hline
-	    1 & Buku 	& Exemplar	& 25000 \\
-	    2 & Komputer	& Unit		& 2500000 \\
-	    3 & Pensil	& Buah		& 118900 \\
-	    \hline
-	  \end{tabularx} 
-    \begin{tablenotes}
-      \footnotesize
-      \item \footnotemark[1]Tabel harga berdasarkan data tahun 2023.
-      \item \footnotemark[2]Sumber: \url{https://www.example.com}
-    \end{tablenotes}
-  \end{threeparttable}
-\end{table}
+\section{\textit{Retrieval-Augmented Generation} (RAG)}
 
+\textit{Retrieval-Augmented Generation} (RAG) merupakan arsitektur pemrosesan bahasa alami yang mengombinasikan mekanisme \textit{Information Retrieval} (IR) dengan kemampuan generatif \textit{Large Language Models} (LLM). Pendekatan ini dikembangkan untuk mengatasi keterbatasan memori parametris pada model bahasa, khususnya dalam menangani tugas yang bersifat \textit{knowledge-intensive}, yaitu model rentan menghasilkan informasi yang keliru atau tidak berbasis fakta (\textit{hallucination}) \parencite{moreno2025rag}.
 
+Berbeda dengan metode generatif konvensional yang hanya mengandalkan pengetahuan tersimpan selama proses pelatihan, RAG memanfaatkan basis pengetahuan non-parametris melalui proses pencarian (\textit{retrieval}) sehingga jawaban yang dihasilkan lebih akurat dan relevan terhadap konteks masukan.
 
+\subsection{Arsitektur \textit{Retrieval-Augmented Generation}}
 
-\begin{table}[t] % pilihan opsi yang disarankan: t = top, b = bottom, h = here
-  \caption{Tabel yang menggunakan format standar \texttt{| l | c | r |}}
-  \label{tab:tabel2}
-	\begin{tabular}{ | l | c | r | }
-	\hline
-	Nama 	& Satuan 		& Harga \\
-	\hline
-	Buku 	& Exemplar	& 25000 \\
-	Komputer	& Unit		& 2500000 \\
-	Pensil	& Buah		& 118900 \\
-	\hline
-	\end{tabular}
-\end{table}
+Arsitektur \textit{Retrieval-Augmented Generation} (RAG) merupakan pendekatan hibrida yang menggabungkan kemampuan penalaran \textit{Large Language Models} (LLM) dengan basis pengetahuan eksternal melalui proses pencarian semantik. Struktur ini dirancang untuk mengurangi \textit{hallucination}, meningkatkan akurasi fakta, serta mendukung pembaruan pengetahuan secara dinamis \parencite{rag_survey}. Secara umum, alur kerja RAG terdiri atas empat tahapan teknis utama yang berurutan dan saling bergantung, yaitu \textit{Data Ingestion \& Indexing}, \textit{Retrieval}, \textit{Augmentation}, dan \textit{Generation}.
 
+\begin{enumerate}
+    \item \textbf{\textit{Data Ingestion \& Indexing}}\\
+    Tahapan ini bersifat \textit{offline} karena dilakukan sebelum sistem menjawab pertanyaan. Tujuan utamanya adalah mentransformasi data mentah menjadi basis pengetahuan terstruktur yang dapat dengan mudah dicari oleh mesin. Prosesnya terdiri dari langkah-langkah berikut,
+    \begin{enumerate}[a.]
+        \item Akuisisi Data \\
+        Sistem mengumpulkan data dari berbagai sumber seperti dokumentasi teknis, \textit{API specification}, artikel ilmiah, \textit{knowledge base}, atau korpus web.
+        \item \textit{Preprocessing} \\
+        Pembersihan dokumen dilakukan melalui normalisasi format, penghapusan \textit{noise}, serta ekstraksi metadata sehingga struktur informasi menjadi homogen dan konsisten.
+        \item \textit{Chunking} \\
+        Dokumen panjang dipecah menjadi unit informasi kecil (\textit{chunks}) berukuran 200--500 token agar sesuai dengan batas konteks LLM dan dapat di-\textit{retrieve} secara efisien. 
+        \item \textit{Embedding} \\
+        Setiap \textit{chunk} diubah menjadi representasi numerik berbasis vektor menggunakan \textit{sentence embedding models} seperti MiniLM, BERT, atau struktur densitas modern lainnya.
+        \item \textit{Indexing} \\
+        Hasil \textit{embedding} disimpan pada \textit{vector store} (misalnya FAISS, Chroma, Weaviate, Pinecone) sehingga pencarian dapat dilakukan berdasarkan kedekatan semantik antar vektor.
+    \end{enumerate}
+    \vspace{10pt}
+    
+    \item \textbf{\textit{Retrieval}}\\
+    Proses \textit{retrieval} dilakukan ketika pengguna mengajukan pertanyaan. Sistem akan mencari konteks paling relevan melalui mekanisme berikut,
+    \begin{enumerate}[a.]
+        \item \textit{Embedding} Pertanyaan \\
+        Pertanyaan pengguna diubah menjadi vektor menggunakan model \textit{embedding} yang sama dengan proses indexing.
+        \item \textit{Similarity Search} \\
+        Dilakukan pencocokan vektor menggunakan metrik jarak seperti \textit{cosine similarity}, \textit{dot-product}, atau \textit{Euclidean distance}.
+        \item \textit{Top-$k$ Selection} \\
+        Sistem memilih sejumlah dokumen teratas (umumnya $k = 3$ atau $k = 5$) yang memiliki skor kemiripan tertinggi dan mengandung konteks yang berpotensi menjawab pertanyaan.
+    \end{enumerate}
+    \vspace{10pt}
+    Kualitas \textit{retrieval} yang baik menjadi faktor kunci dalam menurunkan risiko \textit{hallucination} pada LLM karena jawaban dibatasi oleh fakta yang relevan.
+    
+    \item \textbf{\textit{Augmentation}}\\
+    Tahap augmentation bertugas menyisipkan konteks hasil \textit{retrieval} ke dalam \textit{prompt} secara sistematis sehingga dapat dipahami oleh LLM. Prosesnya mencakup tahapan berikut,
+    \begin{enumerate}[a.]
+        \item \textit{Concatenation} \\
+        Sistem menggabungkan pertanyaan pengguna dengan konten dokumen yang ditemukan.
+        \item \textit{Formatting} \\
+        Struktur informasi dapat diberikan dalam format teks baku, tabel, \textit{JSON schema}, \texttt{instruction-style}, atau bentuk terstruktur lainnya.
+        \item \textit{Constraint Injection} \\
+        Sistem memberikan batasan eksplisit, misalnya \textit{``jawab hanya menggunakan konteks yang diberikan, jangan menambah informasi baru''}, untuk mencegah LLM berhalusinasi.
+    \end{enumerate}
+\end{enumerate}
 
-\begin{table}[t] % pilihan opsi yang disarankan: t = top, b = bottom, h = here
-  \centering
-  \caption{Tabel yang lebar kolomnya dibuat tetap}
-  \label{tbl:tabel3}
-	\begin{tabular}{  p{0.2\textwidth} | p{0.2\textwidth} | p{0.2\textwidth}  }
-	\hline
-	\textbf{Nama} 	& \textbf{Satuan} 		& \textbf{Harga} \\
-	\hline
-	Buku 	& Exemplar	& 25000 \\
-	\emph{Komputer}	& Unit		& 2500000 \\
-	Pensil	& Buah		& 118900 \\
-	\hline
-	\end{tabular}
-\end{table}
+\subsection{Paradigma RAG}
+\textit{Retrieval-Augmented Generation} berkembang dalam tiga paradigma utama, yaitu \textit{Naive RAG}, \textit{Advanced RAG}, dan \textit{Modular RAG}. Ketiga paradigma ini mencerminkan evolusi dari \textit{pipeline} sederhana menuju arsitektur yang dapat diadaptasi untuk berbagai kebutuhan, mulai dari peningkatan akurasi sampai fleksibilitas sistem \parencite{rag_survey}.
 
-% -- Example of importing table from external file --
-\subsubsection{Mengimpor Tabel dari Berkas Eksternal}
+\begin{enumerate}
+    \item \textbf{\textit{Naive} RAG}\\
+    Paradigma ini merupakan bentuk paling dasar dari RAG. \textit{Pipeline} umumnya terdiri dari tiga langkah, yaitu \textit{indexing}, \textit{retrieval}, dan \textit{generation}. Dokumen melalui proses \textit{chunking}, kemudian direpresentasikan menggunakan \textit{embedding} dan disimpan pada \textit{vector store}. Ketika pertanyaan diajukan, sistem mengambil $k$ dokumen paling relevan menggunakan pencarian berbasis kesamaan semantik, lalu model generatif menyusun jawaban berdasarkan konteks tersebut. Keterbatasan utama pendekatan ini adalah ketergantungan penuh terhadap kualitas \textit{chunk} dan hasil \textit{retrieval} yang dapat mengarah pada jawaban yang tidak akurat.
 
-Untuk kerapian penulisan, tabel tidak harus ditulis di dokumen utama. Sebagai contoh, Tabel \ref{tab:tabel4} diimpor dari berkas eksternal \texttt{table/tabel1.tex} menggunakan perintah \texttt{input}. 
-Dengan demikian, jika tabel tersebut perlu diubah, cukup mengubah pada berkas eksternal tersebut tanpa perlu mengubah pada berkas dokumen utama ini.
+    \item \textbf{\textit{Advanced} RAG}\\
+    Paradigma ini melakukan optimasi pada dua fase utama, yaitu \textit{pre-retrieval} dan \textit{post-retrieval}. Tahap \textit{pre-retrieval} meliputi peningkatan kualitas indeks seperti pengayaan metadata, peningkatan granularitas \textit{chunk}, serta teknik \textit{query rewriting} dan \textit{query expansion} untuk meningkatkan relevansi hasil pencarian. Sementara itu, \textit{post-retrieval} dilakukan melalui \textit{reranking} serta \textit{context compression} agar konteks yang terkirim ke model lebih berfokus pada informasi penting saja. Paradigma ini masih mengikuti alur linear tetapi menghasilkan akurasi yang lebih tinggi dibanding \textit{Naive RAG}.
 
-\input tables/tabel1.tex
+    \item \textbf{\textit{Modular} RAG}\\
+    Paradigma ini memperluas arsitektur RAG menjadi sistem yang dapat dikustomisasi melalui penambahan atau penggantian modul. Contoh dari modul yang ada yaitu \textit{Search Module} (untuk menggabungkan pencarian dari \textit{search engine}, database, maupun \textit{knowledge graph}), \textit{Memory Module} (yang memanfaatkan memori internal LLM), \textit{Routing Module} (yang memilih jalur eksekusi berdasarkan tipe pertanyaan), serta \textit{Task Adapter Module} (yang menyesuaikan proses dengan kebutuhan tugas tertentu). Modular RAG juga memungkinkan pola \textit{iterative retrieval} dan \textit{adaptive retrieval} sehingga menjadikannya paradigma paling fleksibel untuk aplikasi domain spesifik.
+\end{enumerate}
 
+\subsection{Relevansi RAG terhadap Dokumentasi Kubernetes API}
 
-% -- Example of long table --
-\subsubsection{Tabel yang Sangat Panjang}
-Jika tabel terlalu panjang sehingga tidak muat dalam satu halaman, gunakan paket 
-\textit{longtable} untuk membuat tabel yang dapat terpotong ke halaman berikutnya, 
-seperti pada Tabel \ref{tab:long}. 
+Dokumentasi Web API, termasuk Kubernetes, memiliki karakteristik unik berupa kombinasi deskripsi sintaks terstruktur (misalnya skema JSON/YAML) dan penjelasan semantik dalam bentuk teks alami. Penelitian \textcite{kotstein_restberta_2024} menunjukkan bahwa pemrosesan semantik terhadap dokumentasi API dapat dilakukan tanpa ontologi formal dengan memetakan makna berdasarkan nama parameter, struktur hierarkis, dan deskripsi bahasa alami.
 
-\input tables/longtable1.tex
+Dalam konteks Kubernetes, komponen API seperti \texttt{Pod}, \texttt{Service}, dan \texttt{Deployment} direpresentasikan melalui skema bertingkat yang bersifat kompleks dan memiliki ketergantungan semantik. Oleh karena itu, implementasi RAG pada domain ini membutuhkan,
+\begin{enumerate}
+    \item \textbf{\textit{Schema-aware semantic chunking}}\\
+    Teknik ini memastikan bahwa pemotongan dokumen (\textit{chunking}) dilakukan mengikuti struktur skema objek API. Setiap potongan teks harus mewakili satu entitas atau blok atribut yang utuh sehingga relasi antar-\textit{field} tidak terpisah atau kehilangan konteks. Dengan demikian, representasi vektor yang dihasilkan tetap mempertahankan hierarki objek.
 
-\subsection{Penulisan Rumus atau Persamaan Matematika Menggunakan {\LaTeX} dan Penomorannya}
-Contoh rumus matematika dapat ditulis seperti pada Persamaan \ref{eq:contoh1} di bawah ini. 
-Penomoran persamaan diletakkan di sebelah kanan, dan rumus ditulis dalam mode \textit{display math}.
+    \item \textbf{\textit{Path-based serialization}}\\
+    Teknik ini menyimpan setiap elemen API beserta jalur lengkapnya dalam struktur objek sehingga posisi semantiknya tetap terpelihara.
+
+    \item \textbf{\textit{Hybrid index retrieval}}\\
+    Pendekatan ini mengombinasikan pencarian berbasis kesamaan semantik teks dengan pembobotan struktur sintaksis dari objek API. Selain memanfaatkan \textit{embedding} untuk menemukan kemiripan makna antar-teks, sistem juga memberikan prioritas pada elemen yang memiliki signifikansi struktural (misalnya \textit{field} wajib atau relasi antar-objek). Hasilnya, mekanisme \textit{retrieval} menghasilkan konteks yang tidak hanya relevan secara linguistik, tetapi juga benar secara hierarki dan fungsi API.
+\end{enumerate}
+
+Dengan demikian, penerapan RAG pada dokumentasi Kubernetes tidak hanya berfungsi sebagai mesin pencarian semantik, tetapi juga menjadi pendekatan mitigasi \textit{hallucination}.
+
+\section{\textit{Knowledge Graph} dan GraphRAG}
+\subsection{Definisi dan Struktur}
+\textit{Knowledge Graph} (KG) merupakan representasi pengetahuan dalam bentuk graf yang tersusun dari entitas (\textit{node}) dan relasi (\textit{edge}) yang memiliki makna semantik \parencite{hofer2024construction}. Berbeda dengan basis data konvensional yang mengandalkan skema statis, KG bersifat \textit{schema-flexible} sehingga mampu mengintegrasikan data heterogen dari sumber terstruktur, semi-terstruktur, maupun tidak terstruktur seperti yang ditunjukkan pada Gambar \ref{fig:arc-kg}. Struktur KG umumnya dinyatakan melalui \textit{triples} berbentuk (subjek–predikat–objek). 
+
+\begin{figure}[h]
+    \centering
+    \captionsetup{justification=centering}
+    \includegraphics[width=1.00\textwidth]{images/arc-graph.png}
+    \caption{Arsitektur \textit{Knowledge Graph} \parencite{yu2021visualkg}}
+    \label{fig:arc-kg}
+\end{figure}
+
+Menurut \textcite{yu2021visualkg}, terdapat dua pendekatan utama dalam pembangunan KG, yaitu \textit{top-down} dan \textit{bottom-up} yang dibedakan berdasarkan urutan perancangan model dan pengisian fakta.
+
+\begin{enumerate}
+    \item \textbf{\textit{Top-down Construction}}\\
+    Pada pendekatan ini, proses pembangunan KG dimulai dari definisi model semantik terlebih dahulu. Langkah pertama mencakup perancangan \textit{ontology library} yang memuat kelas entitas, relasi, hierarki, dan aturan semantik. Setelah struktur konseptual ditetapkan, barulah fakta atau data dimasukkan ke dalam basis pengetahuan. Dengan demikian, pendekatan \textit{top-down} mengikuti urutan \textit{model layer} kemudian \textit{data layer}. Pendekatan ini umumnya digunakan pada domain yang membutuhkan konsistensi semantik tinggi seperti medis, keuangan, atau layanan publik.
+
+    \item \textbf{\textit{Bottom-up Construction}}\\
+    Berbeda dari pendekatan sebelumnya, \textit{bottom-up} mengawali proses konstruksi melalui ekstraksi data langsung dari korpus teks atau sumber data lain. Dengan menganalisis frekuensi entitas, dan pola semantik kemudian dibentuk secara bertahap. Artinya, \textit{data layer} dibangun terlebih dahulu, kemudian dilanjutkan dengan penyusunan \textit{pattern layer}. Pendekatan ini didorong oleh ketersediaan data dan sesuai untuk domain yang cepat berubah atau belum memiliki referensi ontologi.
+\end{enumerate}
+
+Menurut \textcite{hofer2024construction}, konstruksi \textit{Knowledge Graph} (KG) modern umumnya dilakukan secara semi-otomatis dan bersifat inkremental. Proses pembangunan KG mencakup sejumlah tugas inti yang dapat dijalankan secara paralel, asinkron, maupun selektif sesuai jenis sumber data dan kebutuhan penggunaan. Tugas-tugas utama tersebut adalah sebagai berikut,
+
+\begin{enumerate}
+    \item \textbf{Manajemen Metadata}\\
+    Pengelolaan metadata terkait, seperti \textit{provenance} entitas, informasi temporal, struktur data, kualitas data, hingga log proses. Tugas ini bersifat menyeluruh karena diperlukan pada setiap tahapan konstruksi KG.
+
+    \item \textbf{\textit{Data Acquisition} dan \textit{Preprocessing}}\\
+    Pemilihan sumber data yang relevan, akuisisi data, transformasi format, serta pembersihan awal. Tingkat detail proses ini bergantung pada keragaman sumber yang digunakan.
+
+    \item \textbf{Manajemen Ontologi}\\
+    Pembuatan dan pengembangan ontologi secara bertahap untuk mendefinisikan kelas, properti, dan relasi yang membentuk struktur semantik KG.
+
+    \item \textbf{\textit{Knowledge Extraction} (KE)}\\
+    Ekstraksi informasi terstruktur dari data tidak terstruktur atau semi-terstruktur menggunakan teknik seperti \textit{Named Entity Recognition}, \textit{entity linking}, dan \textit{relation extraction}.
+
+    \item \textbf{\textit{Entity Resolution} (ER) dan \textit{Fusion}}\\
+    Penyatuan entitas yang merepresentasikan objek yang sama untuk menghindari duplikasi.
+
+    \item \textbf{\textit{Knowledge Completion}}\\
+    Pelengkapan KG dengan pengetahuan baru melalui inferensi, prediksi relasi hilang, atau penambahan tipe entitas untuk meningkatkan kelengkapan semantik.
+
+    \item \textbf{\textit{Quality Assurance} (QA)}\\
+    Identifikasi masalah kualitas data pada KG serta penerapan strategi perbaikan yang dapat mencakup \textit{validation checks}, konsistensi semantik, atau pembersihan lanjutan.
+\end{enumerate}
+
+Proses ini tidak selalu bersifat linear karena urutan eksekusi bergantung pada jenis sumber data dan beberapa langkah dapat menghilangkan kebutuhan langkah lain, seperti \textit{entity linking} yang dapat menggantikan \textit{entity resolution}. Selain itu, \textit{metadata management} bersifat \textit{cross-cutting} karena berlangsung pada seluruh tahap konstruksi KG.
+
+\subsection{Integrasi KG dalam RAG pada Tahap Perancangan Solusi}
+
+Sistem menggabungkan \textit{Knowledge Graph} (KG) dengan alur RAG yang bertujuan untuk meningkatkan akurasi pencarian, kemampuan \textit{multi-hop reasoning}, serta menjaga keterkaitan struktur dokumen. Arsitektur keseluruhan mengikuti tiga fase utama, yaitu \textit{Indexing}, \textit{Retrieval}, dan \textit{Generation} \parencite{knollmeyer2025document}. Model arsitektur ditunjukkan pada Gambar~\ref{fig:arc-graph-rag}.
+
+\begin{figure}[h]
+    \centering
+    \captionsetup{justification=centering}
+    \includegraphics[width=0.90\textwidth]{images/graph-rag-architecture.png}
+    \caption{Model arsitektur integrasi KG dalam RAG \parencite{knollmeyer2025document}}
+    \label{fig:arc-graph-rag}
+\end{figure}
+
+\begin{enumerate}
+    \item \textbf{Konstruksi KG dan Ekstraksi Struktur Dokumen (\textit{Indexing})}\\
+    Proses awal dimulai dari ekstraksi teks serta identifikasi elemen struktur dokumen. Proses \textit{chunking} tidak hanya memecah teks secara semantik, tetapi juga mempertahankan hierarki dokumen melalui pemberian URI pada setiap \textit{chunk} sehingga dapat ditelusuri kembali ke lokasi asalnya. Pada tahap ini dibentuk dua lapisan graf berikut,
+    \begin{enumerate}
+        \item \textit{Document} KG (DKG) yang memetakan hubungan hierarkis dokumen (bab–subbab–\textit{chunk}).
+        \item \textit{Information} KG (IKG) yang menghubungkan antar-\textit{chunk} melalui \textit{keywords} untuk meningkatkan relevansi semantik pada dokumen.
+    \end{enumerate}
+    \vspace{10pt}
+    Seluruh URI \textit{chunk} juga disimpan pada basis data vektor untuk memungkinkan pencarian hibrid antara \textit{dense embedding} dan hubungan semantik.
+
+    \item \textbf{Pencarian Hibrid Berbasis Graf (\textit{Retrieval})}\\
+    Setelah dilakukan \textit{initial retrieval} berbasis \textit{dense embedding}, sistem memperluas pencarian melalui operasi graf yang memanfaatkan struktur dokumen dan hubungan semantik. Tiga strategi yang digunakan adalah:
+    \begin{enumerate}
+        \item \textit{Informed Chapter Search} (ICS), yaitu menambahkan \textit{chunks} lain yang berada dalam bab yang sama dengan hasil pencarian awal.
+        \item \textit{Informed Keyword Search} (IKS), yaitu menambahkan \textit{chunks} yang terhubung melalui \textit{keywords} pada IKG.
+        \item \textit{Uninformed Keyword Search} (UKS), yaitu mengekstraksi \textit{keyword} langsung dari pertanyaan pengguna dan mencari seluruh \textit{chunk} terkait pada KG.
+    \end{enumerate}
+    \vspace{10pt}
+    
+    \item \textbf{Pembentukan Jawaban Berbasis Bukti (\textit{Generation})}\\
+    Pada fase akhir, sistem menerapkan \textit{pass condition} untuk membatasi jumlah konteks yang diberikan pada LLM sehingga mencegah kelebihan informasi yang berpotensi menurunkan kualitas jawaban. Setelah konteks yang relevan dipilih, proses \textit{prompt engineering} dilakukan untuk memastikan model menghasilkan jawaban yang benar-benar berbasis bukti. Dalam hal ini, LLM diarahkan untuk menyusun jawaban dengan mengutip secara langsung bagian teks dari \textit{chunk} yang relevan, menyatakan secara eksplisit apabila informasi yang tersedia tidak mencukupi untuk menjawab pertanyaan, serta tidak menyertakan pengetahuan eksternal yang tidak berasal dari konteks masukan pengguna. Pendekatan tersebut meningkatkan tingkat \textit{faithfulness}, meminimalkan risiko \textit{hallucination}, sekaligus memastikan transparansi jejak sumber yang mendukung reliabilitas hasil.
+\end{enumerate}
+
+\subsection{GraphRAG: Integrasi \textit{Knowledge Graph} dan \textit{Large Language Models}}
+
+\textit{Large Language Models} (LLM) dan \textit{Knowledge Graphs} (KG) merupakan dua paradigma representasi pengetahuan yang saling melengkapi. LLM unggul dalam pemrosesan bahasa alami serta generalisasi lintas tugas tetapi rentan terhadap halusinasi fakta. Sebaliknya, KG menawarkan representasi pengetahuan faktual dalam bentuk struktur graf eksplisit yang kuat untuk penalaran simbolik namun kurang mampu menangani pemahaman bahasa alami yang kompleks \parencite{pan2024unifying}. 
+
+Untuk mengatasi kelemahan LLM tersebut, pendekatan \textit{Retrieval-Augmented Generation} (RAG) konvensional sering digunakan. Namun, RAG tradisional bekerja dengan cara memecah dokumen menjadi potongan teks (\textit{chunks}) independen sehingga sering kali menghilangkan informasi struktural dan relasi esensial antar-entitas \parencite{ma_llm_kg_2025}. Sebagai solusi komprehensif atas keterbatasan tersebut, muncullah konsep \textit{Graph Retrieval-Augmented Generation} (GraphRAG).
+
+Berbeda dengan pencarian semantik biasa berbasis vektor teks, GraphRAG memanfaatkan mekanisme penelusuran graf (\textit{graph traversal}) untuk mengambil konteks terstruktur secara utuh sebelum diberikan ke LLM \parencite{han_graphrag_2024}. Mekanisme ini secara langsung mengekstraksi pengetahuan relevan dari data graf dengan merangkai subgraf atau jalur relasional berdasarkan kueri pengguna. Proses ini mencakup ekstraksi subgraf, penyaringan jalur (\textit{path-filtering}), dan penyempurnaan jalur (\textit{path-refinement}) guna menyajikan konteks penalaran yang akurat \parencite{ma_llm_kg_2025}.
+
+Secara formal, integrasi generatif ini dimodelkan sebagai fungsi yang bersyarat terhadap pengetahuan graf:
 \begin{equation}
-E = mc^2
-\label{eq:contoh1}
+p_{\theta}(y \mid x, \mathcal{K}) = \sum_{z \in \mathcal{Z}(x, \mathcal{K})} p_{\theta}(y \mid x, z)\, p(z \mid x, \mathcal{K}),
+\label{eq:rag-conditional}
 \end{equation}
-\eqcaption{Persamaan Pertama}
+dengan $\mathcal{K} = \{(h, r, t) \subseteq \mathcal{E} \times \mathcal{R} \times \mathcal{E}\}$ merepresentasikan KG sebagai himpunan \textit{triples}, dan $\mathcal{Z}(x, \mathcal{K})$ merupakan himpunan subgraf atau fakta terstruktur yang ditarik dari graf berdasarkan kueri $x$. Dalam skema ini, KG bertindak sebagai ruang pengetahuan non-parametrik penyedia panduan penalaran (\textit{reasoning guidelines}), sedangkan LLM bertindak sebagai generator parametrik \parencite{ma_llm_kg_2025}.
 
-Contoh lain penulisan rumus matematika yang lebih kompleks dapat ditulis seperti pada Persamaan \ref{eq:rumus2}.
-Perlu diperhatikan bahwa jika rumus terdiri dari beberapa baris, nomor persamaan hanya diletakkan pada baris terakhir, bukan pada setiap baris.
-\begin{align}
-f(x) &= ax^2 + bx + c \notag \\ % tidak menampilkan nomor pada baris ini
-f'(x) &= \frac{d}{dx}(ax^2 + bx + c) \notag \\ % tidak menampilkan nomor pada baris ini
-      &= 2ax + b 
-      \label{eq:rumus2} % nomor hanya muncul pada baris terakhir
-\end{align}
-\eqcaption{Persamaan Kedua}
+Pendekatan GraphRAG ini menjadi sangat krusial dalam domain berskala kompleks seperti manajemen konfigurasi Kubernetes. Dengan memetakan hierarki objek dan referensi silang ke dalam graf, algoritma \textit{traversal} dapat merangkai jejak penalaran (\textit{reasoning path}) yang kohesif. Injeksi konteks terstruktur ini ke dalam perintah LLM terbukti secara efektif menekan tingkat halusinasi, memastikan akurasi faktual, dan mempertahankan validitas sintaksis pada hasil akhir manifes YAML yang dibangkitkan.
 
-Jika rumus terlalu panjang untuk ditulis dalam satu baris, gunakan lingkungan \textit{multline} seperti pada Persamaan \ref{eq:rumus3} di bawah ini.
-\begin{multline} 
-y = a_0 + a_1x + a_2x^2 + a_3x^3 + a_4x^4 + a_5x^5 + a_6x^6 + a_7x^7 \\
-    + a_8x^8 + a_9x^9 + a_{10}x^{10} \label{eq:rumus3}
-\end{multline}
-\eqcaption{Persamaan Ketiga}
+\section{Evaluasi Sistem Model}
 
-Jika ada penurunan rumus yang terdiri dari beberapa baris, namun tidak memerlukan penomoran pada setiap baris dan tidak masuk di daftar persamaan, gunakan lingkungan \textit{align*}, misalnya:
+Untuk menilai kinerja sistem \textit{Retrieval-Augmented Generation} (RAG), evaluasi tidak hanya dilakukan pada jawaban akhir, tetapi pada dua komponen utama: (i) kinerja \textit{retrieval} berbasis \textit{graph}, dan (ii) kinerja generasi jawaban oleh LLM. Menurut \textcite{es2023ragas}, pengukuran kualitas harus dimulai dari konteks yang diambil, karena kesalahan pada tahap \textit{retrieval} akan langsung memengaruhi jawaban meskipun model generatif bekerja dengan baik.
 
-\begin{align*} 
-S &= \sum_{i=1}^{n} i^2 \\
-  &= 1^2 + 2^2 + 3^2 + \cdots + n^2 \\
-  &= \frac{n(n + 1)(2n + 1)}{6}
-\intertext{Contoh lainnya adalah rumus untuk mencari nilai rata-rata fungsi $f(x)$ pada interval $[p, q]$:}
-\bar{f} &= \frac{1}{q - p} \int_{p}^{q} f(x) \, dx \\
-        &= \frac{1}{q - p} \int_{p}^{q} (ax^2 + bx + c) \, dx \\
-        &= \frac{1}{q - p} \left[ \frac{a}{3}x^3 + \frac{b}{2}x^2 + cx \right]_p^q \\
-        &= \frac{a(q^3 - p^3)}{3(q - p)} + \frac{b(q^2 - p^2)}{2(q - p)} + c \label{eq:rumus4}
-\end{align*}
+\subsection{Evaluasi Retrieval}
 
+Pada tahap \textit{retrieval}, sistem diukur berdasarkan kemampuan \textit{graph search} dalam mengambil \textit{nodes} yang relevan dan menekan konteks yang tidak diperlukan. Dua metrik yang digunakan adalah \textit{Context Recall} dan \textit{Context Precision}, masing-masing diadaptasi dari \textcite{es2023ragas,ragas_context_precision,ragas_context_recall}.
 
+\textbf{\textit{Context Recall}} mengukur kemampuan sistem menemukan seluruh konteks yang relevan. Nilai yang rendah mengindikasikan hilangnya bukti penting sehingga jawaban dapat menjadi tidak lengkap atau bahkan salah. Rumusnya diberikan pada Persamaan~\eqref{eq:ragas_recall}.
 
+\begin{equation}
+\label{eq:ragas_recall}
+\mathrm{ContextRecall} = \frac{\sum_{c \in \mathcal{C}_{\text{retrieved}}} \mathbb{1}[c \in \mathcal{C}_{\text{relevant}}]}{|\mathcal{C}_{\text{relevant}}|}
+\end{equation}
 
-\subsection{Penulisan Kode Program, \textit{Script} atau \textit{Pseudocode}}
-Contoh penulisan kode program, \textit{script}, atau \textit{pseudocode} dapat dilihat seperti pada \textit{listing} \ref{lst:binary_iter}. 
-Gunakan paket \textit{listings} untuk menulis \textit{source code} dalam bahasa pemrograman tertentu. 
-Kode seperti ini disebut dengan istilah \textit{listing}. 
-Kode program, \textit{script}, atau \textit{pseudocode} yang relatif pendek dapat ditulis di dalam
-dokumen utama. Namun, jika kode programnya sangat panjang, sebaiknya ditulis di berkas terpisah dan diletakkan di lampiran.
+Sementara itu, \textbf{\textit{Context Precision}} mengukur sejauh mana konteks yang diambil benar-benar relevan. Semakin rendah presisi, semakin banyak \textit{noise} yang masuk dan meningkatkan risiko \textit{hallucination}. Rumus presisi ditunjukkan pada Persamaan~\eqref{eq:ragas_precision}.
 
-\subsection{Penulisan Algoritma}
-Contoh penulisan algoritma dapat dilihat pada Algoritma \ref{alg:binary-search}. Ada beberapa paket yang dapat digunakan untuk menulis algoritma,
-misalnya \textit{algorithm2e}, \textit{algorithmic}, dan \textit{algpseudocode}. 
-Pada contoh ini digunakan paket \textit{algorithmic} untuk menulis algoritma. Setiap paket memiliki sintaks yang berbeda-beda.
-Oleh karena itu, pelajari dokumentasi paket yang digunakan untuk menulis algoritma.
+\begin{equation}
+\label{eq:ragas_precision}
+\mathrm{ContextPrecision} = \frac{\sum_{c \in \mathcal{C}_{\text{retrieved}}} \mathbb{1}[c \in \mathcal{C}_{\text{relevant}}]}{|\mathcal{C}_{\text{retrieved}}|}
+\end{equation}
 
+Pada kedua persamaan tersebut, $\mathbb{1}[\cdot]$ merupakan fungsi indikator bernilai 1 jika kondisi terpenuhi, dan 0 jika tidak; $\mathcal{C}_{\text{retrieved}}$ adalah konteks yang diambil oleh sistem, sedangkan $\mathcal{C}_{\text{relevant}}$ adalah konteks yang seharusnya diambil. Kedua metrik saling berkorelasi dan membentuk \textit{trade-off} bahwa semakin banyak konteks diambil, \textit{recall} meningkat namun \textit{precision} dapat menurun.
 
-\input{listings/binary-search-python.tex}
+\subsection{Evaluasi Generasi Jawaban}
 
+Tahap generasi oleh LLM tidak dapat hanya dinilai dari kesesuaian semantik, namun harus menjamin bahwa jawaban benar-benar berasal dari konteks yang diambil. Menurut \textcite{es2023ragas}, metrik yang paling penting untuk mengukur integritas jawaban adalah \textbf{\textit{Faithfulness}}, yaitu sejauh mana jawaban dapat ditelusuri kembali ke konteks pertanyaan tanpa penambahan informasi eksternal.
 
-\input{algorithms/binary-search-alg.tex}
+RAGAS mengukur \textit{Faithfulness Score} (FS) berdasarkan klaim dalam jawaban yang dapat dibuktikan oleh konteks yang ada, sebagaimana dirumuskan pada Persamaan~\eqref{eq:ragas_faithfulness}.
 
+\begin{equation}
+\label{eq:ragas_faithfulness}
+\mathrm{Faithfulness} = \frac{\sum_{s \in S_{\text{claims}}} \mathbb{1}[s \in S_{\text{supported}}]}{|S_{\text{claims}}|}
+\end{equation}
 
+Pada konteks domain Kubernetes, keluaran sistem berupa file YAML harus benar secara fakta dan valid secara sintaks. Oleh sebab itu, metrik tambahan \textbf{\textit{Syntactic Validity}} digunakan untuk memverifikasi apakah keluaran dapat diproses tanpa error, misalnya melalui \texttt{kubectl apply --dry-run}. Metriknya bersifat biner, sebagaimana didefinisikan pada Persamaan~\eqref{eq:syntaxcheck} dan dirata-rata pada Persamaan~\eqref{eq:syntaxscore}.
 
+\begin{equation}
+\label{eq:syntaxcheck}
+\text{ValidSyntax}(y) =
+\begin{cases}
+1, & \text{jika keluaran dapat diparsing/di-deploy tanpa error}, \\
+0, & \text{jika terjadi error sintaks YAML}.
+\end{cases}
+\end{equation}
+
+\begin{equation}
+\label{eq:syntaxscore}
+S_{\text{syntax}} = \frac{1}{n}\sum_{i=1}^{n} \text{ValidSyntax}(y_i)
+\end{equation}
+
+Dengan demikian, kualitas sistem RAG pada domain \textit{cloud-native} dinilai secara komprehensif, yaitu \textit{Graph Retrieval} diukur melalui \textit{Context Recall} dan \textit{Precision}, sedangkan Generasi LLM diukur melalui \textit{Faithfulness} dan \textit{Syntactic Validity}. Kombinasi ini memastikan hasil yang tidak hanya akurat, tetapi juga dapat dieksekusi pada lingkungan Kubernetes.
+
+\section{Penelitian Terkait}
+
+\subsection{\textit{Empowering LLMs by hybrid retrieval-augmented generation for domain-centric Q\&A in smart manufacturing}}
+Penelitian oleh \textcite{wan2025empowering} mengembangkan pendekatan \textit{hybrid retrieval} yang mengombinasikan \textit{Knowledge Graph} (KG) dengan \textit{dense vector retrieval} untuk meningkatkan akurasi \textit{question answering} pada domain \textit{Smart Manufacturing}, khususnya desain untuk manufaktur aditif (\textit{Design for Additive Manufacturing}, DfAM). Pendekatan ini didasari oleh kebutuhan untuk menangkap relasi semantik berbasis ontologi sekaligus memanfaatkan generalisasi representasi vektor. Metode yang diusulkan terdiri dari empat tahapan, yaitu (1) \textit{knowledge collection and chunking} untuk mengumpulkan korpus dan membentuk \textit{embeddings}; (2) konstruksi KG berbasis metadata melalui ekstraksi entitas, relasi, dan atribut domain; (3) penerapan pembatas semantik melalui aturan ontologi untuk menyelaraskan kueri; serta (4) \textit{hybrid retrieval} yang menggabungkan pencarian node dan relasi pada KG dengan pencarian vektor berbobot, dilanjutkan dengan \textit{prompt engineering} berbasis aturan domain.
+
+Hasil penelitian menunjukkan bahwa model hibrida yang dilengkapi dengan aturan \textit{prompt} mencapai skor \textit{Exact Match} (EM) dan \textit{Context Precision} tertinggi dibandingkan dengan pendekatan \textit{KG-only} maupun \textit{vector-only}. Pendekatan \textit{vector-only} memiliki keunggulan pada waktu eksekusi (\(3{-}7\) detik), tetapi mengalami penurunan akurasi karena ketergantungan pada \textit{generic embedding}. Sebaliknya, pendekatan \textit{KG-only} lebih baik dalam \textit{reasoning} berbasis relasi, namun bergantung pada kelengkapan graf dan memiliki waktu eksekusi yang relatif lebih lambat. Model hibrida dengan \textit{prompt engineering} menghasilkan akurasi tertinggi dengan rentang waktu \(8{-}16\) detik. Dengan demikian, ketika prioritas sistem adalah akurasi dan ketelitian informasi, strategi hibrida menjadi pilihan terbaik, walaupun memerlukan optimasi waktu.
+
+Meskipun efektif, studi tersebut masih memiliki beberapa keterbatasan metodologis yang membuka peluang penelitian lanjutan. Pertama, pembaruan KG dilakukan secara manual sehingga rentan terhadap \textit{knowledge drift} pada domain yang dinamis. Kedua, tidak terdapat mekanisme \textit{hallucination detection} yang memastikan setiap keluaran model dapat ditelusuri kembali ke sumber. Ketiga, proses \textit{prompt engineering} masih bersifat manual dan tidak dioptimasi secara otomatis. Keempat, penelitian tidak memasukkan teknik \textit{query rewriting} untuk menangani kueri ambigu yang tidak selaras dengan ontologi domain.
+
+\subsection{\textit{Using Graphs to Improve the Interpretability of API Documentation for BIM Authoring Software}}
+
+\textcite{wrabel2024api2graph} menginvestigasi cara meningkatkan interpretabilitas dokumentasi \textit{Application Programming Interface} (API) pada perangkat lunak \textit{Building Information Modeling} (BIM) dengan mengubah dokumentasi API yang tidak terstruktur menjadi representasi graf berbasis \textit{Knowledge Graph} (KG) dan mengintegrasikannya dengan agen \textit{Retrieval-Augmented Generation} berbasis graf (GraphRAG). Tujuan utama penelitian adalah menyediakan cara penelusuran fungsi API yang lebih akurat dan mendukung generasi kode langsung melalui kueri LLM.
+
+Metode penelitian menggabungkan pendekatan deterministik dan berbasis \textit{embedding} untuk konstruksi graf API. Pertama, dokumentasi API dikonversi menjadi struktur \textit{JavaScript Object Notation} (JSON) dan diparsing menjadi entitas serta relasi fungsi secara deterministik. Kedua, bagian dokumentasi yang tidak terstruktur diekstraksi menggunakan model LLM untuk menghasilkan \textit{embedding} yang memetakan entitas semantik tambahan. Ketiga, contoh implementasi kode pada dokumentasi web disertakan ke dalam graf melalui relasi \textit{[USES]} sehingga graf tidak hanya memuat hierarki fungsi tetapi juga konteks penggunaannya. Representasi data ini diwujudkan dalam bentuk \textit{Labeled Property Graph} (LPG) menggunakan Neo4j.
+
+Selanjutnya, agen GraphRAG dibangun dengan tiga jenis alat kueri, yaitu pencarian semantik berbasis \textit{embedding}, kueri graf \textit{multi-hop} menggunakan Cypher, serta pencarian contoh implementasi kode. Agen menentukan urutan eksekusi alat berdasarkan tipe pertanyaan sehingga dapat menghasilkan jawaban berupa penjelasan API, struktur relasi antar fungsi, atau rekomendasi potongan kode. Evaluasi sistem dilakukan pada 36 pertanyaan teknis mengenai API Vectorworks, memperlihatkan bahwa gabungan graf deterministik dan \textit{embedding} unggul dibanding graf berbasis \textit{embedding} penuh.
+
+Hasil eksperimen membuktikan bahwa \textit{hybrid graph} menghasilkan \textit{code suggestion reliability} dan akurasi jawaban teks yang lebih tinggi dibandingkan KG yang dibangun sepenuhnya menggunakan LLM. Penelitian ini juga menunjukkan bahwa penyertaan relasi konteks penggunaan kode (\textit{[USES]}) meningkatkan relevansi rekomendasi fungsi API. Walaupun demikian, penelitian masih memiliki keterbatasan seperti kualitas graf bergantung pada konsistensi dokumentasi sumber, biaya komputasi embedding relatif tinggi, dan tidak terdapat mekanisme untuk mendeteksi atau membatasi \textit{hallucination} pada tahap generasi jawaban.
+
+Studi ini memberikan implikasi bahwa transformasi dokumentasi API ke dalam bentuk graf merupakan pendekatan efektif untuk mendukung \textit{reasoning} teknis dan navigasi fungsi perangkat lunak berbasis kueri NLP. Namun, diperlukan mekanisme tambahan seperti \textit{query rewriting}, \textit{context reranking}, dan \textit{hallucination detection} untuk meningkatkan reliabilitas agen RAG dalam domain teknis yang sensitif terhadap kesalahan implementasi.
+
+\subsection{\textit{KnowledGPT: Enhancing Large Language Models with Retrieval and Storage Access on Knowledge Bases}}
+
+KnowledGPT merupakan pendekatan integrasi LLM dengan \textit{knowledge base} (KB)
+yang tidak membangun struktur graf eksplisit, tetapi memandu LLM untuk
+menghasilkan \textit{search code} (\textit{Program-of-Thought}) yang mengeksekusi fungsi
+akses KB secara deterministik \parencite{knowledgpt2024}.
+
+Mekanisme dari sistem ini menerjemahkan pertanyaan pengguna $q$ oleh LLM menjadi kode pencarian:
+\texttt{get\_entity(e)} atau \texttt{find\_relation(e\_1,e\_2)} 
+yang kemudian dijalankan pada KB untuk memperoleh jawaban berbasis fakta.
+LLM tidak menjawab langsung, tetapi menyimpulkan hanya dari hasil eksekusi fungsi.
+
+KnowledGPT menegaskan tiga prinsip penting yang juga diadopsi dalam desain GraphRAG, yaitu,
+\begin{enumerate}
+    \item Penarikan pengetahuan deterministik melalui jalur terdefinisi,
+    bukan probabilistik token prediction.
+    \item Reduksi halusinasi karena jawaban hanya berasal dari hasil fungsi KB.
+    \item Kemampuan \textit{multi-hop} untuk memastikan relasi antar entitas dipahami secara struktural.
+\end{enumerate}
+
+Prinsip tersebut selaras dengan rancangan penelitian ini, terutama pada
+\textit{graph topology construction}, relasi \texttt{\$ref}, serta
+\textit{graph traversal-based retrieval} untuk menyediakan konteks teknis yang akurat.
