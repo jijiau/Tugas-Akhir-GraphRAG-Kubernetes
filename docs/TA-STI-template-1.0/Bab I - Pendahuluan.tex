@@ -1,112 +1,94 @@
 \cleardoublepage % memastikan bab baru dimulai di halaman ganjil (kanan)
+
 \chapter{PENDAHULUAN}
 \label{chap:pendahuluan}
 % --- Latar Belakang ---
 \section{Latar Belakang}
-Subbab ini menjelaskan dasar pemikiran, motivasi, kebutuhan, alasan, atau urgensi pemilihan masalah tugas akhir. Subbab ini berisi penjelasan ringkas tentang kondisi atau situasi yang ada saat ini terkait dengan topik yang dibahas. Tujuan utamanya adalah untuk memberikan informasi secukupnya kepada pembaca agar memahami topik yang akan dibahas. Dalam subbab ini, jelaskan hal-hal berikut ini:
-\begin{enumerate}
-\item	Kondisi atau situasi topik yang dibahas beserta permasalahannya, misalnya tentang pengelolaan informasi di fasilitas kesehatan daerah pedesaan saat ini dan masalah yang dihadapi, berdasarkan hasil survei atau wawancara dengan pihak terkait.
-\item	Urgensi atau pentingnya penyelesaian masalah tersebut, misalnya dampak negatif yang ditimbulkan jika masalah tersebut tidak diselesaikan.
-\item	Berbagai solusi yang telah diterapkan maupun solusi yang memungkinkan untuk diterapkan untuk menyelesaikan masalah tersebut, berdasarkan hasil studi literatur, wawancara dengan pihak terkait, atau kunjungan lapangan.
-\item   Kelemahan atau kekurangan dari solusi yang telah diterapkan atau yang memungkinkan untuk diterapkan tersebut, yang menjadi dasar pemikiran dalam merumuskan masalah tugas akhir.
-\end{enumerate}
-Latar belakang dapat ditulis dalam 2-3 halaman. Penulisan latar belakang masalah yang baik akan mengantarkan pembaca kepada pemahaman yang jelas tentang topik yang akan dibahas, 
-sehingga pembaca dapat mengikuti pembahasan pada subbab-subbab berikutnya dengan baik. Oleh karena itu, 
-penulis diharapkan melakukan investigasi yang mendalam untuk mengumpulkan fakta-fakta yang relevan dengan topik yang dibahas, 
-baik melalui studi literatur, wawancara dengan pihak terkait, maupun kunjungan lapangan. Hasil studi ini dijelaskan secara \emph{ringkas} di dalam subbab ini.
-Penjelasan hasil studi literatur yang komprehensif dapat dijabarkan di Bab II Studi Literatur secara sistematis.
+Transformasi industri teknologi informasi menuju arsitektur \textit{cloud-native} kini menjadi kebutuhan fundamental, bukan sekadar tren. \textcite{gartner_cloud_2021} memproyeksikan bahwa pada tahun 2025, lebih dari 95\% beban kerja digital akan di-\textit{deploy} pada platform \textit{cloud-native}. Angka ini meningkat tajam dari hanya 30\% pada tahun 2021. Fondasi utama dari arsitektur \textit{cloud-native} ini adalah penggunaan teknologi kontainer yang memungkinkan aplikasi dikemas dan dijalankan secara efisien. Namun, seiring dengan peningkatan skala sistem, pengelolaan ribuan kontainer secara manual tidak lagi memungkinkan sehingga dibutuhkan sebuah alat otomatisasi. Untuk menjembatani kebutuhan kompleks inilah, Kubernetes (K8s) hadir di pusat ekosistem dan mengukuhkan posisinya sebagai standar industri \textit{de facto} untuk orkestrasi kontainer.
 
-Dalam menulis latar belakang, hindari penulisan yang bersifat terlalu umum atau terlalu luas cakupannya sehingga sulit untuk dihubungkan dengan topik yang dibahas dalam tugas akhir,
-seperti:
-\begin{enumerate}
-    \item "Pentingnya teknologi informasi dalam kehidupan manusia."
-    \item "Perkembangan pesat teknologi \emph{artificial intelligence} di era digital."
-    \item "Tantangan dalam pengelolaan data besar (\emph{big data}) di berbagai sektor industri."
-    \item "Peran teknologi informasi dalam meningkatkan kualitas layanan kesehatan."
-\end{enumerate}
-Penulisan yang terlalu umum atau luas cakupannya akan menyulitkan penulis dalam merumuskan masalah, tujuan, metodologi, dan evaluasi tugas akhir.
+Berdasarkan laporan survei \textit{Cloud Native Computing Foundation} (CNCF) tahun 2023, Kubernetes mendominasi pangsa pasar global karena ekosistemnya yang matang, dukungan komunitas yang luas, serta fleksibilitas dalam mengelola infrastruktur berskala besar secara deklaratif \parencite{cncf_2023_survey}. Pada tahun 2022, sekitar 58\% pengguna telah menjalankan Kubernetes di lingkungan produksi dan 23\% lainnya masih dalam tahap evaluasi (total 81\%). Pada tahun 2023, angka tersebut meningkat menjadi 66\% pengguna di produksi dengan 18\% dalam evaluasi (total 84\%). Peningkatan signifikan ini menunjukkan bahwa Kubernetes semakin menjadi fondasi utama dalam pengelolaan layanan \textit{cloud-native} modern.
 
-Jika ada referensi yang digunakan dalam penulisan latar belakang, cantumkan referensi tersebut dengan benar menggunakan \texttt{biblatex} sesuai dengan contoh penulisan kutipan dan daftar pustaka yang telah disediakan dalam template ini.
-Sebagai contoh, pada paragraf berikut ini terdapat kutipan dari dua referensi yang berbeda \autocite{laudon2020, pressman2019}. 
-Ada dua format penulisan sitasi yang dapat digunakan, yaitu format naratif dan format parentetik.
-Contoh penulisan kutipan dengan format naratif adalah sebagai berikut:
-\begin{displayquote}
-Menurut \textcite{laudon2020}, sistem informasi adalah kombinasi dari teknologi informasi dan aktivitas orang yang menggunakan teknologi tersebut untuk mendukung operasi dan manajemen organisasi.
-\end{displayquote}
-Contoh penulisan kutipan dengan format parentetik adalah sebagai berikut:
-\begin{displayquote}
-    Sistem informasi merupakan kombinasi dari teknologi informasi dan aktivitas orang yang menggunakan teknologi tersebut untuk mendukung operasi dan manajemen organisasi \autocite{laudon2020}.
-\end{displayquote}
+Meskipun Kubernetes mendominasi lanskap orkestrasi kontainer, platform ini menghadirkan tantangan operasional yang signifikan berupa kompleksitas konfigurasi berbasis berkas YAML. Paradigma deklaratif Kubernetes menuntut pengembang untuk menulis ratusan baris kode yang verbos dan hierarkis demi mendefinisikan \textit{desired state} dari sebuah aplikasi yang mencakup berbagai spesifikasi parameter dari Kubernetes. Kompleksitas ini diperparah oleh interdependensi antar-objek yang sangat ketat namun sering kali tidak terlihat secara eksplisit (\textit{implicit dependencies}) yang mengakibatkan kesalahan kecil seperti ketidakcocokan \textit{label selector} dapat memicu kegagalan sistem berantai. Akibat beban kognitif yang tinggi ini, kerumitan YAML tidak hanya menjadi hambatan skalabilitas utama bagi 65\% penggunanya, tetapi juga memicu epidemi miskonfigurasi operasional dan keamanan; tercatat sekitar 80\% insiden operasional berakar pada kompleksitas ini, dan 18\% berkas konfigurasi sumber terbuka terbukti mengandung pelanggaran standar keamanan kritis industri \cite{rahman_k8s_security_2023}.
+
+Situasi tersebut berdampak langsung pada pemanfaatan \textit{Large Language Models} (LLM) untuk menghasilkan kode maupun konfigurasi teknis Kubernetes. Walaupun model seperti GPT-4 menawarkan kemudahan dalam memahami dokumentasi API, kemampuan tersebut tidak selalu sejalan dengan ketepatan semantik. Studi evaluatif oleh \textcite{liu2024deepanalysis} menunjukkan bahwa LLM dapat menghasilkan kode yang secara sintaksis tampak benar, tetapi keliru secara semantis. Dalam lingkungan \textit{production-grade}, kesalahan semantik semacam ini tidak hanya bersifat minor, tetapi berpotensi memicu hilangnya layanan, gangguan orkestrasi, hingga \textit{downtime} berskala besar.
+
+Upaya mitigasi telah dilakukan melalui \textit{Retrieval-Augmented Generation} (RAG) berbasis vektor untuk menambahkan konteks dokumentasi saat LLM menjawab pertanyaan teknis. Namun, penelitian oleh \textcite{wan2025empowering} mengungkapkan bahwa pendekatan vektor RAG hanya mengutamakan kesamaan \textit{embedding} sehingga gagal menangkap relasi kausal, hierarkis, dan berbasis aturan teknis yang diperlukan untuk memahami konfigurasi domain Kubernetes. Pendekatan vektor RAG hanya mencapai 63,4\% \textit{exact match accuracy} dan 69,8\% \textit{context precision}, menunjukkan rendahnya ketepatan semantik dalam jawaban sistem. \textit{Embedding} yang dilatih dari korpus umum juga mengabaikan terminologi teknis spesifik sehingga menghasilkan jawaban yang tampak relevan secara teks, tetapi tidak tepat secara domain.
+
+Sebagai solusi, \textcite{wan2025empowering} mengusulkan penggabungan representasi pengetahuan terstruktur melalui \textit{Knowledge Graph} (KG) untuk memberikan fondasi penalaran relasional yang eksplisit. Integrasi KG dalam sistem RAG menghasilkan peningkatan kinerja yang signifikan, mencapai 77,8\% \textit{exact match accuracy} dan 76,5\% \textit{context precision}, yaitu peningkatan lebih dari 14,4 poin persentase dibanding pendekatan vektor RAG. KG tidak hanya meningkatkan presisi pencarian informasi, tetapi juga memungkinkan \textit{semantic alignment} melalui pembatasan ontologis sehingga model tidak hanya memilih teks yang mirip, tetapi juga mengakses pengetahuan yang benar dalam domain. 
+
+Dengan demikian, pendekatan Graph-RAG menawarkan fondasi penalaran teknis yang lebih dapat dipertanggungjawabkan dan mampu menurunkan risiko halusinasi semantik berbasis domain, khususnya pada sistem \textit{cloud-native} yang sensitif terhadap kesalahan konfigurasi. Berdasarkan urgensi tersebut, penelitian ini bertujuan untuk membangun sistem \textit{Retrieval-Augmented Generation} (RAG) berbasis \textit{Knowledge Graph} yang dikhususkan untuk dokumentasi Kubernetes. Pendekatan ini diharapkan mampu meningkatkan akurasi \textit{retrieval} terhadap pertanyaan yang membutuhkan penalaran struktural dengan mengekspresikan relasi ontologis antar objek konfigurasi Kubernetes. Selain menghasilkan jawaban teknis berupa penjelasan dan konfigurasi YAML yang valid, sistem juga dirancang untuk memberikan jejak penalaran graf sebagai mekanisme pendeteksi halusinasi. Hal ini memungkinkan setiap keluaran tidak hanya relevan secara tekstual, tetapi juga dapat diverifikasi kesesuaiannya terhadap skema objek Kubernetes.
+
 % --- Rumusan Masalah ---
 \section{Rumusan Masalah}
-Rumusan Masalah berisi masalah utama yang dibahas dalam tugas akhir. Rumusan masalah yang baik memiliki struktur sebagai berikut:
+Penelitian ini bertujuan untuk menjawab pertanyaan-pertanyaan berikut,
 \begin{enumerate}
-\item	Pokok persoalan dari kondisi atau situasi yang ada saat ini. Dengan kata lain, jelaskan kelemahan atau kekurangan dari kondisi, situasi, atau solusi yang dijelaskan pada latar belakang. Ini merupakan pokok rumusan masalah.
-\item	Elaborasi lebih lanjut urgensi penyelesaian masalah tersebut (mengapa penting untuk diselesaikan dan akibat yang dapat terjadi jika tidak diselesaikan).
-\item	Usulan singkat terkait dengan solusi yang ditawarkan untuk menyelesaikan persoalan.
-Penting untuk diperhatikan bahwa persoalan yang dideskripsikan pada subbab ini akan dipertanggungjawabkan di bab Evaluasi (apakah terselesaikan atau tidak).
+    \item Bagaimana membangun \textit{knowledge graph} dari spesifikasi Kubernetes guna merepresentasikan struktur dan relasi antar-objek konfigurasi secara komprehensif?
+    
+    \item Bagaimana merancang mekanisme GraphRAG yang memanfaatkan representasi struktural dalam \textit{knowledge graph} untuk meningkatkan presisi \textit{retrieval} pada konfigurasi Kubernetes?
+    
+    \item Bagaimana perbandingan kinerja antara GraphRAG, \textit{Vanilla} RAG, dan \textit{Vector-based} RAG dalam meningkatkan presisi \textit{retrieval} serta validitas sintaksis berkas konfigurasi Kubernetes?
 \end{enumerate}
-Hindari penulisan rumusan masalah yang terlalu umum atau terlalu luas cakupannya sehingga sulit untuk diselesaikan dalam jangka waktu pelaksanaan tugas akhir, 
-seperti:
-\begin{enumerate}
-    \item "Bagaimana cara meningkatkan kualitas layanan kesehatan di Indonesia?"
-    \item "Bagaimana cara mengoptimalkan penggunaan energi di perkotaan?"
-    \item "Bagaimana cara mengurangi kemacetan lalu lintas di kota besar?"
-    \item "Bagaimana cara membangun sistem irigasi sawah menggunakan \emph{AI}?"
-\end{enumerate}
-Rumusan masalah yang baik dan spesifik akan memudahkan penulis dalam menentukan tujuan, metodologi, dan evaluasi tugas akhir.
-
-Selain itu, hindari menuliskan pertanyaan yang merupakan sebuah keniscayaan yang harus dijawab atau dikerjakan 
-dalam pelaksanaan tugas akhir, seperti:
-\begin{enumerate}
-    \item "Bagaimana cara melakukan analisis kebutuhan sistem informasi rumah sakit?"
-    \item "Bagaimana cara merancang basis data untuk aplikasi X?"
-    \item "Bagaimana cara mengimplementasikan \textit{large language model} untuk deteksi penyakit Y?"
-    \item "Bagaimana cara menguji sistem penyiraman tanaman berbasis IoT yang akan dibuat?"
-\end{enumerate}
-Kegiatan analisis, perancangan, implementasi, dan pengujian merupakan tahapan yang harus dilakukan dalam pelaksanaan tugas akhir,
-sehingga pertanyaan-pertanyaan tersebut tidak perlu dimasukkan ke dalam rumusan masalah.
 
 % --- Tujuan ---
 \section{Tujuan}
-Tuliskan \textbf{tujuan utama} dan/atau tujuan detail yang akan dicapai dalam pelaksanaan tugas akhir. 
-Fokuskan isi subbab ini pada hasil akhir yang ingin diperoleh setelah tugas akhir diselesaikan 
-terkait dengan penyelesaian persoalan pada rumusan masalah. 
-Penting untuk diperhatikan bahwa tujuan yang dideskripsikan pada subbab ini akan dipertanggungjawabkan 
-di akhir pelaksanaan tugas akhir. Oleh karena itu, tuliskan juga \emph{kriteria keberhasilan} tugas akhir ini.
+Berdasarkan rumusan masalah yang telah dijelaskan pada Bab I.2, tujuan dalam penulisan penelitian ini adalah sebagai berikut,
+\begin{enumerate}
+    \item Membangun \textit{knowledge graph} dari spesifikasi OpenAPI Kubernetes (swagger.json) melalui \textit{pipeline} ekstraksi guna memetakan entitas beserta relasi hierarkis dan referensial antar-objek konfigurasi.
+    
+    \item Mengembangkan mekanisme GraphRAG dengan menelusuri jalur relasional (\textit{graph traversal}) berdasarkan kueri pengguna, kemudian menginjeksikan \textit{reasoning path} tersebut ke dalam \textit{Large Language Model} (LLM) untuk menghasilkan jawaban konsisten sesuai logika domain Kubernetes.
+    
+    \item Mengevaluasi kinerja metode GraphRAG menggunakan parameter \textit{context metrics}, \textit{faithfulness}, dan \textit{syntactic validity}, serta membandingkannya dengan \textit{Vanilla} RAG maupun \textit{Vector-based} RAG dalam meningkatkan presisi \textit{retrieval} dan validitas sintaksis keluaran YAML menggunakan model generatif GPT-4o-mini.
+\end{enumerate}
 
 % --- Batasan Masalah ---
 \section{Batasan Masalah}
-Tuliskan batasan-batasan yang diambil dalam pelaksanaan tugas akhir. Batasan ini dapat dihindari (bersifat opsional, tidak perlu ada) jika topik atau judul tugas akhir dibuat cukup spesifik.
+Agar penelitian ini tetap fokus dan \textit{feasible} dalam lingkup Tugas Akhir, batasan-batasan berikut akan diterapkan,
+\begin{enumerate}
+    \item Data penelitian bersumber secara eksklusif dari spesifikasi resmi Kubernetes OpenAPI (swagger.json) versi v1.30 tanpa melakukan \textit{web scraping} dokumentasi HTML. Ekstraksi data dibatasi murni pada blok \textit{definitions} dengan mengeliminasi blok operasional protokol API (seperti \textit{paths}, \textit{parameters}, dan \textit{responses}) guna mencegah \textit{context noise} pada LLM.
+
+    \item \textit{Knowledge graph} yang dibangun hanya merepresentasikan struktur skema (\textit{schema structure}) dan tidak mencakup perilaku operasional (\textit{runtime behavior}) maupun logika validasi dengan fokus utama penelitian untuk menguji validitas struktur sintaksis YAML.
+
+    \item Luaran penelitian berupa manifes Kubernetes YAML murni (\textit{plain YAML}) berdasarkan \textit{OpenAPI Specification}, dilengkapi jejak penalaran graf (\textit{graph reasoning path}) guna mendeteksi halusinasi LLM.
+
+    \item Luaran file YAML tidak diuji langsung pada klaster Kubernetes nyata (\textit{actual cluster}). Pengujian sistem murni berfokus pada validitas sintaksis menggunakan pustaka \textit{pyyaml} serta evaluasi kinerja berdasarkan dataset uji tervalidasi pakar.
+
+    \item Model LLM yang digunakan berasal dari \textit{pre-trained models} yang diakses melalui API (GPT-4o-mini) tanpa proses \textit{fine-tuning}.
+
+    \item Algoritma \textit{graph traversal} dibatasi maksimal 4 lompatan (\textit{hops}) sesuai analisis topologi objek Kubernetes. Pembatasan ini bertujuan mengoptimalkan \textit{Context Precision} serta efisiensi beban komputasi pada sumber daya lokal.
+
+    \item Proses pengolahan dan pra-pemrosesan data dibatasi pada lingkungan \textbf{Google Colaboratory} dan \textbf{Jupyter Notebook}.
+
+    \item Kinerja komputasi dan hasil eksperimen didasarkan pada perangkat keras spesifik (PC dengan CPU AMD Ryzen 5, GPU AMD Radeon RX 6750XT, RAM 16 GB) dan mungkin bervariasi pada konfigurasi lain.
+\end{enumerate}
+
 
 % --- Metodologi Pengerjaan TA ---
 \section{Metodologi}
-Tuliskan semua tahapan yang akan dilalui selama pelaksanaan tugas akhir. 
-Tahapan ini spesifik untuk menyelesaikan persoalan tugas akhir. 
-Berikut adalah contoh metodologi pengerjaan tugas akhir yang dapat diikuti, yaitu meliputi tahapan, langkah-langkah, 
-atau tata cara melakukan:
-\begin{enumerate}
-\item	Investigasi pengumpulan fakta di latar belakang untuk merumuskan masalah.
-\item	Pencarian, pengelompokan, dan penapisan literatur atau sumber informasi untuk mengumpulkan informasi yang relevan tentang topik yang diangkat, termasuk teori (konsep atau teori apa saja yang perlu dicari), hal-hal yang telah dicapai oleh orang lain (cara mencari dan kata kuncinya), dan berbagai informasi pendukung, untuk mencari solusi terhadap masalah yang dibahas. Gunakan metodologi yang tepat dalam menggali informasi dan dokumentasikan prosesnya (termasuk rekaman wawancara atau survei) di dalam Lampiran, termasuk tautan ke video atau foto. Hasil penggalian informasi ini akan dijelaskan secara sistematis di Bab II Studi Literatur.
-\item   Analisis kebutuhan pengguna dan sistem berdasarkan hasil investigasi dan studi literatur. Jelaskan metode yang digunakan untuk melakukan analisis kebutuhan, misalnya wawancara, survei, observasi, atau studi kasus. Hasil analisis kebutuhan ini akan dijelaskan secara rinci di Bab III Analisis.
-\item   Perancangan solusi berdasarkan hasil analisis kebutuhan. Jelaskan metode yang digunakan untuk melakukan perancangan, misalnya menggunakan diagram UML, ERD, atau prototyping. Hasil perancangan ini akan dijelaskan secara rinci di Bab IV Perancangan.
-\item   Implementasi solusi berdasarkan hasil perancangan. Jelaskan teknologi, bahasa pemrograman, atau alat yang digunakan untuk mengimplementasikan solusi. Hasil implementasi ini akan dijelaskan secara rinci di Bab V Implementasi.
-\item   Evaluasi terhadap solusi yang telah diimplementasikan. Jelaskan metode pengujian, metrik evaluasi, atau studi kasus yang digunakan untuk menilai keberhasilan solusi. Hasil evaluasi ini akan dijelaskan secara rinci di Bab VI Evaluasi.
-\item   Penarikan kesimpulan dan saran berdasarkan hasil pelaksanaan tugas akhir. Hasil kesimpulan dan saran ini akan dijelaskan secara rinci di Bab VII Kesimpulan dan Saran. 
-\vfill % memaksa konten di atas untuk berada di bagian atas halaman dan menyisakan ruang kosong di bawah konten ini akibat berakhirnya section ini
-\end{enumerate}
+Pelaksanaan Tugas Akhir ini mengadopsi kerangka kerja \textit{Cross-Industry Standard Process for Data Mining} (CRISP-DM) yang dapat dilihat pada Gambar \ref{fig:I.2} sebagai metodologi utama. CRISP-DM dipilih karena memberikan proses terstruktur, iteratif, dan dapat diadaptasi untuk pengembangan sistem berbasis analisis data dan representasi pengetahuan \parencite{niaksu2015}. Tahapan metodologi yang digunakan terdiri dari enam fase berikut,
 
-% --- Sistematika Penulisan ---
-\section{Sistematika Penulisan}
-Tuliskan gambaran umum isi dari setiap bab yang ada dalam laporan tugas akhir. Sistematika penulisan ini memberikan panduan bagi pembaca tentang struktur dan alur pembahasan dalam laporan tugas akhir. Berikut adalah contoh sistematika penulisan yang dapat diikuti:
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{images/gambarI.2.png}
+\caption{Tahapan model referensi CRISP-DM \parencite{niaksu2015}}
+\label{fig:I.2}
+\end{figure}
+
 \begin{enumerate}
-\item	Bab I Pendahuluan: Berisi latar belakang, rumusan masalah, tujuan, batasan masalah, metodologi, dan sistematika penulisan laporan tugas akhir       .
-\item	Bab II Studi Literatur: Berisi kajian pustaka yang relevan dengan topik tugas akhir, termasuk teori-teori, konsep-konsep, dan hasil-hasil penelitian sebelumnya yang                mendukung pelaksanaan tugas akhir.
-\item	Bab III Analisis: Berisi penjelasan tentang analisis masalah dan kebutuhan pengguna serta berbagai alternatif solusinya.
-\item   Bab IV Perancangan: Berisi penjelasan tentang perancangan solusi yang diusulkan, misalnya arsitektur sistem, desain basis data, antarmuka pengguna, dan sebagainya.
-\item	Bab V Implementasi: Berisi penjelasan tentang proses implementasi solusi yang diusulkan, termasuk langkah-langkah yang diambil, teknologi yang digunakan, dan hasil yang diperoleh.
-\item	Bab VI Evaluasi: Berisi analisis dan evaluasi terhadap solusi yang diimplementasikan, termasuk metode pengujian, hal-hal yang disiapkan sebelum pengujian, hasil pengujian, dan penilaian kinerja.                  
-\item   Bab VII Kesimpulan dan Saran: Berisi kesimpulan dari hasil pelaksanaan tugas akhir dan saran untuk pengembangan lebih lanjut.
-\item   Daftar Pustaka: Berisi daftar referensi yang digunakan dalam penyusunan laporan tugas akhir.
-\item   Lampiran: Berisi dokumen-dokumen pendukung seperti kode program, data lengkap hasil pengujian, rekaman wawancara, dan lain-lain. 
+    \item \textbf{Pemahaman Bisnis (\textit{Business Understanding})} \\
+    Tahap ini bertujuan untuk mengidentifikasi kebutuhan serta masalah inti yang ingin diselesaikan melalui pemanfaatan data. Dalam konteks penelitian ini, permasalahan yang diangkat adalah ketidaktepatan jawaban teknis yang dihasilkan \textit{Large Language Models} (LLM) ketika merujuk dokumentasi Kubernetes, terutama pada konfigurasi YAML yang bersifat struktural dan rentan mengandung halusinasi. Oleh karena itu, kebutuhan penelitian diarahkan pada peningkatan akurasi penalaran struktural pada proses \textit{retrieval} serta mitigasi halusinasi konfigurasi pada sistem \textit{cloud-native}.
+
+    \item \textbf{Pemahaman Data (\textit{Data Understanding})} \\
+    Fase ini berfokus pada pengumpulan dan eksplorasi sumber data untuk memahami struktur, kualitas, serta batasannya. Pada penelitian ini, data diperoleh dari spesifikasi resmi Kubernetes OpenAPI yang dianalisis untuk memahami jenis entitas konfigurasi, atribut yang dimiliki, serta relasi hierarkis dan referensial antar objek. Pemahaman ini menentukan objek Kubernetes yang akan dimodelkan dalam \textit{Knowledge Graph}.
+
+    \item \textbf{Persiapan Data (\textit{Data Preparation})} \\
+    Tahapan ini mencakup pembersihan dan transformasi data agar siap digunakan dalam proses pemodelan. Dalam penelitian ini, dilakukan ekstraksi otomatis dari spesifikasi OpenAPI Kubernetes (JSON/YAML) untuk membentuk representasi entitas, yaitu relasi yang dapat dimodelkan sebagai \textit{Knowledge Graph}. Proses ini mencakup identifikasi atribut, pemetaan hierarki \textit{parent–child}, serta penghubungan \textit{cross-resource references}. Hasil akhirnya berupa struktur graf yang terstandarisasi dan siap digunakan pada mekanisme \textit{retrieval}.
+
+    \item \textbf{Pemodelan (\textit{Modeling})} \\
+    Fase ini bertujuan untuk menerapkan algoritma yang sesuai guna menyelesaikan masalah yang telah dirumuskan. Pada penelitian ini, dibangun mekanisme \textit{graph-guided retrieval} yang menelusuri graf menggunakan \textit{graph traversal} berdasarkan kueri pengguna dan menghasilkan \textit{reasoning path}. Jalur penalaran tersebut kemudian diinjeksikan sebagai konteks pada proses RAG untuk memandu LLM dalam menghasilkan jawaban serta konfigurasi YAML yang sesuai dengan logika sistem Kubernetes.
+
+    \item \textbf{Evaluasi (\textit{Evaluation})} \\
+    Tahap evaluasi bertujuan menilai kualitas model dan membandingkannya dengan pendekatan alternatif menggunakan metrik terukur. Dalam penelitian ini, kinerja sistem dievaluasi menggunakan metrik \textit{context precision}, \textit{context recall}, \textit{faithfulness}, dan \textit{Syntactic Validity}, kemudian dibandingkan dengan dua \textit{baseline}, yaitu \textit{Vanilla LLM} dan \textit{Vector-based RAG}. Evaluasi dilakukan untuk membuktikan peningkatan relevansi konteks dan penurunan halusinasi semantik pada jawaban teknis.
+
+    \item \textbf{Penyebaran (\textit{Deployment})} \\
+    Fase ini berkaitan dengan penyajian hasil implementasi dalam bentuk prototipe dan dokumentasi. Pada penelitian ini, penyebaran diwujudkan dalam bentuk antarmuka interaktif sederhana berupa CLI yang menampilkan jawaban, konfigurasi YAML, serta \textit{reasoning path} sebagai bukti penalaran graf. Selain itu, dokumentasi lengkap disusun sebagai bentuk penyebaran akademik yang memuat rancangan sistem, hasil evaluasi, serta rekomendasi penelitian selanjutnya.
 \end{enumerate}
