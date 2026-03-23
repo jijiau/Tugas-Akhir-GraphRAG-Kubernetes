@@ -5015,24 +5015,28 @@
     <bcf:citekey order="50" intorder="1">han_graphrag_2024</bcf:citekey>
     <bcf:citekey order="51" intorder="1">ma_llm_kg_2025</bcf:citekey>
     <bcf:citekey order="52" intorder="1">ma_llm_kg_2025</bcf:citekey>
-    <bcf:citekey order="53" intorder="1">es2023ragas</bcf:citekey>
-    <bcf:citekey order="54" intorder="1">es2023ragas</bcf:citekey>
-    <bcf:citekey order="55" intorder="1">es2023ragas</bcf:citekey>
-    <bcf:citekey order="55" intorder="2">ragas_context_precision</bcf:citekey>
-    <bcf:citekey order="55" intorder="3">ragas_context_recall</bcf:citekey>
-    <bcf:citekey order="56" intorder="1">es2023ragas</bcf:citekey>
-    <bcf:citekey order="56" intorder="2">ragas_context_precision</bcf:citekey>
-    <bcf:citekey order="56" intorder="3">ragas_context_recall</bcf:citekey>
-    <bcf:citekey order="57" intorder="1">es2023ragas</bcf:citekey>
-    <bcf:citekey order="58" intorder="1">es2023ragas</bcf:citekey>
-    <bcf:citekey order="59" intorder="1">wan2025empowering</bcf:citekey>
+    <bcf:citekey order="53" intorder="1">es_ragas_2023</bcf:citekey>
+    <bcf:citekey order="54" intorder="1">es_ragas_2023</bcf:citekey>
+    <bcf:citekey order="55" intorder="1">zhao_rag_survey_2024</bcf:citekey>
+    <bcf:citekey order="56" intorder="1">es_ragas_2023</bcf:citekey>
+    <bcf:citekey order="57" intorder="1">ji_hallucination_2023</bcf:citekey>
+    <bcf:citekey order="58" intorder="1">cao2025neusymrag</bcf:citekey>
+    <bcf:citekey order="59" intorder="1">kotstein_restberta_2024</bcf:citekey>
     <bcf:citekey order="60" intorder="1">wan2025empowering</bcf:citekey>
-    <bcf:citekey order="61" intorder="1">wrabel2024api2graph</bcf:citekey>
-    <bcf:citekey order="62" intorder="1">wrabel2024api2graph</bcf:citekey>
-    <bcf:citekey order="63" intorder="1">knowledgpt2024</bcf:citekey>
-    <bcf:citekey order="64" intorder="1">laudon2020</bcf:citekey>
-    <bcf:citekey order="65" intorder="1">pressman2019</bcf:citekey>
-    <bcf:citekey order="66" intorder="1">BPBI</bcf:citekey>
+    <bcf:citekey order="61" intorder="1">rag_survey</bcf:citekey>
+    <bcf:citekey order="62" intorder="1">rag_survey</bcf:citekey>
+    <bcf:citekey order="63" intorder="1">wan2025empowering</bcf:citekey>
+    <bcf:citekey order="64" intorder="1">wan2025empowering</bcf:citekey>
+    <bcf:citekey order="65" intorder="1">wan2025empowering</bcf:citekey>
+    <bcf:citekey order="66" intorder="1">wan2025empowering</bcf:citekey>
+    <bcf:citekey order="67" intorder="1">he2024gretriever</bcf:citekey>
+    <bcf:citekey order="68" intorder="1">he2024gretriever</bcf:citekey>
+    <bcf:citekey order="69" intorder="1">cao2025neusymrag</bcf:citekey>
+    <bcf:citekey order="70" intorder="1">wan2025empowering</bcf:citekey>
+    <bcf:citekey order="71" intorder="1">wan2025empowering</bcf:citekey>
+    <bcf:citekey order="72" intorder="1">wan2025empowering</bcf:citekey>
+    <bcf:citekey order="73" intorder="1">wan2025empowering</bcf:citekey>
+    <bcf:citekey order="74" intorder="1">BPBI</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="cms">

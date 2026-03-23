@@ -1,21 +1,21 @@
 [0] Config.pm:307> INFO - This is Biber 2.19
 [1] Config.pm:310> INFO - Logfile is 'TA.blg'
-[264] biber-MSWIN64:340> INFO - === 
-[345] Biber.pm:419> INFO - Reading 'TA.bcf'
-[864] Biber.pm:979> INFO - Found 26 citekeys in bib section 0
-[906] Biber.pm:4419> INFO - Processing section 0
-[935] Biber.pm:4610> INFO - Looking for bibtex file 'daftar-pustaka.bib' for section 0
-[1084] bibtex.pm:1713> INFO - LaTeX decoding ...
-[1196] bibtex.pm:1519> INFO - Found BibTeX data source 'daftar-pustaka.bib'
-[1706] UCollate.pm:68> INFO - Overriding locale 'indonesian' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[1707] UCollate.pm:68> INFO - Overriding locale 'indonesian' defaults 'level = 4' with 'level = 2'
-[1707] UCollate.pm:68> INFO - Overriding locale 'indonesian' defaults 'variable = shifted' with 'variable = non-ignorable'
-[1708] Biber.pm:4239> INFO - Sorting list 'cms/global//global/global' of type 'entry' with template 'cms' and locale 'indonesian'
-[1708] Biber.pm:4245> INFO - No sort tailoring available for locale 'indonesian'
-[1796] bbl.pm:660> INFO - Writing 'TA.bbl' with encoding 'UTF-8'
-[1841] bbl.pm:763> INFO - Output to TA.bbl
-[1844] Biber.pm:131> WARN - Duplicate entry key: 'hofer2024construction' in file 'daftar-pustaka.bib', skipping ...
-[1844] Biber.pm:131> WARN - I didn't find a database entry for 'laudon2020' (section 0)
-[1844] Biber.pm:131> WARN - I didn't find a database entry for 'pressman2019' (section 0)
-[1845] Biber.pm:131> WARN - I didn't find a database entry for 'BPBI' (section 0)
-[1845] Biber.pm:133> INFO - WARNINGS: 4
+[608] biber-MSWIN64:340> INFO - === 
+[824] Biber.pm:419> INFO - Reading 'TA.bcf'
+[1315] Biber.pm:979> INFO - Found 24 citekeys in bib section 0
+[1394] Biber.pm:4419> INFO - Processing section 0
+[1475] Biber.pm:4610> INFO - Looking for bibtex file 'daftar-pustaka.bib' for section 0
+[1616] bibtex.pm:1713> INFO - LaTeX decoding ...
+[1735] bibtex.pm:1519> INFO - Found BibTeX data source 'daftar-pustaka.bib'
+[2339] UCollate.pm:68> INFO - Overriding locale 'indonesian' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[2339] UCollate.pm:68> INFO - Overriding locale 'indonesian' defaults 'variable = shifted' with 'variable = non-ignorable'
+[2340] UCollate.pm:68> INFO - Overriding locale 'indonesian' defaults 'level = 4' with 'level = 2'
+[2341] Biber.pm:4239> INFO - Sorting list 'cms/global//global/global' of type 'entry' with template 'cms' and locale 'indonesian'
+[2342] Biber.pm:4245> INFO - No sort tailoring available for locale 'indonesian'
+[2556] bbl.pm:660> INFO - Writing 'TA.bbl' with encoding 'UTF-8'
+[2606] bbl.pm:763> INFO - Output to TA.bbl
+[2608] Biber.pm:131> WARN - Duplicate entry key: 'hofer2024construction' in file 'daftar-pustaka.bib', skipping ...
+[2610] Biber.pm:131> WARN - I didn't find a database entry for 'laudon2020' (section 0)
+[2611] Biber.pm:131> WARN - I didn't find a database entry for 'pressman2019' (section 0)
+[2611] Biber.pm:131> WARN - I didn't find a database entry for 'BPBI' (section 0)
+[2612] Biber.pm:133> INFO - WARNINGS: 4

@@ -84,7 +84,7 @@
       \verb https://www.cncf.io/reports/cncf-annual-survey-2023/
       \endverb
     \endentry
-    \entry{es2023ragas}{article}{}
+    \entry{es_ragas_2023}{article}{}
       \name{author}{4}{}{%
         {{un=0,uniquepart=base,hash=d8dead04bec0d1ebb462dd6ac4504a36}{%
            family={Es},
@@ -126,13 +126,6 @@
       \field{journaltitle}{arXiv preprint arXiv:2309.15217}
       \field{title}{RAGAS: Automated Evaluation of Retrieval Augmented Generation}
       \field{year}{2023}
-      \field{dateera}{ce}
-      \verb{urlraw}
-      \verb https://arxiv.org/abs/2309.15217
-      \endverb
-      \verb{url}
-      \verb https://arxiv.org/abs/2309.15217
-      \endverb
     \endentry
     \entry{rag_survey}{article}{}
       \name{author}{10}{}{%
@@ -316,73 +309,6 @@
       \field{title}{Retrieval-augmented generation with graphs (GraphRAG)}
       \field{year}{2024}
     \endentry
-    \entry{knowledgpt2024}{misc}{}
-      \name{author}{8}{}{%
-        {{un=0,uniquepart=base,hash=ebba55921bac5d290c9d601598d539c6}{%
-           family={He},
-           familyi={H\bibinitperiod},
-           given={Xiaoxin},
-           giveni={X\bibinitperiod},
-           givenun=0}}%
-        {{un=0,uniquepart=base,hash=43f863a0630436142c7e1d0ee1ff621e}{%
-           family={Tian},
-           familyi={T\bibinitperiod},
-           given={Yijun},
-           giveni={Y\bibinitperiod},
-           givenun=0}}%
-        {{un=0,uniquepart=base,hash=5cd3167053bbceea63fe80ab1fdafe50}{%
-           family={Sun},
-           familyi={S\bibinitperiod},
-           given={Yifei},
-           giveni={Y\bibinitperiod},
-           givenun=0}}%
-        {{un=0,uniquepart=base,hash=f3165c056a99f7d1c356e80ce4211560}{%
-           family={Chawla},
-           familyi={C\bibinitperiod},
-           given={Nitesh},
-           giveni={N\bibinitperiod},
-           givenun=0}}%
-        {{un=0,uniquepart=base,hash=d66f49f9b67b04f4f98b4d839f2af5e8}{%
-           family={Laurent},
-           familyi={L\bibinitperiod},
-           given={Thomas},
-           giveni={T\bibinitperiod},
-           givenun=0}}%
-        {{un=0,uniquepart=base,hash=6a1aa6b7eab12b931ca7c7e3f927231d}{%
-           family={LeCun},
-           familyi={L\bibinitperiod},
-           given={Yann},
-           giveni={Y\bibinitperiod},
-           givenun=0}}%
-        {{un=0,uniquepart=base,hash=26bf36a5046daec764f03647500c3871}{%
-           family={Bresson},
-           familyi={B\bibinitperiod},
-           given={Xavier},
-           giveni={X\bibinitperiod},
-           givenun=0}}%
-        {{un=0,uniquepart=base,hash=b5c2ebc85fb8cba01d66e9eaaae19fd1}{%
-           family={Hooi},
-           familyi={H\bibinitperiod},
-           given={Bryan},
-           giveni={B\bibinitperiod},
-           givenun=0}}%
-      }
-      \strng{namehash}{f0cd9f979b8a81eecca81cb2e52201bf}
-      \strng{fullhash}{df574a70428ce8a1461f4bc0f925cee5}
-      \strng{bibnamehash}{df574a70428ce8a1461f4bc0f925cee5}
-      \strng{authorbibnamehash}{df574a70428ce8a1461f4bc0f925cee5}
-      \strng{authornamehash}{f0cd9f979b8a81eecca81cb2e52201bf}
-      \strng{authorfullhash}{df574a70428ce8a1461f4bc0f925cee5}
-      \field{sortinit}{H}
-      \field{sortinithash}{23a3aa7c24e56cfa16945d55545109b5}
-      \field{extradatescope}{labelyear}
-      \field{labeldatesource}{}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{note}{Technical report. Viewed from user-provided document.}
-      \field{title}{KnowledGPT: Enhancing Large Language Models with Knowledge Base Guided Reasoning}
-      \field{year}{2024}
-    \endentry
     \entry{hofer2024construction}{article}{}
       \name{author}{5}{}{%
         {{un=0,uniquepart=base,hash=07de18bb3d44cea2a9b6bdaa5c3e46e9}{%
@@ -438,6 +364,92 @@
       \field{year}{2024}
       \field{pages}{509}
       \range{pages}{1}
+    \endentry
+    \entry{ji_hallucination_2023}{article}{}
+      \name{author}{10}{}{%
+        {{un=0,uniquepart=base,hash=24b318d147ffe07cf3d183806694085a}{%
+           family={Ji},
+           familyi={J\bibinitperiod},
+           given={Ziwei},
+           giveni={Z\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=30e209c0765ff028b6fcf8cab91168d6}{%
+           family={Lee},
+           familyi={L\bibinitperiod},
+           given={Nayeon},
+           giveni={N\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=597ff597dc47ab99a423ad5244f36682}{%
+           family={Frieske},
+           familyi={F\bibinitperiod},
+           given={Rita},
+           giveni={R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=c5c5b0c867563b0b96b0baac7fcac39c}{%
+           family={Yu},
+           familyi={Y\bibinitperiod},
+           given={Tiezheng},
+           giveni={T\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=0d5b93df1983207786b72b9e0149f7c7}{%
+           family={Su},
+           familyi={S\bibinitperiod},
+           given={Dan},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=86acdbbb888fb1622ad5366d9d67dc8f}{%
+           family={Xu},
+           familyi={X\bibinitperiod},
+           given={Yan},
+           giveni={Y\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=cabf98fe93804124c62b0da032c7d50b}{%
+           family={Ishii},
+           familyi={I\bibinitperiod},
+           given={Etsuko},
+           giveni={E\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=b2d5be7d6640cffc93a230ad9721393e}{%
+           family={Bang},
+           familyi={B\bibinitperiod},
+           given={Yejin},
+           giveni={Y\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=c42ccecbd088ddce88e391c844d4bb7a}{%
+           family={Madotto},
+           familyi={M\bibinitperiod},
+           given={Andrea},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=ea1e0efe4f3dcaf0a50c1119d83f7ca8}{%
+           family={Fung},
+           familyi={F\bibinitperiod},
+           given={Pascale},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {ACM New York, NY}%
+      }
+      \strng{namehash}{7f1de58d3d36035f2dcbf85d331900f1}
+      \strng{fullhash}{10ef4394bec37f952600a5bbcdf4c91e}
+      \strng{bibnamehash}{10ef4394bec37f952600a5bbcdf4c91e}
+      \strng{authorbibnamehash}{10ef4394bec37f952600a5bbcdf4c91e}
+      \strng{authornamehash}{7f1de58d3d36035f2dcbf85d331900f1}
+      \strng{authorfullhash}{10ef4394bec37f952600a5bbcdf4c91e}
+      \field{sortinit}{J}
+      \field{sortinithash}{b2f54a9081ace9966a7cb9413811edb4}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{author}
+      \field{journaltitle}{ACM Computing Surveys}
+      \field{number}{12}
+      \field{title}{Survey of Hallucination in Natural Language Generation}
+      \field{volume}{55}
+      \field{year}{2023}
+      \field{pages}{1\bibrangedash 38}
+      \range{pages}{38}
     \endentry
     \entry{knollmeyer2025document}{article}{}
       \name{author}{3}{}{%
@@ -738,30 +750,6 @@
       \verb 10.1109/TKDE.2024.3352100
       \endverb
     \endentry
-    \entry{ragas_context_precision}{misc}{}
-      \field{sortinit}{R}
-      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
-      \field{extradatescope}{labelyear}
-      \field{labeldatesource}{}
-      \field{labeltitlesource}{title}
-      \field{howpublished}{\url{https://docs.ragas.io/en/stable/concepts/metrics/available_metrics/context_precision/}}
-      \field{note}{Accessed 12 March 2025}
-      \field{title}{RAGAS: Context Precision}
-      \field{year}{2025}
-      \field{dateera}{ce}
-    \endentry
-    \entry{ragas_context_recall}{misc}{}
-      \field{sortinit}{R}
-      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
-      \field{extradatescope}{labelyear}
-      \field{labeldatesource}{}
-      \field{labeltitlesource}{title}
-      \field{howpublished}{\url{https://docs.ragas.io/en/stable/concepts/metrics/available_metrics/context_recall/}}
-      \field{note}{Accessed 12 March 2025}
-      \field{title}{RAGAS: Context Recall}
-      \field{year}{2025}
-      \field{dateera}{ce}
-    \endentry
     \entry{rahman_k8s_security_2023}{article}{}
       \true{moreauthor}
       \true{morelabelname}
@@ -967,35 +955,6 @@
       \verb 10.1016/j.aei.2025.103212
       \endverb
     \endentry
-    \entry{wrabel2024api2graph}{thesis}{}
-      \name{author}{1}{}{%
-        {{un=0,uniquepart=base,hash=afddebbcd320348e81c86a4ad536577e}{%
-           family={Wrabel},
-           familyi={W\bibinitperiod},
-           given={Tamira},
-           giveni={T\bibinitperiod},
-           givenun=0}}%
-      }
-      \list{institution}{1}{%
-        {Technische Universität München}%
-      }
-      \strng{namehash}{afddebbcd320348e81c86a4ad536577e}
-      \strng{fullhash}{afddebbcd320348e81c86a4ad536577e}
-      \strng{bibnamehash}{afddebbcd320348e81c86a4ad536577e}
-      \strng{authorbibnamehash}{afddebbcd320348e81c86a4ad536577e}
-      \strng{authornamehash}{afddebbcd320348e81c86a4ad536577e}
-      \strng{authorfullhash}{afddebbcd320348e81c86a4ad536577e}
-      \field{sortinit}{W}
-      \field{sortinithash}{4315d78024d0cea9b57a0c6f0e35ed0d}
-      \field{extradatescope}{labelyear}
-      \field{labeldatesource}{}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{Using Graphs to Improve the Interpretability of API Documentation for BIM Authoring Software}
-      \field{type}{Master's thesis}
-      \field{year}{2024}
-      \field{dateera}{ce}
-    \endentry
     \entry{yu2021visualkg}{article}{}
       \name{author}{4}{}{%
         {{un=0,uniquepart=base,hash=94658a16389c695058255d9358d09cdd}{%
@@ -1044,6 +1003,85 @@
       \field{year}{2021}
       \field{pages}{012040}
       \range{pages}{1}
+    \endentry
+    \entry{zhao_rag_survey_2024}{article}{}
+      \name{author}{10}{}{%
+        {{un=0,uniquepart=base,hash=b2334868da4d516a5378436ed331fdbc}{%
+           family={Zhao},
+           familyi={Z\bibinitperiod},
+           given={Penghao},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=86ce207e2a1efd3543c8f50866491a2a}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Hailin},
+           giveni={H\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=3a33000f272afcae389e5bd4e93e32cd}{%
+           family={Yu},
+           familyi={Y\bibinitperiod},
+           given={Qinhan},
+           giveni={Q\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=5090a9bc411cc7d6165a5bad7159fa14}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Zhengren},
+           giveni={Z\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=a141858f6d0074cda5b1e4d1c86f8c78}{%
+           family={Geng},
+           familyi={G\bibinitperiod},
+           given={Yunteng},
+           giveni={Y\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=4c2af0f2502756ef88874800bca0ef08}{%
+           family={Fu},
+           familyi={F\bibinitperiod},
+           given={Fangcheng},
+           giveni={F\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=6ed7250c8206a02238c2bbe323cde792}{%
+           family={Yang},
+           familyi={Y\bibinitperiod},
+           given={Ling},
+           giveni={L\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=617c3dfefd9eb92b86137977ec96fa36}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Wentao},
+           giveni={W\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=ed3d50682be1b60ad0b74dbf2a18717c}{%
+           family={Jiang},
+           familyi={J\bibinitperiod},
+           given={Jie},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=f6c0b53300ebf4c432dfa05ee736c54c}{%
+           family={Cui},
+           familyi={C\bibinitperiod},
+           given={Bin},
+           giveni={B\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{5ba72c99e4e6779d3b32b879af912aa5}
+      \strng{fullhash}{188d60dfdff513900c1272626f64ff2c}
+      \strng{bibnamehash}{188d60dfdff513900c1272626f64ff2c}
+      \strng{authorbibnamehash}{188d60dfdff513900c1272626f64ff2c}
+      \strng{authornamehash}{5ba72c99e4e6779d3b32b879af912aa5}
+      \strng{authorfullhash}{188d60dfdff513900c1272626f64ff2c}
+      \field{sortinit}{Z}
+      \field{sortinithash}{96892c0b0a36bb8557c40c49813d48b3}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{author}
+      \field{journaltitle}{arXiv preprint arXiv:2402.19473}
+      \field{title}{Retrieval-Augmented Generation for AI-Generated Content: A Survey}
+      \field{year}{2024}
     \endentry
   \enddatalist
   \missing{BPBI}

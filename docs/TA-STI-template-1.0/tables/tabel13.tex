@@ -1,0 +1,39 @@
+\renewcommand{\arraystretch}{1.2}
+\captionsetup{justification=raggedright,singlelinecheck=false}
+\begin{table}[H]
+\centering
+\caption{Analisis Estimasi Biaya Opsional dan Kondisi Pemicu}
+\label{tbl:cost_analysis}
+\begin{tabular}{|p{3cm}|p{3cm}|p{7cm}|}
+\hline
+\textbf{Komponen Opsional} &
+\textbf{Estimasi Biaya} &
+\textbf{Kondisi Pemicu (\textit{Trigger Condition})} \\ \hline
+
+Layanan LLM Cloud (OpenAI GPT--4o-mini) &
+Rp 50.000 -- Rp 100.000 \newline 
+(\textit{Pay--per--token}) &
+\begin{enumerate}[leftmargin=0.5cm]
+    \item Beban memori tinggi pada laptop (16\,GB) ketika menjalankan Model Lokal 
+    dan Neo4j secara bersamaan sehingga menyebabkan \textit{system crash} atau 
+    \textit{Out-of-Memory (OOM)}. 
+\end{enumerate} \\ \hline
+
+Cloud GPU (Google Colab Pro) &
+\(\sim\) Rp 160.000 / bulan &
+\begin{enumerate}[leftmargin=0.5cm]
+    \item Proses \textit{embedding}/vektorisasi data melebihi 12 jam pada CPU laptop 
+    sehingga menghambat iterasi dan eksplorasi eksperimen.
+    \item Diperlukan pengujian model pembanding berukuran besar 
+    ($>$ 14B parameter) yang tidak dapat dijalankan pada VRAM laptop.
+\end{enumerate} \\ \hline
+
+\textbf{Total Dana Siaga} &
+\(\sim\) Rp 250.000 -- Rp 400.000 &
+Dana hanya digunakan apabila skenario eksekusi di lingkungan lokal tidak mampu berjalan 
+secara stabil, efisien, atau menghasilkan keluaran yang memenuhi standar validitas. 
+Jika seluruh eksperimen dapat dijalankan pada lingkungan lokal, 
+maka dana tidak direalisasikan. \\ \hline
+
+\end{tabular}
+\end{table}

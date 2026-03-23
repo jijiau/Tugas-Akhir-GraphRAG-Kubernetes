@@ -1,0 +1,60 @@
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1}
+\captionsetup{justification=raggedright,singlelinecheck=false}
+
+\begin{tabular}{|p{1cm}|p{5cm}|p{1cm}|p{1cm}|p{1.5cm}|p{2cm}|}
+\hline
+\textbf{Kode} &
+\textbf{Identifikasi Risiko} &
+\textbf{L} &
+\textbf{I} &
+\textbf{Skor (L×I)} &
+\textbf{Kategori Prioritas} \\ \hline
+
+R-03 &
+Kegagalan Generasi Kode (\textit{Syntax Error}) &
+5 &
+4 &
+20 &
+\textbf{Kritis} \\ \hline
+
+R-06 &
+\textit{Hallucination} pada Mode Code Generation &
+5 &
+4 &
+20 &
+\textbf{Kritis} \\ \hline
+
+R-05 &
+Latensi Tinggi pada Proses \textit{Retrieval--Generation} &
+4 &
+3 &
+12 &
+Tinggi \\ \hline
+
+R-01 &
+Ketidaklengkapan Data Swagger &
+3 &
+4 &
+12 &
+Tinggi \\ \hline
+
+R-02 &
+Ambiguitas Relasi Graf &
+3 &
+4 &
+12 &
+Tinggi \\ \hline
+
+R-04 &
+Bias Penilaian oleh LLM Judge &
+2 &
+3 &
+6 &
+Sedang \\ \hline
+
+\end{tabular}
+\caption{Matriks Penilaian Risiko Berdasarkan Skor Likelihood dan Impact}
+\label{tbl:risk_matrix_score}
+\end{table}

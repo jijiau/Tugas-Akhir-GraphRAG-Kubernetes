@@ -1,0 +1,82 @@
+\renewcommand{\arraystretch}{1.25}
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{4cm}|p{7cm}|p{2cm}|}
+\hline
+\textbf{Aspek GAP Evaluasi Penelitian} & 
+\textbf{Parameter Kebutuhan Fungsional yang Direpresentasikan} &
+\textbf{Kode} \\ \hline
+
+Representasi Struktur Data &
+Sistem harus mengubah skema objek hasil parsing menjadi struktur representasi
+yang terorganisir, membedakan setiap sumber daya, atribut, serta relasi referensial
+(\texttt{\$ref}/\texttt{items.\$ref}). &
+F-02 \\ \hline
+
+Representasi Struktur Data &
+Sistem harus menyimpan metadata atribut konfigurasi (deskripsi, tipe data,
+dan status \textit{required/optional}) sebagai bagian integral dari representasi terstruktur,
+agar hierarki konfigurasi tetap utuh dan tidak terputus. &
+F-03 \\ \hline
+
+Mekanisme Validasi &
+Sistem harus menerapkan mekanisme pembatasan output agar hanya menghasilkan
+YAML valid ketika pengguna meminta pembuatan konfigurasi, serta tidak menambahkan
+field yang tidak tersedia dalam konteks dokumen API. &
+F-07 \\ \hline
+
+Ambiguitas Entitas dan Terminologi &
+Sistem harus mampu mengidentifikasi entitas Kubernetes yang dimaksud oleh pengguna
+dan membedakan tipe pertanyaan menjadi \textbf{Conceptual\_QA} atau
+\textbf{Code\_Generation}, sehingga pemanggilan konteks dilakukan secara tepat
+berdasarkan maksud pertanyaan. &
+F-04 \\ \hline
+
+Ambiguitas Entitas dan Terminologi &
+Sistem harus menyediakan mekanisme retrieval untuk mengambil himpunan objek dan field
+yang benar-benar relevan berdasarkan entitas target dan intensi pengguna,
+menghindari pencampuran konteks antar objek akibat penggunaan keyword semata. &
+F-05 \\ \hline
+
+Penanganan Referensi Silang &
+Sistem harus mengonversi referensi struktural (misalnya \texttt{\$ref}, pola selector,
+atau hubungan template) menjadi representasi relasional eksplisit melalui node–edge
+agar traversal logis dapat dilakukan secara deterministik. &
+F-02 \\ \hline
+
+Penanganan Referensi Silang &
+Sistem harus menyusun hasil retrieval menjadi konteks teknis yang terstruktur
+dan menyuntikkannya ke dalam \textit{prompt} sebagai landasan jawaban LLM,
+agar keputusan model berbasis pada data API yang benar. &
+F-06 \\ \hline
+
+Pemeliharaan Pengetahuan &
+Sistem harus membatasi ruang lingkup parsing hanya pada enam komponen target
+(Deployment, Pod, Service, Ingress, ConfigMap, Secret),
+agar pembaruan skema hanya memerlukan pergantian sumber data OpenAPI tanpa
+penulisan ulang aturan manual. &
+F-01 \\ \hline
+
+Akurasi Jawaban &
+Sistem harus mengekstrak skema terstruktur dan atribut kunci objek,
+serta menggunakannya sebagai konteks pemodelan jawaban,
+guna memastikan instruksi kode YAML yang dihasilkan memiliki struktur valid. &
+F-06 \\ \hline
+
+Akurasi Jawaban &
+Sistem harus membatasi output YAML hanya ketika intent diklasifikasikan sebagai 
+\textbf{Code\_Generation}, memastikan format jawaban berbeda untuk pertanyaan 
+konseptual sehingga hasil terbaca sesuai ekspektasi pengguna. &
+F-07 \\ \hline
+
+\textbf{Konsistensi Penggunaan Sistem (Tambahan — Non-Structural GAP)} &
+Sistem harus menyediakan antarmuka \textit{Command-Line Interface (CLI)} 
+untuk menjalankan fungsi inti (\texttt{generate}, \texttt{explain},
+\texttt{validate}, \texttt{--help}), sehingga interaksi dapat dilakukan secara
+ringan, konsisten, dan tanpa ketergantungan komponen visual. &
+F-08 \\ \hline
+
+\end{tabular}
+\caption{Pemetaan Aspek GAP Penelitian terhadap Kebutuhan Fungsional Sistem}
+\label{tbl:gap_mapping_functional}
+\end{table}

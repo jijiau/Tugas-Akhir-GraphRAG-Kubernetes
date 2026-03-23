@@ -1,0 +1,113 @@
+\renewcommand{\arraystretch}{1.35}
+\captionsetup[longtable]{justification=raggedright,singlelinecheck=false}
+
+\begin{longtable}{|p{3.8cm}|p{5cm}|p{4cm}|}
+\caption{Pemetaan Tahap Metodologi}
+\label{tbl:mapping_methodology_requirements} \\
+\hline
+\textbf{Tahap Metodologi} &
+\textbf{Aktivitas Utama} &
+\textbf{Kebutuhan yang Dipenuhi (F)} \\
+\hline
+\endfirsthead
+
+\multicolumn{3}{l}{Tabel \ref{tbl:mapping_methodology_requirements} Pemetaan Tahap Metodologi (lanjutan)} \\
+\hline
+\textbf{Tahap Metodologi} &
+\textbf{Aktivitas Utama} &
+\textbf{Kebutuhan yang Dipenuhi (F)} \\
+\hline
+\endhead
+
+\hline
+\multicolumn{3}{r}{\textit{bersambung ke halaman berikutnya}} \\
+\endfoot
+
+\hline
+\endlastfoot
+
+% =================== DATA PREPARATION ======================
+\multicolumn{3}{|c|}{\textbf{Data Preparation}} \\ \hline
+
+\textit{Data Selection \& Cleaning} &
+Identifikasi objek target, seleksi enam komponen Kubernetes, dan pembersihan atribut yang tidak relevan. &
+F-07 (\textit{Selective Components Parsing}),
+F-05 (\textit{Attribute Enrichment}) \\ \hline
+
+\textit{Semantic Vectorization} &
+Ekstraksi deskripsi objek menjadi \textit{embedding} numerik untuk pencarian semantik. &
+F-05 (\textit{Attribute Enrichment}) \\ \hline
+
+Konstruksi Topologi Graf &
+Transformasi struktur JSON menjadi node–edge dengan relasi referensial dan hierarkis. &
+F-01 (\textit{Structured Schema Representation}),
+F-02 (\textit{Structured Relation Retrieval}),
+F-05 (\textit{Attribute Enrichment}) \\ \hline
+
+Neo4j \textit{Data Loading} &
+Memuat hasil konstruksi graf ke basis data Neo4j agar dapat ditelusuri kembali saat retrieval. &
+F-01 (\textit{Structured Schema Representation}) \\ \hline
+
+
+% =================== MODELLING ======================
+\multicolumn{3}{|c|}{\textbf{Modelling}} \\ \hline
+
+\textit{Intent Classification Modeling} &
+Membedakan pertanyaan pengguna menjadi \textit{Conceptual QA} atau \textit{Code Generation}. &
+F-03 (\textit{Intent Classification}) \\ \hline
+
+\textit{Retrieval Strategy Design} &
+Perancangan traversal graf berdasarkan entitas target, relasi, dan kebutuhan pengguna. &
+F-02 (\textit{Structured Relation Retrieval}),
+F-04 (\textit{Context Construction \& Injection}) \\ \hline
+
+\textit{Prompt Engineering} &
+Perancangan template prompt, injeksi konteks, serta pengaturan format keluaran. &
+F-04 (\textit{Context Construction \& Injection}),
+F-08 (\textit{Conditional YAML Generation Constraint}) \\ \hline
+
+\textit{Validation Logic} &
+Integrasi prosedur validasi sintaksis YAML sebagai mekanisme \textit{fail-safe}. &
+F-08 (\textit{Conditional YAML Generation Constraint}) \\ \hline
+
+
+% =================== INPUT ======================
+\multicolumn{3}{|c|}{\textbf{Input}} \\ \hline
+
+Pertanyaan Pengguna &
+Input teks berupa permintaan teknis: \textit{Conceptual QA} atau \textit{Code Generation}. &
+F-03 (\textit{Intent Classification}) \\ \hline
+
+
+% =================== OUTPUT ======================
+\multicolumn{3}{|c|}{\textbf{Output}} \\ \hline
+
+Konten Jawaban &
+Keluaran berupa narasi penjelas atau YAML konfigurasi Kubernetes. &
+F-08 (\textit{Conditional YAML Generation Constraint}) \\ \hline
+
+\textit{Graph Traceability} &
+Penelusuran asal-usul \textit{field} melalui relasi \textit{node–edge} di dalam graf. &
+F-02 (\textit{Structured Relation Retrieval}) \\ \hline
+
+
+% =================== EVALUATION ======================
+\multicolumn{3}{|c|}{\textbf{Evaluation}} \\ \hline
+
+\textit{Retrieval Metrics} &
+Pengukuran \textit{Context Recall} dan \textit{Context Precision} sebagai validasi relevansi relasi. &
+-- (Metrik domain, bukan requirement fungsional) \\ \hline
+
+\textit{Generation Metrics} &
+Evaluasi \textit{Faithfulness} dan \textit{Syntactic Validity} untuk mengukur kualitas hasil YAML. &
+-- (Metrik domain, bukan requirement fungsional) \\ \hline
+
+
+% =================== DEPLOYMENT ======================
+\multicolumn{3}{|c|}{\textbf{Deployment}} \\ \hline
+
+CLI \textit{Execution} &
+Eksekusi sistem melalui \textit{Command Line Interface} untuk perintah \texttt{generate}, \texttt{explain}, dan \texttt{validate}. &
+F-06 (\textit{CLI Interaction Interface}) \\ \hline
+
+\end{longtable}

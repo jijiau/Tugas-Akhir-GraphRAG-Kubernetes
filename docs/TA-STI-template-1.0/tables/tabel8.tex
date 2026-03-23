@@ -1,0 +1,43 @@
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\captionsetup{justification=raggedright,singlelinecheck=false}
+
+\begin{tabular}{|p{3cm}|p{3.8cm}|p{3.3cm}|p{2.2cm}|}
+\hline
+\textbf{Komponen yang Diuji} &
+\textbf{Metrik Evaluasi} &
+\textbf{Metode Pengukuran} &
+\textbf{Target (KPI)} \\
+\hline
+
+\multirow{2}{*}{\textit{Retrieval (Graph)}} &
+\textit{Context Precision} &
+RAGAS (\textit{LLM-as-a-Judge}) &
+$> 80\%$ \\
+\cline{2-4}
+& \textit{Context Recall} &
+RAGAS (\textit{LLM-as-a-Judge}) &
+\textit{High} \\
+\hline
+
+\multirow{2}{*}{Generasi (\textit{Output})} &
+\textit{Faithfulness} &
+RAGAS (\textit{LLM-as-a-Judge}) &
+\textit{High (Minim Halusinasi)} \\
+\cline{2-4}
+& \textit{Syntactic Validity} &
+PyYAML Parser &
+$> 85\%$ \\
+\hline
+
+Sistem &
+\textit{End-to-End Latency} &
+\textit{Internal Time Logging} dengan \textit{library} \texttt{time} &
+$< 15$ detik \\
+\hline
+
+\end{tabular}
+\caption{Daftar Metrik Evaluasi pada Tahap Pengujian Sistem}
+\label{tbl:evaluation_metrics}
+\end{table}

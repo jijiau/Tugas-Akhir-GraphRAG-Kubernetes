@@ -1,0 +1,67 @@
+\begin{longtable}{|p{3cm}|p{4cm}|p{6cm}|}
+\caption{Daftar Perkakas Implementasi Sistem}
+\label{tbl:tools} \\
+\hline
+\textbf{Kategori} & \textbf{Nama Tools} & \textbf{Deskripsi} \\ \hline
+\endfirsthead
+
+\multicolumn{3}{l}{Tabel \ref{tbl:tools} Daftar Perkakas Implementasi Sistem (lanjutan)} \\
+\hline
+\textbf{Kategori} & \textbf{Nama Tools} & \textbf{Deskripsi} \\ \hline
+\endhead
+
+\hline
+\multicolumn{3}{r}{\textit{bersambung ke halaman berikutnya}} \\
+\endfoot
+
+\hline
+\endlastfoot
+
+% ======================= A. Programming Environment ==========================
+\textbf{Bahasa Pemrograman \& Lingkungan Pengembangan} &
+Python (v3.10+) &
+Bahasa pemrograman utama yang digunakan untuk seluruh logika sistem, termasuk 
+pipeline ekstraksi data, konstruksi graf, proses \textit{retrieval}, dan 
+pengembangan antarmuka pengguna. Dipilih karena ekosistemnya yang matang dalam 
+pemrosesan data dan pengembangan aplikasi AI. \\ \cline{2-3}
+
+& Google Colab &
+Platform notebook Python berbasis \textit{cloud} untuk eksperimen, eksekusi skrip,
+dan pengujian model tanpa konfigurasi lingkungan lokal. \\ \hline
+
+% ======================= B. Knowledge Base ==========================
+\textbf{Basis Data \& Penyimpanan Pengetahuan} &
+Neo4j (Community Edition) &
+DBMS berbasis graf yang digunakan untuk menyimpan struktur hubungan objek 
+Kubernetes dalam bentuk \textit{node} dan \textit{edge}. Mendukung kueri Cypher untuk penelusuran 
+relasi dan validasi keterhubungan antar-objek. \\ \cline{2-3}
+
+& Neo4j Python Driver &
+Pustaka resmi yang memungkinkan aplikasi Python berkomunikasi langsung dengan 
+Neo4j untuk proses konstruksi graf, eksekusi Cypher, dan \textit{graph traversal}. \\ \hline
+
+% ======================= C. Artificial Intelligence Components ================
+\textbf{Komponen Kecerdasan Buatan} &
+OpenAI API (GPT-4o-mini) &
+Digunakan untuk proses klasifikasi intensi, penafsiran pertanyaan menjadi kueri 
+struktural, serta generasi kode YAML berdasarkan konteks. Berfungsi sebagai 
+komponen inti dalam modul \textit{reasoning} dan penyusunan jawaban. \\ \cline{2-3}
+
+& Sentence-Transformers (all-MiniLM-L6-v2) &
+Model \textit{embedding} ringan yang digunakan untuk mengubah teks deskripsi API dan 
+pertanyaan pengguna menjadi vektor numerik untuk pencarian semantik. Ukurannya 
+efisien dengan performa yang tinggi. \\ \hline
+
+% ======================= D. Validation & Utility ==============================
+\textbf{Validasi \& Utilitas Data} &
+PyYAML &
+Pustaka parser YAML yang digunakan untuk memvalidasi keluaran LLM, khususnya 
+pada tahap pengecekan sintaksis (NF-01). \\ \hline
+
+% ======================= E. User Interface ====================================
+\textbf{Antarmuka Pengguna} &
+\textit{Command-Line Interface} (CLI) &
+Antarmuka berbasis perintah untuk menjalankan fungsi utama sistem 
+(\texttt{generate}, \texttt{explain}, \texttt{validate}, \texttt{--help}). \\ \hline
+
+\end{longtable}

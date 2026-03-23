@@ -1,0 +1,67 @@
+\captionsetup[longtable]{justification=raggedright,singlelinecheck=false}
+
+\begin{longtable}{ | p{0.15\textwidth} | p{0.5\textwidth} | p{0.30\textwidth} |}
+\caption{Karakteristik Komponen Target Kubernetes}
+\label{tbl:target_components_new} \\
+\hline
+\textbf{Komponen} & \textbf{Lokasi Definisi (OpenAPI Key)} & \textbf{Deskripsi Spesifikasi} \\
+\hline
+\endfirsthead
+
+\multicolumn{3}{l}{Tabel \ref{tbl:target_components_new} Karakteristik Komponen Target Kubernetes (lanjutan)} \\
+\hline
+\textbf{Komponen} & \textbf{Lokasi Definisi (OpenAPI Key)} & \textbf{Deskripsi Spesifikasi} \\
+\hline
+\endhead
+
+
+\hline
+\multicolumn{3}{r}{\textit{bersambung ke halaman berikutnya}} \\
+\endfoot
+
+\hline
+\endlastfoot
+
+\textbf{Deployment} & 
+\texttt{io.k8s.api.apps.v1.Deployment} &
+\textbf{Properti Kunci:} \texttt{spec.replicas}, \texttt{spec.selector}, \texttt{spec.template}. 
+\newline
+\textbf{Pola Relasi:} Hierarkis. Deployment membungkus Pod melalui field \texttt{template}. \\
+\hline
+
+\textbf{Pod} &
+\texttt{io.k8s.api.core.v1.Pod} &
+\textbf{Properti Kunci:} \texttt{metadata.labels}, \texttt{spec.containers}, \texttt{spec.volumes}. 
+\newline
+\textbf{Pola Relasi:} Atomik. Unit terkecil berisi definisi container, port, dan konfigurasi eksekusi. \\
+\hline
+
+\textbf{Service} &
+\texttt{io.k8s.api.core.v1.Service} &
+\textbf{Properti Kunci:} \texttt{spec.ports}, \texttt{spec.selector}, \texttt{spec.type}. 
+\newline
+\textbf{Pola Relasi:} \textit{loose coupling} dengan \textit{label matching}. Menentukan Pod target melalui kecocokan \texttt{selector} dengan \texttt{labels}. \\
+\hline
+
+\textbf{Ingress} &
+\texttt{io.k8s.api.networking.v1.Ingress} &
+\textbf{Properti Kunci:} \texttt{spec.rules}, spec.backend.service.name.
+\newline
+\textbf{Pola Relasi:} \textit{loose coupling}. Menunjuk Service melalui string nama secara eksplisit. \\
+\hline
+
+\textbf{ConfigMap} &
+\texttt{io.k8s.api.core.v1.ConfigMap} &
+\textbf{Properti Kunci:} \texttt{data}, \texttt{metadata.name}. 
+\newline
+\textbf{Pola Relasi:} \textit{Injection}. Dipanggil oleh Pod via \texttt{configMapRef} atau \texttt{envFrom}. \\
+\hline
+
+\textbf{Secret} &
+\texttt{io.k8s.api.core.v1.Secret} &
+\textbf{Properti Kunci:} \texttt{data (base64)}, \texttt{type}. 
+\newline
+\textbf{Pola Relasi:} \textit{Injection}. Digunakan Pod via \texttt{secretKeyRef}. \\
+\hline
+
+\end{longtable}

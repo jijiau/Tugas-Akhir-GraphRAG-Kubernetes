@@ -1,0 +1,41 @@
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|
+    >{\raggedright\arraybackslash}p{4cm}|
+    >{\raggedright\arraybackslash}p{3.5cm}|
+    >{\raggedright\arraybackslash}p{5cm}|
+}
+\hline
+\textbf{Business Requirement (B)} &
+\textbf{Technical GAP (T)} &
+\textbf{Functional Requirement (F)} \\ \hline
+
+% ===== B01 =====
+\multirow{4}{*}\textbf{B01} -- Inefisiensi waktu
+  & \multirow{2}{*}\textbf{T01} -- Representasi struktur data
+    & \textbf{F-01} \textit{Structured Schema Representation} \\ \cline{3-3}
+  &  & \textbf{F-02} \textit{Structured Relation Retrieval} \\ \cline{2-3}
+
+  & \multirow{2}{*}\textbf{T03} -- Ambiguitas entitas
+    & \textbf{F-03} \textit{Intent Classification} \\ \cline{3-3}
+  &  & \textbf{F-04} \textit{Context Construction \& Injection} \\ \hline
+
+% ===== B02 =====
+\multirow{3}{*}\textbf{B02} -- Kesenjangan pengetahuan
+  & \multirow{2}{*}\textbf{T02} -- Mekanisme validasi
+    & \textbf{F-05} \textit{Attribute Enrichment} \\ \cline{3-3}
+  &  & \textbf{F-06} \textit{CLI Interaction Interface} \\ \cline{2-3}
+
+  & T04 -- Pemeliharaan pengetahuan
+    & \textbf{F-07} \textit{Selective Components Parsing} \\ \hline
+
+% ===== B03 =====
+\multirow{1}{*}\textbf{B03} -- Risiko kesalahan konfigurasi
+  & T05 -- Akurasi jawaban
+  & \textbf{F-08} \textit{Conditional YAML Generation Constraint} \\ \hline
+
+\end{tabular}
+\caption{Pemetaan Kebutuhan Bisnis terhadap \textit{Technical Gap} dan Kebutuhan Fungsional}
+\label{tbl:mapping_business_gap_functional}
+\end{table}
