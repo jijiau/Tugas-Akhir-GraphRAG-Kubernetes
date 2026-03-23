@@ -1,0 +1,45 @@
+\renewcommand{\arraystretch}{1.25}
+\captionsetup[longtable]{justification=raggedright,singlelinecheck=false}
+
+\begin{longtable}{|p{3cm}|p{5cm}|p{5cm}|}
+\caption{\textit{Technical Gap Analysis} pada Domain Kubernetes}
+\label{tbl:comparison_existing_graphRAG} \\ \hline
+\textbf{Aspek Evaluasi} &
+\textbf{Kondisi Saat Ini (\textit{Existing Approaches})} &
+\textbf{Kesenjangan di Domain Kubernetes} \\ \hline
+\endfirsthead
+
+\multicolumn{3}{l}{Tabel \ref{tbl:comparison_existing_graphRAG} \textit{Technical Gap Analysis} pada Domain Kubernetes (lanjutan)} \\ \hline
+\textbf{Aspek Evaluasi} &
+\textbf{Kondisi Saat Ini (\textit{Existing Approaches})} &
+\textbf{Kesenjangan di Domain Kubernetes} \\ \hline
+\endhead
+
+\hline
+\multicolumn{3}{r}{\textit{bersambung ke halaman berikutnya}} \\
+\endfoot
+
+\hline
+\endlastfoot
+
+T01 - Representasi Struktur Data &
+Menggunakan pemecahan teks secara \textit{linear chunking}, yaitu dokumen hierarkis dipecah menjadi potongan terpisah sehingga hubungan \textit{parent--child} terputus \parencite{cao2025neusymrag}. &
+Terjadi fenomena \textit{loss of deep context}. Sistem gagal memahami kedalaman hierarki, misalnya properti \texttt{limits} merupakan turunan bersarang dari Deployment, karena strukturnya terpisah antar \textit{chunk} \parencite{kotstein_restberta_2024}. \\ \hline
+
+T02 - Mekanisme Validasi &
+Validasi bergantung pada model LLM atau aturan manual berbasis \textit{hard constraints} yang harus ditulis satu per satu \parencite{wan2025empowering}. &
+Risiko terjadinya \textit{syntactic hallucination} tinggi (LLM mengarang \textit{field}), atau beban pemeliharaan menjadi besar saat aturan manual harus diperbarui \parencite{rag_survey}. \\ \hline
+
+T03 - Ambiguitas Entitas & 
+Mengandalkan frekuensi kemunculan kata kunci (\textit{keyword frequency}) atau kedekatan vektor semata. &
+Terdapat ambiguitas pada pola \textit{loose coupling} karena \textit{keywords} (misal: \texttt{labels}, \texttt{ports}) muncul berulang di banyak objek berbeda. Hal ini menyebabkan tercampurnya konteks antar-objek (\textit{contextual mixing}). \\ \hline
+
+T04 - Pemeliharaan Pengetahuan &
+Membutuhkan \textit{fine-tuning} ulang model atau pembaruan aturan manual ketika terjadi perubahan versi API \parencite{rag_survey}. &
+Tidak efisien, mudah menjadi \textit{obsolete}, dan sensitif terhadap perubahan versi Kubernetes yang dirilis secara berkala (±4 bulan). \\ \hline
+
+T05 - Akurasi Jawaban &
+Sistem cenderung menghasilkan jawaban naratif umum dan tidak memberikan jaminan presisi sintaksis konfigurasi YAML. &
+Tidak mampu menghasilkan artefak konfigurasi yang sesuai karena sering ditemukan kesalahan format atau struktur. \\ \hline
+
+\end{longtable}

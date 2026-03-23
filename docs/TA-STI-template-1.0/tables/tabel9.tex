@@ -1,0 +1,51 @@
+\renewcommand{\arraystretch}{1.25}
+\captionsetup[longtable]{justification=raggedright,singlelinecheck=false}
+
+\begin{longtable}{|p{1.2cm}|p{3cm}|p{3.8cm}|p{3.8cm}|}
+\caption{Matriks Analisis Risiko dan Strategi Mitigasi}
+\label{tbl:risk_matrix} \\ \hline
+\textbf{Kode} & \textbf{Risiko} & \textbf{Dampak Potensial} & \textbf{Strategi Mitigasi} \\ \hline
+\endfirsthead
+
+\multicolumn{4}{l}{Tabel \ref{tbl:risk_matrix} Matriks Analisis Risiko dan Strategi Mitigasi (lanjutan)} \\ \hline
+\textbf{Kode} & \textbf{Risiko} & \textbf{Dampak Potensial} & \textbf{Strategi Mitigasi} \\ \hline
+\endhead
+
+\hline
+\multicolumn{4}{r}{\textit{bersambung ke halaman berikutnya}} \\
+\endfoot
+
+\hline
+\endlastfoot
+
+\textbf{R-01} &
+Ketidaklengkapan Data Swagger &
+Struktur definisi objek tidak sepenuhnya terdeteksi sehingga relasi graf tidak komplet dan \textit{retrieval} menjadi kurang akurat. &
+Melakukan \textit{cross-check} manual terhadap objek paling kritikal (Deployment, Pod, Service, ConfigMap), serta menambahkan validasi referensial untuk mendeteksi anomali struktur. \\ \hline
+
+\textbf{R-02} &
+Ambiguitas Relasi Graf &
+\textit{Edge} tertentu tidak terbaca pada pola kompleks (\textit{nested, selector, injection}) sehingga traversal kehilangan jalur valid dan menurunkan skor \textit{precision/recall}. &
+Menambahkan aturan \textit{fallback traversal}, memperkaya heuristik pengenalan pola relasi, dan melakukan uji representatif terhadap sampel graf untuk memastikan ketepatan pemodelan secara keseluruhan. \\ \hline
+
+\textbf{R-03} &
+Kegagalan Generasi Kode (\textit{Syntax Error}) &
+Konfigurasi yang dihasilkan tidak dapat diparse dan berpotensi gagal dieksekusi, sehingga melanggar standar \textit{Syntactic Validity}. &
+Mengintegrasikan PyYAML sebagai validator otomatis, serta menambahkan prosedur \textit{post-processing} sebagai prosedur koreksi jika parser mendeteksi kesalahan sintaksis. \\ \hline
+
+\textbf{R-04} &
+Bias Penilaian oleh LLM \textit{Judge} &
+Evaluasi performa dapat bias jika LLM penilai menghasilkan keputusan tidak konsisten atau tidak faktual. &
+Menggunakan model penilai yang lebih kuat, melakukan \textit{cross-validation} sebagian sampel secara manual, serta membandingkan referensi dengan dokumentasi resmi Kubernetes. \\ \hline
+
+\textbf{R-05} &
+Latensi Tinggi pada Proses \textit{Retrieval--Generation} &
+Waktu respon melebihi batas toleransi (maksimal 60 detik), sehingga sistem sulit digunakan secara \textit{real-time}. &
+Mengoptimalkan \textit{pipeline} dengan \textit{caching}, pembatasan traversal, \textit{batching request}, serta melakukan stress test untuk memastikan waktu rata-rata berada dalam batas KPI. \\ \hline
+
+\textbf{R-06} &
+\textit{Hallucination} pada Mode \textit{Code Generation} &
+LLM menghasilkan YAML yang tidak terdapat dalam skema Kubernetes, menurunkan \textit{faithfulness} dan membahayakan konfigurasi. &
+Menambahkan \textit{negative constraints} dalam \textit{prompt}, membatasi penggunaan field hanya dari \textit{Knowledge Graph}, dan menerapkan mekanisme \textit{fail-safe} jika ditemukan properti asing. \\ \hline
+
+\end{longtable}

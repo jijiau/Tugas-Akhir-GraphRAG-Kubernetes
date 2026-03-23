@@ -1,0 +1,30 @@
+\captionsetup[longtable]{justification=raggedright,singlelinecheck=false}
+
+\begin{longtable}{ | p{0.1\textwidth} | p{0.20\textwidth} | p{0.65\textwidth} |}
+\caption{Rubrik Penilaian Kriteria Evaluasi Solusi}
+\label{tbl:rubrik_eval} \\
+\hline
+\textbf{Skor} & \textbf{Kategori} & \textbf{Deskripsi} \\ 
+\hline
+\endfirsthead
+
+\multicolumn{3}{l}{Tabel \ref{tbl:rubrik_eval} Rubrik Penilaian Kriteria Evaluasi Solusi (lanjutan)} \\
+\hline
+\textbf{Skor} & \textbf{Kategori} & \textbf{Deskripsi} \\ 
+\hline
+\endhead
+
+\hline
+\multicolumn{3}{r}{\textit{bersambung ke halaman berikutnya}} \\
+\endfoot
+
+\hline
+\endlastfoot
+
+1 & Kurang Baik & Tidak memenuhi kebutuhan domain Kubernetes secara fungsional maupun struktural. \\ \hline
+2 & Cukup Buruk & Hanya relevan sebagian dan berisiko tinggi menghasilkan kesalahan konfigurasi. \\ \hline
+3 & Cukup Baik & Dapat digunakan, tetapi memerlukan banyak penyesuaian untuk konteks Kubernetes. \\ \hline
+4 & Baik & Umumnya sesuai dan dapat diterapkan dengan penyesuaian minor. \\ \hline
+5 & Sangat Baik & Sangat sesuai dengan karakteristik masalah dan hampir tidak memerlukan modifikasi. \\ \hline
+
+\end{longtable}

@@ -339,98 +339,123 @@ Pendekatan GraphRAG ini menjadi sangat krusial dalam domain berskala kompleks se
 
 \section{Evaluasi Sistem Model}
 
-Untuk menilai kinerja sistem \textit{Retrieval-Augmented Generation} (RAG), evaluasi tidak hanya dilakukan pada jawaban akhir, tetapi pada dua komponen utama: (i) kinerja \textit{retrieval} berbasis \textit{graph}, dan (ii) kinerja generasi jawaban oleh LLM. Menurut \textcite{es2023ragas}, pengukuran kualitas harus dimulai dari konteks yang diambil, karena kesalahan pada tahap \textit{retrieval} akan langsung memengaruhi jawaban meskipun model generatif bekerja dengan baik.
+Kinerja sistem GraphRAG dievaluasi menggunakan kerangka pengujian tiga dimensi yang secara holistik mengukur kualitas luaran, presisi pencarian, dan kemampuan penalaran model. Total pembobotan evaluasi didistribusikan ke dalam \textit{Answer Quality} (40\%), \textit{Retrieval Quality} (35\%), dan \textit{Reasoning Quality} (25\%).
 
-\subsection{Evaluasi Retrieval}
+\subsection{\textit{Answer Quality} (AnsQ)}
+Dimensi \textit{Answer Quality} memiliki bobot evaluasi tertinggi sebesar 40\% guna memastikan keluaran sistem tidak hanya relevan secara semantik tetapi juga dapat dieksekusi secara langsung pada lingkungan Kubernetes. Evaluasi pada dimensi ini mencakup lima metrik utama:
 
-Pada tahap \textit{retrieval}, sistem diukur berdasarkan kemampuan \textit{graph search} dalam mengambil \textit{nodes} yang relevan dan menekan konteks yang tidak diperlukan. Dua metrik yang digunakan adalah \textit{Context Recall} dan \textit{Context Precision}, masing-masing diadaptasi dari \textcite{es2023ragas,ragas_context_precision,ragas_context_recall}.
-
-\textbf{\textit{Context Recall}} mengukur kemampuan sistem menemukan seluruh konteks yang relevan. Nilai yang rendah mengindikasikan hilangnya bukti penting sehingga jawaban dapat menjadi tidak lengkap atau bahkan salah. Rumusnya diberikan pada Persamaan~\eqref{eq:ragas_recall}.
-
-\begin{equation}
-\label{eq:ragas_recall}
-\mathrm{ContextRecall} = \frac{\sum_{c \in \mathcal{C}_{\text{retrieved}}} \mathbb{1}[c \in \mathcal{C}_{\text{relevant}}]}{|\mathcal{C}_{\text{relevant}}|}
-\end{equation}
-
-Sementara itu, \textbf{\textit{Context Precision}} mengukur sejauh mana konteks yang diambil benar-benar relevan. Semakin rendah presisi, semakin banyak \textit{noise} yang masuk dan meningkatkan risiko \textit{hallucination}. Rumus presisi ditunjukkan pada Persamaan~\eqref{eq:ragas_precision}.
-
-\begin{equation}
-\label{eq:ragas_precision}
-\mathrm{ContextPrecision} = \frac{\sum_{c \in \mathcal{C}_{\text{retrieved}}} \mathbb{1}[c \in \mathcal{C}_{\text{relevant}}]}{|\mathcal{C}_{\text{retrieved}}|}
-\end{equation}
-
-Pada kedua persamaan tersebut, $\mathbb{1}[\cdot]$ merupakan fungsi indikator bernilai 1 jika kondisi terpenuhi, dan 0 jika tidak; $\mathcal{C}_{\text{retrieved}}$ adalah konteks yang diambil oleh sistem, sedangkan $\mathcal{C}_{\text{relevant}}$ adalah konteks yang seharusnya diambil. Kedua metrik saling berkorelasi dan membentuk \textit{trade-off} bahwa semakin banyak konteks diambil, \textit{recall} meningkat namun \textit{precision} dapat menurun.
-
-\subsection{Evaluasi Generasi Jawaban}
-
-Tahap generasi oleh LLM tidak dapat hanya dinilai dari kesesuaian semantik, namun harus menjamin bahwa jawaban benar-benar berasal dari konteks yang diambil. Menurut \textcite{es2023ragas}, metrik yang paling penting untuk mengukur integritas jawaban adalah \textbf{\textit{Faithfulness}}, yaitu sejauh mana jawaban dapat ditelusuri kembali ke konteks pertanyaan tanpa penambahan informasi eksternal.
-
-RAGAS mengukur \textit{Faithfulness Score} (FS) berdasarkan klaim dalam jawaban yang dapat dibuktikan oleh konteks yang ada, sebagaimana dirumuskan pada Persamaan~\eqref{eq:ragas_faithfulness}.
-
-\begin{equation}
-\label{eq:ragas_faithfulness}
-\mathrm{Faithfulness} = \frac{\sum_{s \in S_{\text{claims}}} \mathbb{1}[s \in S_{\text{supported}}]}{|S_{\text{claims}}|}
-\end{equation}
-
-Pada konteks domain Kubernetes, keluaran sistem berupa file YAML harus benar secara fakta dan valid secara sintaks. Oleh sebab itu, metrik tambahan \textbf{\textit{Syntactic Validity}} digunakan untuk memverifikasi apakah keluaran dapat diproses tanpa error, misalnya melalui \texttt{kubectl apply --dry-run}. Metriknya bersifat biner, sebagaimana didefinisikan pada Persamaan~\eqref{eq:syntaxcheck} dan dirata-rata pada Persamaan~\eqref{eq:syntaxscore}.
-
-\begin{equation}
-\label{eq:syntaxcheck}
-\text{ValidSyntax}(y) =
-\begin{cases}
-1, & \text{jika keluaran dapat diparsing/di-deploy tanpa error}, \\
-0, & \text{jika terjadi error sintaks YAML}.
-\end{cases}
-\end{equation}
-
-\begin{equation}
-\label{eq:syntaxscore}
-S_{\text{syntax}} = \frac{1}{n}\sum_{i=1}^{n} \text{ValidSyntax}(y_i)
-\end{equation}
-
-Dengan demikian, kualitas sistem RAG pada domain \textit{cloud-native} dinilai secara komprehensif, yaitu \textit{Graph Retrieval} diukur melalui \textit{Context Recall} dan \textit{Precision}, sedangkan Generasi LLM diukur melalui \textit{Faithfulness} dan \textit{Syntactic Validity}. Kombinasi ini memastikan hasil yang tidak hanya akurat, tetapi juga dapat dieksekusi pada lingkungan Kubernetes.
-
-\section{Penelitian Terkait}
-
-\subsection{\textit{Empowering LLMs by hybrid retrieval-augmented generation for domain-centric Q\&A in smart manufacturing}}
-Penelitian oleh \textcite{wan2025empowering} mengembangkan pendekatan \textit{hybrid retrieval} yang mengombinasikan \textit{Knowledge Graph} (KG) dengan \textit{dense vector retrieval} untuk meningkatkan akurasi \textit{question answering} pada domain \textit{Smart Manufacturing}, khususnya desain untuk manufaktur aditif (\textit{Design for Additive Manufacturing}, DfAM). Pendekatan ini didasari oleh kebutuhan untuk menangkap relasi semantik berbasis ontologi sekaligus memanfaatkan generalisasi representasi vektor. Metode yang diusulkan terdiri dari empat tahapan, yaitu (1) \textit{knowledge collection and chunking} untuk mengumpulkan korpus dan membentuk \textit{embeddings}; (2) konstruksi KG berbasis metadata melalui ekstraksi entitas, relasi, dan atribut domain; (3) penerapan pembatas semantik melalui aturan ontologi untuk menyelaraskan kueri; serta (4) \textit{hybrid retrieval} yang menggabungkan pencarian node dan relasi pada KG dengan pencarian vektor berbobot, dilanjutkan dengan \textit{prompt engineering} berbasis aturan domain.
-
-Hasil penelitian menunjukkan bahwa model hibrida yang dilengkapi dengan aturan \textit{prompt} mencapai skor \textit{Exact Match} (EM) dan \textit{Context Precision} tertinggi dibandingkan dengan pendekatan \textit{KG-only} maupun \textit{vector-only}. Pendekatan \textit{vector-only} memiliki keunggulan pada waktu eksekusi (\(3{-}7\) detik), tetapi mengalami penurunan akurasi karena ketergantungan pada \textit{generic embedding}. Sebaliknya, pendekatan \textit{KG-only} lebih baik dalam \textit{reasoning} berbasis relasi, namun bergantung pada kelengkapan graf dan memiliki waktu eksekusi yang relatif lebih lambat. Model hibrida dengan \textit{prompt engineering} menghasilkan akurasi tertinggi dengan rentang waktu \(8{-}16\) detik. Dengan demikian, ketika prioritas sistem adalah akurasi dan ketelitian informasi, strategi hibrida menjadi pilihan terbaik, walaupun memerlukan optimasi waktu.
-
-Meskipun efektif, studi tersebut masih memiliki beberapa keterbatasan metodologis yang membuka peluang penelitian lanjutan. Pertama, pembaruan KG dilakukan secara manual sehingga rentan terhadap \textit{knowledge drift} pada domain yang dinamis. Kedua, tidak terdapat mekanisme \textit{hallucination detection} yang memastikan setiap keluaran model dapat ditelusuri kembali ke sumber. Ketiga, proses \textit{prompt engineering} masih bersifat manual dan tidak dioptimasi secara otomatis. Keempat, penelitian tidak memasukkan teknik \textit{query rewriting} untuk menangani kueri ambigu yang tidak selaras dengan ontologi domain.
-
-\subsection{\textit{Using Graphs to Improve the Interpretability of API Documentation for BIM Authoring Software}}
-
-\textcite{wrabel2024api2graph} menginvestigasi cara meningkatkan interpretabilitas dokumentasi \textit{Application Programming Interface} (API) pada perangkat lunak \textit{Building Information Modeling} (BIM) dengan mengubah dokumentasi API yang tidak terstruktur menjadi representasi graf berbasis \textit{Knowledge Graph} (KG) dan mengintegrasikannya dengan agen \textit{Retrieval-Augmented Generation} berbasis graf (GraphRAG). Tujuan utama penelitian adalah menyediakan cara penelusuran fungsi API yang lebih akurat dan mendukung generasi kode langsung melalui kueri LLM.
-
-Metode penelitian menggabungkan pendekatan deterministik dan berbasis \textit{embedding} untuk konstruksi graf API. Pertama, dokumentasi API dikonversi menjadi struktur \textit{JavaScript Object Notation} (JSON) dan diparsing menjadi entitas serta relasi fungsi secara deterministik. Kedua, bagian dokumentasi yang tidak terstruktur diekstraksi menggunakan model LLM untuk menghasilkan \textit{embedding} yang memetakan entitas semantik tambahan. Ketiga, contoh implementasi kode pada dokumentasi web disertakan ke dalam graf melalui relasi \textit{[USES]} sehingga graf tidak hanya memuat hierarki fungsi tetapi juga konteks penggunaannya. Representasi data ini diwujudkan dalam bentuk \textit{Labeled Property Graph} (LPG) menggunakan Neo4j.
-
-Selanjutnya, agen GraphRAG dibangun dengan tiga jenis alat kueri, yaitu pencarian semantik berbasis \textit{embedding}, kueri graf \textit{multi-hop} menggunakan Cypher, serta pencarian contoh implementasi kode. Agen menentukan urutan eksekusi alat berdasarkan tipe pertanyaan sehingga dapat menghasilkan jawaban berupa penjelasan API, struktur relasi antar fungsi, atau rekomendasi potongan kode. Evaluasi sistem dilakukan pada 36 pertanyaan teknis mengenai API Vectorworks, memperlihatkan bahwa gabungan graf deterministik dan \textit{embedding} unggul dibanding graf berbasis \textit{embedding} penuh.
-
-Hasil eksperimen membuktikan bahwa \textit{hybrid graph} menghasilkan \textit{code suggestion reliability} dan akurasi jawaban teks yang lebih tinggi dibandingkan KG yang dibangun sepenuhnya menggunakan LLM. Penelitian ini juga menunjukkan bahwa penyertaan relasi konteks penggunaan kode (\textit{[USES]}) meningkatkan relevansi rekomendasi fungsi API. Walaupun demikian, penelitian masih memiliki keterbatasan seperti kualitas graf bergantung pada konsistensi dokumentasi sumber, biaya komputasi embedding relatif tinggi, dan tidak terdapat mekanisme untuk mendeteksi atau membatasi \textit{hallucination} pada tahap generasi jawaban.
-
-Studi ini memberikan implikasi bahwa transformasi dokumentasi API ke dalam bentuk graf merupakan pendekatan efektif untuk mendukung \textit{reasoning} teknis dan navigasi fungsi perangkat lunak berbasis kueri NLP. Namun, diperlukan mekanisme tambahan seperti \textit{query rewriting}, \textit{context reranking}, dan \textit{hallucination detection} untuk meningkatkan reliabilitas agen RAG dalam domain teknis yang sensitif terhadap kesalahan implementasi.
-
-\subsection{\textit{KnowledGPT: Enhancing Large Language Models with Retrieval and Storage Access on Knowledge Bases}}
-
-KnowledGPT merupakan pendekatan integrasi LLM dengan \textit{knowledge base} (KB)
-yang tidak membangun struktur graf eksplisit, tetapi memandu LLM untuk
-menghasilkan \textit{search code} (\textit{Program-of-Thought}) yang mengeksekusi fungsi
-akses KB secara deterministik \parencite{knowledgpt2024}.
-
-Mekanisme dari sistem ini menerjemahkan pertanyaan pengguna $q$ oleh LLM menjadi kode pencarian:
-\texttt{get\_entity(e)} atau \texttt{find\_relation(e\_1,e\_2)} 
-yang kemudian dijalankan pada KB untuk memperoleh jawaban berbasis fakta.
-LLM tidak menjawab langsung, tetapi menyimpulkan hanya dari hasil eksekusi fungsi.
-
-KnowledGPT menegaskan tiga prinsip penting yang juga diadopsi dalam desain GraphRAG, yaitu,
 \begin{enumerate}
-    \item Penarikan pengetahuan deterministik melalui jalur terdefinisi,
-    bukan probabilistik token prediction.
-    \item Reduksi halusinasi karena jawaban hanya berasal dari hasil fungsi KB.
-    \item Kemampuan \textit{multi-hop} untuk memastikan relasi antar entitas dipahami secara struktural.
+    \item \textbf{\textit{Syntactic Validity}}\\
+    Mengukur persentase keluaran yang memiliki struktur sintaksis YAML sempurna tanpa memunculkan galat saat diurai menggunakan pustaka \texttt{pyyaml}.
+    \begin{itemize}
+        \item \textbf{Formula:} $\frac{\text{valid\_yaml}}{\text{total\_yaml}} \times 100\%$
+        \item \textbf{Kriteria Baik:} Dikatakan \textbf{baik} apabila menyentuh target mutlak 100\% (tanpa cacat lekukan atau format).
+        \item \textbf{Kriteria Buruk:} Dikatakan \textbf{buruk} apabila bernilai di bawah target tersebut karena dokumen pasti gagal dibaca oleh sistem infrastruktur.
+    \end{itemize}
+
+    \item \textbf{\textit{Schema Compliance}}\\
+    Menghitung tingkat kelengkapan \textit{required fields} dan ketepatan tipe data berdasarkan spesifikasi OpenAPI v1.30 menggunakan skema Pydantic. Pemenuhan metrik ini secara otomatis mencakup validasi \textit{accuracy matching}.
+    \begin{itemize}
+        \item \textbf{Formula:} $\frac{\text{required\_fields\_present}}{\text{required\_fields\_total}} \times 100\%$
+        \item \textbf{Kriteria Baik:} Dikatakan \textbf{baik} apabila mencapai target $\geq 95\%$.
+        \item \textbf{Kriteria Buruk:} Dikatakan \textbf{buruk} apabila banyak atribut esensial terlewatkan sehingga memicu penolakan skema tingkat klaster.
+    \end{itemize}
+
+    \item \textbf{\textit{Kubernetes Validity}}\\
+    Menguji kelayakan eksekusi manifes secara langsung ke \textit{API server} klaster melalui perintah \textit{dry-run}. Ini merupakan pengujian \textit{domain-specific requirement} untuk memastikan validitas operasional dokumen.
+    \begin{itemize}
+        \item \textbf{Formula:} $\frac{\text{dry\_run\_success}}{\text{total\_yaml}} \times 100\%$
+        \item \textbf{Kriteria Baik:} Dikatakan \textbf{baik} apabila mencapai target $\geq 90\%$.
+        \item \textbf{Kriteria Buruk:} Dikatakan \textbf{buruk} apabila struktur lulus uji teks tetapi ditolak oleh logika internal API Kubernetes.
+    \end{itemize}
+
+    \item \textbf{\textit{Faithfulness Score}}\\
+    Menilai seberapa sesuai nilai-nilai di dalam YAML terhadap fakta yang ditarik dari \textit{knowledge graph} menggunakan penilai \textit{Large Language Model} (LLM-as-a-judge) \parencite{es_ragas_2023}.
+    \begin{itemize}
+        \item \textbf{Formula:} $\frac{\text{kg\_sourced\_values}}{\text{total\_values}} \times 100\%$
+        \item \textbf{Kriteria Baik:} Dikatakan \textbf{baik} apabila mencapai target $\geq 85\%$.
+        \item \textbf{Kriteria Buruk:} Dikatakan \textbf{buruk} apabila LLM menyisipkan terlalu banyak informasi fiktif dari luar konteks spesifikasi.
+    \end{itemize}
+
+    \item \textbf{\textit{Answer Relevance}}\\
+    Mengukur tingkat relevansi antara struktur YAML yang dibangkitkan dan maksud asli dari kueri pengguna \parencite{es_ragas_2023}.
+    \begin{itemize}
+        \item \textbf{Formula:} $\frac{\text{relevant\_answers}}{\text{total\_answers}} \times 100\%$
+        \item \textbf{Kriteria Baik:} Dikatakan \textbf{baik} apabila mencapai target $\geq 85\%$, menandakan pemahaman sistem yang akurat.
+        \item \textbf{Kriteria Buruk:} Dikatakan \textbf{buruk} apabila sistem menghasilkan manifes rapi tetapi tidak sesuai dengan sumber daya yang diminta pengguna.
+    \end{itemize}
 \end{enumerate}
 
-Prinsip tersebut selaras dengan rancangan penelitian ini, terutama pada
-\textit{graph topology construction}, relasi \texttt{\$ref}, serta
-\textit{graph traversal-based retrieval} untuk menyediakan konteks teknis yang akurat.
+\subsection{\textit{Retrieval Quality} (RetQ)}
+Dimensi \textit{Retrieval Quality} dengan bobot 35\% berfokus murni pada evaluasi kemampuan algoritma penelusuran graf dalam menarik konteks skema spesifikasi dokumentasi.
+
+\begin{enumerate}
+    \item \textbf{F1-Score@k}\\
+    Merupakan nilai antara \textit{precision} dan \textit{recall} dari \textit{node} yang berhasil ditarik. Metrik ini lebih bernilai operasional dibandingkan mengukur keduanya secara terpisah \parencite{zhao_rag_survey_2024}.
+    \begin{itemize}
+        \item \textbf{Formula:} $2 \times \frac{\text{Precision@k} \times \text{Recall@k}}{\text{Precision@k} + \text{Recall@k}}$
+        \item \textbf{Kriteria Baik:} Dikatakan \textbf{baik} apabila mencapai target $\geq 0.75$.
+        \item \textbf{Kriteria Buruk:} Dikatakan \textbf{buruk} apabila bernilai rendah, menandakan kueri menarik terlalu banyak konteks tidak relevan (\textit{noise}) atau membuang terlalu banyak konteks penting.
+    \end{itemize}
+
+    \item \textbf{NDCG@k (\textit{Normalized Discounted Cumulative Gain})}\\
+    Mengevaluasi seberapa optimal sistem menempatkan skema paling relevan di urutan peringkat teratas sebelum dikirimkan ke \textit{prompt} LLM \parencite{es_ragas_2023}.
+    \begin{itemize}
+        \item \textbf{Formula:} $\frac{\text{DCG@k}}{\text{IDCG@k}}$ (dengan pembobotan logaritmik)
+        \item \textbf{Kriteria Baik:} Dikatakan \textbf{baik} apabila mencapai target $\geq 0.70$.
+        \item \textbf{Kriteria Buruk:} Dikatakan \textbf{buruk} apabila informasi penting justru berada di urutan bawah sehingga berpotensi terpotong oleh batasan token LLM.
+    \end{itemize}
+
+    \item \textbf{\textit{Graph Coverage}}\\
+    Menghitung persentase cakupan \textit{node} relevan yang berhasil dijangkau oleh algoritma kueri graf.
+    \begin{itemize}
+        \item \textbf{Formula:} $\frac{\text{retrieved\_nodes}}{\text{total\_relevant\_nodes}} \times 100\%$
+        \item \textbf{Kriteria Baik:} Dikatakan \textbf{baik} apabila mencapai target $\geq 80\%$.
+        \item \textbf{Kriteria Buruk:} Dikatakan \textbf{buruk} apabila algoritma gagal memetakan objek utama penyusun infrastruktur.
+    \end{itemize}
+
+    \item \textbf{\textit{Edge Coverage}}\\
+    Merupakan metrik pengujian spesifik GraphRAG penilai interaksi topologi graf guna memastikan aturan semantik antar-objek terimplementasi dengan baik selama proses penarikan informasi.
+    \begin{itemize}
+        \item \textbf{Formula:} $\frac{\text{semantic\_edges\_triggered}}{\text{total\_semantic\_rules}} \times 100\%$
+        \item \textbf{Kriteria Baik:} Dikatakan \textbf{baik} apabila mencapai target $\geq 75\%$, membuktikan pemahaman struktural berfungsi.
+        \item \textbf{Kriteria Buruk:} Dikatakan \textbf{buruk} apabila sistem kesulitan melacak dependensi hierarkis antar-\textit{node}.
+    \end{itemize}
+\end{enumerate}
+
+\subsection{\textit{Reasoning Quality} (ReaQ)}
+Dimensi \textit{Reasoning Quality} dengan bobot 25\% mengevaluasi kapabilitas sistem dalam merangkai alur penalaran dan menghubungkan relasi referensial berlapis di dalam spesifikasi Kubernetes.
+
+\begin{enumerate}
+    \item \textbf{\textit{Hop-Accuracy}}\\
+    Menilai ketepatan algoritma dalam melintasi jalur relasional yang sesuai untuk \textit{multi-hop reasoning}.
+    \begin{itemize}
+        \item \textbf{Formula:} $\frac{\text{correct\_paths}}{\text{total\_multi\_hop\_queries}} \times 100\%$
+        \item \textbf{Kriteria Baik:} Dikatakan \textbf{baik} apabila mencapai target $\geq 80\%$.
+        \item \textbf{Kriteria Buruk:} Dikatakan \textbf{buruk} apabila sistem sering tersesat menelusuri cabang graf yang tidak berhubungan dengan kueri.
+    \end{itemize}
+
+    \item \textbf{\textit{Multi-Hop Success Rate}}\\
+    Mengukur persentase keberhasilan sistem dalam memberikan jawaban YAML utuh pada kueri kompleks penuntut penelusuran lebih dari satu lompatan graf.
+    \begin{itemize}
+        \item \textbf{Formula:} $\frac{\text{multi\_hop\_answered}}{\text{total\_multi\_hop\_queries}} \times 100\%$
+        \item \textbf{Kriteria Baik:} Dikatakan \textbf{baik} apabila mencapai target $\geq 75\%$.
+        \item \textbf{Kriteria Buruk:} Dikatakan \textbf{buruk} apabila sistem hanya mampu merespons instruksi tunggal berskala sederhana.
+    \end{itemize}
+
+    \item \textbf{\textit{Hallucination Rate}}\\
+    Memantau persentase kemunculan atribut fabrikasi atau struktur fiktif yang tidak bersumber dari dokumentasi resmi OpenAPI \parencite{ji_hallucination_2023}.
+    \begin{itemize}
+        \item \textbf{Formula:} $\frac{\text{hallucinated\_facts}}{\text{total\_facts}} \times 100\%$
+        \item \textbf{Kriteria Baik:} Makin rendah skor ini makin baik. Dikatakan \textbf{sangat baik} apabila $\leq 10\%$.
+        \item \textbf{Kriteria Buruk:} Dikatakan \textbf{buruk} apabila melonjak melebihi target tersebut karena memicu kerentanan operasional.
+    \end{itemize}
+
+    \item \textbf{\textit{Scope Accuracy}}\\
+    Menguji ketepatan klasifikasi model terhadap batasan sumber daya spesifik Kubernetes (misalnya pembedaan ketat antara sumber daya \textit{Cluster-scoped} dan \textit{Namespaced}).
+    \begin{itemize}
+        \item \textbf{Formula:} $\frac{\text{correct\_scope\_classification}}{\text{total\_resources}} \times 100\%$
+        \item \textbf{Kriteria Baik:} Dikatakan \textbf{baik} apabila mencapai target $\geq 95\%$.
+        \item \textbf{Kriteria Buruk:} Dikatakan \textbf{buruk} apabila model menempatkan konfigurasi lintas ruang nama secara serampangan.
+    \end{itemize}
+\end{enumerate}

@@ -1,0 +1,37 @@
+\captionsetup[longtable]{justification=raggedright,singlelinecheck=false}
+
+\begin{longtable}{ | p{0.1\textwidth} | p{0.30\textwidth} | p{0.50\textwidth} |}
+\caption{Kebutuhan Non-Fungsional Sistem}
+\label{tbl:nonfungsional} \\
+\hline
+\textbf{Kode} & \textbf{Parameter} & \textbf{Deskripsi Spesifikasi} \\ 
+\hline
+\endfirsthead
+
+\multicolumn{3}{l}{Tabel \ref{tbl:nonfungsional} Kebutuhan Non-Fungsional Sistem (lanjutan)} \\
+\hline
+\textbf{Kode} & \textbf{Parameter} & \textbf{Deskripsi Spesifikasi} \\ 
+\hline
+\endhead
+
+\hline
+\multicolumn{3}{r}{\textit{bersambung ke halaman berikutnya}} \\
+\endfoot
+
+\hline
+\endlastfoot
+
+NF-01 (\textit{Reliability}) & \textit{Fail-Safe Mechanism} & 
+Sistem harus mencegah keluaran halusinasi melalui mekanisme \textit{error handling}, yaitu (1) Jika entitas tidak ditemukan, sistem harus memberi respons ``Entity not found''. (2) Jika YAML terdeteksi tidak valid oleh validator internal, sistem harus menampilkan peringatan ``Warning: Potential Syntax Error'' pada antarmuka CLI pengguna. \\
+\hline
+
+NF-02 (\textit{Performance}) & \textit{Retrieval--Generation Latency} & Waktu total yang dibutuhkan untuk memproses satu permintaan pengguna (\textit{end-to-end latency}) tidak boleh melebihi \textbf{60 detik} pada lingkungan pengujian standar. \\
+\hline
+
+NF-03 (\textit{Usability}) & \textit{CLI Usability Standard} & Antarmuka \textit{Command-Line Interface (CLI)} harus menyediakan pengalaman penggunaan yang konsisten, mudah dipahami, dan informatif. \\
+\hline
+
+NF-04 (\textit{Portability}) & \textit{Resource Constraints} & 
+Seluruh komponen sistem harus dapat dijalankan pada lingkungan lokal (\textit{Local Environment}) dengan spesifikasi perangkat keras terbatas (minimal RAM 8GB), tanpa ketergantungan pada infrastruktur \textit{cloud} terdistribusi. \\ \hline
+
+\end{longtable}

@@ -1,0 +1,30 @@
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\captionsetup{justification=raggedright,singlelinecheck=false}
+
+\begin{tabular}{|p{1cm}|p{6cm}|p{6cm}|}
+\hline
+\textbf{Skala} &
+\textbf{Definisi Kemungkinan (\textit{Likelihood})} &
+\textbf{Definisi Dampak (\textit{Impact}) pada Penelitian} \\ \hline
+
+5 & Hampir Pasti (>90\% terjadi berulang kali). &
+Kritis: Sistem gagal total dan tujuan penelitian tidak tercapai. \\ \hline
+
+4 & Sering (>60\% kemungkinan terjadi). &
+Berat: Fitur inti tidak berfungsi (misalnya YAML selalu error) dan membutuhkan perbaikan besar pada model. \\ \hline
+
+3 & Mungkin (50\% terjadi sewaktu-waktu). &
+Sedang: Penurunan performa (misalnya respon lambat), namun fungsi utama tetap berjalan. \\ \hline
+
+2 & Jarang (<30\% terjadi). &
+Ringan: Gangguan minor yang dapat diperbaiki manual dan tidak mempengaruhi hasil utama penelitian. \\ \hline
+
+1 & Sangat Jarang (<10\% terjadi). &
+Tidak Signifikan: Tidak mempengaruhi kesimpulan atau hasil eksperimen. \\ \hline
+
+\end{tabular}
+\caption{Dimensi Skala Penilaian Risiko: \textit{Likelihood} dan \textit{Impact}}
+\label{tbl:risk_scale}
+\end{table}
