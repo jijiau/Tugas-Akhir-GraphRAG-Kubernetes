@@ -5026,17 +5026,13 @@
     <bcf:citekey order="61" intorder="1">rag_survey</bcf:citekey>
     <bcf:citekey order="62" intorder="1">rag_survey</bcf:citekey>
     <bcf:citekey order="63" intorder="1">wan2025empowering</bcf:citekey>
-    <bcf:citekey order="64" intorder="1">wan2025empowering</bcf:citekey>
-    <bcf:citekey order="65" intorder="1">wan2025empowering</bcf:citekey>
+    <bcf:citekey order="64" intorder="1">he2024gretriever</bcf:citekey>
+    <bcf:citekey order="65" intorder="1">cao2025neusymrag</bcf:citekey>
     <bcf:citekey order="66" intorder="1">wan2025empowering</bcf:citekey>
-    <bcf:citekey order="67" intorder="1">he2024gretriever</bcf:citekey>
-    <bcf:citekey order="68" intorder="1">he2024gretriever</bcf:citekey>
-    <bcf:citekey order="69" intorder="1">cao2025neusymrag</bcf:citekey>
-    <bcf:citekey order="70" intorder="1">wan2025empowering</bcf:citekey>
-    <bcf:citekey order="71" intorder="1">wan2025empowering</bcf:citekey>
-    <bcf:citekey order="72" intorder="1">wan2025empowering</bcf:citekey>
-    <bcf:citekey order="73" intorder="1">wan2025empowering</bcf:citekey>
-    <bcf:citekey order="74" intorder="1">BPBI</bcf:citekey>
+    <bcf:citekey order="67" intorder="1">wan2025empowering</bcf:citekey>
+    <bcf:citekey order="68" intorder="1">wan2025empowering</bcf:citekey>
+    <bcf:citekey order="69" intorder="1">wan2025empowering</bcf:citekey>
+    <bcf:citekey order="70" intorder="1">BPBI</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="cms">

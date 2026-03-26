@@ -43,102 +43,111 @@ validitas sintaksis dibandingkan pendekatan \textit{baseline}.
 \subsection{Pemahaman Data (\textit{Data Understanding})}
 Bagian ini menjelaskan karakteristik data dokumentasi API Kubernetes yang menjadi sumber utama dalam proses konstruksi \textit{Graph-based Retrieval Augmentation}. Analisis mencakup identitas data, struktur, pola hubungan antar objek, keterbatasan kualitas, serta seleksi data relevan yang digunakan dalam penelitian.
 
-\begin{enumerate}
-    \item \textbf{Sumber dan Spesifikasi Data (\textit{Data Source \& Specifications})} \\
+    \subsubsection{Sumber dan Spesifikasi Data (\textit{Data Source \& Specifications})}
     Data penelitian diperoleh dari repositori resmi Kubernetes pada GitHub dengan alamat \texttt{kubernetes/kubernetes}. Data diambil dalam bentuk berkas \texttt{swagger.json} yang mengikuti standar \textit{OpenAPI Specification} (OAS). Penelitian ini menggunakan versi Kubernetes \textbf{v1.30} sebagai acuan. Berkas \texttt{swagger.json} memiliki ukuran rata-rata 3,757 MB dan memuat 2.500--3.500 entitas definisi API. Kompleksitas tersebut menjustifikasi penggunaan metode ekstraksi otomatis, karena pendekatan manual berpotensi menghasilkan kesalahan interpretasi struktur dan kehilangan relasi semantik antar objek.
 
-    \item \textbf{Analisis Struktur Dokumen} \\
-    Berdasarkan inspeksi terhadap struktur \texttt{swagger.json}, terdapat dua komponen utama:
+    \subsubsection{Analisis Struktur Dokumen}
+    Berdasarkan analisis terhadap struktur \texttt{swagger.json}, terdapat dua komponen utama beserta karakteristik hierarkisnya:
     \begin{enumerate}
-        \item \textbf{\textit{Definitions} (atau \textit{components/schemas})} : Mendeskripsikan spesifikasi objek seperti \textit{Pod}, \textit{Service}, dan \textit{Deployment}.
-        \item \textbf{\textit{Paths}} : Mendeskripsikan \textit{endpoint} API, misalnya \texttt{GET /api/v1/pods}, sebagai interface interaksi objek dalam ekosistem Kubernetes.
-    \end{enumerate}
-    \vspace{0.5cm}
-    Struktur tersebut diperkuat dengan mekanisme referensi \texttt{\$ref} yang berfungsi untuk menghubungkan objek tanpa redundansi penulisan. Sebagai contoh, atribut \texttt{spec}  dapat dideklarasikan dengan cara berikut pada objek \texttt{Deployment}:
-\begin{verbatim}
-"$ref": "#/definitions/io.k8s.api.apps.v1.DeploymentSpec"
-\end{verbatim}
-    Mekanisme ini menunjukkan bahwa data dokumentasi Kubernetes secara intrinsik bersifat graf karena terdapat simpul (objek) dan relasi (referensi silang).
-
-    \item \textbf{Analisis Keterhubungan Data} \\
-    Bagian ini menguraikan pola relasi antarkomponen Kubernetes sebagaimana tercermin dalam struktur \texttt{swagger.json}. Pola-pola ini menjadi dasar pembentukan relasi \textit{node--edge} pada \textit{Knowledge Graph} yang dibangun. Secara umum terdapat empat jenis hubungan yang teridentifikasi, yaitu (1) atomik pada Pod, (2) hierarkis, (3) \textit{loose coupling}, dan (4) injeksi konfigurasi.
-
-    \begin{enumerate}
-        \item \textbf{Sifat Atomik pada Pod} \\
-        Berbeda dengan komponen lain, \texttt{Pod} tidak memiliki relasi eksplisit yang menunjuk objek lain melalui skema maupun referensi nama. \texttt{Pod} bertindak sebagai unit eksekusi atomik yang menjadi tujuan dari beberapa mekanisme relasi, seperti seleksi oleh \texttt{Service} (\textit{label matching}), injeksi konfigurasi dari \texttt{ConfigMap} dan \texttt{Secret}, serta pembungkus hierarkis oleh \texttt{Deployment}. Oleh karena itu, relasi Pod bersifat pasif, yakni tidak timbul dari atribut Pod itu sendiri, tetapi dari objek lain yang mengacu kepadanya.
-
-        \item \textbf{Hubungan Hierarkis} \\
-        Objek \texttt{Deployment} tidak mereferensikan \texttt{Pod} melalui ID, tetapi melalui struktur bersarang. Relasi ini muncul pada:
-    \begin{verbatim}
-    spec.template
-    \end{verbatim}
-        Bagian \texttt{template} memuat \texttt{PodSpec} secara lengkap sehingga hubungan Deployment → Pod dikategorikan sebagai relasi hierarkis (\textit{nested composition}). Ekstraksi graf harus melakukan \textit{deep traversal} pada elemen ini untuk menghasilkan node Pod beserta seluruh propertinya.
-
-        \item \textbf{Hubungan \textit{Loose Coupling}} \\
-        Relasi jaringan tidak bersifat hierarkis, tetapi bergantung pada pencocokan nilai atau referensi nama.
+        \item \textbf{\textit{Definitions} (atau \textit{Schema Resources}):} Mendeskripsikan spesifikasi objek infrastruktur seperti \textit{Pod}, \textit{Service}, dan \textit{Deployment}. Hampir seluruh definisi sumber daya mematuhi pola struktural wajib yang terdiri atas \texttt{apiVersion}, \texttt{kind}, \texttt{metadata}, \texttt{spec}, dan \texttt{status}. Namun, isi dari atribut \texttt{spec} sangat bervariasi antar-komponen di dalam teks YAML. Akibatnya, waktu pembuatan konfigurasi meningkat dan pengembang sangat bergantung pada panduan eksternal. Secara spesifik, setiap definisi skema di bagian ini memuat:
         \begin{itemize}
-            \item \textbf{Service ke Pod} menggunakan pencocokan label:
-    \begin{verbatim}
-    spec.selector: { app: nginx }
-    \end{verbatim}
-            Sistem harus mencari Pod lain dengan \texttt{metadata.labels} serupa.
-            
-            \item \textbf{Ingress ke Service} menggunakan referensi nama eksplisit:
-    \begin{verbatim}
-    backend.service.name: "frontend-service"
-    \end{verbatim}
-            Sistem harus mencocokkan nilai tersebut dengan \texttt{metadata.name} milik Service.
+            \item \texttt{properties}: Merepresentasikan ruas (\textit{field}) aktual pada manifes YAML.
+            \item \texttt{type}: Menentukan format tipe data (seperti \textit{object, array, string, integer, boolean}).
+            \item \texttt{required}: Mendefinisikan daftar ruas konfigurasi wajib isi.
+            \item \texttt{description}: Menyediakan dokumentasi tekstual mengenai fungsionalitas ruas.
+            \item \texttt{\$ref}: Bertindak sebagai referensi silang ke definisi skema bersarang (\textit{nested schema}). Ciri utama dari struktur dokumen ini adalah definisi yang saling mereferensikan secara mendalam. Akibatnya, satu ruas YAML dapat mengarah ke berbagai kemungkinan bentuk, meliputi:
+            \begin{itemize}
+                \item Definisi objek skema lain.
+                \item Struktur daftar (\textit{list}).
+                \item Struktur pemetaan (\textit{map}) dengan batasan (\textit{constraint}) khusus.
+            \end{itemize}
         \end{itemize}
-
-        \item \textbf{Hubungan \textit{Injection}} \\
-        Pod tidak menyimpan nilai konfigurasi secara langsung, tetapi mengambilnya dari node eksternal melalui referensi nama. Relasi ini bersifat satu arah (Pod → ConfigMap/Secret) dan ditandai oleh pola penggunaan pada Kode \ref{lst:contoh-yaml}: \\
-    \begin{minipage}{0.85\textwidth}
-    \begin{lstlisting}[language=bash, frame=single, caption={Contoh konfigurasi YAML}, captionpos=t, label={lst:contoh-yaml}]
-    env:
-    valueFrom:
-        configMapKeyRef:
-        name: "app-config"
-    \end{lstlisting}
-    \end{minipage}
-
-        serta bentuk lainnya seperti Kode \ref{lst:contoh-yaml-secret}: \\
-    \begin{minipage}{0.85\textwidth}
-    \begin{lstlisting}[language=bash, frame=single, caption={Contoh konfigurasi YAML dengan Secret}, captionpos=t, label={lst:contoh-yaml-secret}]
-    env:
-    valueFrom:
-        secretKeyRef:
-        name: "db-secret"
-    \end{lstlisting}
-    \end{minipage}
-
-        Selain itu, referensi juga dapat muncul melalui \texttt{envFrom.configMapRef}, \texttt{volume.configMap}, dan \texttt{volume.secret}. Mekanisme ini menciptakan relasi injeksi konfigurasi, yaitu nilai dari ConfigMap/Secret diambil dan dimasukkan ke lingkungan eksekusi Pod.
-    \end{enumerate}
-
-    \item \textbf{Karakteristik Komponen Target} \\
-    Berdasarkan batasan masalah, penelitian ini hanya memfokuskan ekstraksi data pada enam entitas utama yang digunakan untuk membentuk arsitektur aplikasi bersifat \textit{stateless}. Analisis struktur JSON dari masing-masing objek dilakukan untuk mengidentifikasi pola relasi serta properti penting yang relevan bagi konstruksi graf.
-
-    \input{tables/tabel5}
-
-    \item \textbf{Penilaian Kualitas dan Keterbatasan Data} \\
-    Analisis menunjukkan beberapa isu kualitas data yang relevan terhadap sistem RAG, antara lain:
-    \begin{enumerate}
-        \item \textbf{Isu \textit{deep nesting}}, yaitu beberapa atribut berada hingga tingkat kedalaman 5--6 lapisan, misalnya:
-\begin{verbatim}
-spec.template.spec.containers.resources.limits
-\end{verbatim}
-        Kedalaman ini berpotensi mengurangi kemampuan \textit{vector embedding} dalam menjaga konteks semantik.
         
-        \item \textbf{Isu ambiguitas leksikal}, yaitu kata kunci seperti \texttt{spec} muncul ribuan kali dan dapat merujuk pada puluhan entitas berbeda. Hal ini membuktikan bahwa pendekatan pencarian berbasis kata kunci tidak memadai tanpa interpretasi struktur skematik.
+        \item \textbf{\textit{Paths}:} Mendeskripsikan titik akhir (\textit{endpoint}) API, misalnya \texttt{GET /api/v1/pods}, sebagai antarmuka interaksi objek dalam ekosistem Kubernetes. Setiap titik akhir memiliki atribut penentu interaksi komunikasi yang memuat:
+        \begin{itemize}
+            \item Metode HTTP fungsional (\textit{GET, POST, PUT, PATCH, DELETE}).
+            \item Parameter injeksi pada jalur (\textit{path}) dan kueri (\textit{query}).
+            \item Skema balasan dari peladen (\textit{response schema}).
+            \item Relasi struktural pembentuk fungsionalitas yang mengarah kembali ke blok \texttt{definitions}.
+        \end{itemize}
     \end{enumerate}
 
-\end{enumerate}
+    \subsubsection{Analisis Data Eksploratif Spesifikasi OpenAPI}
+
+        Sebelum merancang skema \textit{knowledge graph}, analisis data eksploratif (\textit{Exploratory Data Analysis} / EDA) dilakukan terhadap berkas \texttt{kubernetes\_swagger.json} berukuran 3,67 MB guna memetakan skala, kompleksitas struktural, dan sebaran entitas spesifikasi. Proses ekstraksi awal berhasil mengidentifikasi 735 definisi skema. Sebanyak 5 entitas diabaikan karena teridentifikasi sebagai data bising (\textit{noise}), menyisakan 730 entitas valid untuk dievaluasi lebih lanjut.
+
+        Temuan utama dari proses EDA ini dikelompokkan ke dalam tiga metrik krusial:
+
+        \begin{enumerate}
+            \item \textbf{Distribusi Entitas \textit{root} vs komponen pendukung}\\
+            Klasifikasi entitas menunjukkan ketimpangan proporsi yang sangat signifikan antara objek utama dan objek pendukung. Dari total 730 definisi, hanya 183 entitas (24,9\%) terklasifikasi sebagai sumber daya akar (\textit{root resources}). Entitas akar ini merupakan objek mandiri penyandang atribut \textit{GroupVersionKind} (GVK) seperti \textit{Deployment} atau \textit{Pod} sehingga dapat diterapkan secara langsung ke dalam klaster. Sementara itu, mayoritas mutlak sebanyak 547 entitas (75,1\%) hanyalah skema pendukung (\textit{sub-resources}) pembangun komponen akar tersebut. Ketimpangan ini membuktikan betapa masifnya dependensi struktural di dalam Kubernetes.
+                \begin{figure}[H]
+                    \centering
+                    \captionsetup{justification=centering}
+                    \includegraphics[width=1.00\textwidth]{images/Proporsi-root-komponen.jpeg}
+                    \caption{Proporsi Entitas \textit{Root} vs Komponen Pendukung dalam Spesifikasi OpenAPI Kubernetes}
+                    \label{fig:kubernetes-architecture}
+                \end{figure}
+
+            \item \textbf{Kepadatan Properti dan Intensitas Referensi Silang}\\
+            Inspeksi terhadap struktur properti mengungkap bahwa setiap definisi rata-rata memuat 4,1 ruas (\textit{field}), dengan entitas paling kompleks menampung hingga 44 ruas parameter. Temuan paling krusial pemvalidasi tingginya kompleksitas hierarki adalah keberadaan referensi silang (\texttt{\$ref}). Sebanyak 437 definisi (hampir 60\% dari total data) terbukti mengandalkan referensi ke skema lain dengan rata-rata 1,11 referensi per entitas. Tingginya intensitas referensi ini secara kuantitatif memvalidasi argumen mengenai sulitnya melacak skema bersarang (\textit{nested schema}) secara manual.
+        \end{enumerate}
+
+        Keseluruhan temuan kuantitatif EDA ini secara langsung menjadi landasan arsitektural dalam perancangan skema graf. Pemetaan atas 149 jenis (\textit{kind}) sumber daya unik hasil analisis ini secara presisi diproyeksikan akan membentuk sebuah \textit{knowledge graph} Kubernetes yang memuat 730 simpul (\textit{nodes}) pendefinisi objek beserta estimasi 1.486 garis relasi (\textit{edges}) pembentuk topologi infrastrukturnya.
+    
+    \subsubsection{Analisis Keterhubungan Data}
+        \begin{enumerate}
+            \item \textbf{Relasi Tingkat Skema (\textit{Schema-Level}) -- Tercakup Penuh 100\%} \\
+            Kategori ini terpetakan dan direpresentasikan secara utuh di dalam graf karena bersumber langsung dari struktur statis spesifikasi OpenAPI. Relasi pada tingkat ini mencakup:
+            \begin{itemize}
+                \item \textbf{Sifat Atomik \texttt{Pod} (\textit{Passive Relationships}):} \texttt{Pod} bertindak sebagai unit eksekusi atomik pasif tanpa relasi skema eksplisit ke luar. Relasinya terbentuk secara pasif akibat interaksi struktural dari objek eksternal.
+                \item \textbf{Komposisi Hierarkis (\textit{Hierarchical Composition}):} Terjadi ketika satu objek mengandung definisi objek lain secara utuh. Contoh utamanya adalah \texttt{Deployment} mereferensikan \texttt{Pod} melalui blok \texttt{spec.template} penyimpan keseluruhan spesifikasi \texttt{PodSpec}.
+                \item \textbf{Referensi Langsung (\textit{Direct Reference \& Injection}):} Terjadi ketika sebuah objek memanggil objek lain secara eksplisit pada parameternya. Contohnya adalah injeksi konfigurasi satu arah dari \texttt{ConfigMap} atau \texttt{Secret} ke lingkungan eksekusi \texttt{Pod} seperti pada Kode \ref{lst:contoh-yaml} dan \ref{lst:contoh-yaml-secret}.
+            \end{itemize}
+
+            \begin{minipage}{0.48\textwidth}
+        \begin{lstlisting}[language=bash, frame=single, caption={Injeksi ConfigMap}, captionpos=b, label={lst:contoh-yaml}]
+        env:
+        valueFrom:
+            configMapKeyRef:
+            name: "app-config"
+        \end{lstlisting}
+            \end{minipage}\hfill
+            \begin{minipage}{0.48\textwidth}
+        \begin{lstlisting}[language=bash, frame=single, caption={Injeksi Secret}, captionpos=b, label={lst:contoh-yaml-secret}]
+        env:
+        valueFrom:
+            secretKeyRef:
+            name: "db-secret"
+        \end{lstlisting}
+            \end{minipage}
+
+            \vspace{0.3cm}
+            \item \textbf{Relasi Semi-Statis (\textit{Semi-Static}) -- Tercakup Parsial} \\
+            Kategori ini terpetakan ke dalam graf secara konseptual atau sebagai entitas properti, namun tidak membentuk jalur semantik fungsional penuh.
+            \begin{itemize}
+                \item \textbf{Asosiasi Label/Selektor (\textit{Label/Selector Association}):} Direpresentasikan sekadar sebagai garis relasi konseptual pembentuk topologi graf.
+                \item \textbf{Deteksi Cakupan Klaster (\textit{Cluster-Scope Detection}):} Pembatasan area operasional tidak dipetakan sebagai ruang graf terpisah melainkan diakomodasi melalui atribut properti cakupan (\textit{scope property}) pada setiap simpul.
+                \item \textbf{Anotasi dan Toleransi (\textit{Annotations/Tolerations}):} Nilai konfigurasi tambahan ini hanya disimpan sebagai properti pada simpul tanpa memicu pembentukan garis relasi semantik (\textit{semantic edges}) dengan objek lain.
+            \end{itemize}
+
+            \item \textbf{Relasi Tingkat Operasional (\textit{Runtime-Level}) -- Tidak Tercakup} \\
+            Kategori ini secara mutlak berada di luar cakupan fungsional sistem GraphRAG. Relasi pada tingkat ini mencakup:
+            \begin{itemize}
+                \item \textbf{Hierarki Kepemilikan (\textit{OwnerReferences}):} Merupakan atribut metadata operasional penentu pengumpulan sampah sumber daya (\textit{garbage collection}) saat infrastruktur berjalan.
+                \item \textbf{Interaksi Lintas Ruang Nama (\textit{Cross-Namespace Interactions}):} Melibatkan perilaku pembatas akses operasional jaringan secara langsung (\textit{runtime behavior}).
+                \item \textbf{Logika Pencocokan Label (\textit{Label Matching Logic}):} Merupakan proses komputasi evaluasi dinamis oleh layanan klaster untuk menentukan target pembagian beban jaringan sesungguhnya.
+            \end{itemize}
+
+            \item \textbf{Keterbatasan Inheren dan Pengembangan Lanjutan} \\
+            Ketiadaan pemetaan pada relasi tingkat operasional merupakan batasan inheren dalam penelitian ini. Hal ini terjadi karena arsitektur GraphRAG dibangun secara eksklusif bermodalkan skema OpenAPI (\texttt{swagger.json}) penyedia representasi struktur statis dan bukan pembaca status klaster yang sedang beroperasi (\textit{runtime state}). Sebagai langkah pengembangan lanjutan (\textit{future work}) guna mengakomodasi kasus penggunaan pelacak relasi dinamis, sistem pemetaan graf ini dapat diintegrasikan secara langsung dengan mekanisme pemantauan kontroler Kubernetes (\textit{controller watch mechanism}) atau penerapan pola operator (\textit{operator pattern}).
+        \end{enumerate}
 
 \section{Analisis Kebutuhan}
 Tahap analisis kebutuhan berfokus pada identifikasi kapabilitas yang harus
 dimiliki sistem guna menjawab tujuan penelitian dan kebutuhan bisnis. Untuk memastikan bahwa kebutuhan yang dirumuskan bersifat relevan 
 dengan masalah yang dihadapi, dilakukan analisis \textit{technical GAP} pada pendekatan eksisting yang ada
 pada sistem \textit{Retrieval-Augmented Generation} pada Tabel \ref{tbl:comparison_existing_graphRAG}. 
-
 \input{tables/tabel12.tex}
 
 \subsection{Kebutuhan Fungsional}
@@ -148,13 +157,10 @@ teknis (\textit{technical gaps}) yang menjadi dasar perumusan kebutuhan sistem.
 Setiap \textit{technical gap} kemudian dijawab melalui
 perancangan kebutuhan fungsional yang akan
 diimplementasikan untuk menyelesaikan permasalahan bisnis yang ada.
-
 Tabel \ref{tbl:mapping_business_gap_functional} berikut memetakan hubungan antara kebutuhan bisnis, \textit{technical gap}, serta kebutuhan fungsional yang dirumuskan untuk mengatasinya.
 
 \input{tables/tabel15.tex}
-
 Berdasarkan hasil pemetaan pada Tabel \ref{tbl:mapping_business_gap_functional}, berikut adalah kebutuhan fungsional yang dibutuhkan oleh sistem,
-
 \input{tables/tabel1}
 
 \subsection{Kebutuhan Non Fungsional}
@@ -165,66 +171,19 @@ Kebutuhan non-fungsional mendefinisikan karakteristik kualitas yang harus dimili
 Bagian ini membahas berbagai alternatif solusi yang dapat diimplementasikan untuk memenuhi kebutuhan sistem yang telah diidentifikasi sebelumnya.
 
 \subsection{Hybrid KG--Vector RAG}
+Pendekatan \textit{hybrid KG--Vector RAG} menggabungkan dua jalur pencarian paralel, yakni \textit{vector-based RAG} untuk pencarian semantik efisien dan \textit{knowledge graph} (KG) berbasis metadata untuk penalaran relasional \parencite{wan2025empowering}. Kueri pengguna diproses melalui ekstraksi entitas untuk menarik subgraf relevan dari KG sekaligus mengambil potongan teks melalui pencarian kemiripan vektor. Kedua konteks terstruktur dan semantik ini kemudian digabungkan sebagai basis generasi bagi LLM. 
 
-Pendekatan yang diusulkan oleh \textcite{wan2025empowering} adalah \textit{hybrid KG--Vector RAG} untuk \textit{domain-centric Q\&A} di bidang \textit{smart manufacturing} (DfAM). Inti gagasan dari metode ini adalah menggabungkan dua jalur retrieval, yaitu (1) \textbf{vector-based RAG} yang efisien namun cenderung kurang akurat secara kontekstual, dan (2) \textbf{graph-based RAG} berbasis metadata \textit{knowledge graph} yang mampu melakukan penalaran relasional tetapi kurang baik dalam bagian skala dan fleksibilitas. Alih-alih memilih salah satu, solusi ini membangun \textit{pipeline} yang mengoptimalkan keduanya.
+Metode ini terbukti secara efektif meningkatkan akurasi faktual dan kesesuaian domain dibandingkan RAG konvensional. Konsekuensi logis dari penggabungan ini adalah lonjakan latensi sistem akibat tingginya beban komputasi penelusuran graf (\textit{traversal overhead}) dan kompleksitas penyempurnaan \textit{prompt}.
 
-Secara metodologis, pendekatan ini dimulai dari pengumpulan korpus domain-spesifik yang kemudian diolah menjadi dua representasi paralel, yaitu (a) \textit{vector store} hasil \textit{chunking} teks dan pembuatan \textit{embedding} (\textit{text-embedding-3-small}) untuk retrieval semantik, dan (b) metadata-based KG di Neo4j yang memetakan entitas seperti dokumen, topik, dan kata kunci ke dalam tripel terarah. Lapisan KG ini tidak merepresentasikan struktur sintaksis kode, tetapi struktur konseptual.  
+\subsection{\textit{GNN-augmented GraphRAG} (G-Retriever)}
+Arsitektur G-Retriever dirancang khusus untuk menangani pemahaman graf tekstual berskala besar dengan memadukan \textit{Graph Neural Networks} (GNN) dan LLM \parencite{he2024gretriever}. Sistem ini mereduksi ukuran konteks kueri melalui algoritma \textit{Prize-Collecting Steiner Tree} (PCST) guna membangun subgraf koheren berisi simpul dan garis paling informatif sebelum disuntikkan ke dalam LLM. 
 
-Tahap berikutnya adalah \textit{semantic alignment} dengan menyuntikkan \textit{domain constraints} dan \textit{schema constraints} ke dalam proses retrieval. \textit{Hard constraint} digunakan untuk menjaga kebenaran faktual, sedangkan \textit{schema constraint} membatasi jenis relasi yang boleh muncul sesuai ontologi domain.
+Keunggulan absolut metode ini terletak pada efisiensi skala besar dan mitigasi halusinasi. Pendekatan ekstraksi subgraf ini mampu memangkas penggunaan token hingga 99\% sekaligus menaikkan tingkat validitas simpul secara drastis dari 31\% menjadi 77\% tanpa menuntut proses \textit{fine-tuning} pada LLM.
 
-Pada tahap \textbf{hybrid KG--Vector RAG}, \textit{query} pengguna terlebih dahulu diekstraksi entitasnya (NER) yang kemudian dilakukan proses berikut, (1) dilakukan \textit{node \& relation retrieval} pada KG untuk mendapatkan subgraf relevan, dan (2) jika diperlukan jawaban lebih rinci, sistem menambahkan \textit{vector similarity search} untuk mengambil \textit{text chunks} yang paling dekat secara semantik. Kedua konteks ini lalu digabung dan diproses LLM (GPT-4o / GPT-4o mini / DeepSeek V2 ) dengan \textit{prompt engineering} sebagai lapisan tambahan (KG--Vector + PE).
+\subsection{\textit{Hybrid Neural-Symbolic} dengan \textit{Relational DB} (NeuSym-RAG)}
+Metode NeuSym-RAG memadukan model neural dengan basis pengetahuan simbolik berbasis aturan di dalam sebuah basis data relasional \parencite{cao2025neusymrag}. Pendekatan ini menyimpan entitas di dalam tabel terstruktur dan mengeksekusi aturan simbolik untuk memvalidasi hasil inferensi LLM secara ketat dan deterministik. 
 
-Dari sisi evaluasi, \textcite{wan2025empowering} mengukur tiga metrik generik RAG, yaitu \textit{Exact Match} (EM), \textit{Context Precision} (CP), dan \textit{latency}. Pada konfigurasi terbaik (KG--Vector + \textit{prompt enhancement} dengan GPT-4o), mereka melaporkan EM sebesar 77{,}8\% dan CP sebesar 76{,}5\%, mengungguli \textit{vector-only RAG} dan \textit{KG-only RAG}. Selain itu, studi ini juga menggunakan \textit{LLM-as-a-judge} untuk menilai jawaban dari sisi akurasi teknis dan kesesuaian domain, dengan skor rata-rata tertinggi 7{,}83 untuk kombinasi GPT-4o + KG--Vector + PE. Trade-off yang muncul adalah peningkatan \textit{latency}: \textit{vector-only} merupakan yang tercepat, sedangkan \textit{KG--Vector + PE} paling akurat namun paling lambat karena overhead traversal KG dan \textit{prompt refinement}.
-
-\subsection{Pendekatan \textit{GNN-augmented GraphRAG} (G-Retriever)}
-Pendekatan G-Retriever merupakan arsitektur \textit{retrieval-augmented generation} (RAG) yang dirancang secara khusus untuk pemahaman graf tekstual berskala besar dengan memadukan kemampuan \textit{Graph Neural Networks} (GNN) dan \textit{Large Language Models} (LLM). Model ini dikembangkan untuk menangani pertanyaan kompleks terhadap graf yang memiliki atribut tekstual, sekaligus mengurangi halusinasi melalui mekanisme \textit{subgraph retrieval} yang terstruktur \cite{he2024gretriever}.
-
-G-Retriever diperkenalkan untuk menjawab tantangan utama pada LLM ketika berhadapan dengan data bergraf besar, yaitu (1) keterbatasan konteks LLM terhadap graf yang memiliki ribuan \textit{node} dan \textit{edge}, (2) tingginya risiko halusinasi ketika model hanya bergantung pada representasi terkompresi, serta (3) kebutuhan untuk mengekstrak bagian graf yang paling relevan terhadap kueri. Berbeda dengan metode graf-konvensional atau RAG berbasis teks datar, G-Retriever tidak mengandalkan teks atau \textit{embedding} saja, tapi mengandalkan topologi graf dalam proses \textit{retrieval} nya sehingga hasil generasi didasarkan pada sub-graf yang valid dan dapat diverifikasi.
-
-Secara umum, G-Retriever terdiri atas empat tahap utama, yaitu \textit{indexing}, \textit{retrieval}, \textit{subgraph construction}, dan \textit{generation} \cite{he2024gretriever}.
-
-\begin{enumerate}
-    \item \textbf{\textit{Indexing}}\\
-    Pada tahap ini, setiap node dan edge dalam graf diubah menjadi representasi numerik menggunakan model bahasa seperti Sentence-BERT. Atribut tekstual (misalnya label node, deskripsi, atau tipe relasi) dieks­traksi dan dienkode untuk disimpan dalam struktur indeks \textit{nearest neighbor}. Proses ini memungkinkan sistem menemukan node yang paling relevan berdasarkan kemiripan semantik.
-
-    \item \textbf{\textit{Retrieval}}\\
-    Kueri pengguna diubah ke dalam \textit{embedding} dan dibandingkan menggunakan \textit{cosine similarity} untuk menemukan $k$ node dan \textit{edge} paling relevan. Proses ini tidak hanya memfokuskan pencarian pada elemen graf yang memiliki hubungan semantik tinggi, tetapi juga memastikan bahwa proses retrieval tidak bergantung sepenuhnya pada generasi LLM sehingga meminimalkan potensi halusinasi.
-
-    \item \textbf{\textit{Subgraph Construction}}\\
-    Tahap kritis dari G-Retriever adalah membangun sub-graf yang koheren menggunakan algoritma \textit{Prize-Collecting Steiner Tree} (PCST). Algoritma ini memilih \textit{node} dan \textit{edge} yang paling informatif sambil menjaga ukuran sub-graf tetap kecil agar muat dalam konteks LLM. PCST memberikan mekanisme matematis yang menyeimbangkan antara “hadiah” (relevansi semantik) dan “biaya” (ukuran graf) sehingga hanya struktur yang benar-benar relevan yang dikirimkan kepada LLM. 
-
-    \item \textbf{\textit{Generation}}\\
-    Sub-graf hasil PCST kemudian diubah ke dalam bentuk tekstual melalui proses \textit{textualization} dan diberikan kepada LLM sebagai bagian dari \textit{prompt}. Sebuah \textit{graph encoder} (misalnya GAT atau Graph Transformer) digunakan untuk menghasilkan \textit{graph token} yang berfungsi sebagai \textit{soft prompt}. LLM tanpa \textit{fine-tuning} kemudian menghasilkan jawaban yang selaras dengan struktur dan konteks sub-graf.
-\end{enumerate}
-
-Hasil eksperimen yang disampaikan dalam dokumen menunjukkan bahwa G-Retriever meningkatkan performa signifikan di berbagai skenario graf. Temuan pentingnya meliputi:
-
-\begin{enumerate}
-    \item Peningkatan akurasi. Dalam konfigurasi \textit{frozen LLM}, G-Retriever mencapai peningkatan rata-rata 30--47\% dibanding metode \textit{prompt tuning} graf konvensional.
-    \item Efisiensi skala besar. Jumlah token dapat dikurangi hingga 83--99\% setelah tahap \textit{retrieval}, memungkinkan LLM bekerja pada graf besar tanpa kehilangan konteks penting.
-    \item Mitigasi halusinasi. Validitas node meningkat dari 31\% menjadi 77\% dan validitas edge dari 12\% menjadi 76\%. Hal ini menunjukkan bahwa pengambilan data langsung dari graf secara substansial mengurangi risiko halusinasi.
-\end{enumerate}
-
-Secara keseluruhan, G-Retriever memberikan fondasi kuat sebagai alternatif solusi untuk penelitian ini. Pendekatan ini menonjol karena menggabungkan \textit{retrieval} berbasis struktur graf dan generasi LLM secara efektif.
-
-\subsection{\textit{Hybrid Neural-Symbolic} dengan Relational DB (Pendekatan NeuSym-RAG)}
-
-NeuSym-RAG menggabungkan model neural dengan basis pengetahuan simbolik berbasis aturan \parencite{cao2025neusymrag}. Penelitian tersebut menggunakan basis data relasional (\textit{relational DB}) untuk menyimpan entitas dan atribut dalam format tabel yang disusun secara terstruktur. Sistem ini kemudian mengeksekusi aturan simbolik (\textit{symbolic rules}) untuk memvalidasi hasil inferensi LLM secara deterministik.
-
-Jika diadaptasikan untuk Kubernetes, skema tabel dapat dibuat untuk menyimpan objek seperti:
-
-\begin{enumerate}
-    \item Tabel \textit{Workloads} berisi \texttt{Pod}, \texttt{Deployment}, beserta \texttt{replica specifications};
-    \item Tabel \textit{Networking} berisi \texttt{Service}, \texttt{Ingress} beserta \texttt{selector-labelling rules};
-    \item Tabel \textit{Configuration} berisi \texttt{ConfigMap} dan \texttt{Secret}.
-\end{enumerate}
-
-Validasi konfigurasi YAML kemudian dilakukan melalui aturan simbolik, misalnya:
-\begin{center}
-``Jika \texttt{Service.selector} tidak cocok dengan \texttt{Pod.labels}, maka YAML tidak valid.''
-\end{center}
-
-Meskipun dapat menghasilkan validasi deterministik yang kuat, pendekatan \textit{Relational DB} memiliki kelemahan utama untuk domain Kubernetes, yaitu banyaknya operasi \textit{join} yang diperlukan untuk menelusuri relasi antar objek yang tersusun hierarkis dalam OpenAPI JSON. Kompleksitas ini mengakibatkan kinerja kueri tidak efisien ketika relasi melibatkan lebih dari dua tingkat kedalaman (\textit{multi-hop}), seperti pada kasus hubungan \texttt{Deployment} $\rightarrow$ \texttt{PodTemplate} $\rightarrow$ \texttt{Container} $\rightarrow$ \texttt{ConfigMap/Secret}.
+Meskipun menawarkan validasi deterministik sangat kuat, pendekatan ini memiliki kelemahan arsitektural fatal jika diaplikasikan pada domain dokumen Kubernetes. Skema penyimpanan relasional menuntut terlalu banyak operasi \textit{join} kompleks untuk menelusuri relasi hierarkis bersarang (\textit{multi-hop}) dari spesifikasi OpenAPI sehingga kinerja komputasi kueri menjadi sangat tidak efisien.
 
 \section{Analisis Pemilihan Solusi}
 Bagian ini bertujuan menentukan pendekatan pemecahan masalah yang paling sesuai untuk membangun sistem \textit{Graph-based Retrieval} pada dokumentasi API Kubernetes. Evaluasi dilakukan dengan membandingkan beberapa alternatif solusi berdasarkan kriteria yang disesuaikan dengan karakteristik konfigurasi \textit{cloud-native} yang bersifat deklaratif, terstruktur, dan saling bergantung secara hierarkis.

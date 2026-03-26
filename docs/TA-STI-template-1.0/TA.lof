@@ -112,6 +112,7 @@
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {III.1}{\ignorespaces Proporsi Entitas \textit {Root} vs Komponen Pendukung dalam Spesifikasi OpenAPI Kubernetes}}{32}{figure.caption.18}%
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
@@ -137,9 +138,16 @@
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {IV.1}{\ignorespaces rancangan solusi berdasarkan metodologi CRISP--DM}}{46}{figure.caption.20}%
+\contentsline {figure}{\numberline {IV.2}{\ignorespaces \textit {Architecture Diagram} Solusi \textit {GraphRAG} untuk Mitigasi Halusinasi pada Sistem RAG--LLM}}{50}{figure.caption.21}%
+\contentsline {figure}{\numberline {IV.3}{\ignorespaces Diagram Urutan (\textit {Sequence Diagram}) Alur Kerja Sistem GraphRAG}}{51}{figure.caption.22}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
