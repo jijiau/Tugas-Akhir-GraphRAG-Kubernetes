@@ -53,6 +53,103 @@
       \verb 10.1016/j.knosys.2025.114896
       \endverb
     \endentry
+    \entry{cao2025neusymrag}{misc}{}
+      \name{author}{11}{}{%
+        {{un=0,uniquepart=base,hash=d1ac1086388bdb7ae479168dc6cdcfaa}{%
+           family={Cao},
+           familyi={C\bibinitperiod},
+           given={Ruisheng},
+           giveni={R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=a247cb98e069c8676e7d766e1f794dfe}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Hanchong},
+           giveni={H\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=44f14a42ba07c25a6e0952e5ae65497a}{%
+           family={Huang},
+           familyi={H\bibinitperiod},
+           given={Tiancheng},
+           giveni={T\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=7ba03783241f24226bce04a5c8ac7b45}{%
+           family={Kang},
+           familyi={K\bibinitperiod},
+           given={Zhangyi},
+           giveni={Z\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=56a5598e06082938c7a8af33a5c8614f}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Yuxin},
+           giveni={Y\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=e9072c4c4c01f001a3660af174aaaba9}{%
+           family={Sun},
+           familyi={S\bibinitperiod},
+           given={Liangtai},
+           giveni={L\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=8b5e1852225511521f9db19e844c4f56}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={Hanqi},
+           giveni={H\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=f64c3f1307cabea4351a1fb35599f3df}{%
+           family={Miao},
+           familyi={M\bibinitperiod},
+           given={Yuxun},
+           giveni={Y\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=48a8e571b1017b1b93ae0ecb16c60b1a}{%
+           family={Fan},
+           familyi={F\bibinitperiod},
+           given={Shuai},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=54a3c319195500d522f4318c883d3e82}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={Lu},
+           giveni={L\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=f5a13dcc79cf0ffe67e50260860f709a}{%
+           family={Yu},
+           familyi={Y\bibinitperiod},
+           given={Kai},
+           giveni={K\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{2a7efaa54cca461c5a77ac0c282d2b70}
+      \strng{fullhash}{59ed41d138a30c936767378118728dc4}
+      \strng{bibnamehash}{12b7075fa1ce57689860f9f2def3bae7}
+      \strng{authorbibnamehash}{12b7075fa1ce57689860f9f2def3bae7}
+      \strng{authornamehash}{2a7efaa54cca461c5a77ac0c282d2b70}
+      \strng{authorfullhash}{59ed41d138a30c936767378118728dc4}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{eprintclass}{cs.CL}
+      \field{eprinttype}{arXiv}
+      \field{howpublished}{arXiv preprint}
+      \field{note}{Version 2, released 31 May 2025}
+      \field{title}{{NeuSym-RAG: Hybrid Neural Symbolic Retrieval with Multiview Structuring for PDF Question Answering}}
+      \field{year}{2025}
+      \verb{eprint}
+      \verb 2505.19754
+      \endverb
+      \verb{urlraw}
+      \verb file:///mnt/data/2 - NeuSym-RAG.pdf
+      \endverb
+      \verb{url}
+      \verb file:///mnt/data/2%20-%20NeuSym-RAG.pdf
+      \endverb
+    \endentry
     \entry{cncf_2023_survey}{misc}{}
       \name{author}{1}{}{%
         {{un=0,uniquepart=base,hash=0cb2a59444ef04aeca44654441071c35}{%
@@ -307,6 +404,73 @@
       \field{labeltitlesource}{author}
       \field{journaltitle}{arXiv preprint arXiv:2501.00309}
       \field{title}{Retrieval-augmented generation with graphs (GraphRAG)}
+      \field{year}{2024}
+    \endentry
+    \entry{he2024gretriever}{unpublished}{}
+      \name{author}{8}{}{%
+        {{un=0,uniquepart=base,hash=ebba55921bac5d290c9d601598d539c6}{%
+           family={He},
+           familyi={H\bibinitperiod},
+           given={Xiaoxin},
+           giveni={X\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=43f863a0630436142c7e1d0ee1ff621e}{%
+           family={Tian},
+           familyi={T\bibinitperiod},
+           given={Yijun},
+           giveni={Y\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=5cd3167053bbceea63fe80ab1fdafe50}{%
+           family={Sun},
+           familyi={S\bibinitperiod},
+           given={Yifei},
+           giveni={Y\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=07f6b2699d3cab07b3a5b04353899cba}{%
+           family={Chawla},
+           familyi={C\bibinitperiod},
+           given={Nitesh\bibnamedelima V.},
+           giveni={N\bibinitperiod\bibinitdelim V\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=d66f49f9b67b04f4f98b4d839f2af5e8}{%
+           family={Laurent},
+           familyi={L\bibinitperiod},
+           given={Thomas},
+           giveni={T\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=6a1aa6b7eab12b931ca7c7e3f927231d}{%
+           family={LeCun},
+           familyi={L\bibinitperiod},
+           given={Yann},
+           giveni={Y\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=26bf36a5046daec764f03647500c3871}{%
+           family={Bresson},
+           familyi={B\bibinitperiod},
+           given={Xavier},
+           giveni={X\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=b5c2ebc85fb8cba01d66e9eaaae19fd1}{%
+           family={Hooi},
+           familyi={H\bibinitperiod},
+           given={Bryan},
+           giveni={B\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{f0cd9f979b8a81eecca81cb2e52201bf}
+      \strng{fullhash}{b29709e502c842965ea5876b5415f082}
+      \strng{bibnamehash}{b29709e502c842965ea5876b5415f082}
+      \strng{authorbibnamehash}{b29709e502c842965ea5876b5415f082}
+      \strng{authornamehash}{f0cd9f979b8a81eecca81cb2e52201bf}
+      \strng{authorfullhash}{b29709e502c842965ea5876b5415f082}
+      \field{sortinit}{H}
+      \field{sortinithash}{23a3aa7c24e56cfa16945d55545109b5}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Unpublished manuscript, based on user-provided document; no official venue or URL available}
+      \field{title}{G-Retriever: Retrieval-Augmented Generation for Textual Graph Understanding and Question Answering}
       \field{year}{2024}
     \endentry
     \entry{hofer2024construction}{article}{}
@@ -1085,8 +1249,6 @@
     \endentry
   \enddatalist
   \missing{BPBI}
-  \missing{laudon2020}
-  \missing{pressman2019}
 \endrefsection
 \endinput
 

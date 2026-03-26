@@ -4,7 +4,74 @@
 \cleardoublepage
 \chapter{PERANCANGAN}
 \label{chap:perancangan}
-Ilustrasikan desain konsep solusi dalam bentuk model konseptual dan penjelasan secara ringkas, 
-beserta perbedaannya dengan sistem saat ini. Ilustrasi harus dapat dibandingkan (\textit{before} and \textit{after}). 
-Karena masih berupa proposal, bab ini hanya berisi gambar desain konsep solusi tersebut dan 
-penjelasan perbandingannya dengan gambar sistem yang ada saat ini (yang tergambar di awal Bab \ref{chap:analisis-masalah}).
+
+\section{Rancangan Solusi Secara Garis Besar}
+
+Berdasarkan hasil analisis karakteristik data, pola keterhubungan komponen Kubernetes,
+serta pemetaan kebutuhan fungsional dan non-fungsional yang telah dijelaskan pada 
+bagian sebelumnya, langkah selanjutnya adalah merumuskan rancangan solusi yang akan 
+dikembangkan dalam penelitian ini. Rancangan solusi ini disusun secara sistematis 
+mengacu pada metodologi \textit{Cross-Industry Standard Process for Data Mining} 
+(CRISP--DM) sebagaimana ditampilkan pada Gambar~\ref{fig:crispdm_diagram}.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{justification=centering}
+    \includegraphics[width=1.00\textwidth]{images/Solusi-Methodology.png}
+    \caption{rancangan solusi berdasarkan metodologi CRISP--DM}
+    \label{fig:crispdm_diagram}
+\end{figure}
+
+\section{Pemetaan Metodologi terhadap Kebutuhan Sistem}
+
+Tahapan metodologi penelitian sebagaimana digambarkan pada Gambar~\ref{fig:crispdm_diagram}
+menjadi landasan utama dalam perumusan kebutuhan sistem. 
+Setiap aktivitas pada tahap \textit{Data Preparation}, \textit{Modelling}, \textit{Input Processing}, 
+\textit{Output Generation}, \textit{Evaluation}, dan \textit{Deployment} dipetakan secara langsung 
+terhadap kebutuhan fungsional yang harus dipenuhi oleh sistem. 
+Pemetaan ini memastikan bahwa rancangan solusi GraphRAG tidak hanya bersifat konseptual, 
+namun juga merefleksikan proses yang dibutuhkan untuk mencapai tujuan penelitian. 
+Hubungan antara tahapan metodologi dan kebutuhan fungsional ditunjukkan pada 
+Tabel~\ref{tbl:mapping_methodology_requirements}.
+
+\input{tables/tabel6.tex}
+
+Pemetaan pada Tabel~\ref{tbl:mapping_methodology_requirements} menunjukkan bahwa 
+seluruh tahapan metodologis yang digunakan dalam penelitian ini memiliki keterhubungan 
+langsung dengan kebutuhan fungsional yang dirancang. Setiap proses dalam 
+\textit{Data Preparation}, \textit{Modelling}, \textit{Input Processing}, 
+\textit{Output Generation}, \textit{Evaluation}, dan \textit{Deployment} 
+telah diterjemahkan menjadi kapabilitas sistem yang operasional, terukur, 
+dan selaras dengan tujuan penelitian.
+
+Namun, untuk memastikan bahwa seluruh fungsi tersebut dapat berjalan secara
+terintegrasi, dibutuhkan rancangan alur teknis yang sistematis dan dapat
+diimplementasikan secara konsisten melalui setiap tahapan eksekusi. Oleh karena
+itu, diperlukan suatu \textit{pipeline arsitektural} yang bekerja dari awal hingga
+akhir. \textit{Pipeline} ini tidak hanya memvisualisasikan interaksi antar modul, tetapi juga menunjukkan dependensi logis yang mengikat
+sistem komputasi yang utuh.
+
+Dengan demikian, perancangan \textit{architecture pipeline} berikut disusun untuk
+menyajikan gambaran menyeluruh mengenai tahapan proses, struktur komponen,
+aliran data (\textit{data flow}), serta kontrol logika untuk setiap
+kebutuhan fungsional .
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{justification=centering}
+    \includegraphics[width=1.00\textwidth]{images/Solusi-Arsitektur.png}
+    \caption{\textit{Architecture Diagram} Solusi \textit{GraphRAG} untuk Mitigasi Halusinasi pada Sistem RAG--LLM}
+    \label{fig:architecture_diagram}
+\end{figure}
+
+Setelah mendefinisikan komponen-komponen utama dalam arsitektur sistem, langkah selanjutnya adalah memetakan interaksi antar-komponen tersebut secara kronologis. Untuk menggambarkan aliran data diproses mulai dari input pengguna hingga validasi output, Gambar \ref{fig:sequence_diagram} menyajikan \textit{Sequence Diagram} yang merinci mekanisme pertukaran informasi pada sistem.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{justification=centering}
+    \includegraphics[width=1.0\textwidth]{images/Sequence-Diagram.png}
+    \caption{Diagram Urutan (\textit{Sequence Diagram}) Alur Kerja Sistem GraphRAG}
+    \label{fig:sequence_diagram}
+\end{figure}
+
+

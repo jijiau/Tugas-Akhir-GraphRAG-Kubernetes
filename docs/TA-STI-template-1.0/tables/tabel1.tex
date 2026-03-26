@@ -1,17 +1,51 @@
-\begin{table}[h]
-	\caption{Tabel harga bahan tertier}
-\label{tab:tabel4}
-\begin{tabular}{ | p{2cm} | p{2cm} | p{3cm} |}
-	\hline
-	Nama 	& Satuan 		& Harga \\
-	\hline
-	Buku 	& Exemplar	& 25000 \\
-	Komputer	& Unit		& 2500000 \\
-	Pensil	& Buah		& 118900 \\
-    Pensil	& Buah		& 118900 \\
-    Pensil	& Buah		& 118900 \\
-    Pensil	& Buah		& 118900 \\
-    Pensil	& Buah		& 118900 \\
-	\hline
-\end{tabular}
-\end{table}
+\captionsetup[longtable]{justification=raggedright,singlelinecheck=false}
+
+\begin{longtable}{ | p{0.1\textwidth} | p{0.30\textwidth} | p{0.50\textwidth} |}
+\caption{Kebutuhan Fungsional Sistem}
+\label{tbl:fungsional} \\
+\hline
+\textbf{Kode} & \textbf{Parameter} & \textbf{Deskripsi Spesifikasi} \\ 
+\hline
+\endfirsthead
+
+\multicolumn{3}{l}{Tabel \ref{tbl:fungsional} Kebutuhan Fungsional Sistem (lanjutan)} \\
+\hline
+\textbf{Kode} & \textbf{Parameter} & \textbf{Deskripsi Spesifikasi} \\ 
+\hline
+\endhead
+
+
+\hline
+\multicolumn{3}{r}{\textit{bersambung ke halaman berikutnya}} \\
+\endfoot
+
+\hline
+\endlastfoot
+
+F-01 & \textit{Structured Object Representation} & Sistem harus mengubah skema objek ke dalam suatu representasi terstruktur yang membedakan setiap komponen, \textit{field}, dan relasi antar-objek sehingga dapat diakses kembali secara terprogram pada tahap \textit{retrieval}. \\
+\hline
+
+F-02 & \textit{Structured Relation Retrieval} & Sistem harus menyediakan mekanisme \textit{retrieval} yang mampu mengambil himpunan objek dan \textit{field} yang saling berkaitan (misalnya hubungan antara \textit{Deployment}, \textit{Pod}, dan \textit{Service}) berdasarkan entitas awal dan \textit{intent} pengguna sebagaimana didefinisikan pada F-03. \\
+\hline
+
+F-03 & \textit{Intent Classification} & Sistem harus mampu (1) mendeteksi entitas Kubernetes yang dirujuk pengguna (misalnya \textit{Service}, \textit{Pod}), dan (2) mengklasifikasikan maksud pengguna ke dalam dua kategori, yaitu \textbf{Conceptual\_QA} (pertanyaan definisi atau hubungan konsep) dan \textbf{Code\_Generation} (permintaan pembuatan contoh konfigurasi YAML yang ditandai dengan kata kerja seperti ``buatkan'', ``generate'', atau ``contoh''). \\
+\hline
+
+F-04 & \textit{Context Construction \& Injection} & Sistem harus mengubah hasil F-02 menjadi sebuah konteks dan menyertakannya sebagai bagian dari \textit{prompt} yang dikirimkan ke LLM. \\
+\hline
+
+F-05 & \textit{Attribute Enrichment} & Sistem harus menyimpan metadata untuk setiap \textit{field} konfigurasi di dalam representasi terstruktur sehingga informasi tersebut tersedia saat konteks disiapkan untuk menjawab pertanyaan pengguna. \\
+\hline
+
+F-06 & \textit{CLI Interaction Interface} &
+Sistem harus menyediakan antarmuka \textit{Command-Line Interface (CLI)}
+untuk menjalankan fungsi utama, termasuk \texttt{generate}, \texttt{explain},
+\texttt{validate}, serta \texttt{--help}, dengan panduan penggunaan dan
+pesan kesalahan yang jelas. \\
+\hline
+
+F-07 & \textit{Conditional YAML Generation Constraint} & Sistem harus menginstruksikan LLM untuk menghasilkan keluaran berupa blok kode YAML yang valid secara sintaksis apabila \textit{intent} pengguna diklasifikasikan sebagai \textbf{Code\_Generation}. Untuk intent \textbf{Conceptual\_QA}, sistem tidak boleh memaksakan format YAML dan harus menghasilkan jawaban naratif. \\
+\hline
+
+
+\end{longtable}
