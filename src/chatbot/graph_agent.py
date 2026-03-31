@@ -1,12 +1,15 @@
+# src/chatbot/graph_agent.py
+import json
+import logging
+import operator
 from typing import TypedDict, List, Annotated, Optional
 from langgraph.graph import StateGraph, END
-from langchain_core.messages import HumanMessage, AIMessage, BaseMessage
-import operator
-import logging
+from langchain_core.messages import AIMessage, BaseMessage
+from langchain_core.prompts import PromptTemplate
 
-from src.chatbot.llm_factory import get_thinker_llM, get_speaker_llm
-from src.chatbot.prompts import CYPHER_PROMPT, RESPONSE_PROMPT
-from src.graph.neo4j_client import Neo4jClient
+from src.chatbot.llm_factory import get_thinker_llm, get_speaker_llm
+from src.chatbot.prompts import INTENT_PROMPT, RESPONSE_PROMPT
+from src.chatbot.custom_retriever import StatefulK8sRetriever
 from src.memory.zep_store import ZepMemoryStore
 
 logger = logging.getLogger(__name__)
@@ -15,84 +18,96 @@ logger = logging.getLogger(__name__)
 class AgentState(TypedDict):
     messages: Annotated[List[BaseMessage], operator.add]
     question: str
-    graph_context: str
-    cypher_query: str
-    query_result: str
     chat_history: str
+    extracted_intent: dict  # Replaces raw cypher_query
+    graph_context: str      # Replaces raw query_result
     error: Optional[str]
 
 # --- Nodes ---
 def retrieve_memory_node(state: AgentState):
-    """Fetches chat history from Zep."""
+    """Fetches bi-directional chat history from Zep."""
     try:
         zep = ZepMemoryStore()
-        # Get last 5 turns for context
         history = zep.get_history(session_id="default_session", limit=5)
         return {"chat_history": history}
     except Exception as e:
         logger.warning(f"Zep memory failed: {e}")
         return {"chat_history": "No history available."}
 
-def generate_cypher_node(state: AgentState):
-    """Uses OpenAI (Thinker) to write Cypher. Includes Fallback."""
+def extract_intent_node(state: AgentState):
+    """
+    The 'Thinker'. Reads history + question, resolves pronouns, 
+    and outputs a strict JSON intent for the custom retriever.
+    """
+    if state.get("error"):
+        return state
+
     try:
         llm = get_thinker_llm()
-        chain = CYPHER_PROMPT | llm
+        
+        # Langsung gunakan INTENT_PROMPT yang di-import
+        chain = INTENT_PROMPT | llm
+        
         response = chain.invoke({
-            "question": state["question"],
-            "graph_context_summary": "K8s Resources, Endpoints, Fields"
+            "chat_history": state["chat_history"],
+            "question": state["question"]
         })
-        return {"cypher_query": response.content.strip()}
+        
+        raw_content = response.content.strip()
+        if raw_content.startswith("```json"):
+            raw_content = raw_content[7:-3].strip()
+            
+        intent_data = json.loads(raw_content)
+        return {"extracted_intent": intent_data}
+        
+    except json.JSONDecodeError as e:
+        logger.error(f"Thinker failed to output valid JSON: {e}")
+        return {"error": "Failed to parse search intent from user query."}
     except Exception as e:
-        logger.error(f"OpenAI Cypher Gen failed: {e}. Falling back to Groq.")
-        # Fallback Mechanism
-        try:
-            llm = get_speaker_llm() # Use Groq as backup
-            chain = CYPHER_PROMPT | llm
-            response = chain.invoke({
-                "question": state["question"],
-                "graph_context_summary": "K8s Resources, Endpoints, Fields"
-            })
-            return {"cypher_query": response.content.strip()}
-        except Exception as fallback_err:
-            return {"error": f"Failed to generate query: {fallback_err}"}
-
-def execute_cypher_node(state: AgentState):
-    """Runs Cypher on Neo4j."""
+        logger.error(f"Intent extraction failed: {e}")
+        return {"error": str(e)}
+    
+def execute_retrieval_node(state: AgentState):
+    """Passes the extracted JSON intent to your deterministic Python retriever."""
     if state.get("error"):
-        return {"query_result": "Error occurred in previous step."}
+        return {"graph_context": "Error in understanding intent. Cannot retrieve data."}
     
     try:
-        db = Neo4jClient()
-        # Security: Basic sanitization could be added here
-        result = db.execute_query(state["cypher_query"])
-        # Convert result to string for LLM
-        data = [record.data() for record in result]
-        return {"query_result": str(data)}
+        retriever = StatefulK8sRetriever()
+        intent = state["extracted_intent"]
+        
+        # custom_retriever.py handles the Vector + Cypher logic
+        graph_data = retriever.retrieve_context(intent) 
+        
+        return {"graph_context": graph_data}
     except Exception as e:
-        logger.error(f"Neo4j Execution failed: {e}")
-        return {"query_result": "Database execution failed.", "error": str(e)}
+        logger.error(f"Custom Retrieval failed: {e}")
+        return {"graph_context": "Database retrieval failed.", "error": str(e)}
 
 def generate_response_node(state: AgentState):
-    """Uses Groq (Speaker) to formulate final answer."""
+    """The 'Speaker'. Uses Groq + Graph Data to formulate the final YAML answer."""
     try:
         llm = get_speaker_llm()
         chain = RESPONSE_PROMPT | llm
+        
+        # If there was an earlier error, inform the user gracefully
+        if state.get("error"):
+            return {"messages": [AIMessage(content=f"System error: {state['error']}")]}
+            
         response = chain.invoke({
             "chat_history": state["chat_history"],
-            "retrieved_data": state["query_result"],
+            "retrieved_data": state["graph_context"],
             "question": state["question"]
         })
         return {"messages": [AIMessage(content=response.content)]}
     except Exception as e:
         logger.error(f"Response Gen failed: {e}")
-        return {"messages": [AIMessage(content="I encountered an error generating the response.")]}
+        return {"messages": [AIMessage(content="I encountered an error generating the final YAML.")]}
 
 def save_memory_node(state: AgentState):
-    """Saves conversation to Zep."""
+    """Saves the completed conversation turn to Zep."""
     try:
         zep = ZepMemoryStore()
-        # Extract last user and AI message
         user_msg = state["question"]
         ai_msg = state["messages"][-1].content if state["messages"] else ""
         zep.add_message(session_id="default_session", user_msg=user_msg, ai_msg=ai_msg)
@@ -102,20 +117,19 @@ def save_memory_node(state: AgentState):
 
 # --- Graph Construction ---
 def create_agent_graph():
+    """Compiles the LangGraph state machine."""
     workflow = StateGraph(AgentState)
     
-    # Add Nodes
     workflow.add_node("memory", retrieve_memory_node)
-    workflow.add_node("thinker", generate_cypher_node)
-    workflow.add_node("executor", execute_cypher_node)
+    workflow.add_node("thinker", extract_intent_node)
+    workflow.add_node("retriever", execute_retrieval_node)
     workflow.add_node("speaker", generate_response_node)
     workflow.add_node("saver", save_memory_node)
     
-    # Add Edges
     workflow.set_entry_point("memory")
     workflow.add_edge("memory", "thinker")
-    workflow.add_edge("thinker", "executor")
-    workflow.add_edge("executor", "speaker")
+    workflow.add_edge("thinker", "retriever")
+    workflow.add_edge("retriever", "speaker")
     workflow.add_edge("speaker", "saver")
     workflow.add_edge("saver", END)
     
