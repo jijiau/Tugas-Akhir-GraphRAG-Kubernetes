@@ -1,6 +1,9 @@
 import streamlit as st
+import uuid
+from dotenv import load_dotenv # Tambahkan ini
+load_dotenv() # Dan jalankan ini
+
 from src.chatbot.graph_agent import create_agent_graph
-from src.config.settings import settings
 
 st.set_page_config(page_title="K8s GraphRAG Thesis", layout="wide")
 
@@ -13,6 +16,10 @@ def load_agent():
     return create_agent_graph()
 
 agent = load_agent()
+
+# Menjaga sesi unik untuk Zep Memory
+if "session_id" not in st.session_state:
+    st.session_state.session_id = str(uuid.uuid4())
 
 # Session State for Chat
 if "messages" not in st.session_state:
@@ -32,18 +39,25 @@ if prompt := st.chat_input("Ask about K8s API (e.g., 'How to create a Deployment
     with st.chat_message("assistant"):
         with st.spinner("Consulting Kubernetes Graph..."):
             try:
-                # Invoke Agent
+                # Invoke Agent dengan State yang Benar
                 state = agent.invoke({
                     "messages": [],
                     "question": prompt,
-                    "graph_context": "",
-                    "cypher_query": "",
-                    "query_result": "",
                     "chat_history": "",
+                    "extracted_intent": {}, 
+                    "graph_context": "",
                     "error": None
                 })
-                response = state["messages"][-1].content
+                
+                # Mengambil respons dari node terakhir (speaker)
+                if "messages" in state and state["messages"]:
+                    response = state["messages"][-1].content
+                else:
+                    response = "Sistem gagal menghasilkan respons."
+                    
                 st.markdown(response)
                 st.session_state.messages.append({"role": "assistant", "content": response})
             except Exception as e:
-                st.error(f"System Error: {e}")
+                error_msg = f"System Error: {e}"
+                st.error(error_msg)
+                st.session_state.messages.append({"role": "assistant", "content": error_msg})

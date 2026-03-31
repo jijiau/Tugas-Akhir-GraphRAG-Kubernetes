@@ -40,6 +40,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from src.ingestion.parser import SwaggerGraphBuilder
 from src.graph.neo4j_client import Neo4jClient
 
+
 def download_swagger_if_missing():
     """Downloads the Kubernetes Swagger file if it doesn't exist."""
     import urllib.request

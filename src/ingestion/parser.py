@@ -22,7 +22,7 @@ from typing import Dict, Any, List
 from datetime import datetime
 from src.graph.neo4j_client import Neo4jClient
 from src.utils.text_utils import safe_truncate_description
-
+from src.graph.vector_index import VectorIndexManager
 
 # ============================================
 # CONSTANTS
@@ -84,6 +84,10 @@ class SwaggerGraphBuilder:
         
         print("\n--> Pass 1: Creating Resource Definition Nodes...")
         self._pass_1_create_nodes()
+
+        print( "\n--> Pass 1.5: Generating Vector Embeddings... ")
+        vector_mgr = VectorIndexManager()
+        vector_mgr.initialize() # Ensure index exists before populating
         
         print("\n--> Pass 2: Resolving Schema Relationships...")
         self._pass_2_create_structural_edges()

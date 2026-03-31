@@ -9,3 +9,6 @@ semantic_rules_execution.log
 # Environment
 .env
 venv/
+
+zep.yaml
+docker-compose.yaml
