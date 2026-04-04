@@ -1,0 +1,22 @@
+{
+  "id": "clusterrole_read_pods",
+  "type": "yaml_gen",
+  "question": "Buat YAML ClusterRole yang mengizinkan read-only akses ke Pods",
+  "resource": "io.k8s.api.rbac.v1.ClusterRole",
+  "scope": "Cluster",
+  "multi_hop": false,
+  "ground_truth": {
+    "answer": "ClusterRole YAML dengan rules yang berisi apiGroups: [''], resources: ['pods'], verbs: ['get','list','watch'].",
+    "context": [
+      "io.k8s.api.rbac.v1.ClusterRole: ClusterRole contains rules representing a set of permissions.",
+      "io.k8s.api.rbac.v1.PolicyRule: verbs, apiGroups, resources define permissions"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.rbac.v1.ClusterRole",
+      "io.k8s.api.rbac.v1.PolicyRule"
+    ],
+    "expected_path": [],
+    "required_fields": ["apiVersion", "kind", "metadata"],
+    "expected_yaml_keys": ["apiVersion", "kind", "metadata", "rules"]
+  }
+}

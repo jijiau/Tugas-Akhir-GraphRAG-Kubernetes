@@ -1,0 +1,26 @@
+{
+  "id": "statefulset_with_pvc",
+  "type": "yaml_gen",
+  "question": "Buat YAML StatefulSet untuk database MySQL dengan PersistentVolumeClaim 10Gi",
+  "resource": "io.k8s.api.apps.v1.StatefulSet",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "ground_truth": {
+    "answer": "StatefulSet YAML dengan volumeClaimTemplates mendefinisikan PVC 10Gi StorageClass standard, di-mount ke /var/lib/mysql.",
+    "context": [
+      "io.k8s.api.apps.v1.StatefulSetSpec: volumeClaimTemplates defines PVC per pod.",
+      "io.k8s.api.core.v1.PersistentVolumeClaim: spec.resources.requests.storage defines size"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.apps.v1.StatefulSet",
+      "io.k8s.api.apps.v1.StatefulSetSpec",
+      "io.k8s.api.core.v1.PersistentVolumeClaim"
+    ],
+    "expected_path": [
+      "StatefulSet -[HAS_PROPERTY]-> StatefulSetSpec",
+      "StatefulSetSpec -[CLAIMS_VOLUME]-> PersistentVolumeClaim"
+    ],
+    "required_fields": ["apiVersion", "kind", "metadata", "spec"],
+    "expected_yaml_keys": ["apiVersion", "kind", "metadata", "spec", "spec.volumeClaimTemplates"]
+  }
+}

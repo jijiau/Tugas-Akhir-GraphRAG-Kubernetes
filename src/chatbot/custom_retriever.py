@@ -3,74 +3,113 @@ import json
 import logging
 from src.graph.neo4j_client import Neo4jClient
 from src.graph.vector_index import VectorIndexManager
+from src.graph.queries import (
+    EXACT_MATCH_QUERY,
+    SCHEMA_DEPS_QUERY,
+    PATH_EDGES_QUERY,
+    HYBRID_VECTOR_GRAPH_QUERY,
+)
 
 logger = logging.getLogger(__name__)
+
 
 class StatefulK8sRetriever:
     def __init__(self):
         self.db = Neo4jClient()
         self.vector_mgr = VectorIndexManager()
 
-    def retrieve_context(self, intent_data: dict) -> str:
-        primary = intent_data.get("primary_resource", "")
-        related = intent_data.get("related_concepts", [])
+    # ── Public entry point ────────────────────────────────────────────────────
 
-        search_query = f"{primary} {' '.join(related)} Kubernetes"
-        logger.info(f"Searching graph for intent: {search_query}")
+    def retrieve_context(self, intent_data: dict, max_depth: int = 4) -> tuple[str, list[str]]:
+        """
+        Two-phase retrieval:
+          Phase 1 — Exact name match (precision-first).
+          Phase 2 — Vector similarity fallback (recall).
+
+        Returns:
+            (graph_context_json, reasoning_path)
+            reasoning_path: list of "Parent -[REL]-> Child" strings (proper chain)
+        """
+        primary = intent_data.get("primary_resource", "")
+        related  = intent_data.get("related_concepts", [])
 
         try:
-            # 1. Generate vector embedding dari search query
-            embedding = self.vector_mgr.generate_embedding(search_query)
+            # ── Phase 1: Exact match ──────────────────────────────────────────
+            root_name = self._exact_match(primary)
 
-            # 2. Fixed Cypher Query — pisahkan OPTIONAL MATCH dari agregasi
-            #    Root cause error sebelumnya: variabel `child` dan `r` tidak
-            #    tersedia di scope WITH karena variable-length path pattern.
-            #    Fix: pakai dua WITH clause terpisah untuk resolve scope.
-            cypher = """
-            CALL db.index.vector.queryNodes('definition_description_vector', 1, $embedding)
-            YIELD node AS root, score
+            if root_name:
+                logger.info(f"[Retriever] Exact match: '{primary}' → '{root_name}'")
+                record = self._schema_deps(root_name, max_depth)
+            else:
+                # ── Phase 2: Vector search ────────────────────────────────────
+                logger.info(f"[Retriever] No exact match for '{primary}', using vector search")
+                search_query = f"{primary} {' '.join(related)} Kubernetes"
+                embedding    = self.vector_mgr.generate_embedding(search_query)
+                record       = self._vector_deps(embedding, max_depth)
+                if record:
+                    root_name = record.get("RootResource", "")
 
-            OPTIONAL MATCH (root)-[r:HAS_PROPERTY*1..2]->(child:Definition)
+            if not record:
+                return "Tidak ada skema Kubernetes yang relevan di dalam Knowledge Graph.", []
 
-            WITH root, score, r, child
+            # ── Clean SchemaDependencies ──────────────────────────────────────
+            deps = record.get("SchemaDependencies") or []
+            record["SchemaDependencies"] = [d for d in deps if d is not None]
 
-            WITH root, score,
-                 CASE
-                     WHEN child IS NOT NULL AND r IS NOT NULL THEN {
-                         path_depth: size(r),
-                         relation_type: type(last(r)),
-                         yaml_field: last(r).name,
-                         is_array: coalesce(last(r).is_array, false),
-                         child_resource: child.name,
-                         child_description: substring(child.description, 0, 150)
-                     }
-                     ELSE null
-                 END AS dep
+            # ── Build reasoning path (proper parent → child chain) ────────────
+            reasoning_path = self._build_reasoning_path(root_name, max_depth)
 
-            RETURN root.name        AS RootResource,
-                   root.kind        AS RootKind,
-                   root.description AS RootDescription,
-                   score            AS VectorSimilarityScore,
-                   collect(dep)     AS SchemaDependencies
-            """
-
-            results = self.db.execute_query(cypher, {"embedding": embedding})
-
-            if not results:
-                return "Tidak ada skema Kubernetes yang relevan di dalam Knowledge Graph."
-
-            # 3. Konversi record Neo4j ke Python dict lalu JSON
-            record_dict = dict(results[0])
-
-            # Filter null dari SchemaDependencies (collect(null) kadang masih lolos)
-            if "SchemaDependencies" in record_dict and record_dict["SchemaDependencies"]:
-                record_dict["SchemaDependencies"] = [
-                    d for d in record_dict["SchemaDependencies"] if d is not None
-                ]
-
-            formatted_context = json.dumps(record_dict, indent=2, ensure_ascii=False)
-            return formatted_context
+            graph_context = json.dumps(record, indent=2, ensure_ascii=False)
+            return graph_context, reasoning_path
 
         except Exception as e:
-            logger.error(f"Graph traversal failed: {e}")
-            return f"Error retrieving context from Neo4j: {str(e)}"
+            logger.error(f"[Retriever] Graph traversal failed: {e}")
+            return f"Error retrieving context from Neo4j: {str(e)}", []
+
+    # ── Private helpers ───────────────────────────────────────────────────────
+
+    def _exact_match(self, primary: str) -> str | None:
+        """Returns the canonical node name if an exact match exists, else None."""
+        if not primary:
+            return None
+        rows = self.db.execute_query(EXACT_MATCH_QUERY, {"primary_resource": primary})
+        return rows[0]["name"] if rows else None
+
+    def _schema_deps(self, root_name: str, max_depth: int) -> dict | None:
+        """Fetch schema dependencies for a known root node name."""
+        cypher = SCHEMA_DEPS_QUERY.format(max_depth=max_depth)
+        rows   = self.db.execute_query(cypher, {"root_name": root_name})
+        return dict(rows[0]) if rows else None
+
+    def _vector_deps(self, embedding: list, max_depth: int) -> dict | None:
+        """Fetch schema dependencies via vector similarity."""
+        cypher = HYBRID_VECTOR_GRAPH_QUERY.format(max_depth=max_depth)
+        rows   = self.db.execute_query(cypher, {"embedding": embedding})
+        return dict(rows[0]) if rows else None
+
+    def _build_reasoning_path(self, root_name: str, max_depth: int) -> list[str]:
+        """
+        Returns a deduplicated list of actual parent→child edge strings, e.g.:
+          "Deployment -[HAS_PROPERTY]-> DeploymentSpec"
+          "DeploymentSpec -[HAS_PROPERTY]-> PodTemplateSpec"
+          "PodTemplateSpec -[HAS_PROPERTY]-> PodSpec"
+
+        Uses PATH_EDGES_QUERY which extracts real intermediate nodes from
+        graph paths — not root-to-leaf shortcuts.
+        """
+        if not root_name:
+            return []
+        try:
+            cypher = PATH_EDGES_QUERY.format(max_depth=max_depth)
+            rows   = self.db.execute_query(cypher, {"root_name": root_name})
+            seen   = set()
+            path   = []
+            for row in rows:
+                edge = f"{row['parent']} -[HAS_PROPERTY]-> {row['child']}"
+                if edge not in seen:
+                    seen.add(edge)
+                    path.append(edge)
+            return path
+        except Exception as e:
+            logger.warning(f"[Retriever] Could not build reasoning path: {e}")
+            return []

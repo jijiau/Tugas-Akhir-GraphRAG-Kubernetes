@@ -1,0 +1,19 @@
+{
+  "id": "statefulset_storage",
+  "type": "conceptual",
+  "question": "Apa perbedaan StatefulSet dengan Deployment untuk aplikasi yang membutuhkan penyimpanan persisten?",
+  "resource": "io.k8s.api.apps.v1.StatefulSet",
+  "scope": "Namespaced",
+  "multi_hop": false,
+  "ground_truth": {
+    "answer": "StatefulSet memberikan identitas jaringan yang stabil dan persistent storage per Pod melalui volumeClaimTemplates, cocok untuk database. Deployment tidak menjamin urutan atau identitas Pod.",
+    "context": [
+      "io.k8s.api.apps.v1.StatefulSet: StatefulSet maintains sticky identity for Pods and persistent storage.",
+      "io.k8s.api.apps.v1.StatefulSetSpec: volumeClaimTemplates defines per-pod PVC"
+    ],
+    "relevant_nodes": ["io.k8s.api.apps.v1.StatefulSet", "io.k8s.api.apps.v1.StatefulSetSpec"],
+    "expected_path": [],
+    "required_fields": [],
+    "expected_yaml_keys": []
+  }
+}

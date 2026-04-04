@@ -1,0 +1,26 @@
+{
+  "id": "add_pvc_to_statefulset",
+  "type": "followup",
+  "question": "Tambahkan PVC 5Gi ke StatefulSet tadi",
+  "resource": "io.k8s.api.apps.v1.StatefulSet",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "ground_truth": {
+    "answer": "Tambahkan volumeClaimTemplates ke spec StatefulSet dengan PVC berkapasitas 5Gi. Mount volume di container menggunakan volumeMounts.",
+    "context": [
+      "StatefulSetSpec.volumeClaimTemplates: list of PVCs to create per pod",
+      "Container.volumeMounts: mount path in the container"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.apps.v1.StatefulSet",
+      "io.k8s.api.apps.v1.StatefulSetSpec",
+      "io.k8s.api.core.v1.PersistentVolumeClaim"
+    ],
+    "expected_path": [
+      "StatefulSet -[HAS_PROPERTY]-> StatefulSetSpec",
+      "StatefulSetSpec -[CLAIMS_VOLUME]-> PersistentVolumeClaim"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": ["spec.volumeClaimTemplates"]
+  }
+}
