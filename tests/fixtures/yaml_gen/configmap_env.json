@@ -1,0 +1,19 @@
+{
+  "id": "configmap_env",
+  "type": "yaml_gen",
+  "question": "Buat YAML ConfigMap yang menyimpan konfigurasi database host dan port",
+  "resource": "io.k8s.api.core.v1.ConfigMap",
+  "scope": "Namespaced",
+  "multi_hop": false,
+  "ground_truth": {
+    "answer": "ConfigMap YAML dengan data berisi DB_HOST dan DB_PORT sebagai key-value pairs.",
+    "context": [
+      "io.k8s.api.core.v1.ConfigMap: ConfigMap holds configuration data as key-value pairs.",
+      "data field contains the configuration data"
+    ],
+    "relevant_nodes": ["io.k8s.api.core.v1.ConfigMap"],
+    "expected_path": [],
+    "required_fields": ["apiVersion", "kind", "metadata"],
+    "expected_yaml_keys": ["apiVersion", "kind", "metadata", "data"]
+  }
+}

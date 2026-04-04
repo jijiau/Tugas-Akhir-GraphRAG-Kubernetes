@@ -22,15 +22,18 @@ def get_zep() -> ZepMemoryStore:
         _zep_store = ZepMemoryStore()
     return _zep_store
 
+
 # --- State Definition ---
 class AgentState(TypedDict):
     messages: Annotated[List[BaseMessage], operator.add]
     question: str
-    session_id: str          # ← ditambahkan: diteruskan dari Streamlit
+    session_id: str
     chat_history: str
     extracted_intent: dict
     graph_context: str
+    reasoning_path: Optional[List[str]]   # ← hop-by-hop traversal trace
     error: Optional[str]
+
 
 # --- Nodes ---
 
@@ -82,15 +85,19 @@ def extract_intent_node(state: AgentState):
 def execute_retrieval_node(state: AgentState):
     """Passes the extracted JSON intent to the deterministic Python retriever."""
     if state.get("error"):
-        return {"graph_context": "Error in understanding intent. Cannot retrieve data."}
+        return {"graph_context": "Error in understanding intent. Cannot retrieve data.", "reasoning_path": []}
 
     try:
         retriever = StatefulK8sRetriever()
-        graph_data = retriever.retrieve_context(state["extracted_intent"])
-        return {"graph_context": graph_data}
+        graph_context, reasoning_path = retriever.retrieve_context(state["extracted_intent"])
+        return {"graph_context": graph_context, "reasoning_path": reasoning_path}
     except Exception as e:
         logger.error(f"Custom Retrieval failed: {e}")
-        return {"graph_context": "Database retrieval failed.", "error": str(e)}
+        return {
+            "graph_context": "Database retrieval failed.",
+            "reasoning_path": [],
+            "error": str(e)
+        }
 
 
 def generate_response_node(state: AgentState):

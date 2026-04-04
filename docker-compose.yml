@@ -14,15 +14,3 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-
-  zep:
-    image: zepai/zep:latest
-    container_name: zep-memory
-    restart: always
-    volumes:
-      - ./zep.yaml:/app/zep.yaml    # ← mount ke /app/zep.yaml
-    ports:
-      - "8000:8000"
-    depends_on:
-      postgres:
-        condition: service_healthy

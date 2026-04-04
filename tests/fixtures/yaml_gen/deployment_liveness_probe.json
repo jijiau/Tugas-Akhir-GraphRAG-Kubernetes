@@ -1,0 +1,27 @@
+{
+  "id": "deployment_liveness_probe",
+  "type": "yaml_gen",
+  "question": "Buat YAML Deployment dengan liveness probe HTTP ke /health pada port 8080",
+  "resource": "io.k8s.api.apps.v1.Deployment",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "ground_truth": {
+    "answer": "Deployment YAML dengan livenessProbe menggunakan httpGet action ke path /health port 8080, dengan initialDelaySeconds dan periodSeconds.",
+    "context": [
+      "io.k8s.api.core.v1.Container: livenessProbe field defines container health check.",
+      "io.k8s.api.core.v1.Probe: httpGet, tcpSocket, or exec defines the probe action"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.apps.v1.Deployment",
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.Probe"
+    ],
+    "expected_path": [
+      "Deployment -[HAS_PROPERTY]-> DeploymentSpec",
+      "DeploymentSpec -[HAS_PROPERTY]-> PodTemplateSpec",
+      "PodTemplateSpec -[HAS_PROPERTY]-> Container"
+    ],
+    "required_fields": ["apiVersion", "kind", "metadata", "spec"],
+    "expected_yaml_keys": ["apiVersion", "kind", "metadata", "spec"]
+  }
+}

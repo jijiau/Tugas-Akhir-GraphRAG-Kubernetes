@@ -8,10 +8,6 @@ class Settings(BaseSettings):
     neo4j_username: str
     neo4j_password: str
     
-    # Zep Memory (Diperbarui untuk Local Docker)
-    zep_base_url: str = "http://localhost:8000"
-    zep_api_key: Optional[str] = "optional" 
-    
     # Multi-Agent LLMs
     openai_api_key: str      # For "Thinker" (Intent Extraction)
     groq_api_key: str        # For "Speaker" (Response)
@@ -26,5 +22,6 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
         case_sensitive = False
+        extra = "ignore"   # abaikan env vars lama (ZEP_API_KEY, dll) yang masih ada di .env
 
 settings = Settings()

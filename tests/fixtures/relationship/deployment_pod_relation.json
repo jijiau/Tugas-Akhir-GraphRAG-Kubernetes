@@ -1,0 +1,26 @@
+{
+  "id": "deployment_pod_relation",
+  "type": "relationship",
+  "question": "Bagaimana hubungan antara Deployment, ReplicaSet, dan Pod di Kubernetes?",
+  "resource": "io.k8s.api.apps.v1.Deployment",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "ground_truth": {
+    "answer": "Deployment mengontrol ReplicaSet melalui spec.selector. ReplicaSet kemudian membuat dan menjaga jumlah Pod sesuai spec.replicas. Deployment mendelegasikan manajemen Pod ke ReplicaSet.",
+    "context": [
+      "Deployment -[CONTAINS_POD_TEMPLATE]-> PodTemplateSpec",
+      "DeploymentSpec: selector links Deployment to its ReplicaSets and Pods"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.apps.v1.Deployment",
+      "io.k8s.api.apps.v1.DeploymentSpec",
+      "io.k8s.api.core.v1.PodTemplateSpec"
+    ],
+    "expected_path": [
+      "Deployment -[HAS_PROPERTY]-> DeploymentSpec",
+      "DeploymentSpec -[CONTAINS_POD_TEMPLATE]-> PodTemplateSpec"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": []
+  }
+}

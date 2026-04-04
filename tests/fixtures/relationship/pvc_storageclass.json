@@ -1,0 +1,26 @@
+{
+  "id": "pvc_storageclass",
+  "type": "relationship",
+  "question": "Bagaimana PersistentVolumeClaim berhubungan dengan StorageClass?",
+  "resource": "io.k8s.api.core.v1.PersistentVolumeClaim",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "ground_truth": {
+    "answer": "PVC menggunakan spec.storageClassName untuk meminta StorageClass tertentu. StorageClass kemudian melakukan dynamic provisioning PersistentVolume sesuai permintaan PVC.",
+    "context": [
+      "io.k8s.api.core.v1.PersistentVolumeClaimSpec: storageClassName references a StorageClass.",
+      "PVC -[USES_STORAGE_CLASS]-> StorageClass"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.core.v1.PersistentVolumeClaim",
+      "io.k8s.api.core.v1.PersistentVolumeClaimSpec",
+      "io.k8s.api.storage.v1.StorageClass"
+    ],
+    "expected_path": [
+      "PersistentVolumeClaim -[HAS_PROPERTY]-> PersistentVolumeClaimSpec",
+      "PersistentVolumeClaimSpec -[USES_STORAGE_CLASS]-> StorageClass"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": []
+  }
+}

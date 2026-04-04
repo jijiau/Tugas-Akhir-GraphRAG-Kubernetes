@@ -10,5 +10,12 @@ semantic_rules_execution.log
 .env
 venv/
 
+# SQLite memory database (runtime data, bukan source code)
+data/conversation_memory.db
+
+# Python cache
+__pycache__/
+*.pyc
+
 zep.yaml
 docker-compose.yaml

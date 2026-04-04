@@ -1,0 +1,26 @@
+{
+  "id": "rbac_binding",
+  "type": "relationship",
+  "question": "Bagaimana RoleBinding menghubungkan ServiceAccount dengan Role?",
+  "resource": "io.k8s.api.rbac.v1.RoleBinding",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "ground_truth": {
+    "answer": "RoleBinding menghubungkan subjects (ServiceAccount, User, atau Group) dengan roleRef (Role atau ClusterRole). Ini memberikan permission yang didefinisikan di Role kepada subject dalam namespace yang sama.",
+    "context": [
+      "io.k8s.api.rbac.v1.RoleBinding: grants permissions to a user or set of users in a namespace.",
+      "roleRef references the Role or ClusterRole; subjects list ServiceAccount/User/Group"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.rbac.v1.RoleBinding",
+      "io.k8s.api.rbac.v1.RoleRef",
+      "io.k8s.api.rbac.v1.Subject"
+    ],
+    "expected_path": [
+      "RoleBinding -[BINDS_ROLE]-> Role",
+      "RoleBinding -[BINDS_SERVICE_ACCOUNT]-> ServiceAccount"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": []
+  }
+}

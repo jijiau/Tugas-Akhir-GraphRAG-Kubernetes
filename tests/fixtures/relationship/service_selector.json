@@ -1,0 +1,25 @@
+{
+  "id": "service_selector",
+  "type": "relationship",
+  "question": "Bagaimana Service menemukan Pod yang harus dilayani?",
+  "resource": "io.k8s.api.core.v1.Service",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "ground_truth": {
+    "answer": "Service menggunakan spec.selector untuk mencocokkan label Pod. Kube-proxy kemudian merutekan traffic ke Pod yang memiliki label yang cocok. Service tidak langsung terhubung ke Pod, melainkan melalui Endpoints object.",
+    "context": [
+      "io.k8s.api.core.v1.ServiceSpec: selector maps to Pod labels.",
+      "Service -[SELECTS_POD]-> Pod via label matching"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.core.v1.Service",
+      "io.k8s.api.core.v1.ServiceSpec"
+    ],
+    "expected_path": [
+      "Service -[HAS_PROPERTY]-> ServiceSpec",
+      "ServiceSpec -[SELECTS_POD]-> Pod"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": []
+  }
+}

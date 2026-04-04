@@ -9,14 +9,16 @@ langchain-neo4j>=0.1.0
 langchain-openai>=0.0.5
 langchain-groq>=0.0.1
 
-# Memory
-zep-cloud>=1.0.0
+# Memory — SQLite (stdlib, no additional package needed)
+# zep-python dihapus: diganti SQLite untuk menghilangkan Graphiti/LLM overhead
 
 # Validation & Utils
 pydantic>=2.5.0
 pydantic-settings>=2.1.0
 python-dotenv>=1.0.0
 streamlit>=1.30.0
+pyyaml>=6.0
+kubernetes-validate>=0.15.0
 
 # Embeddings (Local)
 sentence-transformers>=2.2.2

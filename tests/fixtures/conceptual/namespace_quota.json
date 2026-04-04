@@ -1,0 +1,19 @@
+{
+  "id": "namespace_quota",
+  "type": "conceptual",
+  "question": "Apa fungsi ResourceQuota di Kubernetes?",
+  "resource": "io.k8s.api.core.v1.ResourceQuota",
+  "scope": "Namespaced",
+  "multi_hop": false,
+  "ground_truth": {
+    "answer": "ResourceQuota membatasi penggunaan sumber daya (CPU, memory, jumlah Pod, PVC, dll) dalam sebuah Namespace. Ini mencegah satu tim menghabiskan seluruh kapasitas cluster.",
+    "context": [
+      "io.k8s.api.core.v1.ResourceQuota: ResourceQuota sets aggregate quota restrictions enforced per namespace.",
+      "spec.hard: defines the desired hard limits for each named resource"
+    ],
+    "relevant_nodes": ["io.k8s.api.core.v1.ResourceQuota", "io.k8s.api.core.v1.ResourceQuotaSpec"],
+    "expected_path": [],
+    "required_fields": [],
+    "expected_yaml_keys": []
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "id": "ingress_rules",
+  "type": "yaml_gen",
+  "question": "Buat YAML Ingress yang merutekan traffic dari domain app.example.com ke service my-service port 80",
+  "resource": "io.k8s.api.networking.v1.Ingress",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "ground_truth": {
+    "answer": "Ingress YAML dengan spec.rules berisi host app.example.com, http.paths dengan path / dan backend servicePort 80.",
+    "context": [
+      "io.k8s.api.networking.v1.Ingress: Ingress manages external access to services in a cluster.",
+      "io.k8s.api.networking.v1.IngressRule: host and http define routing rules"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.networking.v1.Ingress",
+      "io.k8s.api.networking.v1.IngressSpec",
+      "io.k8s.api.networking.v1.IngressRule"
+    ],
+    "expected_path": [
+      "Ingress -[HAS_PROPERTY]-> IngressSpec",
+      "IngressSpec -[HAS_PROPERTY]-> IngressRule"
+    ],
+    "required_fields": ["apiVersion", "kind", "metadata", "spec"],
+    "expected_yaml_keys": ["apiVersion", "kind", "metadata", "spec", "spec.rules"]
+  }
+}

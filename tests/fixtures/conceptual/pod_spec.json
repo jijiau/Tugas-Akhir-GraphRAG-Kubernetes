@@ -1,0 +1,19 @@
+{
+  "id": "pod_spec",
+  "type": "conceptual",
+  "question": "Apa saja field penting dalam PodSpec?",
+  "resource": "io.k8s.api.core.v1.PodSpec",
+  "scope": "Namespaced",
+  "multi_hop": false,
+  "ground_truth": {
+    "answer": "PodSpec mendefinisikan containers (wajib), volumes, initContainers, restartPolicy, serviceAccountName, dan tolerations. Field containers adalah satu-satunya field yang wajib ada.",
+    "context": [
+      "io.k8s.api.core.v1.PodSpec: PodSpec is the specification of the desired behavior of the pod.",
+      "containers: List of containers belonging to the pod. Required."
+    ],
+    "relevant_nodes": ["io.k8s.api.core.v1.PodSpec", "io.k8s.api.core.v1.Container"],
+    "expected_path": [],
+    "required_fields": ["containers"],
+    "expected_yaml_keys": []
+  }
+}
