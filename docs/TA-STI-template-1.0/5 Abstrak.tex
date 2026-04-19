@@ -13,32 +13,12 @@
 
 
 \begin{spacing}{1.0}
-Proses manual dalam rantai pasok jeruk di tingkat lapak, yang mencakup sortir,
-timbang, dan catat, terbukti tidak efisien, memakan waktu, dan rentan terhadap
-kesalahan. Meskipun solusi berbasis Internet of Things (IoT) dapat mengatasi
-masalah ini, arsitektur terpusat konvensional berbasis cloud justru menimbulkan
-masalah baru berupa latensi tinggi yang menghambat alur kerja real-time.
-Penelitian ini bertujuan untuk merancang dan mengimplementasikan sebuah
-purwarupa sistem smart scale berbasis IoT dengan pendekatan desentralisasi (edge
-computing) untuk meminimalkan latensi dan meningkatkan efisiensi operasional.
-Metode yang digunakan adalah Model Purwarupa, yang diwujudkan dalam bentuk
-perangkat keras dengan arsitektur prosesor ganda (Raspberry Pi 5 dan ESP32) yang
-mampu mengintegrasikan fungsi timbang dan analisis kualitas citra secara
-simultan. Hasil evaluasi menunjukkan bahwa purwarupa dengan arsitektur edge
-computing yang diimplementasikan mampu memberikan respons 43,5\% lebih cepat
-(latensi rata-rata 18,05 detik) dibandingkan dengan simulasi arsitektur terpusat.
-Selain itu, sistem ini berhasil meningkatkan efisiensi waktu kerja secara
-keseluruhan sebesar 58,32\% jika dibandingkan dengan metode manual
-konvensional. Pengujian Penerimaan Pengguna (UAT) yang melibatkan 30
-partisipan juga menunjukkan penerimaan yang sangat positif, dengan skor rata-rata
-untuk kemudahan penggunaan (5,0/5,0), kejelasan antarmuka (4,87/5,0) dan
-persepsi kinerja (4,95/5,0). Kesimpulannya, implementasi sistem smart scale
-dengan arsitektur desentralisasi terbukti merupakan solusi yang valid dan efektif
-untuk menjawab permasalahan latensi dan inefisiensi di lapak. Sistem ini tidak
-hanya unggul secara teknis dalam hal performa, tetapi juga fungsional dan dapat
-diterima dengan baik oleh pengguna akhir, serta berpotensi besar untuk modernisasi
-rantai pasok agribisnis.
+Transformasi menuju arsitektur \textit{cloud-native} menempatkan Kubernetes sebagai standar \textit{de facto} untuk orkestrasi kontainer, namun kompleksitas konfigurasi berbasis YAML menjadi tantangan operasional yang signifikan. Pemanfaatan \textit{Large Language Models} (LLM) dalam menjawab pertanyaan teknis Kubernetes rentan menghasilkan konfigurasi yang keliru secara semantik atau tidak valid secara sintaksis—fenomena yang dikenal sebagai halusinasi. Pendekatan \textit{Retrieval-Augmented Generation} (RAG) berbasis vektor yang umum digunakan juga terbukti tidak memadai karena gagal menangkap relasi hierarkis dan referensial yang diperlukan dalam domain Kubernetes, dengan akurasi yang hanya mencapai 63,4\% \textit{exact match} dan 69,8\% \textit{context precision}.
 
-Kata kunci: Smart Scale, Internet of Things, Edge Computing, Rantai Pasok Jeruk.
+Penelitian ini membangun sistem \textit{Graph Retrieval-Augmented Generation} (GraphRAG) untuk dokumentasi Kubernetes menggunakan metodologi CRISP-DM. \textit{Knowledge graph} dibangun dari blok \textit{definitions} pada spesifikasi OpenAPI Kubernetes v1.30 (\textit{swagger.json}) dan menghasilkan 725 \textit{node} definisi dengan 18 jenis \textit{edge} yang merepresentasikan relasi struktural dan semantik antar-objek Kubernetes. Mekanisme \textit{retrieval} bertingkat (\textit{cascading retrieval}) memprioritaskan pencocokan nama eksak, dilengkapi \textit{fallback} kemiripan vektor, serta penelusuran graf multi-lompatan (\textit{multi-hop graph traversal}) hingga 3 lompatan. \textit{Pipeline} respon dibangun menggunakan LangGraph dengan GPT-4o-mini untuk ekstraksi niat kueri dan Groq LLaMA untuk pembuatan jawaban.
+
+Sistem dievaluasi menggunakan 79 \textit{fixture} uji tervalidasi pakar dalam tiga dimensi: \textit{Answer Quality} (AnsQ, bobot 40\%), \textit{Retrieval Quality} (RetQ, bobot 35\%), dan \textit{Reasoning Quality} (ReaQ, bobot 25\%). Hasil evaluasi menunjukkan bahwa sistem GraphRAG mencapai skor AnsQ sebesar 0,62, RetQ sebesar 0,55, dan ReaQ sebesar 0,75 dengan total skor komposit sebesar 0,63. Sistem juga menghasilkan berkas konfigurasi YAML yang valid secara sintaksis dan dilengkapi jejak penalaran graf (\textit{reasoning path}) sebagai mekanisme pendeteksi halusinasi LLM.
+
+Kata kunci: \textit{Graph Retrieval-Augmented Generation}, \textit{knowledge graph}, Kubernetes, YAML, halusinasi LLM.
 \end{spacing}
 

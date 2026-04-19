@@ -28,7 +28,7 @@ F-01 & \textit{Structured Object Representation} & Sistem harus mengubah skema o
 F-02 & \textit{Structured Relation Retrieval} & Sistem harus menyediakan mekanisme \textit{retrieval} yang mampu mengambil himpunan objek dan \textit{field} yang saling berkaitan (misalnya hubungan antara \textit{Deployment}, \textit{Pod}, dan \textit{Service}) berdasarkan entitas awal dan \textit{intent} pengguna sebagaimana didefinisikan pada F-03. \\
 \hline
 
-F-03 & \textit{Intent Classification} & Sistem harus mampu (1) mendeteksi entitas Kubernetes yang dirujuk pengguna (misalnya \textit{Service}, \textit{Pod}), dan (2) mengklasifikasikan maksud pengguna ke dalam dua kategori, yaitu \textbf{Conceptual\_QA} (pertanyaan definisi atau hubungan konsep) dan \textbf{Code\_Generation} (permintaan pembuatan contoh konfigurasi YAML yang ditandai dengan kata kerja seperti ``buatkan'', ``generate'', atau ``contoh''). \\
+F-03 & \textit{Intent Classification} & Sistem harus mampu (1) mendeteksi entitas Kubernetes yang dirujuk pengguna (misalnya \textit{Service}, \textit{Pod}), dan (2) mengklasifikasikan maksud pengguna ke dalam empat tipe \textit{intent}: dua tipe utama, yaitu \textbf{explain} (pertanyaan definisi, cara kerja, atau tujuan suatu \textit{resource}) dan \textbf{generate\_yaml} (permintaan pembuatan konfigurasi YAML), serta dua mode pendukung, yaitu \textbf{trace\_relationship} (penelusuran relasi antar-\textit{resource}) dan \textbf{followup} (modifikasi atau perluasan jawaban sebelumnya). Setiap tipe \textit{intent} mengontrol kedalaman penelusuran graf: \textit{explain}/\textit{followup} menggunakan kedalaman 2, sedangkan \textit{generate\_yaml}/\textit{trace\_relationship} menggunakan kedalaman 3. \\
 \hline
 
 F-04 & \textit{Context Construction \& Injection} & Sistem harus mengubah hasil F-02 menjadi sebuah konteks dan menyertakannya sebagai bagian dari \textit{prompt} yang dikirimkan ke LLM. \\
@@ -37,14 +37,15 @@ F-04 & \textit{Context Construction \& Injection} & Sistem harus mengubah hasil 
 F-05 & \textit{Attribute Enrichment} & Sistem harus menyimpan metadata untuk setiap \textit{field} konfigurasi di dalam representasi terstruktur sehingga informasi tersebut tersedia saat konteks disiapkan untuk menjawab pertanyaan pengguna. \\
 \hline
 
-F-06 & \textit{CLI Interaction Interface} &
-Sistem harus menyediakan antarmuka \textit{Command-Line Interface (CLI)}
-untuk menjalankan fungsi utama, termasuk \texttt{generate}, \texttt{explain},
-\texttt{validate}, serta \texttt{--help}, dengan panduan penggunaan dan
-pesan kesalahan yang jelas. \\
+F-06 & \textit{Web Interaction Interface} &
+Sistem harus menyediakan antarmuka web interaktif berbasis Streamlit
+yang memungkinkan pengguna memasukkan pertanyaan dalam bahasa alami,
+menampilkan jawaban beserta konfigurasi YAML (jika relevan),
+serta menyajikan jejak penalaran graf (\textit{reasoning path})
+secara visual dengan pesan kesalahan yang jelas. \\
 \hline
 
-F-07 & \textit{Conditional YAML Generation Constraint} & Sistem harus menginstruksikan LLM untuk menghasilkan keluaran berupa blok kode YAML yang valid secara sintaksis apabila \textit{intent} pengguna diklasifikasikan sebagai \textbf{Code\_Generation}. Untuk intent \textbf{Conceptual\_QA}, sistem tidak boleh memaksakan format YAML dan harus menghasilkan jawaban naratif. \\
+F-07 & \textit{Conditional YAML Generation Constraint} & Sistem harus menginstruksikan LLM untuk menghasilkan keluaran berupa blok kode YAML yang valid secara sintaksis apabila \textit{intent} pengguna diklasifikasikan sebagai \textbf{generate\_yaml}. Untuk \textit{intent} \textbf{explain}, \textbf{trace\_relationship}, dan \textbf{followup}, sistem tidak boleh memaksakan format YAML dan harus menghasilkan jawaban naratif. \\
 \hline
 
 

@@ -45,6 +45,7 @@
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
+\contentsline {table}{\numberline {II.1}{\ignorespaces Ringkasan kategori relasi antar-objek Kubernetes}}{12}{table.caption.16}%
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
@@ -108,7 +109,9 @@
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {III.1}{\ignorespaces \textit {Technical Gap Analysis} pada Domain Kubernetes}}{35}{table.3.1}%
+\contentsline {table}{\numberline {III.1}{\ignorespaces Taksonomi 18 jenis \textit {edge} dalam \textit {knowledge graph} Kubernetes}}{31}{table.caption.20}%
+\contentsline {table}{\numberline {III.2}{\ignorespaces Distribusi karakteristik \textit {node} berdasarkan kedalaman penelusuran graf}}{32}{table.caption.21}%
+\contentsline {table}{\numberline {III.3}{\ignorespaces \textit {Technical Gap Analysis} pada Domain Kubernetes}}{32}{table.3.3}%
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
@@ -119,17 +122,26 @@
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
-\contentsline {table}{\numberline {III.2}{\ignorespaces Pemetaan Kebutuhan Bisnis terhadap \textit {Technical Gap} dan Kebutuhan Fungsional}}{37}{table.caption.19}%
-\contentsline {table}{\numberline {III.3}{\ignorespaces Kebutuhan Fungsional Sistem}}{37}{table.3.3}%
-\contentsline {table}{\numberline {III.4}{\ignorespaces Kebutuhan Non-Fungsional Sistem}}{39}{table.3.4}%
+\contentsline {table}{\numberline {III.4}{\ignorespaces Pemetaan Kebutuhan Bisnis terhadap \textit {Technical Gap} dan Kebutuhan Fungsional}}{34}{table.caption.22}%
+\contentsline {table}{\numberline {III.5}{\ignorespaces Kebutuhan Fungsional Sistem}}{35}{table.3.5}%
+\contentsline {table}{\numberline {III.6}{\ignorespaces Kebutuhan Non-Fungsional Sistem}}{37}{table.3.6}%
+\contentsline {table}{\numberline {III.7}{\ignorespaces Pemetaan kebutuhan bisnis terhadap dimensi dan metrik evaluasi}}{38}{table.caption.23}%
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
-\contentsline {table}{\numberline {III.5}{\ignorespaces Rubrik Penilaian Kriteria Evaluasi Solusi}}{42}{table.3.5}%
-\contentsline {table}{\numberline {III.6}{\ignorespaces Matriks Perbandingan Solusi Berdasarkan Rubrik Evaluasi}}{42}{table.3.6}%
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\contentsline {table}{\numberline {III.8}{\ignorespaces Rubrik Penilaian Kriteria Evaluasi Solusi}}{40}{table.3.8}%
+\contentsline {table}{\numberline {III.9}{\ignorespaces Matriks Perbandingan Solusi Berdasarkan Rubrik Evaluasi}}{41}{table.3.9}%
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
@@ -139,13 +151,15 @@
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {IV.1}{\ignorespaces Pemetaan Tahap Metodologi}}{47}{table.4.1}%
+\contentsline {table}{\numberline {IV.1}{\ignorespaces Pemetaan Tahap Metodologi}}{46}{table.4.1}%
+\contentsline {table}{\numberline {IV.2}{\ignorespaces Lima Fase Pipeline Ingestion Data}}{53}{table.caption.27}%
+\contentsline {table}{\numberline {IV.3}{\ignorespaces Lima Node LangGraph Agent Pipeline}}{54}{table.caption.28}%
+\contentsline {table}{\numberline {IV.4}{\ignorespaces Pemetaan \textit {Intent Type} terhadap Kedalaman Traversal Graf}}{56}{table.caption.29}%
+\contentsline {table}{\numberline {IV.5}{\ignorespaces Rancangan Tiga Lapis Validasi YAML}}{57}{table.caption.30}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {VI.1}{\ignorespaces Contoh penggunaan kata "sedangkan" dan "sehingga"}}{56}{table.caption.23}%
+\contentsline {table}{\numberline {VI.1}{\ignorespaces Contoh penggunaan kata "sedangkan" dan "sehingga"}}{62}{table.caption.31}%
 \addvspace {10\p@ }
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 

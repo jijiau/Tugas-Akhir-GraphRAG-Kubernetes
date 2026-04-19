@@ -44,38 +44,7 @@
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\contentsline {figure}{\numberline {II.1}{\ignorespaces Arsitektur klaster Kubernetes yang terdiri atas \textit {Control Plane} dan \textit {Worker Nodes}, dihubungkan melalui \textit {kube-apiserver} \blx@tocontentsinit {0}\parencite {kubernetes_docs}}}{11}{figure.caption.15}%
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\contentsline {figure}{\numberline {II.2}{\ignorespaces Arsitektur \textit {Knowledge Graph} \blx@tocontentsinit {0}\parencite {yu2021visualkg}}}{20}{figure.caption.16}%
+\contentsline {figure}{\numberline {II.1}{\ignorespaces Arsitektur klaster Kubernetes yang terdiri atas \textit {Control Plane} dan \textit {Worker Nodes}, dihubungkan melalui \textit {kube-apiserver} \blx@tocontentsinit {0}\parencite {kubernetes_docs}}}{10}{figure.caption.15}%
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
@@ -100,6 +69,7 @@
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
+\contentsline {figure}{\numberline {II.2}{\ignorespaces Arsitektur \textit {Knowledge Graph} \blx@tocontentsinit {0}\parencite {yu2021visualkg}}}{18}{figure.caption.17}%
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
@@ -108,11 +78,15 @@
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
-\contentsline {figure}{\numberline {II.3}{\ignorespaces Model arsitektur integrasi KG dalam RAG \blx@tocontentsinit {0}\parencite {knollmeyer2025document}}}{28}{figure.caption.17}%
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
-\addvspace {10\p@ }
-\contentsline {figure}{\numberline {III.1}{\ignorespaces Proporsi Entitas \textit {Root} vs Komponen Pendukung dalam Spesifikasi OpenAPI Kubernetes}}{32}{figure.caption.18}%
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\contentsline {figure}{\numberline {II.3}{\ignorespaces Model arsitektur integrasi KG dalam RAG \blx@tocontentsinit {0}\parencite {knollmeyer2025document}}}{20}{figure.caption.18}%
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
@@ -138,14 +112,46 @@
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {IV.1}{\ignorespaces rancangan solusi berdasarkan metodologi CRISP--DM}}{46}{figure.caption.20}%
-\contentsline {figure}{\numberline {IV.2}{\ignorespaces \textit {Architecture Diagram} Solusi \textit {GraphRAG} untuk Mitigasi Halusinasi pada Sistem RAG--LLM}}{50}{figure.caption.21}%
-\contentsline {figure}{\numberline {IV.3}{\ignorespaces Diagram Urutan (\textit {Sequence Diagram}) Alur Kerja Sistem GraphRAG}}{51}{figure.caption.22}%
-\addvspace {10\p@ }
-\addvspace {10\p@ }
-\addvspace {10\p@ }
+\contentsline {figure}{\numberline {III.1}{\ignorespaces Proporsi objek Kubernetes \textit {root} vs komponen pendukung dalam spesifikasi OpenAPI Kubernetes}}{28}{figure.caption.19}%
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {IV.1}{\ignorespaces Rancangan solusi berdasarkan metodologi CRISP--DM}}{45}{figure.caption.24}%
+\contentsline {figure}{\numberline {IV.2}{\ignorespaces \textit {Architecture Diagram} Solusi \textit {GraphRAG} untuk Mitigasi Halusinasi pada Sistem RAG--LLM}}{50}{figure.caption.25}%
+\contentsline {figure}{\numberline {IV.3}{\ignorespaces Diagram Urutan (\textit {Sequence Diagram}) Alur Kerja Sistem GraphRAG}}{51}{figure.caption.26}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 

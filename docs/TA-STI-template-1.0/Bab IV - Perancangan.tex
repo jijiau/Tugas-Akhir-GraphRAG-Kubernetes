@@ -18,7 +18,7 @@ mengacu pada metodologi \textit{Cross-Industry Standard Process for Data Mining}
     \centering
     \captionsetup{justification=centering}
     \includegraphics[width=1.00\textwidth]{images/Solusi-Methodology.png}
-    \caption{rancangan solusi berdasarkan metodologi CRISP--DM}
+    \caption{Rancangan solusi berdasarkan metodologi CRISP--DM}
     \label{fig:crispdm_diagram}
 \end{figure}
 
@@ -59,7 +59,7 @@ kebutuhan fungsional .
 \begin{figure}[H]
     \centering
     \captionsetup{justification=centering}
-    \includegraphics[width=1.00\textwidth]{images/Solusi-Arsitektur.png}
+    \includegraphics[width=1.00\textwidth]{images/Architecture.png}
     \caption{\textit{Architecture Diagram} Solusi \textit{GraphRAG} untuk Mitigasi Halusinasi pada Sistem RAG--LLM}
     \label{fig:architecture_diagram}
 \end{figure}
@@ -69,9 +69,80 @@ Setelah mendefinisikan komponen-komponen utama dalam arsitektur sistem, langkah 
 \begin{figure}[H]
     \centering
     \captionsetup{justification=centering}
-    \includegraphics[width=1.0\textwidth]{images/Sequence-Diagram.png}
+    \includegraphics[width=1.0\textwidth]{images/Seq-New.png}
     \caption{Diagram Urutan (\textit{Sequence Diagram}) Alur Kerja Sistem GraphRAG}
     \label{fig:sequence_diagram}
 \end{figure}
+
+% ------------------------------------------------------------------
+\section{Perancangan Komponen Sistem}
+% ------------------------------------------------------------------
+
+Arsitektur pipeline pada Gambar~\ref{fig:architecture_diagram} diimplementasikan melalui empat komponen teknis utama yang bekerja secara berurutan: pipeline ingestion data, mekanisme \textit{LangGraph agent}, retrieval bertingkat, serta validasi YAML. Berikut ini diuraikan rancangan masing-masing komponen beserta keterhubungannya terhadap kebutuhan fungsional sistem.
+
+% --- 4.3.1 ---
+\subsection{Pipeline \textit{Ingestion} Data}
+
+Pipeline \textit{ingestion} bertanggung jawab mengubah spesifikasi OpenAPI Kubernetes (\textit{swagger.json}) menjadi \textit{Knowledge Graph} yang tersimpan di Neo4j dan \textit{vector index} yang tersimpan di ChromaDB. Proses ini dilaksanakan melalui lima \textit{pass} yang dieksekusi secara berurutan sebagaimana ditunjukkan pada Tabel~\ref{tbl:ingestion_pipeline}.
+
+\input{tables/tabel16.tex}
+
+Urutan \textit{pass} ini bersifat deterministik dan tidak dapat dibalik: node harus ada sebelum edge dapat dibuat (Pass 1 mendahului Pass 2), dan \textit{embedding} harus dihasilkan sebelum \textit{vector index} dapat digunakan pada tahap \textit{retrieval}. Total edge yang dihasilkan mencakup 18 jenis yang terdistribusi dalam 7 kategori relasi sebagaimana dirancang pada Bab~\ref{chap:analisis-masalah}.
+
+% --- 4.3.2 ---
+\subsection{Perancangan \textit{LangGraph Agent Pipeline}}
+
+Komponen \textit{chatbot} dirancang menggunakan \textit{LangGraph} sebagai \textit{state machine} yang mengorkestrasi alur pemrosesan dari input pengguna hingga respons akhir. \textit{LangGraph} dipilih karena mendukung pengelolaan \textit{state} yang persisten antar-node dan kontrol alur yang eksplisit — kedua properti ini penting untuk memastikan bahwa setiap tahap (ekstraksi intent, retrieval, dan generasi) dapat diaudit secara independen.
+
+Pipeline terdiri dari lima node yang dieksekusi secara linear sebagaimana ditunjukkan pada Tabel~\ref{tbl:langgraph_nodes}.
+
+\input{tables/tabel17.tex}
+
+Pembagian peran \textit{Thinker}--\textit{Speaker} memberikan dua keuntungan teknis: (1) GPT-4o-mini yang memiliki kemampuan pemahaman konteks tinggi difokuskan pada tugas klasifikasi berstruktur (JSON output), sementara (2) Groq \texttt{llama-3.1-8b-instant} yang memiliki latensi rendah difokuskan pada generasi teks panjang. Ini mengoptimalkan kualitas klasifikasi sekaligus menjaga latensi total di bawah batas NF-02 (60 detik).
+
+% --- 4.3.3 ---
+\subsection{Perancangan Mekanisme \textit{Retrieval} Bertingkat}
+
+Node \texttt{retriever} mengimplementasikan \textit{cascading retrieval} dengan tiga tahap berurutan. Tahap berikutnya hanya dieksekusi apabila tahap sebelumnya tidak menghasilkan hasil yang memadai, sehingga meminimalkan beban komputasi sekaligus memaksimalkan presisi.
+
+\begin{enumerate}
+    \item \textbf{Tahap 1 --- \textit{Exact Name Match} (Prioritas Utama).} \\
+    Sistem mencari node di Neo4j berdasarkan kecocokan nama eksak dengan entitas yang diekstrak oleh \textit{Thinker}. Jika ditemukan, node ini menjadi \textit{seed node} untuk traversal graf. Pendekatan ini menghasilkan presisi tertinggi karena tidak bergantung pada estimasi semantik.
+
+    \item \textbf{Tahap 2 --- \textit{Vector Similarity} (\textit{Fallback}).} \\
+    Diaktifkan \textit{hanya jika} Tahap 1 tidak menemukan kecocokan eksak. Sistem menghasilkan \textit{embedding} dari kueri pengguna dan mencari node paling mirip di ChromaDB. \textit{Top-k} kandidat menjadi \textit{seed node} untuk traversal.
+
+    \item \textbf{Tahap 3 --- \textit{Multi-hop Graph Traversal}.} \\
+    Dari \textit{seed node}, sistem menelusuri graf di Neo4j secara rekursif. Kedalaman maksimal traversal ditentukan oleh \textit{intent type} yang diklasifikasikan pada node \texttt{thinker} sebagaimana ditunjukkan pada Tabel~\ref{tbl:intent_depth_iv}.
+\end{enumerate}
+
+\input{tables/tabel18.tex}
+
+Setelah traversal selesai, sistem membangun \textit{reasoning path} berupa daftar string dengan format \texttt{Parent -[REL]-> Child} yang merepresentasikan jalur relasional yang dilalui. \textit{Reasoning path} ini disertakan dalam \textit{prompt} LLM dan ditampilkan kepada pengguna sebagai bukti penalaran yang dapat diverifikasi.
+
+% --- 4.3.4 ---
+\subsection{Perancangan Validasi YAML Tiga Lapis}
+
+Validasi YAML dieksekusi secara kondisional: hanya dipicu apabila \textit{intent} pengguna diklasifikasikan sebagai \textbf{generate\_yaml}. Proses validasi terdiri dari tiga lapisan yang dieksekusi secara berurutan; lapisan berikutnya dilewati apabila lapisan sebelumnya sudah menemukan kegagalan.
+
+\input{tables/tabel19.tex}
+
+Lapis 3 merupakan kontribusi penelitian ini. Alih-alih mengandalkan \textit{dry-run} ke klaster Kubernetes (yang memerlukan infrastruktur nyata), pemeriksaan \textit{required fields} dilakukan langsung terhadap \textit{Knowledge Graph} yang telah dibangun pada tahap \textit{ingestion}. Apabila salah satu lapis mendeteksi kegagalan, antarmuka menampilkan peringatan \texttt{Warning: Potential Syntax Error} sesuai spesifikasi NF-01.
+
+% --- 4.3.5 ---
+\subsection{Perancangan Antarmuka Web Streamlit}
+
+Sistem disajikan melalui antarmuka web berbasis Streamlit (\texttt{main.py}) yang berfungsi sebagai \textit{entry point} utama. Antarmuka dirancang dengan tiga komponen utama:
+
+\begin{enumerate}
+    \item \textbf{\textit{Chat Interface}.} \\
+    Komponen \texttt{st.chat\_input} dan \texttt{st.chat\_message} menyediakan pengalaman percakapan yang familiar. Riwayat percakapan ditampilkan secara kumulatif dalam satu sesi menggunakan \texttt{st.session\_state}.
+
+    \item \textbf{\textit{Retrieval Trace} Expander.} \\
+    Setiap respons dilengkapi \textit{expander} yang menampilkan jejak penalaran graf dalam tiga tab: (a) \textbf{Graph Visualization} --- visualisasi \textit{Graphviz DOT} yang dikodekan warna berdasarkan kedalaman node (navy = root, biru muda = depth 3), (b) \textbf{Edge Table} --- tabel terurut seluruh relasi yang ditelusuri, dan (c) \textbf{Keterangan Warna} --- legenda kedalaman graf.
+
+    \item \textbf{Manajemen Sesi.} \\
+    Setiap sesi browser mendapatkan UUID unik (\texttt{session\_id}) yang digunakan sebagai kunci untuk mengambil dan menyimpan riwayat percakapan di SQLite. Hal ini memungkinkan resolusi pronoun lintas-giliran (misalnya ``tambahkan volume ke konfigurasi tadi'').
+\end{enumerate}
 
 

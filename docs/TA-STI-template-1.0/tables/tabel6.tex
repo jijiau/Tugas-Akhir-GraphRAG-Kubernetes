@@ -30,8 +30,8 @@
 \multicolumn{3}{|c|}{\textbf{Data Preparation}} \\ \hline
 
 \textit{Data Selection \& Cleaning} &
-Identifikasi objek target, seleksi enam komponen Kubernetes, dan pembersihan atribut yang tidak relevan. &
-F-07 (\textit{Selective Components Parsing}),
+Identifikasi objek target dari spesifikasi OpenAPI Kubernetes, seleksi blok \textit{definitions}, dan pembersihan tipe generik yang tidak relevan untuk pembuatan YAML. &
+F-01 (\textit{Structured Object Representation}),
 F-05 (\textit{Attribute Enrichment}) \\ \hline
 
 \textit{Semantic Vectorization} &
@@ -53,7 +53,7 @@ F-01 (\textit{Structured Schema Representation}) \\ \hline
 \multicolumn{3}{|c|}{\textbf{Modelling}} \\ \hline
 
 \textit{Intent Classification Modeling} &
-Membedakan pertanyaan pengguna menjadi \textit{Conceptual QA} atau \textit{Code Generation}. &
+Mengklasifikasikan pertanyaan pengguna ke dalam empat tipe \textit{intent}: \textbf{explain} dan \textbf{generate\_yaml} (tipe utama), serta \textbf{trace\_relationship} dan \textbf{followup} (mode pendukung). Setiap tipe menentukan kedalaman penelusuran graf yang digunakan. &
 F-03 (\textit{Intent Classification}) \\ \hline
 
 \textit{Retrieval Strategy Design} &
@@ -62,20 +62,20 @@ F-02 (\textit{Structured Relation Retrieval}),
 F-04 (\textit{Context Construction \& Injection}) \\ \hline
 
 \textit{Prompt Engineering} &
-Perancangan template prompt, injeksi konteks, serta pengaturan format keluaran. &
+Perancangan template prompt untuk dua peran LLM: \textit{Thinker} (ekstraksi intent) dan \textit{Speaker} (generasi respons), serta injeksi konteks dan pengaturan format keluaran. &
 F-04 (\textit{Context Construction \& Injection}),
-F-08 (\textit{Conditional YAML Generation Constraint}) \\ \hline
+F-07 (\textit{Conditional YAML Generation Constraint}) \\ \hline
 
 \textit{Validation Logic} &
-Integrasi prosedur validasi sintaksis YAML sebagai mekanisme \textit{fail-safe}. &
-F-08 (\textit{Conditional YAML Generation Constraint}) \\ \hline
+Integrasi prosedur validasi YAML tiga lapis sebagai mekanisme \textit{fail-safe}: sintaksis (\textit{yaml.safe\_load}), skema (\textit{kubernetes-validate}), dan ketersediaan \textit{required fields} via Neo4j. &
+F-07 (\textit{Conditional YAML Generation Constraint}) \\ \hline
 
 
 % =================== INPUT ======================
 \multicolumn{3}{|c|}{\textbf{Input}} \\ \hline
 
 Pertanyaan Pengguna &
-Input teks berupa permintaan teknis: \textit{Conceptual QA} atau \textit{Code Generation}. &
+Input teks berupa permintaan teknis dalam bahasa alami yang diklasifikasikan ke salah satu tipe \textit{intent}: \textbf{explain}, \textbf{generate\_yaml}, \textbf{trace\_relationship}, atau \textbf{followup}. &
 F-03 (\textit{Intent Classification}) \\ \hline
 
 
@@ -83,8 +83,8 @@ F-03 (\textit{Intent Classification}) \\ \hline
 \multicolumn{3}{|c|}{\textbf{Output}} \\ \hline
 
 Konten Jawaban &
-Keluaran berupa narasi penjelas atau YAML konfigurasi Kubernetes. &
-F-08 (\textit{Conditional YAML Generation Constraint}) \\ \hline
+Keluaran berupa narasi penjelas (untuk \textit{intent} \textbf{explain}, \textbf{trace\_relationship}, \textbf{followup}) atau blok YAML konfigurasi Kubernetes (untuk \textit{intent} \textbf{generate\_yaml}). &
+F-07 (\textit{Conditional YAML Generation Constraint}) \\ \hline
 
 \textit{Graph Traceability} &
 Penelusuran asal-usul \textit{field} melalui relasi \textit{node–edge} di dalam graf. &
@@ -106,8 +106,8 @@ Evaluasi \textit{Faithfulness} dan \textit{Syntactic Validity} untuk mengukur ku
 % =================== DEPLOYMENT ======================
 \multicolumn{3}{|c|}{\textbf{Deployment}} \\ \hline
 
-CLI \textit{Execution} &
-Eksekusi sistem melalui \textit{Command Line Interface} untuk perintah \texttt{generate}, \texttt{explain}, dan \texttt{validate}. &
-F-06 (\textit{CLI Interaction Interface}) \\ \hline
+Antarmuka Web Interaktif (Streamlit) &
+Penyajian sistem melalui antarmuka web berbasis Streamlit (\texttt{main.py}) yang menampilkan \textit{chat interface}, jawaban LLM, blok YAML (jika relevan), serta visualisasi \textit{Retrieval Trace} berbasis Graphviz. &
+F-06 (\textit{Web Interaction Interface}) \\ \hline
 
 \end{longtable}

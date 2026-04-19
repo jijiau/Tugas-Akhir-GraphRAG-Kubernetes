@@ -33,7 +33,7 @@ Penelitian ini bertujuan untuk menjawab pertanyaan-pertanyaan berikut,
 \section{Tujuan}
 Berdasarkan rumusan masalah yang telah dijelaskan pada Bab I.2, tujuan dalam penulisan penelitian ini adalah sebagai berikut,
 \begin{enumerate}
-    \item Membangun \textit{knowledge graph} dari spesifikasi OpenAPI Kubernetes (swagger.json) melalui \textit{pipeline} ekstraksi guna memetakan entitas beserta relasi hierarkis dan referensial antar-objek konfigurasi.
+    \item Membangun \textit{knowledge graph} dari spesifikasi OpenAPI Kubernetes (swagger.json) melalui \textit{pipeline} ekstraksi guna memetakan objek Kubernetes beserta relasi hierarkis dan referensial antar-objek Kubernetes.
     
     \item Mengembangkan mekanisme GraphRAG dengan menelusuri jalur relasional (\textit{graph traversal}) berdasarkan kueri pengguna, kemudian menginjeksikan \textit{reasoning path} tersebut ke dalam \textit{Large Language Model} (LLM) untuk menghasilkan jawaban konsisten sesuai logika domain Kubernetes.
     
@@ -54,7 +54,7 @@ Agar penelitian ini tetap fokus dan \textit{feasible} dalam lingkup Tugas Akhir,
 
     \item Model LLM yang digunakan berasal dari \textit{pre-trained models} yang diakses melalui API (GPT-4o-mini) tanpa proses \textit{fine-tuning}.
 
-    \item Algoritma \textit{graph traversal} dibatasi maksimal 4 lompatan (\textit{hops}) sesuai analisis topologi objek Kubernetes. Pembatasan ini bertujuan mengoptimalkan \textit{Context Precision} serta efisiensi beban komputasi pada sumber daya lokal.
+    \item Algoritma \textit{graph traversal} dibatasi maksimal 3 lompatan (\textit{hops}) sesuai analisis distribusi kedalaman skema OpenAPI Kubernetes. Kedalaman 1--2 menghasilkan \textit{node} spesifik \textit{resource} yang hanya dibagikan oleh 2--3 \textit{resource}, kedalaman 3 mencapai \textit{field} tingkat kontainer (seperti \textit{image}, \textit{ports}, \textit{env}), sedangkan kedalaman 4+ didominasi tipe generik (\textit{Quantity}, \textit{IntOrString}, \textit{LocalObjectReference}) yang dibagikan oleh 19--136 \textit{resource} sehingga menurunkan presisi konteks. Pembatasan ini bertujuan mengoptimalkan \textit{Context Precision} serta efisiensi beban komputasi pada sumber daya lokal.
 
     \item Proses pengolahan dan pra-pemrosesan data dibatasi pada lingkungan \textbf{Google Colaboratory} dan \textbf{Jupyter Notebook}.
 
@@ -78,7 +78,7 @@ Pelaksanaan Tugas Akhir ini mengadopsi kerangka kerja \textit{Cross-Industry Sta
     Tahap ini bertujuan untuk mengidentifikasi kebutuhan serta masalah inti yang ingin diselesaikan melalui pemanfaatan data. Dalam konteks penelitian ini, permasalahan yang diangkat adalah ketidaktepatan jawaban teknis yang dihasilkan \textit{Large Language Models} (LLM) ketika merujuk dokumentasi Kubernetes, terutama pada konfigurasi YAML yang bersifat struktural dan rentan mengandung halusinasi. Oleh karena itu, kebutuhan penelitian diarahkan pada peningkatan akurasi penalaran struktural pada proses \textit{retrieval} serta mitigasi halusinasi konfigurasi pada sistem \textit{cloud-native}.
 
     \item \textbf{Pemahaman Data (\textit{Data Understanding})} \\
-    Fase ini berfokus pada pengumpulan dan eksplorasi sumber data untuk memahami struktur, kualitas, serta batasannya. Pada penelitian ini, data diperoleh dari spesifikasi resmi Kubernetes OpenAPI yang dianalisis untuk memahami jenis entitas konfigurasi, atribut yang dimiliki, serta relasi hierarkis dan referensial antar objek. Pemahaman ini menentukan objek Kubernetes yang akan dimodelkan dalam \textit{Knowledge Graph}.
+    Fase ini berfokus pada pengumpulan dan eksplorasi sumber data untuk memahami struktur, kualitas, serta batasannya. Pada penelitian ini, data diperoleh dari spesifikasi resmi Kubernetes OpenAPI yang dianalisis untuk memahami jenis objek Kubernetes, atribut yang dimiliki, serta relasi hierarkis dan referensial antar-objek Kubernetes. Pemahaman ini menentukan objek Kubernetes yang akan dimodelkan dalam \textit{knowledge graph}.
 
     \item \textbf{Persiapan Data (\textit{Data Preparation})} \\
     Tahapan ini mencakup pembersihan dan transformasi data agar siap digunakan dalam proses pemodelan. Dalam penelitian ini, dilakukan ekstraksi otomatis dari spesifikasi OpenAPI Kubernetes (JSON/YAML) untuk membentuk representasi entitas, yaitu relasi yang dapat dimodelkan sebagai \textit{Knowledge Graph}. Proses ini mencakup identifikasi atribut, pemetaan hierarki \textit{parent–child}, serta penghubungan \textit{cross-resource references}. Hasil akhirnya berupa struktur graf yang terstandarisasi dan siap digunakan pada mekanisme \textit{retrieval}.
@@ -90,5 +90,5 @@ Pelaksanaan Tugas Akhir ini mengadopsi kerangka kerja \textit{Cross-Industry Sta
     Tahap evaluasi bertujuan menilai kualitas model dan membandingkannya dengan pendekatan alternatif menggunakan metrik terukur. Dalam penelitian ini, kinerja sistem dievaluasi menggunakan metrik \textit{context precision}, \textit{context recall}, \textit{faithfulness}, dan \textit{Syntactic Validity}, kemudian dibandingkan dengan dua \textit{baseline}, yaitu \textit{Vanilla LLM} dan \textit{Vector-based RAG}. Evaluasi dilakukan untuk membuktikan peningkatan relevansi konteks dan penurunan halusinasi semantik pada jawaban teknis.
 
     \item \textbf{Penyebaran (\textit{Deployment})} \\
-    Fase ini berkaitan dengan penyajian hasil implementasi dalam bentuk prototipe dan dokumentasi. Pada penelitian ini, penyebaran diwujudkan dalam bentuk antarmuka interaktif sederhana berupa CLI yang menampilkan jawaban, konfigurasi YAML, serta \textit{reasoning path} sebagai bukti penalaran graf. Selain itu, dokumentasi lengkap disusun sebagai bentuk penyebaran akademik yang memuat rancangan sistem, hasil evaluasi, serta rekomendasi penelitian selanjutnya.
+    Fase ini berkaitan dengan penyajian hasil implementasi dalam bentuk prototipe dan dokumentasi. Pada penelitian ini, penyebaran diwujudkan dalam bentuk antarmuka web interaktif berbasis Streamlit yang menampilkan jawaban, konfigurasi YAML, serta \textit{reasoning path} sebagai bukti penalaran graf. Selain itu, dokumentasi lengkap disusun sebagai bentuk penyebaran akademik yang memuat rancangan sistem, hasil evaluasi, serta rekomendasi penelitian selanjutnya.
 \end{enumerate}

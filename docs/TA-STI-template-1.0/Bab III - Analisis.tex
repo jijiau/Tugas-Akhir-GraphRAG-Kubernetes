@@ -17,20 +17,20 @@ Permasalahan terkait pengelolaan konfigurasi Kubernetes tidak hanya bersifat tek
 
 \begin{enumerate}
     \item \textbf{B01 - Inefisiensi Waktu (\textit{Operational Cost})} \\
-    Dokumentasi Kubernetes bersifat luas dan terfragmentasi sehingga \textit{developer/DevOps} membutuhkan waktu yang cukup lama untuk menelusuri relasi antar objek konfigurasi. Waktu pencarian informasi yang berlebih menjadi pemborosan sumber daya, terutama pada posisi \textit{engineer} dengan biaya tenaga kerja tinggi.
+    Dokumentasi Kubernetes bersifat luas dan terfragmentasi sehingga \textit{developer/DevOps} membutuhkan waktu yang cukup lama untuk menelusuri relasi antar-objek Kubernetes. Waktu pencarian informasi yang berlebih menjadi pemborosan sumber daya, terutama pada posisi \textit{engineer} dengan biaya tenaga kerja tinggi.
 
     \item \textbf{B02 - Kesenjangan Pengetahuan (\textit{Knowledge Gap})} \\
     Dokumentasi statis tidak sepenuhnya mendukung cara berpikir asosiatif manusia ketika memahami struktur spesifikasi. Sistem generatif berbasis LLM pun masih sering menghasilkan \textit{hallucinated fields} karena tidak memiliki pemahaman skematik. Hal ini bisa memperburuk risiko kesalahan konfigurasi.
 
     \item \textbf{B03 - Risiko Kesalahan Konfigurasi (\textit{Operational Risk})} \\
-    Kesalahan sintaksis atau penempatan atribut YAML yang tidak sesuai spesifikasi dapat menyebabkan \textit{deployment failure} hingga \textit{downtime}. \textit{Downtime} produksi berimplikasi langsung pada kerugian finansial, reputasi layanan, dan penundaan proses bisnis.
+    Kesalahan sintaksis atau penempatan atribut berkas konfigurasi YAML yang tidak sesuai spesifikasi dapat menyebabkan \textit{deployment failure} hingga \textit{downtime}. \textit{Downtime} produksi berimplikasi langsung pada kerugian finansial, reputasi layanan, dan penundaan proses bisnis.
 
 \end{enumerate}
 
 Ketiga butir \textit{business understanding} tersebut menjadi dasar dalam
 penyusunan rumusan masalah penelitian. B01 mengenai inefisiensi waktu akibat
 dokumentasi yang terfragmentasi mengarah pada kebutuhan representasi pengetahuan
-yang lebih terstruktur, sehingga dirumuskan sebagai Rumusan Masalah 1 tentang
+yang lebih terstruktur sehingga dirumuskan sebagai Rumusan Masalah 1 tentang
 rekonstruksi spesifikasi OpenAPI menjadi \textit{knowledge graph}. B02 yang
 menyoroti kesenjangan pemahaman skematik dan risiko \textit{hallucination} pada
 LLM memunculkan Rumusan Masalah 2 terkait perancangan mekanisme
@@ -41,69 +41,69 @@ GraphRAG dalam meningkatkan relevansi konteks, \textit{faithfulness}, serta
 validitas sintaksis dibandingkan pendekatan \textit{baseline}.
 
 \subsection{Pemahaman Data (\textit{Data Understanding})}
-Bagian ini menjelaskan karakteristik data dokumentasi API Kubernetes yang menjadi sumber utama dalam proses konstruksi \textit{Graph-based Retrieval Augmentation}. Analisis mencakup identitas data, struktur, pola hubungan antar objek, keterbatasan kualitas, serta seleksi data relevan yang digunakan dalam penelitian.
+Bagian ini menjelaskan karakteristik data dokumentasi API Kubernetes yang menjadi sumber utama dalam proses konstruksi \textit{Graph-based Retrieval Augmentation}. Analisis mencakup identitas data, struktur, pola hubungan antar-objek Kubernetes, keterbatasan kualitas, serta seleksi data relevan yang digunakan dalam penelitian.
 
     \subsubsection{Sumber dan Spesifikasi Data (\textit{Data Source \& Specifications})}
-    Data penelitian diperoleh dari repositori resmi Kubernetes pada GitHub dengan alamat \texttt{kubernetes/kubernetes}. Data diambil dalam bentuk berkas \texttt{swagger.json} yang mengikuti standar \textit{OpenAPI Specification} (OAS). Penelitian ini menggunakan versi Kubernetes \textbf{v1.30} sebagai acuan. Berkas \texttt{swagger.json} memiliki ukuran rata-rata 3,757 MB dan memuat 2.500--3.500 entitas definisi API. Kompleksitas tersebut menjustifikasi penggunaan metode ekstraksi otomatis, karena pendekatan manual berpotensi menghasilkan kesalahan interpretasi struktur dan kehilangan relasi semantik antar objek.
+    Data penelitian diperoleh dari repositori resmi Kubernetes pada GitHub dengan alamat \texttt{kubernetes/kubernetes}. Data diambil dalam bentuk berkas \texttt{swagger.json} yang mengikuti standar \textit{OpenAPI Specification} (OAS). Penelitian ini menggunakan versi Kubernetes \textbf{v1.30} sebagai acuan. Berkas \texttt{swagger.json} memiliki ukuran rata-rata 3,757 MB dan memuat 2.500--3.500 definisi API. Kompleksitas tersebut menjustifikasi penggunaan metode ekstraksi otomatis, karena pendekatan manual berpotensi menghasilkan kesalahan interpretasi struktur dan kehilangan relasi semantik antar-objek Kubernetes.
 
     \subsubsection{Analisis Struktur Dokumen}
     Berdasarkan analisis terhadap struktur \texttt{swagger.json}, terdapat dua komponen utama beserta karakteristik hierarkisnya:
     \begin{enumerate}
-        \item \textbf{\textit{Definitions} (atau \textit{Schema Resources}):} Mendeskripsikan spesifikasi objek infrastruktur seperti \textit{Pod}, \textit{Service}, dan \textit{Deployment}. Hampir seluruh definisi sumber daya mematuhi pola struktural wajib yang terdiri atas \texttt{apiVersion}, \texttt{kind}, \texttt{metadata}, \texttt{spec}, dan \texttt{status}. Namun, isi dari atribut \texttt{spec} sangat bervariasi antar-komponen di dalam teks YAML. Akibatnya, waktu pembuatan konfigurasi meningkat dan pengembang sangat bergantung pada panduan eksternal. Secara spesifik, setiap definisi skema di bagian ini memuat:
-        \begin{itemize}
-            \item \texttt{properties}: Merepresentasikan ruas (\textit{field}) aktual pada manifes YAML.
+        \item \textbf{\textit{Definitions} (atau \textit{Schema Resources}):} Mendeskripsikan spesifikasi objek Kubernetes seperti \textit{Pod}, \textit{Service}, dan \textit{Deployment}. Hampir seluruh objek Kubernetes mematuhi pola struktural wajib yang terdiri atas \texttt{apiVersion}, \texttt{kind}, \texttt{metadata}, \texttt{spec}, dan \texttt{status}. Namun, isi dari atribut \texttt{spec} sangat bervariasi antar-komponen di dalam teks YAML. Akibatnya, waktu pembuatan konfigurasi meningkat dan pengembang sangat bergantung pada panduan eksternal. Secara spesifik, setiap definisi skema di bagian ini memuat:
+        \begin{enumerate}[a.]
+            \item \texttt{properties}: Merepresentasikan ruas (\textit{field}) aktual pada berkas konfigurasi YAML.
             \item \texttt{type}: Menentukan format tipe data (seperti \textit{object, array, string, integer, boolean}).
             \item \texttt{required}: Mendefinisikan daftar ruas konfigurasi wajib isi.
             \item \texttt{description}: Menyediakan dokumentasi tekstual mengenai fungsionalitas ruas.
             \item \texttt{\$ref}: Bertindak sebagai referensi silang ke definisi skema bersarang (\textit{nested schema}). Ciri utama dari struktur dokumen ini adalah definisi yang saling mereferensikan secara mendalam. Akibatnya, satu ruas YAML dapat mengarah ke berbagai kemungkinan bentuk, meliputi:
-            \begin{itemize}
+            \begin{enumerate}[i.]
                 \item Definisi objek skema lain.
                 \item Struktur daftar (\textit{list}).
                 \item Struktur pemetaan (\textit{map}) dengan batasan (\textit{constraint}) khusus.
-            \end{itemize}
-        \end{itemize}
-        
-        \item \textbf{\textit{Paths}:} Mendeskripsikan titik akhir (\textit{endpoint}) API, misalnya \texttt{GET /api/v1/pods}, sebagai antarmuka interaksi objek dalam ekosistem Kubernetes. Setiap titik akhir memiliki atribut penentu interaksi komunikasi yang memuat:
-        \begin{itemize}
+            \end{enumerate}
+        \end{enumerate}
+
+        \item \textbf{\textit{Paths}:} Mendeskripsikan titik akhir (\textit{endpoint}) API, misalnya \texttt{GET /api/v1/pods}, sebagai antarmuka interaksi objek Kubernetes dalam ekosistem klaster. Setiap titik akhir memiliki atribut penentu interaksi komunikasi yang memuat:
+        \begin{enumerate}[a.]
             \item Metode HTTP fungsional (\textit{GET, POST, PUT, PATCH, DELETE}).
             \item Parameter injeksi pada jalur (\textit{path}) dan kueri (\textit{query}).
             \item Skema balasan dari peladen (\textit{response schema}).
             \item Relasi struktural pembentuk fungsionalitas yang mengarah kembali ke blok \texttt{definitions}.
-        \end{itemize}
+        \end{enumerate}
     \end{enumerate}
 
     \subsubsection{Analisis Data Eksploratif Spesifikasi OpenAPI}
 
-        Sebelum merancang skema \textit{knowledge graph}, analisis data eksploratif (\textit{Exploratory Data Analysis} / EDA) dilakukan terhadap berkas \texttt{kubernetes\_swagger.json} berukuran 3,67 MB guna memetakan skala, kompleksitas struktural, dan sebaran entitas spesifikasi. Proses ekstraksi awal berhasil mengidentifikasi 735 definisi skema. Sebanyak 5 entitas diabaikan karena teridentifikasi sebagai data bising (\textit{noise}), menyisakan 730 entitas valid untuk dievaluasi lebih lanjut.
+        Sebelum merancang skema \textit{knowledge graph}, analisis data eksploratif (\textit{Exploratory Data Analysis} / EDA) dilakukan terhadap berkas \texttt{kubernetes\_swagger.json} berukuran 3,67 MB guna memetakan skala, kompleksitas struktural, dan sebaran definisi skema. Proses ekstraksi awal berhasil mengidentifikasi 735 definisi skema. Sebanyak 5 entri diabaikan karena teridentifikasi sebagai data bising (\textit{noise}), menyisakan 730 definisi skema valid untuk dievaluasi lebih lanjut.
 
         Temuan utama dari proses EDA ini dikelompokkan ke dalam tiga metrik krusial:
 
         \begin{enumerate}
-            \item \textbf{Distribusi Entitas \textit{root} vs komponen pendukung}\\
-            Klasifikasi entitas menunjukkan ketimpangan proporsi yang sangat signifikan antara objek utama dan objek pendukung. Dari total 730 definisi, hanya 183 entitas (24,9\%) terklasifikasi sebagai sumber daya akar (\textit{root resources}). Entitas akar ini merupakan objek mandiri penyandang atribut \textit{GroupVersionKind} (GVK) seperti \textit{Deployment} atau \textit{Pod} sehingga dapat diterapkan secara langsung ke dalam klaster. Sementara itu, mayoritas mutlak sebanyak 547 entitas (75,1\%) hanyalah skema pendukung (\textit{sub-resources}) pembangun komponen akar tersebut. Ketimpangan ini membuktikan betapa masifnya dependensi struktural di dalam Kubernetes.
+            \item \textbf{Distribusi objek Kubernetes \textit{root} vs komponen pendukung}\\
+            Klasifikasi definisi skema menunjukkan ketimpangan proporsi yang sangat signifikan antara objek utama dan objek pendukung. Dari total 730 definisi, hanya 183 (24,9\%) terklasifikasi sebagai objek Kubernetes akar (\textit{root resources}). Objek akar ini merupakan objek mandiri penyandang atribut \textit{GroupVersionKind} (GVK) seperti \textit{Deployment} atau \textit{Pod} sehingga dapat diterapkan secara langsung ke dalam klaster. Sementara itu, mayoritas mutlak sebanyak 547 definisi (75,1\%) hanyalah skema pendukung (\textit{sub-resources}) pembangun komponen akar tersebut. Ketimpangan ini membuktikan betapa masifnya dependensi struktural di dalam Kubernetes.
                 \begin{figure}[H]
                     \centering
                     \captionsetup{justification=centering}
                     \includegraphics[width=1.00\textwidth]{images/Proporsi-root-komponen.jpeg}
-                    \caption{Proporsi Entitas \textit{Root} vs Komponen Pendukung dalam Spesifikasi OpenAPI Kubernetes}
+                    \caption{Proporsi objek Kubernetes \textit{root} vs komponen pendukung dalam spesifikasi OpenAPI Kubernetes}
                     \label{fig:kubernetes-architecture}
                 \end{figure}
 
             \item \textbf{Kepadatan Properti dan Intensitas Referensi Silang}\\
-            Inspeksi terhadap struktur properti mengungkap bahwa setiap definisi rata-rata memuat 4,1 ruas (\textit{field}), dengan entitas paling kompleks menampung hingga 44 ruas parameter. Temuan paling krusial pemvalidasi tingginya kompleksitas hierarki adalah keberadaan referensi silang (\texttt{\$ref}). Sebanyak 437 definisi (hampir 60\% dari total data) terbukti mengandalkan referensi ke skema lain dengan rata-rata 1,11 referensi per entitas. Tingginya intensitas referensi ini secara kuantitatif memvalidasi argumen mengenai sulitnya melacak skema bersarang (\textit{nested schema}) secara manual.
+            Inspeksi terhadap struktur properti mengungkap bahwa setiap definisi skema rata-rata memuat 4,1 ruas (\textit{field}), dengan objek Kubernetes paling kompleks menampung hingga 44 ruas parameter. Temuan paling krusial yang memvalidasi tingginya kompleksitas hierarki adalah keberadaan referensi silang (\texttt{\$ref}). Sebanyak 437 definisi (hampir 60\% dari total data) terbukti mengandalkan referensi ke skema lain dengan rata-rata 1,11 referensi per definisi. Tingginya intensitas referensi ini secara kuantitatif memvalidasi argumen mengenai sulitnya melacak skema bersarang (\textit{nested schema}) secara manual.
         \end{enumerate}
 
-        Keseluruhan temuan kuantitatif EDA ini secara langsung menjadi landasan arsitektural dalam perancangan skema graf. Pemetaan atas 149 jenis (\textit{kind}) sumber daya unik hasil analisis ini secara presisi diproyeksikan akan membentuk sebuah \textit{knowledge graph} Kubernetes yang memuat 730 simpul (\textit{nodes}) pendefinisi objek beserta estimasi 1.486 garis relasi (\textit{edges}) pembentuk topologi infrastrukturnya.
-    
+        Keseluruhan temuan kuantitatif EDA ini secara langsung menjadi landasan arsitektural dalam perancangan skema graf. Pemetaan atas 149 jenis (\textit{kind}) objek Kubernetes unik hasil analisis ini secara presisi diproyeksikan akan membentuk sebuah \textit{knowledge graph} Kubernetes yang memuat 730 \textit{node} pendefinisi objek beserta estimasi 1.486 \textit{edge} pembentuk topologi infrastrukturnya.
+
     \subsubsection{Analisis Keterhubungan Data}
         \begin{enumerate}
             \item \textbf{Relasi Tingkat Skema (\textit{Schema-Level}) -- Tercakup Penuh 100\%} \\
             Kategori ini terpetakan dan direpresentasikan secara utuh di dalam graf karena bersumber langsung dari struktur statis spesifikasi OpenAPI. Relasi pada tingkat ini mencakup:
-            \begin{itemize}
-                \item \textbf{Sifat Atomik \texttt{Pod} (\textit{Passive Relationships}):} \texttt{Pod} bertindak sebagai unit eksekusi atomik pasif tanpa relasi skema eksplisit ke luar. Relasinya terbentuk secara pasif akibat interaksi struktural dari objek eksternal.
-                \item \textbf{Komposisi Hierarkis (\textit{Hierarchical Composition}):} Terjadi ketika satu objek mengandung definisi objek lain secara utuh. Contoh utamanya adalah \texttt{Deployment} mereferensikan \texttt{Pod} melalui blok \texttt{spec.template} penyimpan keseluruhan spesifikasi \texttt{PodSpec}.
-                \item \textbf{Referensi Langsung (\textit{Direct Reference \& Injection}):} Terjadi ketika sebuah objek memanggil objek lain secara eksplisit pada parameternya. Contohnya adalah injeksi konfigurasi satu arah dari \texttt{ConfigMap} atau \texttt{Secret} ke lingkungan eksekusi \texttt{Pod} seperti pada Kode \ref{lst:contoh-yaml} dan \ref{lst:contoh-yaml-secret}.
-            \end{itemize}
+            \begin{enumerate}[a.]
+                \item \textbf{Sifat Atomik \texttt{Pod} (\textit{Passive Relationships}):} \texttt{Pod} bertindak sebagai unit eksekusi atomik pasif tanpa relasi skema eksplisit ke luar. Relasinya terbentuk secara pasif akibat interaksi struktural dari objek Kubernetes eksternal.
+                \item \textbf{Komposisi Hierarkis (\textit{Hierarchical Composition}):} Terjadi ketika satu objek Kubernetes mengandung definisi objek lain secara utuh. Contoh utamanya adalah \texttt{Deployment} mereferensikan \texttt{Pod} melalui blok \texttt{spec.template} penyimpan keseluruhan spesifikasi \texttt{PodSpec}.
+                \item \textbf{Referensi Langsung (\textit{Direct Reference \& Injection}):} Terjadi ketika sebuah objek Kubernetes memanggil objek lain secara eksplisit pada parameternya. Contohnya adalah injeksi konfigurasi satu arah dari \texttt{ConfigMap} atau \texttt{Secret} ke lingkungan eksekusi \texttt{Pod} seperti pada Kode \ref{lst:contoh-yaml} dan \ref{lst:contoh-yaml-secret}.
+            \end{enumerate}
 
             \begin{minipage}{0.48\textwidth}
         \begin{lstlisting}[language=bash, frame=single, caption={Injeksi ConfigMap}, captionpos=b, label={lst:contoh-yaml}]
@@ -124,30 +124,106 @@ Bagian ini menjelaskan karakteristik data dokumentasi API Kubernetes yang menjad
 
             \vspace{0.3cm}
             \item \textbf{Relasi Semi-Statis (\textit{Semi-Static}) -- Tercakup Parsial} \\
-            Kategori ini terpetakan ke dalam graf secara konseptual atau sebagai entitas properti, namun tidak membentuk jalur semantik fungsional penuh.
-            \begin{itemize}
-                \item \textbf{Asosiasi Label/Selektor (\textit{Label/Selector Association}):} Direpresentasikan sekadar sebagai garis relasi konseptual pembentuk topologi graf.
-                \item \textbf{Deteksi Cakupan Klaster (\textit{Cluster-Scope Detection}):} Pembatasan area operasional tidak dipetakan sebagai ruang graf terpisah melainkan diakomodasi melalui atribut properti cakupan (\textit{scope property}) pada setiap simpul.
-                \item \textbf{Anotasi dan Toleransi (\textit{Annotations/Tolerations}):} Nilai konfigurasi tambahan ini hanya disimpan sebagai properti pada simpul tanpa memicu pembentukan garis relasi semantik (\textit{semantic edges}) dengan objek lain.
-            \end{itemize}
+            Kategori ini terpetakan ke dalam graf secara konseptual atau sebagai properti \textit{node}, namun tidak membentuk jalur semantik fungsional penuh.
+            \begin{enumerate}[a.]
+                \item \textbf{Asosiasi Label/Selektor (\textit{Label/Selector Association}):} Direpresentasikan sekadar sebagai \textit{edge} konseptual pembentuk topologi graf.
+                \item \textbf{Deteksi Cakupan Klaster (\textit{Cluster-Scope Detection}):} Pembatasan area operasional tidak dipetakan sebagai ruang graf terpisah melainkan diakomodasi melalui atribut properti cakupan (\textit{scope property}) pada setiap \textit{node}.
+                \item \textbf{Anotasi dan Toleransi (\textit{Annotations/Tolerations}):} Nilai konfigurasi tambahan ini hanya disimpan sebagai properti pada \textit{node} tanpa memicu pembentukan \textit{edge} semantik dengan objek Kubernetes lain.
+            \end{enumerate}
 
             \item \textbf{Relasi Tingkat Operasional (\textit{Runtime-Level}) -- Tidak Tercakup} \\
             Kategori ini secara mutlak berada di luar cakupan fungsional sistem GraphRAG. Relasi pada tingkat ini mencakup:
-            \begin{itemize}
+            \begin{enumerate}[a.]
                 \item \textbf{Hierarki Kepemilikan (\textit{OwnerReferences}):} Merupakan atribut metadata operasional penentu pengumpulan sampah sumber daya (\textit{garbage collection}) saat infrastruktur berjalan.
                 \item \textbf{Interaksi Lintas Ruang Nama (\textit{Cross-Namespace Interactions}):} Melibatkan perilaku pembatas akses operasional jaringan secara langsung (\textit{runtime behavior}).
                 \item \textbf{Logika Pencocokan Label (\textit{Label Matching Logic}):} Merupakan proses komputasi evaluasi dinamis oleh layanan klaster untuk menentukan target pembagian beban jaringan sesungguhnya.
-            \end{itemize}
+            \end{enumerate}
 
             \item \textbf{Keterbatasan Inheren dan Pengembangan Lanjutan} \\
             Ketiadaan pemetaan pada relasi tingkat operasional merupakan batasan inheren dalam penelitian ini. Hal ini terjadi karena arsitektur GraphRAG dibangun secara eksklusif bermodalkan skema OpenAPI (\texttt{swagger.json}) penyedia representasi struktur statis dan bukan pembaca status klaster yang sedang beroperasi (\textit{runtime state}). Sebagai langkah pengembangan lanjutan (\textit{future work}) guna mengakomodasi kasus penggunaan pelacak relasi dinamis, sistem pemetaan graf ini dapat diintegrasikan secara langsung dengan mekanisme pemantauan kontroler Kubernetes (\textit{controller watch mechanism}) atau penerapan pola operator (\textit{operator pattern}).
         \end{enumerate}
 
+    \subsubsection{Desain Taksonomi \textit{Edge} untuk \textit{Knowledge Graph} Kubernetes}
+
+    Berdasarkan analisis pola keterhubungan data di atas, penelitian ini merancang 18 jenis \textit{edge} yang terdistribusi dalam 7 kategori relasi. Taksonomi ini adalah \textbf{kontribusi penelitian} yang dirancang khusus berdasarkan semantik domain Kubernetes, bukan standar yang ada di literatur sebelumnya. Seluruh 18 \textit{edge} type diimplementasikan dalam kode pada variabel \texttt{\_ALL\_EDGE\_TYPES} di \texttt{src/graph/queries.py}.
+
+    \begin{table}[H]
+    \centering
+    \captionsetup{justification=centering}
+    \caption{Taksonomi 18 jenis \textit{edge} dalam \textit{knowledge graph} Kubernetes}
+    \label{tbl:edge_taxonomy_full}
+    \begin{tabular}{| c | l | l | p{0.35\textwidth} |}
+    \hline
+    \textbf{No} & \textbf{\textit{Edge Type}} & \textbf{Kategori} & \textbf{Contoh Relasi} \\
+    \hline
+    1 & \texttt{HAS\_PROPERTY} & Struktural & \textit{Deployment} $\rightarrow$ \textit{spec} \\
+    \hline
+    2 & \texttt{EXTENDS} & Struktural & \textit{Deployment} $\rightarrow$ \textit{ObjectMeta} \\
+    \hline
+    3 & \texttt{ONE\_OF} & Struktural & \textit{Volume} $\rightarrow$ satu sumber penyimpanan \\
+    \hline
+    4 & \texttt{ANY\_OF} & Struktural & \textit{EnvFromSource} $\rightarrow$ \textit{ConfigMap}/\textit{Secret} \\
+    \hline
+    5 & \texttt{CONTAINS\_POD\_TEMPLATE} & \textit{Workload} & \textit{Deployment} $\rightarrow$ \textit{PodTemplateSpec} \\
+    \hline
+    6 & \texttt{CONTAINS\_JOB\_TEMPLATE} & \textit{Workload} & \textit{CronJob} $\rightarrow$ \textit{JobTemplateSpec} \\
+    \hline
+    7 & \texttt{HAS\_CONTAINER} & \textit{Workload} & \textit{PodSpec} $\rightarrow$ \textit{Container} \\
+    \hline
+    8 & \texttt{CLAIMS\_VOLUME} & Penyimpanan & \textit{StatefulSet} $\rightarrow$ \textit{PersistentVolumeClaim} \\
+    \hline
+    9 & \texttt{MOUNTS\_VOLUME} & Penyimpanan & \textit{PodSpec} $\rightarrow$ \textit{Volume} \\
+    \hline
+    10 & \texttt{USES\_STORAGE\_CLASS} & Penyimpanan & \textit{PVC} $\rightarrow$ \textit{StorageClass} \\
+    \hline
+    11 & \texttt{LOADS\_CONFIGMAP} & Konfigurasi & \textit{Container} $\rightarrow$ \textit{ConfigMap} \\
+    \hline
+    12 & \texttt{USES\_SECRET} & Konfigurasi & \textit{PodSpec} $\rightarrow$ \textit{Secret} \\
+    \hline
+    13 & \texttt{SELECTS\_POD} & Jaringan & \textit{Service} $\rightarrow$ \textit{Pod} via \textit{selector} \\
+    \hline
+    14 & \texttt{ROUTES\_TO\_SERVICE} & Jaringan & \textit{Ingress} $\rightarrow$ \textit{Service} \\
+    \hline
+    15 & \texttt{BINDS\_ROLE} & RBAC & \textit{RoleBinding} $\rightarrow$ \textit{Role} \\
+    \hline
+    16 & \texttt{BINDS\_SERVICE\_ACCOUNT} & RBAC & \textit{RoleBinding} $\rightarrow$ \textit{ServiceAccount} \\
+    \hline
+    17 & \texttt{USES\_SERVICE\_ACCOUNT} & RBAC & \textit{PodSpec} $\rightarrow$ \textit{ServiceAccount} \\
+    \hline
+    18 & \texttt{SCALES\_RESOURCE} & \textit{Autoscaling} & \textit{HPA} $\rightarrow$ \textit{Deployment}/\textit{StatefulSet} \\
+    \hline
+    \end{tabular}
+    \end{table}
+
+    \subsubsection{Justifikasi Batas Kedalaman Penelusuran Graf (3 Lompatan)}
+
+    Batas maksimum 3 lompatan (\textit{hops}) dalam penelusuran graf ditetapkan berdasarkan analisis distribusi kedalaman skema OpenAPI Kubernetes. Tabel~\ref{tbl:hop_justification} menunjukkan bahwa karakteristik \textit{node} berubah secara signifikan seiring bertambahnya kedalaman:
+
+    \begin{table}[H]
+    \centering
+    \captionsetup{justification=centering}
+    \caption{Distribusi karakteristik \textit{node} berdasarkan kedalaman penelusuran graf}
+    \label{tbl:hop_justification}
+    \begin{tabular}{| c | p{0.20\textwidth} | p{0.30\textwidth} | p{0.25\textwidth} |}
+    \hline
+    \textbf{Kedalaman} & \textbf{Karakteristik \textit{Node}} & \textbf{Contoh} & \textbf{Penggunaan} \\
+    \hline
+    1--2 & Spesifik \textit{resource} (dibagikan 2--3 \textit{resource}) & \textit{DeploymentSpec}, \textit{ServiceSpec} & Tipe \textit{explain}, \textit{followup} \\
+    \hline
+    3 & \textit{Field} tingkat kontainer & \textit{image}, \textit{ports}, \textit{env}, \textit{resources} & Tipe \textit{generate\_yaml}, \textit{trace\_relationship} \\
+    \hline
+    4+ & Tipe generik (dibagikan 19--136 \textit{resource}) & \textit{Quantity}, \textit{IntOrString}, \textit{LocalObjectReference} & \textbf{Tidak digunakan} (menurunkan presisi) \\
+    \hline
+    \end{tabular}
+    \end{table}
+
+    Dengan menggunakan kedalaman yang disesuaikan per tipe \textit{intent} (kedalaman 2 untuk \textit{explain}/\textit{followup}, kedalaman 3 untuk \textit{generate\_yaml}/\textit{trace\_relationship}), sistem mengoptimalkan \textit{Context Precision} dengan menghindari injeksi tipe generik yang tidak informatif ke dalam konteks LLM.
+
 \section{Analisis Kebutuhan}
 Tahap analisis kebutuhan berfokus pada identifikasi kapabilitas yang harus
-dimiliki sistem guna menjawab tujuan penelitian dan kebutuhan bisnis. Untuk memastikan bahwa kebutuhan yang dirumuskan bersifat relevan 
-dengan masalah yang dihadapi, dilakukan analisis \textit{technical GAP} pada pendekatan eksisting yang ada
-pada sistem \textit{Retrieval-Augmented Generation} pada Tabel \ref{tbl:comparison_existing_graphRAG}. 
+dimiliki sistem guna menjawab tujuan penelitian dan kebutuhan bisnis. Untuk memastikan bahwa kebutuhan yang dirumuskan bersifat relevan
+dengan masalah yang dihadapi, dilakukan analisis kesenjangan teknis (\textit{technical gap}) pada pendekatan yang ada saat ini
+pada sistem \textit{Retrieval-Augmented Generation} pada Tabel \ref{tbl:comparison_existing_graphRAG}.
 \input{tables/tabel12.tex}
 
 \subsection{Kebutuhan Fungsional}
@@ -167,23 +243,47 @@ Berdasarkan hasil pemetaan pada Tabel \ref{tbl:mapping_business_gap_functional},
 Kebutuhan non-fungsional mendefinisikan karakteristik kualitas yang harus dimiliki oleh sistem untuk memastikan kinerja, keandalan, dan keamanan operasional. Kebutuhan ini penting untuk menjamin bahwa sistem tidak hanya berfungsi dengan benar, tetapi juga memenuhi standar kualitas yang diharapkan oleh pengguna. Berikut adalah kebutuhan non-fungsional utama yang diidentifikasi:
 \input{tables/tabel2}
 
+\subsection{Pemetaan Kebutuhan Bisnis terhadap Kerangka Evaluasi}
+
+Untuk memastikan bahwa setiap dimensi evaluasi sistem memiliki dasar bisnis yang jelas, Tabel~\ref{tbl:mapping_bisnis_evaluasi} memetakan hubungan antara kebutuhan bisnis (B01--B03), dimensi evaluasi, dan metrik yang digunakan.
+
+\begin{table}[H]
+\centering
+\captionsetup{justification=centering}
+\caption{Pemetaan kebutuhan bisnis terhadap dimensi dan metrik evaluasi}
+\label{tbl:mapping_bisnis_evaluasi}
+\begin{tabular}{| p{0.18\textwidth} | p{0.22\textwidth} | p{0.15\textwidth} | p{0.30\textwidth} |}
+\hline
+\textbf{Kebutuhan Bisnis} & \textbf{Pertanyaan Evaluasi} & \textbf{Dimensi} & \textbf{Metrik Utama} \\
+\hline
+B01 -- Inefisiensi Waktu & Apakah \textit{retrieval} efisien dan tepat sasaran? & RetQ (35\%) & F1@k, NDCG@k, Graph Coverage \\
+\hline
+B02 -- Kesenjangan Pengetahuan & Apakah penalaran berbasis graf menghasilkan konteks yang benar? & ReaQ (25\%) & Hop-Accuracy, Multi-Hop Success Rate, Hallucination Rate \\
+\hline
+B03 -- Risiko Konfigurasi & Apakah keluaran YAML valid dan relevan terhadap kueri? & AnsQ (40\%) & Syntactic Validity, Schema Compliance, Answer Relevance, Faithfulness \\
+\hline
+\end{tabular}
+\end{table}
+
+Pemetaan ini mempertegas bahwa dimensi evaluasi bukan sekadar metrik teknis, melainkan representasi langsung dari dampak bisnis yang ingin dimitigasi oleh sistem GraphRAG.
+
 \section{Alternatif Solusi}
 Bagian ini membahas berbagai alternatif solusi yang dapat diimplementasikan untuk memenuhi kebutuhan sistem yang telah diidentifikasi sebelumnya.
 
 \subsection{Hybrid KG--Vector RAG}
-Pendekatan \textit{hybrid KG--Vector RAG} menggabungkan dua jalur pencarian paralel, yakni \textit{vector-based RAG} untuk pencarian semantik efisien dan \textit{knowledge graph} (KG) berbasis metadata untuk penalaran relasional \parencite{wan2025empowering}. Kueri pengguna diproses melalui ekstraksi entitas untuk menarik subgraf relevan dari KG sekaligus mengambil potongan teks melalui pencarian kemiripan vektor. Kedua konteks terstruktur dan semantik ini kemudian digabungkan sebagai basis generasi bagi LLM. 
+Pendekatan \textit{hybrid KG--Vector RAG} menggabungkan dua jalur pencarian, yakni \textit{vector-based RAG} untuk pencarian semantik dan \textit{knowledge graph} (KG) berbasis metadata untuk penalaran relasional \parencite{wan2025empowering}. Kueri pengguna diproses melalui ekstraksi entitas untuk menarik subgraf relevan dari KG sekaligus mengambil potongan teks melalui pencarian kemiripan vektor; kedua konteks terstruktur dan semantik ini kemudian digabungkan sebagai basis generasi bagi LLM.
 
-Metode ini terbukti secara efektif meningkatkan akurasi faktual dan kesesuaian domain dibandingkan RAG konvensional. Konsekuensi logis dari penggabungan ini adalah lonjakan latensi sistem akibat tingginya beban komputasi penelusuran graf (\textit{traversal overhead}) dan kompleksitas penyempurnaan \textit{prompt}.
+Hasil evaluasi oleh \textcite{wan2025empowering} pada dataset benchmark menunjukkan peningkatan yang signifikan dibanding \textit{vector-only RAG}: \textit{Exact Match} meningkat dari 63,4\% menjadi 77,8\% (+14,4 poin persentase) dan \textit{Context Precision} dari 69,8\% menjadi 76,5\% (+6,7 poin persentase). Konsekuensi dari penggabungan dua jalur ini adalah lonjakan latensi akibat \textit{traversal overhead} graf dan kompleksitas \textit{prompt engineering}.
 
 \subsection{\textit{GNN-augmented GraphRAG} (G-Retriever)}
-Arsitektur G-Retriever dirancang khusus untuk menangani pemahaman graf tekstual berskala besar dengan memadukan \textit{Graph Neural Networks} (GNN) dan LLM \parencite{he2024gretriever}. Sistem ini mereduksi ukuran konteks kueri melalui algoritma \textit{Prize-Collecting Steiner Tree} (PCST) guna membangun subgraf koheren berisi simpul dan garis paling informatif sebelum disuntikkan ke dalam LLM. 
+Arsitektur G-Retriever dirancang untuk menangani pemahaman graf tekstual berskala besar dengan memadukan \textit{Graph Neural Networks} (GNN) dan LLM \parencite{he2024gretriever}. Sistem ini mereduksi ukuran konteks kueri melalui algoritma \textit{Prize-Collecting Steiner Tree} (PCST) guna membangun subgraf koheren berisi \textit{node} dan \textit{edge} paling informatif sebelum disuntikkan ke dalam LLM.
 
-Keunggulan absolut metode ini terletak pada efisiensi skala besar dan mitigasi halusinasi. Pendekatan ekstraksi subgraf ini mampu memangkas penggunaan token hingga 99\% sekaligus menaikkan tingkat validitas simpul secara drastis dari 31\% menjadi 77\% tanpa menuntut proses \textit{fine-tuning} pada LLM.
+Secara kuantitatif, pendekatan ini mampu memangkas penggunaan token hingga \textbf{99\%} dibanding RAG konvensional, sekaligus menaikkan validitas \textit{node} dari 31\% menjadi \textbf{77\%} (+46 poin persentase) dan validitas \textit{edge} dari 12\% menjadi \textbf{76\%} tanpa memerlukan proses \textit{fine-tuning} pada LLM \parencite{he2024gretriever}. Namun, metode PCST memiliki kompleksitas komputasi $O(|V| + |E|)$ yang semakin meningkat seiring ukuran graf, dan ketergantungan terhadap GNN menyebabkan \textit{indexing} harus diulang setiap versi Kubernetes berubah.
 
 \subsection{\textit{Hybrid Neural-Symbolic} dengan \textit{Relational DB} (NeuSym-RAG)}
-Metode NeuSym-RAG memadukan model neural dengan basis pengetahuan simbolik berbasis aturan di dalam sebuah basis data relasional \parencite{cao2025neusymrag}. Pendekatan ini menyimpan entitas di dalam tabel terstruktur dan mengeksekusi aturan simbolik untuk memvalidasi hasil inferensi LLM secara ketat dan deterministik. 
+Metode NeuSym-RAG memadukan model neural dengan basis pengetahuan simbolik berbasis aturan di dalam basis data relasional \parencite{cao2025neusymrag}. Pendekatan ini menyimpan entitas dalam tabel terstruktur dan mengeksekusi aturan simbolik untuk memvalidasi hasil inferensi LLM secara deterministik, dengan akurasi validasi mencapai lebih dari 90\% pada dataset \textit{question answering} terstruktur \parencite{cao2025neusymrag}.
 
-Meskipun menawarkan validasi deterministik sangat kuat, pendekatan ini memiliki kelemahan arsitektural fatal jika diaplikasikan pada domain dokumen Kubernetes. Skema penyimpanan relasional menuntut terlalu banyak operasi \textit{join} kompleks untuk menelusuri relasi hierarkis bersarang (\textit{multi-hop}) dari spesifikasi OpenAPI sehingga kinerja komputasi kueri menjadi sangat tidak efisien.
+Namun, skema penyimpanan relasional memiliki kelemahan struktural jika diaplikasikan pada domain Kubernetes. Dengan 730 definisi skema dan rata-rata 4,1 \textit{field} per definisi, menelusuri relasi hierarkis bersarang (\textit{multi-hop}) membutuhkan operasi \textit{join} SQL yang kompleks. Selain itu, aturan simbolik harus didefinisikan secara manual untuk setiap relasi dan diperbarui setiap siklus rilis Kubernetes (rata-rata setiap 4 bulan), menjadikan pemeliharaan tidak praktis dalam skala produksi.
 
 \section{Analisis Pemilihan Solusi}
 Bagian ini bertujuan menentukan pendekatan pemecahan masalah yang paling sesuai untuk membangun sistem \textit{Graph-based Retrieval} pada dokumentasi API Kubernetes. Evaluasi dilakukan dengan membandingkan beberapa alternatif solusi berdasarkan kriteria yang disesuaikan dengan karakteristik konfigurasi \textit{cloud-native} yang bersifat deklaratif, terstruktur, dan saling bergantung secara hierarkis.
@@ -193,19 +293,19 @@ Evaluasi dilakukan menggunakan skala 1 (Kurang Baik) hingga 5 (Sangat Baik), ber
 
 \begin{enumerate}[label=\textbf{K\arabic*.}]
     \item \textbf{Kesesuaian Representasi Data} \\
-    Mengukur kemampuan metode dalam menangani data konfigurasi yang bersifat hierarkis dan memiliki \textit{cross-reference} antar objek (misalnya \textit{Service} $\rightarrow$ \textit{Pod} melalui \textit{selector}).
-    
+    Mengukur kemampuan metode dalam menangani data konfigurasi yang bersifat hierarkis dan memiliki \textit{cross-reference} antar-objek Kubernetes (misalnya \textit{Service} $\rightarrow$ \textit{Pod} melalui \textit{selector}).
+
     \item \textbf{Kemampuan Generatif} \\
-    Menilai kemampuan sistem menghasilkan kode YAML yang baru dan valid, bukan sekadar menemukan lokasi informasi pada dokumentasi.
-    
+    Menilai kemampuan sistem menghasilkan berkas konfigurasi YAML yang baru dan valid, bukan sekadar menemukan lokasi informasi pada dokumentasi.
+
     \item \textbf{Fleksibilitas Pemeliharaan} \\
     Mengukur kemudahan sistem dalam melakukan pembaruan pengetahuan ketika spesifikasi API Kubernetes berubah versi tanpa memerlukan \textit{fine-tuning} ulang.
-    
+
     \item \textbf{Presisi Konteks} \\
-    Menilai kemampuan sistem menekan halusinasi melalui pembatasan struktural yang tegas, terutama pada relasi antar objek konfigurasi.
+    Menilai kemampuan sistem menekan halusinasi melalui pembatasan struktural yang tegas, terutama pada relasi antar-objek Kubernetes.
 \end{enumerate}
 
-Tabel~\ref{tbl:rubrik_eval} menunjukkan kategori penilaian untuk masing-masing skor pada rubrik evaluasi tersebut.
+Tabel~\ref{tbl:rubrik_eval} menunjukkan kategori penilaian untuk setiap skor pada rubrik evaluasi tersebut.
 \input{tables/tabel3}
 
 \subsection{Matriks Keputusan \& Justifikasi Penilaian}
@@ -213,71 +313,70 @@ Penilaian dilakukan terhadap tiga pendekatan alternatif serta metode usulan. Has
 
 \input{tables/tabel4}
 
-Berdasarkan hasil penilaian kuantitatif pada Tabel~\ref{tbl:matriks_solutions}, diperlukan penjelasan lebih lanjut mengenai dasar pemberian skor pada masing-masing kriteria. Berikut ini justifikasi kuantitatif terhadap nilai yang diberikan untuk setiap metode.
+Berdasarkan hasil penilaian kuantitatif pada Tabel~\ref{tbl:matriks_solutions}, diperlukan penjelasan lebih lanjut mengenai dasar pemberian skor pada setiap kriteria. Berikut ini justifikasi kuantitatif terhadap nilai yang diberikan untuk setiap metode.
 
 \begin{enumerate}
     \item \textbf{Hybrid KG--Vector RAG}
     \begin{enumerate}[a.]
-        \item \textbf{K1 = 5}: 
+        \item \textbf{K1 = 5}:
         Mampu menggabungkan struktur relasional (KG) dan teks tidak terstruktur (\textit{vector store}). Cocok untuk OpenAPI Kubernetes yang bersifat hierarkis dan memiliki \textit{cross-reference}.
-        
-        \item \textbf{K2 = 4}:  
-        Menghasilkan konteks yang lengkap sehingga LLM dapat menyusun YAML baru dengan lebih tepat, meskipun tidak memiliki mekanisme pembatasan struktural seketat GNN.  
-        
-        \item \textbf{K3 = 5}:  
-        KG dapat diperbarui secara \textit{incremental} sedangkan \textit{vector store} hanya memerlukan re-\textit{embedding} teks tanpa melatih ulang model.  
-        
-        \item \textbf{K4 = 5}:  
+
+        \item \textbf{K2 = 4}:
+        Menghasilkan konteks yang lengkap sehingga LLM dapat menyusun berkas konfigurasi YAML baru dengan lebih tepat, meskipun tidak memiliki mekanisme pembatasan struktural seketat GNN.
+
+        \item \textbf{K3 = 5}:
+        KG dapat diperbarui secara \textit{incremental}, sedangkan \textit{vector store} hanya memerlukan re-\textit{embedding} teks tanpa melatih ulang model.
+
+        \item \textbf{K4 = 5}:
         Kombinasi \textit{hard constraint}, \textit{schema constraint}, dan \textit{vector similarity} memberikan presisi konteks, serta terbukti meningkatkan EM dan CP pada studi.
     \end{enumerate}
 
     \item \textbf{GNN-augmented GraphRAG (G-Retriever)}
     \begin{enumerate}[a.]
-        \item \textbf{K1 = 5}:  
+        \item \textbf{K1 = 5}:
         Representasi graf Kubernetes sangat sesuai diproses oleh GNN yang sensitif terhadap struktur topologi dan relasi \textit{multi-hop} (\texttt{Deployment} $\rightarrow$ \texttt{PodTemplate} $\rightarrow$ \texttt{Container}).
-        
-        \item \textbf{K2 = 3}:  
-        Kemampuan generatif bergantung pada sub-graf hasil PCST. LLM menghasilkan jawaban berdasarkan sub-graf, tetapi tidak menyusun struktur baru secara fleksibel.
-        
-        \item \textbf{K3 = 4}:  
+
+        \item \textbf{K2 = 3}:
+        Kemampuan generatif bergantung pada subgraf hasil PCST. LLM menghasilkan jawaban berdasarkan subgraf, tetapi tidak menyusun struktur baru secara fleksibel.
+
+        \item \textbf{K3 = 4}:
         Meski tidak memerlukan \textit{fine-tuning} ulang, proses \textit{indexing} dan pembentukan \textit{embedding} graf harus diulang ketika versi API berubah.
-        
-        \item \textbf{K4 = 5}:  
-        Eksperimen menunjukkan validitas node meningkat dari 31\% menjadi 77\%, dan validitas edge dari 12\% menjadi 76\%, menunjukkan kontrol presisi yang sangat tinggi.
+
+        \item \textbf{K4 = 5}:
+        Eksperimen menunjukkan validitas \textit{node} meningkat dari 31\% menjadi 77\%, dan validitas \textit{edge} dari 12\% menjadi 76\%, menunjukkan kontrol presisi yang sangat tinggi.
     \end{enumerate}
 
     \item \textbf{NeuSym-RAG (Hybrid Neural-Symbolic)}
     \begin{enumerate}[a.]
-        \item \textbf{K1 = 3}:  
+        \item \textbf{K1 = 3}:
         Representasi tabel relasional kurang mampu menampung kedalaman hierarki OpenAPI tanpa melakukan banyak operasi \textit{join} sehingga tidak sebaik KG atau GNN.
-        
-        \item \textbf{K2 = 2}:  
-        Aturan simbolik bersifat validasi, bukan generasi. Kemampuan LLM untuk membuat YAML baru terbatas karena sistem lebih cocok untuk \textit{consistency checking}.
-        
-        \item \textbf{K3 = 3}:  
+
+        \item \textbf{K2 = 2}:
+        Aturan simbolik bersifat validasi, bukan generasi. Kemampuan LLM untuk membuat berkas konfigurasi YAML baru terbatas karena sistem lebih cocok untuk \textit{consistency checking}.
+
+        \item \textbf{K3 = 3}:
         Relational schema stabil, tetapi aturan simbolik harus diperbarui manual saat Kubernetes menambahkan spesifikasi baru.
-        
-        \item \textbf{K4 = 4}:  
-        Aturan deterministik (\textit{symbolic rules}) memberi kontrol kuat terhadap halusinasi, tetapi kelenturannya tidak sekuat constraint pada KG--Vector atau pemodelan struktural pada GNN.
+
+        \item \textbf{K4 = 4}:
+        Aturan deterministik (\textit{symbolic rules}) memberi kontrol kuat terhadap halusinasi, tetapi kelenturannya tidak sekuat \textit{constraint} pada KG--Vector atau pemodelan struktural pada GNN.
     \end{enumerate}
 
 \end{enumerate}
 
 \subsection{Analisis Pemilihan dan Penyesuaian (Selection \& Adjustment)}
-Berdasarkan hasil evaluasi pada Tabel~\ref{tbl:matriks_solutions}, metode \textit{Hybrid} KG--Vector RAG (Alt 1) memperoleh skor tertinggi di antara alternatif lain dan menjadi landasan utama dalam perancangan sistem. Pendekatan tersebut dipilih karena berhasil menggabungkan representasi relasional eksplisit dari KG dengan cakupan semantik luas dari \textit{vector retrieval}. Hal ini relevan pada domain Kubernetes, yaitu satu objek seperti \textit{Pod} tidak hanya memiliki struktur \textit{rigid} tetapi juga semantik.
+Berdasarkan hasil evaluasi pada Tabel~\ref{tbl:matriks_solutions}, metode \textit{Hybrid} KG--Vector RAG (Alt 1) memperoleh skor tertinggi di antara alternatif lain dan menjadi landasan utama dalam perancangan sistem. Pendekatan tersebut dipilih karena berhasil menggabungkan representasi relasional eksplisit dari KG dengan cakupan semantik luas dari \textit{vector retrieval}. Hal ini relevan pada domain Kubernetes, yaitu satu objek Kubernetes seperti \textit{Pod} tidak hanya memiliki struktur \textit{rigid} tetapi juga semantik.
 
-Namun, arsitektur \textcite{wan2025empowering} masih memiliki keterbatasan jika diterapkan langsung pada konteks API Kubernetes. Komponen \textit{Semantic Alignment} pada penelitian tersebut sangat bergantung pada aturan manual (\textit{domain constraints}) yang harus dituliskan eksplisit pada \textit{prompt}. Pada Kubernetes, pendekatan ini tidak efisien karena terdapat ribuan \textit{field} API yang berubah pada tiap versi nya sehingga menulis aturan secara manual menjadi tidak praktis.
+Namun, arsitektur \textcite{wan2025empowering} masih memiliki keterbatasan jika diterapkan langsung pada konteks API Kubernetes. Komponen \textit{Semantic Alignment} pada penelitian tersebut sangat bergantung pada aturan manual (\textit{domain constraints}) yang harus dituliskan eksplisit pada \textit{prompt}. Pada Kubernetes, pendekatan ini tidak efisien karena spesifikasi OpenAPI v1.30 memuat 730 definisi skema dengan rata-rata 4,1 \textit{field} per definisi dan 18 jenis relasi semantik. Menuliskan aturan \textit{constraint} secara manual untuk setiap kombinasi relasi tersebut akan menghasilkan ratusan aturan yang harus diperbarui setiap rilis Kubernetes (~4 bulan sekali), sehingga pendekatan ini tidak skalabel dalam jangka panjang.
 
 Oleh karena itu, penelitian ini mengusulkan penyesuaian strategi sebagai berikut:
 
 \begin{enumerate}[label=\textbf{A\arabic*.}]
-    \item Pendekatan \textcite{wan2025empowering} : Validasi berbasis aturan manual di dalam \textit{prompt} (\textit{Constraint-based Semantic Alignment}). 
-    \item Implementasi solusi Kubernetes : Validasi berbasis struktur otomatis melalui penelusuran graf (\textit{Graph-Native Structural Traversal}). 
+    \item Pendekatan \textcite{wan2025empowering} : Validasi berbasis aturan manual di dalam \textit{prompt} (\textit{Constraint-based Semantic Alignment}).
+    \item Implementasi solusi Kubernetes : Validasi berbasis struktur otomatis melalui penelusuran graf (\textit{Graph-Native Structural Traversal}).
 \end{enumerate}
 
-Pendekatan ini menjadikan topologi \textit{Knowledge Graph} sebagai validator bawaan. Jika relasi antar objek ditemukan secara eksplisit pada graf (misalnya \texttt{Service} $\rightarrow$ \texttt{Deployment} melalui selector), maka konfigurasi tersebut dianggap valid tanpa perlu mendefinisikan aturan tambahan.
+Pendekatan ini menjadikan topologi \textit{knowledge graph} sebagai validator bawaan. Jika relasi antar-objek Kubernetes ditemukan secara eksplisit pada graf (misalnya \texttt{Service} $\rightarrow$ \texttt{Deployment} melalui \textit{selector}), maka konfigurasi tersebut dianggap valid tanpa perlu mendefinisikan aturan tambahan.
 
 \begin{quote}
-\textbf{Kesimpulan:} Solusi akhir yang dipilih adalah \textit{GraphRAG with Structural Traversal}, yaitu adaptasi dari arsitektur Hybrid KG--Vector RAG yang menggantikan validasi aturan \textit{hard constraints} dengan validasi relasional dari topografi graf. Pendekatan ini meningkatkan efisiensi pemeliharaan dan menekan risiko halusinasi konfigurasi Kubernetes.
+\textbf{Kesimpulan:} Solusi akhir yang dipilih adalah \textit{GraphRAG with Structural Traversal}, yaitu adaptasi dari arsitektur Hybrid KG--Vector RAG yang menggantikan validasi aturan \textit{hard constraints} dengan validasi relasional dari topologi graf. Pendekatan ini meningkatkan efisiensi pemeliharaan dan menekan risiko halusinasi konfigurasi Kubernetes.
 \end{quote}
-
