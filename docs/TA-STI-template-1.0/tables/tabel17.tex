@@ -1,0 +1,22 @@
+\renewcommand{\arraystretch}{1.3}
+\captionsetup[table]{justification=raggedright,singlelinecheck=false}
+\begin{table}[H]
+\caption{Lima Node LangGraph Agent Pipeline}
+\label{tbl:langgraph_nodes}
+\centering
+\begin{tabular}{|p{0.12\textwidth}|p{0.20\textwidth}|p{0.35\textwidth}|p{0.20\textwidth}|}
+\hline
+\textbf{Node} & \textbf{Fungsi} & \textbf{Aktivitas} & \textbf{Komponen} \\
+\hline
+\texttt{memory} & Ambil riwayat & Membaca 5 giliran percakapan terakhir dari penyimpanan SQLite. & \texttt{ZepMemoryStore} (SQLite) \\
+\hline
+\texttt{thinker} & Ekstraksi \textit{intent} & Menganalisis pertanyaan + riwayat, mengeluarkan JSON berisi \texttt{primary\_resource}, \texttt{related\_concepts}, dan \texttt{intent\_type}. & GPT-4o-mini \\
+\hline
+\texttt{retriever} & Eksekusi \textit{retrieval} & Meneruskan JSON intent ke \texttt{StatefulK8sRetriever} untuk retrieval bertingkat; menghasilkan \texttt{graph\_context} dan \texttt{reasoning\_path}. & \texttt{StatefulK8sRetriever} \\
+\hline
+\texttt{speaker} & Generasi respons & Menggunakan konteks graf dan \textit{reasoning path} untuk menghasilkan jawaban naratif atau blok YAML. & Groq llama-3.1-8b-instant \\
+\hline
+\texttt{saver} & Simpan riwayat & Menyimpan pasangan pertanyaan--jawaban ke SQLite untuk giliran percakapan berikutnya. & \texttt{ZepMemoryStore} (SQLite) \\
+\hline
+\end{tabular}
+\end{table}

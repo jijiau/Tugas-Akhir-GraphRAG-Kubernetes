@@ -21,14 +21,14 @@
 \hline
 \endlastfoot
 
-NF-01 (\textit{Reliability}) & \textit{Fail-Safe Mechanism} & 
-Sistem harus mencegah keluaran halusinasi melalui mekanisme \textit{error handling}, yaitu (1) Jika entitas tidak ditemukan, sistem harus memberi respons ``Entity not found''. (2) Jika YAML terdeteksi tidak valid oleh validator internal, sistem harus menampilkan peringatan ``Warning: Potential Syntax Error'' pada antarmuka CLI pengguna. \\
+NF-01 (\textit{Reliability}) & \textit{Fail-Safe Mechanism} &
+Sistem harus mencegah keluaran halusinasi melalui mekanisme \textit{error handling}, yaitu (1) Jika entitas tidak ditemukan, sistem harus memberi respons ``Entity not found''. (2) Jika YAML terdeteksi tidak valid oleh validator internal, sistem harus menampilkan peringatan ``Warning: Potential Syntax Error'' pada antarmuka pengguna. \\
 \hline
  
 NF-02 (\textit{Performance}) & \textit{Retrieval--Generation Latency} & Waktu total yang dibutuhkan untuk memproses satu permintaan pengguna (\textit{end-to-end latency}) tidak boleh melebihi \textbf{60 detik} pada lingkungan pengujian standar. \\
 \hline
 
-NF-03 (\textit{Usability}) & \textit{CLI Usability Standard} & Antarmuka \textit{Command-Line Interface (CLI)} harus menyediakan pengalaman penggunaan yang konsisten, mudah dipahami, dan informatif. \\
+NF-03 (\textit{Usability}) & \textit{Web UI Usability Standard} & Antarmuka web interaktif berbasis Streamlit harus menyediakan pengalaman penggunaan yang konsisten, mudah dipahami, dan informatif melalui komponen \textit{chat input}, panel jawaban, serta visualisasi jejak penalaran graf. \\
 \hline
 
 NF-04 (\textit{Portability}) & \textit{Resource Constraints} & 
