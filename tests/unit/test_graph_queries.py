@@ -1,5 +1,9 @@
 # tests/unit/test_graph_queries.py
 # Verify that Cypher constants are importable and well-formed strings.
+import pytest
+
+pytestmark = pytest.mark.unit
+
 from src.graph.queries import (
     HYBRID_VECTOR_GRAPH_QUERY,
     SIMPLE_GRAPH_EXPAND_QUERY,

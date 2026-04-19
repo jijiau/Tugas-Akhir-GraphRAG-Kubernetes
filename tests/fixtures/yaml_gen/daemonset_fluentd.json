@@ -1,0 +1,38 @@
+{
+  "id": "daemonset_fluentd",
+  "type": "yaml_gen",
+  "question": "Buatkan YAML DaemonSet untuk menjalankan fluentd sebagai logging agent di semua node",
+  "resource": "io.k8s.api.apps.v1.DaemonSet",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "ground_truth": {
+    "answer": "apiVersion: apps/v1\nkind: DaemonSet\nmetadata:\n  name: fluentd\n  labels:\n    app: fluentd\nspec:\n  selector:\n    matchLabels:\n      app: fluentd\n  template:\n    metadata:\n      labels:\n        app: fluentd\n    spec:\n      containers:\n      - name: fluentd\n        image: fluentd:latest",
+    "context": [
+      "DaemonSet untuk menjalankan pod di setiap node dalam cluster",
+      "Selector untuk memilih pod dengan label app: fluentd",
+      "Pod template dengan container fluentd menggunakan image fluentd:latest"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.apps.v1.DaemonSet",
+      "io.k8s.api.apps.v1.DaemonSetSpec",
+      "io.k8s.api.core.v1.PodTemplateSpec"
+    ],
+    "expected_path": [
+      "DaemonSet -[HAS_PROPERTY]-> DaemonSetSpec",
+      "DaemonSetSpec -[HAS_PROPERTY]-> PodTemplateSpec"
+    ],
+    "required_fields": [
+      "apiVersion",
+      "kind",
+      "metadata",
+      "spec"
+    ],
+    "expected_yaml_keys": [
+      "spec.selector",
+      "spec.template",
+      "spec.template.spec.containers"
+    ]
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

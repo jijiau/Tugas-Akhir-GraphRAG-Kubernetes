@@ -1,0 +1,30 @@
+{
+  "id": "ingress_purpose",
+  "type": "conceptual",
+  "question": "Apa fungsi Ingress di Kubernetes?",
+  "resource": "io.k8s.api.networking.v1.Ingress",
+  "scope": "Namespaced",
+  "multi_hop": false,
+  "ground_truth": {
+    "answer": "Ingress mengekspos rute HTTP/HTTPS dari luar cluster ke Service di dalam cluster. Mendukung virtual hosting, path-based routing, dan TLS termination. Membutuhkan Ingress Controller untuk berfungsi.",
+    "context": [
+      "Ingress adalah Kubernetes resource untuk mengelola akses eksternal ke Services dalam cluster",
+      "Mengubah HTTP/HTTPS dari luar menjadi internal routing ke Services",
+      "IngressSpec mendefinisikan rules untuk routing berdasarkan hostname dan path",
+      "Mendukung virtual hosting (multiple domain names) dan path-based routing",
+      "Menyediakan TLS/SSL termination untuk koneksi terenkripsi",
+      "Memerlukan Ingress Controller (seperti NGINX, HAProxy) untuk implementasi aktual"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.networking.v1.Ingress",
+      "io.k8s.api.networking.v1.IngressSpec",
+      "io.k8s.api.networking.v1.IngressRule",
+      "io.k8s.api.networking.v1.HTTPIngressPath"
+    ],
+    "expected_path": [],
+    "required_fields": [],
+    "expected_yaml_keys": []
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/services-networking/ingress/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/service-resources/"
+}

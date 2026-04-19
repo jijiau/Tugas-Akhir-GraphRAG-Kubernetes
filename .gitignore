@@ -13,9 +13,14 @@ venv/
 # SQLite memory database (runtime data, bukan source code)
 data/conversation_memory.db
 
+# Files staged for deletion (review before permanently removing)
+_to_delete/
+
 # Python cache
 __pycache__/
 *.pyc
 
 zep.yaml
 docker-compose.yaml
+
+.claude

@@ -1,0 +1,40 @@
+{
+  "id": "cronjob_backup",
+  "type": "yaml_gen",
+  "question": "Buatkan YAML CronJob untuk menjalankan backup database setiap hari jam 2 pagi",
+  "resource": "io.k8s.api.batch.v1.CronJob",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "ground_truth": {
+    "answer": "apiVersion: batch/v1\nkind: CronJob\nmetadata:\n  name: db-backup\nspec:\n  schedule: \"0 2 * * *\"\n  jobTemplate:\n    spec:\n      template:\n        spec:\n          containers:\n          - name: backup\n            image: postgres:15\n            command: [\"pg_dump\", \"-h\", \"db-host\", \"-U\", \"admin\", \"-d\", \"mydb\"]\n          restartPolicy: OnFailure",
+    "context": [
+      "CronJob untuk menjalankan job secara berkala sesuai jadwal cron",
+      "Schedule '0 2 * * *' untuk menjalankan job setiap hari jam 2 pagi",
+      "Job template dengan container yang menjalankan perintah pg_dump untuk backup database"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.batch.v1.CronJob",
+      "io.k8s.api.batch.v1.CronJobSpec",
+      "io.k8s.api.batch.v1.JobTemplateSpec",
+      "io.k8s.api.batch.v1.JobSpec"
+    ],
+    "expected_path": [
+      "CronJob -[HAS_PROPERTY]-> CronJobSpec",
+      "CronJobSpec -[HAS_PROPERTY]-> JobTemplateSpec",
+      "JobTemplateSpec -[HAS_PROPERTY]-> JobSpec"
+    ],
+    "required_fields": [
+      "apiVersion",
+      "kind",
+      "metadata",
+      "spec"
+    ],
+    "expected_yaml_keys": [
+      "spec.schedule",
+      "spec.jobTemplate",
+      "spec.jobTemplate.spec.template"
+    ]
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

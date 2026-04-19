@@ -1,0 +1,32 @@
+{
+  "id": "job_cronjob",
+  "type": "conceptual",
+  "question": "Apa perbedaan antara Job dan CronJob?",
+  "resource": "io.k8s.api.batch.v1.Job",
+  "scope": "Namespaced",
+  "multi_hop": false,
+  "ground_truth": {
+    "answer": "Job menjalankan satu atau lebih Pod sampai selesai (completions). CronJob membuat Job secara otomatis berdasarkan jadwal cron. Job cocok untuk tugas batch sekali jalan, CronJob untuk tugas terjadwal berulang.",
+    "context": [
+      "Job adalah Kubernetes controller untuk menjalankan satu atau lebih Pod sampai selesai dengan sukses",
+      "JobSpec mendefinisikan parallelism, completions, dan backoff limit",
+      "Job menjalankan Pod sampai mencapai jumlah completions yang ditentukan",
+      "CronJob membuat Job secara otomatis berdasarkan jadwal cron (seperti cron di Linux)",
+      "CronJobSpec mendefinisikan schedule dalam format cron dan jobTemplate",
+      "Job cocok untuk tugas batch sekali jalan atau paralel processing",
+      "CronJob cocok untuk tugas terjadwal berulang seperti backup, cleanup, atau report generation"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.batch.v1.Job",
+      "io.k8s.api.batch.v1.JobSpec",
+      "io.k8s.api.batch.v1.CronJob",
+      "io.k8s.api.batch.v1.CronJobSpec",
+      "io.k8s.api.core.v1.PodTemplateSpec"
+    ],
+    "expected_path": [],
+    "required_fields": [],
+    "expected_yaml_keys": []
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/job/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

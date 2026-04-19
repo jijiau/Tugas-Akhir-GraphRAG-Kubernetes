@@ -11,9 +11,14 @@
       "io.k8s.api.apps.v1.StatefulSet: StatefulSet maintains sticky identity for Pods and persistent storage.",
       "io.k8s.api.apps.v1.StatefulSetSpec: volumeClaimTemplates defines per-pod PVC"
     ],
-    "relevant_nodes": ["io.k8s.api.apps.v1.StatefulSet", "io.k8s.api.apps.v1.StatefulSetSpec"],
+    "relevant_nodes": [
+      "io.k8s.api.apps.v1.StatefulSet",
+      "io.k8s.api.apps.v1.StatefulSetSpec"
+    ],
     "expected_path": [],
     "required_fields": [],
     "expected_yaml_keys": []
-  }
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
 }

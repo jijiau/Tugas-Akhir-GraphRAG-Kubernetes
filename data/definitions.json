@@ -1,4 +1,5 @@
-"definitions": {
+{
+  "definitions": {
     "io.k8s.api.admissionregistration.v1.AuditAnnotation": {
       "description": "AuditAnnotation describes how to produce an audit annotation for an API request.",
       "properties": {
@@ -22433,4 +22434,5 @@
   "info": {
     "title": "Kubernetes",
     "version": "unversioned"
+  }
 }

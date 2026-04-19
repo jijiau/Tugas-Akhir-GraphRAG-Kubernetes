@@ -18,9 +18,13 @@
     ],
     "expected_path": [
       "StatefulSet -[HAS_PROPERTY]-> StatefulSetSpec",
-      "StatefulSetSpec -[CLAIMS_VOLUME]-> PersistentVolumeClaim"
+      "StatefulSetSpec -[HAS_PROPERTY]-> PersistentVolumeClaim"
     ],
     "required_fields": [],
-    "expected_yaml_keys": ["spec.volumeClaimTemplates"]
-  }
+    "expected_yaml_keys": [
+      "spec.volumeClaimTemplates"
+    ]
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
 }

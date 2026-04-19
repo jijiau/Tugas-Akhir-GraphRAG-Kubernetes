@@ -1,0 +1,33 @@
+=================================================================
+  DATASET VALIDITY SUMMARY
+=================================================================
+  Total fixtures          : 79
+  Fixtures updated        : 0
+
+  --- Expected Path Validation ---
+  Total edges checked     : 100
+  VALID (in graph)        : 99  (99.0%)
+  NOT_IN_GRAPH            : 1
+
+  --- YAML Ground Truth Validation ---
+  Fixtures with YAML GT   : 18
+  Syntactic PASS          : 17/18
+  Schema    PASS          : 16/18
+
+  --- Coverage by Fixture Type ---
+    conceptual              :  15
+    followup                :   7
+    realworld               :  24
+    relationship            :  18
+    yaml_gen                :  15
+
+  --- Coverage by K8s Domain ---
+    Access Control          :   8
+    Autoscaling             :   4
+    Cluster                 :   8
+    Configuration           :  10
+    Networking              :  10
+    Policy                  :   1
+    Storage                 :   6
+    Workload                :  32
+=================================================================

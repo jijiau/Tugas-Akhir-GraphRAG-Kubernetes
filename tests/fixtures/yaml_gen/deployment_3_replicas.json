@@ -20,7 +20,22 @@
       "Deployment -[HAS_PROPERTY]-> DeploymentSpec",
       "DeploymentSpec -[HAS_PROPERTY]-> PodTemplateSpec"
     ],
-    "required_fields": ["apiVersion", "kind", "metadata", "spec"],
-    "expected_yaml_keys": ["apiVersion", "kind", "metadata", "spec", "spec.replicas", "spec.selector", "spec.template"]
-  }
+    "required_fields": [
+      "apiVersion",
+      "kind",
+      "metadata",
+      "spec"
+    ],
+    "expected_yaml_keys": [
+      "apiVersion",
+      "kind",
+      "metadata",
+      "spec",
+      "spec.replicas",
+      "spec.selector",
+      "spec.template"
+    ]
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
 }

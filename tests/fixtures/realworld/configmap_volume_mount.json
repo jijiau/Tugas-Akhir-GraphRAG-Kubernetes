@@ -1,0 +1,57 @@
+{
+  "id": "configmap_volume_mount",
+  "type": "realworld",
+  "question": "Bagaimana cara mount ConfigMap sebagai file dalam volume di dalam Pod?",
+  "resource": "io.k8s.api.core.v1.ConfigMap",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "so_question_id": "39293507",
+  "selection_score": 3.0,
+  "selection_scores_breakdown": {
+    "d1_graph_answerability": 3,
+    "d2_path_annotability": 3,
+    "d3_type_fit": 3,
+    "d4_so_quality": 3,
+    "d5_representativeness": 3,
+    "g4_penalty": 0
+  },
+  "selection_rationale": "SO answer score 47. Fully answerable from graph via 2-hop path (ConfigMap→PodSpec→Volume). Covers volumeMount pattern not present in any synthesized fixture (existing ConfigMap fixtures only cover env var, not volume mount). Classic K8s question with high SO score. Clean yaml_gen fit.",
+  "ground_truth": {
+    "answer": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: config-pod\nspec:\n  volumes:\n    - name: config-vol\n      configMap:\n        name: my-config\n  containers:\n    - name: app\n      image: nginx\n      volumeMounts:\n        - name: config-vol\n          mountPath: /etc/config",
+    "context": [
+      "io.k8s.api.core.v1.ConfigMap: holds configuration data as key-value pairs that can be consumed as volumes or environment variables",
+      "io.k8s.api.core.v1.Volume: represents a named volume in a Pod that may be accessed by any container in the pod",
+      "io.k8s.api.core.v1.VolumeMount: describes a mounting of a Volume within a container"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.core.v1.ConfigMap",
+      "io.k8s.api.core.v1.Volume",
+      "io.k8s.api.core.v1.VolumeMount",
+      "io.k8s.api.core.v1.ConfigMapVolumeSource"
+    ],
+    "expected_path": [
+      "PodSpec -[HAS_PROPERTY]-> Volume",
+      "Volume -[HAS_PROPERTY]-> ConfigMapVolumeSource",
+      "Container -[HAS_PROPERTY]-> VolumeMount"
+    ],
+    "required_fields": [
+      "apiVersion",
+      "kind",
+      "metadata",
+      "spec.volumes",
+      "spec.containers"
+    ],
+    "expected_yaml_keys": [
+      "spec.volumes",
+      "spec.volumes[0].configMap",
+      "spec.volumes[0].configMap.name",
+      "spec.containers[0].volumeMounts",
+      "spec.containers[0].volumeMounts[0].mountPath"
+    ],
+    "answer_lang": "yaml"
+  },
+  "source_reference": "https://stackoverflow.com/questions/39293507",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "so_url": "https://stackoverflow.com/questions/39293507",
+  "so_answer_score": 47
+}

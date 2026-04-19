@@ -6,7 +6,7 @@
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
-    "answer": "Deployment YAML dengan livenessProbe menggunakan httpGet action ke path /health port 8080, dengan initialDelaySeconds dan periodSeconds.",
+    "answer": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: my-app\nspec:\n  replicas: 1\n  selector:\n    matchLabels:\n      app: my-app\n  template:\n    metadata:\n      labels:\n        app: my-app\n    spec:\n      containers:\n        - name: my-app\n          image: my-app:latest\n          livenessProbe:\n            httpGet:\n              path: /health\n              port: 8080\n            initialDelaySeconds: 15\n            periodSeconds: 10",
     "context": [
       "io.k8s.api.core.v1.Container: livenessProbe field defines container health check.",
       "io.k8s.api.core.v1.Probe: httpGet, tcpSocket, or exec defines the probe action"
@@ -19,9 +19,22 @@
     "expected_path": [
       "Deployment -[HAS_PROPERTY]-> DeploymentSpec",
       "DeploymentSpec -[HAS_PROPERTY]-> PodTemplateSpec",
-      "PodTemplateSpec -[HAS_PROPERTY]-> Container"
+      "PodTemplateSpec -[HAS_PROPERTY]-> PodSpec",
+      "PodSpec -[HAS_CONTAINER]-> Container"
     ],
-    "required_fields": ["apiVersion", "kind", "metadata", "spec"],
-    "expected_yaml_keys": ["apiVersion", "kind", "metadata", "spec"]
-  }
+    "required_fields": [
+      "apiVersion",
+      "kind",
+      "metadata",
+      "spec"
+    ],
+    "expected_yaml_keys": [
+      "apiVersion",
+      "kind",
+      "metadata",
+      "spec"
+    ]
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
 }

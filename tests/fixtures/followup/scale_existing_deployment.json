@@ -4,7 +4,7 @@
   "question": "Sekarang ubah jumlah replikanya menjadi 5",
   "resource": "io.k8s.api.apps.v1.Deployment",
   "scope": "Namespaced",
-  "multi_hop": true,
+  "multi_hop": false,
   "ground_truth": {
     "answer": "Ubah spec.replicas menjadi 5 pada YAML Deployment yang sudah ada, atau gunakan kubectl scale deployment <nama> --replicas=5.",
     "context": [
@@ -18,6 +18,10 @@
       "Deployment -[HAS_PROPERTY]-> DeploymentSpec"
     ],
     "required_fields": [],
-    "expected_yaml_keys": ["spec.replicas"]
-  }
+    "expected_yaml_keys": [
+      "spec.replicas"
+    ]
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
 }

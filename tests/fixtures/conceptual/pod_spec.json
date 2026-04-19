@@ -11,9 +11,16 @@
       "io.k8s.api.core.v1.PodSpec: PodSpec is the specification of the desired behavior of the pod.",
       "containers: List of containers belonging to the pod. Required."
     ],
-    "relevant_nodes": ["io.k8s.api.core.v1.PodSpec", "io.k8s.api.core.v1.Container"],
+    "relevant_nodes": [
+      "io.k8s.api.core.v1.PodSpec",
+      "io.k8s.api.core.v1.Container"
+    ],
     "expected_path": [],
-    "required_fields": ["containers"],
+    "required_fields": [
+      "containers"
+    ],
     "expected_yaml_keys": []
-  }
+  },
+  "source_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#PodSpec",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
 }

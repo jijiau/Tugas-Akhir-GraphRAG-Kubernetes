@@ -1,0 +1,32 @@
+{
+  "id": "expose_with_ingress",
+  "type": "followup",
+  "question": "Sekarang buatkan Ingress untuk mengekspos Service ini di domain app.example.com",
+  "resource": "io.k8s.api.networking.v1.Ingress",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "ground_truth": {
+    "answer": "apiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: app-ingress\nspec:\n  rules:\n  - host: app.example.com\n    http:\n      paths:\n      - path: /\n        pathType: Prefix\n        backend:\n          service:\n            name: web-service\n            port:\n              number: 80",
+    "context": [
+      "Ingress: manages external access to services",
+      "IngressRule: routes traffic based on host and path"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.networking.v1.Ingress",
+      "io.k8s.api.networking.v1.IngressSpec",
+      "io.k8s.api.networking.v1.IngressRule"
+    ],
+    "expected_path": [
+      "Ingress -[HAS_PROPERTY]-> IngressSpec",
+      "IngressSpec -[HAS_PROPERTY]-> IngressRule"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": [
+      "spec.rules",
+      "spec.rules[0].host",
+      "spec.rules[0].http.paths"
+    ]
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/services-networking/ingress/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/service-resources/"
+}

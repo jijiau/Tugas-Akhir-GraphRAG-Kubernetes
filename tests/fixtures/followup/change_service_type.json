@@ -16,6 +16,10 @@
     ],
     "expected_path": [],
     "required_fields": [],
-    "expected_yaml_keys": ["spec.type"]
-  }
+    "expected_yaml_keys": [
+      "spec.type"
+    ]
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/services-networking/service/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
 }

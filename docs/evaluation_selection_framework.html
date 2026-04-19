@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluation Dataset Selection Framework — GraphRAG Kubernetes</title>
+<style>
+  :root {
+    --navy: #1a2744;
+    --blue: #2563eb;
+    --light-blue: #dbeafe;
+    --green: #16a34a;
+    --light-green: #dcfce7;
+    --red: #dc2626;
+    --light-red: #fee2e2;
+    --yellow: #d97706;
+    --light-yellow: #fef3c7;
+    --gray: #6b7280;
+    --light-gray: #f3f4f6;
+    --border: #e5e7eb;
+    --text: #111827;
+    --subtext: #374151;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #f8fafc;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  .header {
+    background: var(--navy);
+    color: white;
+    padding: 40px 48px;
+    border-bottom: 4px solid var(--blue);
+  }
+  .header h1 { font-size: 1.9rem; font-weight: 700; margin-bottom: 6px; }
+  .header .subtitle { color: #94a3b8; font-size: 0.95rem; }
+  .header .badge {
+    display: inline-block; background: var(--blue); color: white;
+    padding: 3px 10px; border-radius: 12px; font-size: 0.78rem;
+    margin-top: 12px; margin-right: 6px;
+  }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 40px 32px; }
+
+  .section { margin-bottom: 52px; }
+  .section-title {
+    font-size: 1.25rem; font-weight: 700; color: var(--navy);
+    border-left: 4px solid var(--blue); padding-left: 14px;
+    margin-bottom: 20px;
+  }
+  .section-num {
+    display: inline-block; background: var(--blue); color: white;
+    width: 26px; height: 26px; border-radius: 50%;
+    text-align: center; line-height: 26px; font-size: 0.8rem;
+    font-weight: 700; margin-right: 10px;
+  }
+
+  /* RATIONALE CARD */
+  .rationale-card {
+    background: white; border: 1px solid var(--border); border-radius: 10px;
+    padding: 24px 28px; margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  }
+  .rationale-card p { color: var(--subtext); font-size: 0.93rem; }
+
+  /* DECISION FLOW */
+  .flow-wrapper {
+    background: white; border: 1px solid var(--border); border-radius: 12px;
+    padding: 32px; box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    overflow-x: auto;
+  }
+  .flow { display: flex; flex-direction: column; align-items: center; gap: 0; }
+
+  .flow-step {
+    width: 440px; border-radius: 10px; padding: 16px 22px;
+    text-align: center; font-size: 0.9rem; font-weight: 600; position: relative;
+  }
+  .flow-step.input {
+    background: var(--light-gray); border: 2px solid #d1d5db; color: var(--navy);
+  }
+  .flow-step.gate {
+    background: var(--light-yellow); border: 2px solid var(--yellow); color: #92400e;
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    width: 280px; height: 100px; display: flex; align-items: center; justify-content: center;
+    font-size: 0.82rem; padding: 0 40px;
+  }
+  .flow-step.process {
+    background: var(--light-blue); border: 2px solid var(--blue); color: #1e40af;
+  }
+  .flow-step.output-yes {
+    background: var(--light-green); border: 2px solid var(--green); color: #166534;
+  }
+  .flow-step.output-no {
+    background: var(--light-red); border: 2px solid var(--red); color: #991b1b;
+  }
+  .flow-arrow {
+    width: 2px; height: 28px; background: #9ca3af;
+    position: relative;
+  }
+  .flow-arrow::after {
+    content: '▼'; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);
+    color: #9ca3af; font-size: 0.7rem;
+  }
+  .flow-branch {
+    display: flex; gap: 32px; align-items: flex-start; justify-content: center;
+    width: 100%;
+  }
+  .flow-branch-item { display: flex; flex-direction: column; align-items: center; gap: 0; }
+  .branch-label {
+    font-size: 0.75rem; font-weight: 700; padding: 2px 10px; border-radius: 10px;
+    margin-bottom: 8px;
+  }
+  .branch-label.yes { background: var(--light-green); color: var(--green); }
+  .branch-label.no  { background: var(--light-red); color: var(--red); }
+  .branch-line {
+    width: 100px; height: 2px; background: #9ca3af; margin: 0 auto;
+  }
+
+  /* GATE TABLE */
+  .gates-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  }
+  @media (max-width: 700px) { .gates-grid { grid-template-columns: 1fr; } }
+
+  .gate-card {
+    background: white; border: 1px solid var(--border); border-radius: 10px;
+    padding: 20px 22px; box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  }
+  .gate-card .gate-header {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+  }
+  .gate-num {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.85rem; flex-shrink: 0;
+  }
+  .gate-num.hard { background: var(--light-red); color: var(--red); }
+  .gate-num.soft { background: var(--light-yellow); color: var(--yellow); }
+  .gate-card .gate-title { font-weight: 700; font-size: 0.95rem; color: var(--navy); }
+  .gate-card p { font-size: 0.87rem; color: var(--subtext); margin-bottom: 8px; }
+  .gate-card ul { font-size: 0.85rem; color: var(--subtext); padding-left: 18px; }
+  .gate-card ul li { margin-bottom: 4px; }
+
+  .tag { display: inline-block; font-size: 0.72rem; font-weight: 600;
+    padding: 2px 8px; border-radius: 8px; margin-right: 4px; }
+  .tag.hard { background: #fee2e2; color: #b91c1c; }
+  .tag.soft { background: #fef3c7; color: #92400e; }
+  .tag.pass { background: #dcfce7; color: #15803d; }
+
+  /* SCORING RUBRIC */
+  .rubric-table {
+    width: 100%; border-collapse: collapse; border-radius: 10px; overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  }
+  .rubric-table thead { background: var(--navy); color: white; }
+  .rubric-table th { padding: 12px 16px; text-align: left; font-size: 0.85rem; font-weight: 600; }
+  .rubric-table td { padding: 11px 16px; border-bottom: 1px solid var(--border); font-size: 0.85rem; vertical-align: top; }
+  .rubric-table tr:last-child td { border-bottom: none; }
+  .rubric-table tr:nth-child(even) td { background: #f9fafb; }
+  .rubric-table tr:hover td { background: var(--light-blue); }
+
+  .score-badge {
+    display: inline-block; width: 28px; height: 28px; border-radius: 50%;
+    text-align: center; line-height: 28px; font-weight: 700; font-size: 0.8rem;
+  }
+  .score-1 { background: #fee2e2; color: #b91c1c; }
+  .score-2 { background: #fef3c7; color: #92400e; }
+  .score-3 { background: #dcfce7; color: #15803d; }
+
+  .weight-pill {
+    display: inline-block; background: var(--navy); color: white;
+    padding: 2px 10px; border-radius: 10px; font-size: 0.75rem; font-weight: 700;
+  }
+
+  /* THRESHOLD */
+  .threshold-box {
+    background: var(--navy); color: white; border-radius: 10px;
+    padding: 24px 28px; margin-top: 24px; display: flex; gap: 32px;
+    align-items: center; flex-wrap: wrap;
+  }
+  .threshold-box .big-num {
+    font-size: 3rem; font-weight: 800; color: #60a5fa; line-height: 1;
+  }
+  .threshold-box p { font-size: 0.9rem; color: #94a3b8; }
+  .threshold-box strong { color: white; }
+
+  /* COVERAGE MATRIX */
+  .matrix-table { width: 100%; border-collapse: collapse; }
+  .matrix-table th, .matrix-table td {
+    border: 1px solid var(--border); padding: 9px 13px; font-size: 0.83rem;
+  }
+  .matrix-table thead th { background: var(--navy); color: white; font-size: 0.82rem; }
+  .matrix-table td:first-child { font-weight: 600; color: var(--navy); }
+  .cell-covered { background: #dcfce7; color: #166534; text-align: center; font-weight: 700; }
+  .cell-needed  { background: #fef3c7; color: #92400e; text-align: center; font-weight: 700; }
+  .cell-na      { background: #f3f4f6; color: #9ca3af; text-align: center; }
+
+  /* SCORING DEMO */
+  .demo-card {
+    background: white; border: 1px solid var(--border); border-radius: 10px;
+    padding: 22px 26px; margin-bottom: 14px; box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  }
+  .demo-card .q-text {
+    font-size: 0.93rem; color: var(--navy); font-weight: 600;
+    margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
+  }
+  .demo-scores {
+    display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px;
+  }
+  .demo-score-item {
+    background: var(--light-gray); border-radius: 8px; padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+  .demo-score-item .dim { color: var(--gray); font-size: 0.72rem; }
+  .demo-score-item .val { font-weight: 700; font-size: 1rem; }
+  .val.red { color: var(--red); }
+  .val.yellow { color: var(--yellow); }
+  .val.green { color: var(--green); }
+  .demo-verdict {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; border-radius: 8px; font-size: 0.88rem; font-weight: 600;
+  }
+  .demo-verdict.accept { background: var(--light-green); color: #166534; }
+  .demo-verdict.reject { background: var(--light-red); color: #991b1b; }
+  .demo-reasoning { font-size: 0.82rem; color: var(--subtext); margin-top: 10px; }
+
+  /* ALGORITHM PSEUDOCODE */
+  .code-block {
+    background: #1e293b; color: #e2e8f0; border-radius: 10px;
+    padding: 24px 28px; font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.82rem; line-height: 1.8; overflow-x: auto;
+  }
+  .code-block .kw { color: #7dd3fc; font-weight: 700; }
+  .code-block .fn { color: #86efac; }
+  .code-block .cm { color: #64748b; font-style: italic; }
+  .code-block .str { color: #fda4af; }
+  .code-block .num { color: #fcd34d; }
+
+  /* OUTPUT SPEC */
+  .output-spec {
+    background: white; border: 1px solid var(--border); border-radius: 10px;
+    padding: 24px 28px; box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  }
+  .json-preview {
+    background: #1e293b; color: #e2e8f0; border-radius: 8px;
+    padding: 18px 22px; font-family: monospace; font-size: 0.8rem;
+    line-height: 1.7; overflow-x: auto; margin-top: 14px;
+  }
+  .json-key { color: #7dd3fc; }
+  .json-str { color: #86efac; }
+  .json-num { color: #fcd34d; }
+  .json-bool { color: #f9a8d4; }
+  .json-comment { color: #64748b; font-style: italic; }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+
+  .info-banner {
+    background: var(--light-blue); border: 1px solid #93c5fd; border-radius: 8px;
+    padding: 14px 18px; font-size: 0.88rem; color: #1e40af; margin-bottom: 20px;
+  }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Evaluation Dataset Selection Framework</h1>
+  <div class="subtitle">GraphRAG Kubernetes — Thesis Evaluation Methodology</div>
+  <div>
+    <span class="badge">Systematic Selection</span>
+    <span class="badge">Reproducible</span>
+    <span class="badge">Graph-Aware</span>
+    <span class="badge">Thesis-Grade</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ═══ 1. RESEARCH CONTEXT ═══ -->
+  <div class="section">
+    <div class="section-title"><span class="section-num">1</span>Research Context & Selection Rationale</div>
+    <div class="rationale-card">
+      <p>
+        The system being evaluated is a <strong>GraphRAG chatbot</strong> that answers Kubernetes questions by traversing a
+        Neo4j knowledge graph built from the Kubernetes OpenAPI (Swagger) specification. Its evaluation framework
+        measures three dimensions: <strong>AnsQ (40%)</strong> — answer quality,
+        <strong>RetQ (35%)</strong> — retrieval quality against expected graph nodes, and
+        <strong>ReaQ (25%)</strong> — reasoning quality along expected traversal paths.
+      </p>
+      <br>
+      <p>
+        This creates a hard constraint: <em>every question selected for evaluation must be answerable using
+        information that exists in the Kubernetes API definition graph</em>. A question about debugging a live
+        cluster, choosing a cloud provider, or using Helm cannot be evaluated by this system's metrics — it
+        wouldn't be a fair test. The selection framework below operationalises this constraint into a
+        reproducible, auditable process.
+      </p>
+    </div>
+
+    <div class="info-banner">
+      📌 <strong>Why a framework matters:</strong> Without explicit criteria, dataset selection introduces
+      <em>confirmation bias</em> — picking questions the system can answer well. A published, pre-registered
+      selection methodology prevents this and makes your evaluation credible for a thesis committee.
+    </div>
+  </div>
+
+  <!-- ═══ 2. DECISION FLOW ═══ -->
+  <div class="section">
+    <div class="section-title"><span class="section-num">2</span>Decision Flow — Step by Step</div>
+    <p style="color:var(--subtext); font-size:0.9rem; margin-bottom:20px;">
+      Every candidate question from the StackOverflow dataset passes through this sequential pipeline.
+      Each stage is a filter — failing any <span class="tag hard">HARD GATE</span> immediately discards the question.
+      Passing all gates leads to quantitative scoring.
+    </p>
+
+    <div class="flow-wrapper">
+      <div class="flow">
+
+        <!-- INPUT -->
+        <div class="flow-step input">
+          📥 &nbsp;Candidate Question from mcipriano/stackoverflow-kubernetes-questions
+          <div style="font-size:0.78rem;font-weight:400;color:var(--gray);margin-top:4px;">
+            Fields available: question_title, question_body, answer_body, answer_score
+          </div>
+        </div>
+        <div class="flow-arrow"></div>
+
+        <!-- GATE 1 -->
+        <div style="display:flex;flex-direction:column;align-items:center;width:100%;">
+          <div style="background:var(--light-red);border:2px solid var(--red);border-radius:10px;
+            padding:14px 24px;width:440px;text-align:center;font-size:0.88rem;font-weight:600;color:#991b1b;">
+            🚫 HARD GATE 1 — Kubernetes API Scope Test<br>
+            <span style="font-size:0.78rem;font-weight:400;">
+              Is the answer derivable from the K8s API spec (swagger definition)?
+            </span>
+          </div>
+          <div style="display:flex;gap:60px;margin-top:16px;align-items:flex-start;">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+              <span class="tag no" style="background:#fee2e2;color:#b91c1c;font-size:0.78rem;padding:3px 12px;border-radius:10px;font-weight:700;">NO / PARTIAL</span>
+              <div style="width:2px;height:20px;background:#dc2626;"></div>
+              <div class="flow-step output-no" style="width:200px;font-size:0.8rem;padding:10px 14px;">
+                ❌ DISCARD<br><span style="font-weight:400;font-size:0.75rem;">cluster ops / cloud infra / tool-specific</span>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+              <span class="tag yes" style="background:#dcfce7;color:#16a34a;font-size:0.78rem;padding:3px 12px;border-radius:10px;font-weight:700;">YES</span>
+              <div style="width:2px;height:20px;background:#16a34a;"></div>
+              <div style="width:2px;height:20px;background:#9ca3af;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="flow-arrow"></div>
+
+        <!-- GATE 2 -->
+        <div style="background:var(--light-red);border:2px solid var(--red);border-radius:10px;
+          padding:14px 24px;width:440px;text-align:center;font-size:0.88rem;font-weight:600;color:#991b1b;">
+          🚫 HARD GATE 2 — Node Existence Test<br>
+          <span style="font-size:0.78rem;font-weight:400;">
+            Does the primary K8s resource exist as a Definition node in the Neo4j graph?
+          </span>
+        </div>
+        <div style="display:flex;gap:60px;margin-top:16px;align-items:flex-start;">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+            <span class="tag no" style="background:#fee2e2;color:#b91c1c;font-size:0.78rem;padding:3px 12px;border-radius:10px;font-weight:700;">NOT IN GRAPH</span>
+            <div style="width:2px;height:20px;background:#dc2626;"></div>
+            <div class="flow-step output-no" style="width:200px;font-size:0.8rem;padding:10px 14px;">
+              ❌ DISCARD<br><span style="font-weight:400;font-size:0.75rem;">CRDs, non-core resources, deprecated API</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+            <span class="tag yes" style="background:#dcfce7;color:#16a34a;font-size:0.78rem;padding:3px 12px;border-radius:10px;font-weight:700;">IN GRAPH</span>
+            <div style="width:2px;height:20px;background:#16a34a;"></div>
+            <div style="width:2px;height:20px;background:#9ca3af;"></div>
+          </div>
+        </div>
+        <div class="flow-arrow"></div>
+
+        <!-- GATE 3 -->
+        <div style="background:var(--light-yellow);border:2px solid var(--yellow);border-radius:10px;
+          padding:14px 24px;width:440px;text-align:center;font-size:0.88rem;font-weight:600;color:#92400e;">
+          ⚠️ SOFT GATE 3 — Deprecation & Stability Test<br>
+          <span style="font-size:0.78rem;font-weight:400;">
+            Is the question about a stable API (≥ K8s 1.21) and not a deprecated resource?
+          </span>
+        </div>
+        <div style="display:flex;gap:60px;margin-top:16px;align-items:flex-start;">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+            <span class="tag no" style="background:#fee2e2;color:#b91c1c;font-size:0.78rem;padding:3px 12px;border-radius:10px;font-weight:700;">DEPRECATED</span>
+            <div style="width:2px;height:20px;background:#dc2626;"></div>
+            <div class="flow-step output-no" style="width:200px;font-size:0.8rem;padding:10px 14px;">
+              ❌ DISCARD<br><span style="font-weight:400;font-size:0.75rem;">e.g. extensions/v1beta1, batch/v1beta1</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+            <span class="tag yes" style="background:#dcfce7;color:#16a34a;font-size:0.78rem;padding:3px 12px;border-radius:10px;font-weight:700;">STABLE</span>
+            <div style="width:2px;height:20px;background:#16a34a;"></div>
+            <div style="width:2px;height:20px;background:#9ca3af;"></div>
+          </div>
+        </div>
+        <div class="flow-arrow"></div>
+
+        <!-- GATE 4 -->
+        <div style="background:var(--light-yellow);border:2px solid var(--yellow);border-radius:10px;
+          padding:14px 24px;width:440px;text-align:center;font-size:0.88rem;font-weight:600;color:#92400e;">
+          ⚠️ SOFT GATE 4 — Complementarity Test<br>
+          <span style="font-size:0.78rem;font-weight:400;">
+            Does this question add something NOT already covered by the 41 existing synthesized fixtures?
+          </span>
+        </div>
+        <div style="display:flex;gap:60px;margin-top:16px;align-items:flex-start;">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+            <span class="tag no" style="background:#fef3c7;color:#92400e;font-size:0.78rem;padding:3px 12px;border-radius:10px;font-weight:700;">DUPLICATE INTENT</span>
+            <div style="width:2px;height:20px;background:#d97706;"></div>
+            <div class="flow-step" style="width:200px;font-size:0.8rem;padding:10px 14px;background:#fef3c7;border:2px solid #d97706;color:#92400e;border-radius:8px;text-align:center;">
+              ⚠️ DEPRIORITISE<br><span style="font-weight:400;font-size:0.75rem;">enter scoring at -0.3 penalty</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+            <span class="tag yes" style="background:#dcfce7;color:#16a34a;font-size:0.78rem;padding:3px 12px;border-radius:10px;font-weight:700;">NEW COVERAGE</span>
+            <div style="width:2px;height:20px;background:#16a34a;"></div>
+            <div style="width:2px;height:20px;background:#9ca3af;"></div>
+          </div>
+        </div>
+        <div class="flow-arrow"></div>
+
+        <!-- SCORING STAGE -->
+        <div class="flow-step process" style="width:440px;">
+          🔢 &nbsp;SCORING STAGE — 5-Dimension Weighted Score
+          <div style="font-size:0.78rem;font-weight:400;margin-top:4px;">
+            Assign score 1–3 on each dimension × weight → compute total (max = 3.0)
+          </div>
+        </div>
+        <div class="flow-arrow"></div>
+
+        <!-- THRESHOLD -->
+        <div style="background:var(--light-yellow);border:2px solid var(--yellow);border-radius:10px;
+          padding:14px 24px;width:440px;text-align:center;font-size:0.88rem;font-weight:600;color:#92400e;">
+          📊 Total Score ≥ 2.0 threshold?
+        </div>
+        <div style="display:flex;gap:60px;margin-top:16px;align-items:flex-start;">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+            <span class="tag no" style="background:#fee2e2;color:#b91c1c;font-size:0.78rem;padding:3px 12px;border-radius:10px;font-weight:700;">&lt; 2.0</span>
+            <div style="width:2px;height:20px;background:#dc2626;"></div>
+            <div class="flow-step output-no" style="width:200px;font-size:0.8rem;padding:10px 14px;">❌ DISCARD</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+            <span class="tag yes" style="background:#dcfce7;color:#16a34a;font-size:0.78rem;padding:3px 12px;border-radius:10px;font-weight:700;">≥ 2.0</span>
+            <div style="width:2px;height:20px;background:#16a34a;"></div>
+            <div style="width:2px;height:20px;background:#9ca3af;"></div>
+          </div>
+        </div>
+        <div class="flow-arrow"></div>
+
+        <!-- COVERAGE CHECK -->
+        <div style="background:var(--light-blue);border:2px solid var(--blue);border-radius:10px;
+          padding:14px 24px;width:440px;text-align:center;font-size:0.88rem;font-weight:600;color:#1e40af;">
+          🗺️ COVERAGE QUOTA CHECK<br>
+          <span style="font-size:0.78rem;font-weight:400;">
+            Has the target category already reached its quota? (max 5 per resource type, max 8 per fixture type)
+          </span>
+        </div>
+        <div style="display:flex;gap:60px;margin-top:16px;align-items:flex-start;">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+            <span class="tag no" style="background:#fef3c7;color:#92400e;font-size:0.78rem;padding:3px 12px;border-radius:10px;font-weight:700;">QUOTA FULL</span>
+            <div style="width:2px;height:20px;background:#d97706;"></div>
+            <div class="flow-step" style="width:200px;font-size:0.8rem;padding:10px 14px;background:#fef3c7;border:2px solid #d97706;color:#92400e;border-radius:8px;text-align:center;">
+              ⚠️ RESERVE<br><span style="font-weight:400;font-size:0.75rem;">hold if another category needs it</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+            <span class="tag yes" style="background:#dcfce7;color:#16a34a;font-size:0.78rem;padding:3px 12px;border-radius:10px;font-weight:700;">QUOTA AVAILABLE</span>
+            <div style="width:2px;height:20px;background:#16a34a;"></div>
+            <div style="width:2px;height:20px;background:#9ca3af;"></div>
+          </div>
+        </div>
+        <div class="flow-arrow"></div>
+
+        <!-- ANNOTATION -->
+        <div class="flow-step process" style="width:440px;">
+          ✍️ &nbsp;MANUAL ANNOTATION STAGE<br>
+          <div style="font-size:0.78rem;font-weight:400;margin-top:4px;">
+            Annotate: expected_path, relevant_nodes, expected_yaml_keys, translate to Indonesian
+          </div>
+        </div>
+        <div class="flow-arrow"></div>
+
+        <!-- OUTPUT -->
+        <div class="flow-step output-yes" style="width:440px;">
+          ✅ &nbsp;ACCEPTED — Add to tests/fixtures/realworld/<br>
+          <div style="font-size:0.78rem;font-weight:400;margin-top:4px;">
+            Save with selection_score, selection_rationale, so_question_id fields
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ 3. GATES DETAIL ═══ -->
+  <div class="section">
+    <div class="section-title"><span class="section-num">3</span>Gate Definitions — Full Criteria</div>
+    <div class="gates-grid">
+
+      <div class="gate-card">
+        <div class="gate-header">
+          <div class="gate-num hard">G1</div>
+          <div class="gate-title">Kubernetes API Scope</div>
+          <span class="tag hard">HARD</span>
+        </div>
+        <p>The question must be answerable using the Kubernetes OpenAPI spec — not operational knowledge, not cloud provider behavior, not third-party tools.</p>
+        <p><strong>Pass if:</strong> answer involves API resource fields, YAML structure, resource relationships, or API semantics.</p>
+        <p><strong>Fail examples:</strong></p>
+        <ul>
+          <li>How do I install Kubernetes on Ubuntu? (infra)</li>
+          <li>Why is my EKS node NotReady? (cloud/ops)</li>
+          <li>How do I use Helm to deploy X? (tool-specific)</li>
+          <li>kubectl port-forward not working (CLI/ops)</li>
+        </ul>
+      </div>
+
+      <div class="gate-card">
+        <div class="gate-header">
+          <div class="gate-num hard">G2</div>
+          <div class="gate-title">Node Existence in Graph</div>
+          <span class="tag hard">HARD</span>
+        </div>
+        <p>The primary Kubernetes resource referenced must exist as a <code>Definition</code> node in the Neo4j graph (ingested from the Swagger spec).</p>
+        <p><strong>Verify using:</strong></p>
+        <ul>
+          <li><code>MATCH (d:Definition) WHERE d.name CONTAINS 'X' RETURN d.name</code></li>
+          <li>Resource must be in <code>kubernetes_swagger.json definitions</code></li>
+        </ul>
+        <p><strong>Fail examples:</strong></p>
+        <ul>
+          <li>Questions about CRDs (CustomResourceDefinition) that are user-defined</li>
+          <li>Operator-specific resources (PrometheusRule, ServiceMonitor)</li>
+        </ul>
+      </div>
+
+      <div class="gate-card">
+        <div class="gate-header">
+          <div class="gate-num soft">G3</div>
+          <div class="gate-title">API Stability / Deprecation</div>
+          <span class="tag soft">SOFT</span>
+        </div>
+        <p>Prefer questions about stable APIs (GA). Questions about beta/alpha or deprecated API versions reduce evaluation reliability since the swagger is pinned to 1.29.</p>
+        <p><strong>Pass:</strong> apps/v1, core/v1, networking.k8s.io/v1, batch/v1, rbac/v1</p>
+        <p><strong>Fail:</strong></p>
+        <ul>
+          <li>extensions/v1beta1 (removed in 1.22)</li>
+          <li>policy/v1beta1 PodSecurityPolicy (removed in 1.25)</li>
+          <li>Questions referencing K8s &lt; 1.21 behavior</li>
+        </ul>
+      </div>
+
+      <div class="gate-card">
+        <div class="gate-header">
+          <div class="gate-num soft">G4</div>
+          <div class="gate-title">Complementarity</div>
+          <span class="tag soft">SOFT</span>
+        </div>
+        <p>New questions should expand the evaluation coverage, not replicate what synthesized fixtures already cover. Compare against the 41 existing fixtures before scoring.</p>
+        <p><strong>Pass (new coverage):</strong> new resource type, new question pattern, new traversal path, edge cases not tested.</p>
+        <p><strong>Deprioritise (duplicate):</strong> another "what is Deployment?" or "create nginx Deployment YAML" — already well-covered. Enter scoring with −0.3 penalty.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ 4. SCORING RUBRIC ═══ -->
+  <div class="section">
+    <div class="section-title"><span class="section-num">4</span>5-Dimension Scoring Rubric</div>
+    <p style="color:var(--subtext); font-size:0.9rem; margin-bottom:16px;">
+      After passing all gates, each question receives a score of 1–3 on five dimensions.
+      The weighted total determines final acceptance. Max possible score = 3.0.
+    </p>
+
+    <table class="rubric-table">
+      <thead>
+        <tr>
+          <th>Dimension</th>
+          <th>Weight</th>
+          <th style="text-align:center;">Score 1 — Weak</th>
+          <th style="text-align:center;">Score 2 — Adequate</th>
+          <th style="text-align:center;">Score 3 — Strong</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <strong>D1 — Graph Answerability</strong><br>
+            <span style="color:var(--gray);font-size:0.78rem;">How completely can the Neo4j graph answer this question without external knowledge?</span>
+          </td>
+          <td><span class="weight-pill">30%</span></td>
+          <td style="text-align:center;"><span class="score-badge score-1">1</span><br><span style="font-size:0.75rem;">Graph provides &lt;50% of needed context; answer requires significant external knowledge</span></td>
+          <td style="text-align:center;"><span class="score-badge score-2">2</span><br><span style="font-size:0.75rem;">Graph provides 50–80% of answer; some external knowledge fills gaps</span></td>
+          <td style="text-align:center;"><span class="score-badge score-3">3</span><br><span style="font-size:0.75rem;">Graph contains all required nodes and relationships; answer fully derivable</span></td>
+        </tr>
+        <tr>
+          <td>
+            <strong>D2 — Path Annotability</strong><br>
+            <span style="color:var(--gray);font-size:0.78rem;">Can we write a precise expected_path and relevant_nodes for this question?</span>
+          </td>
+          <td><span class="weight-pill">25%</span></td>
+          <td style="text-align:center;"><span class="score-badge score-1">1</span><br><span style="font-size:0.75rem;">Cannot determine a clear traversal path; question is too vague</span></td>
+          <td style="text-align:center;"><span class="score-badge score-2">2</span><br><span style="font-size:0.75rem;">Partial path can be annotated; some ambiguity in which nodes are relevant</span></td>
+          <td style="text-align:center;"><span class="score-badge score-3">3</span><br><span style="font-size:0.75rem;">Clear 1–3 hop path with identifiable nodes; expected_path can be written exactly</span></td>
+        </tr>
+        <tr>
+          <td>
+            <strong>D3 — Question Type Fit</strong><br>
+            <span style="color:var(--gray);font-size:0.78rem;">Does it map cleanly to a fixture category (conceptual / yaml_gen / relationship / realworld)?</span>
+          </td>
+          <td><span class="weight-pill">20%</span></td>
+          <td style="text-align:center;"><span class="score-badge score-1">1</span><br><span style="font-size:0.75rem;">Ambiguous type; doesn't fit any category clearly</span></td>
+          <td style="text-align:center;"><span class="score-badge score-2">2</span><br><span style="font-size:0.75rem;">Fits one category with minor adaptation needed</span></td>
+          <td style="text-align:center;"><span class="score-badge score-3">3</span><br><span style="font-size:0.75rem;">Clean fit to exactly one category with no ambiguity</span></td>
+        </tr>
+        <tr>
+          <td>
+            <strong>D4 — Stack Overflow Quality</strong><br>
+            <span style="color:var(--gray);font-size:0.78rem;">How well-verified is the question/answer based on community signals?</span>
+          </td>
+          <td><span class="weight-pill">15%</span></td>
+          <td style="text-align:center;"><span class="score-badge score-1">1</span><br><span style="font-size:0.75rem;">Answer score 1–4; question vague or context-heavy</span></td>
+          <td style="text-align:center;"><span class="score-badge score-2">2</span><br><span style="font-size:0.75rem;">Answer score 5–19; question is clear and generalizable</span></td>
+          <td style="text-align:center;"><span class="score-badge score-3">3</span><br><span style="font-size:0.75rem;">Answer score ≥20; accepted answer, question is a classic K8s scenario</span></td>
+        </tr>
+        <tr>
+          <td>
+            <strong>D5 — Real-World Representativeness</strong><br>
+            <span style="color:var(--gray);font-size:0.78rem;">Does this represent a question a real Kubernetes user would ask this chatbot?</span>
+          </td>
+          <td><span class="weight-pill">10%</span></td>
+          <td style="text-align:center;"><span class="score-badge score-1">1</span><br><span style="font-size:0.75rem;">Highly specific to one user's environment; not generalizable</span></td>
+          <td style="text-align:center;"><span class="score-badge score-2">2</span><br><span style="font-size:0.75rem;">Somewhat generalizable but requires specific context</span></td>
+          <td style="text-align:center;"><span class="score-badge score-3">3</span><br><span style="font-size:0.75rem;">Generic enough that any K8s user might ask it; no environment-specific context needed</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="threshold-box">
+      <div>
+        <div class="big-num">2.0</div>
+        <p>minimum threshold</p>
+      </div>
+      <div style="flex:1;">
+        <strong>Score Formula:</strong>
+        <p style="margin-top:6px;">Total = (D1×0.30) + (D2×0.25) + (D3×0.20) + (D4×0.15) + (D5×0.10)</p>
+        <p style="margin-top:6px;">Apply −0.30 penalty if Gate 4 flagged duplicate intent.</p>
+        <p style="margin-top:6px;">Scores ≥ 2.0 → <strong>ACCEPT</strong> &nbsp;|&nbsp; 1.8–1.9 → <strong>REVIEW</strong> (manual decision) &nbsp;|&nbsp; &lt;1.8 → <strong>DISCARD</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ 5. COVERAGE MATRIX ═══ -->
+  <div class="section">
+    <div class="section-title"><span class="section-num">5</span>Coverage Quota Matrix</div>
+    <p style="color:var(--subtext); font-size:0.9rem; margin-bottom:16px;">
+      This matrix enforces diversity. Each cell shows whether a resource × fixture-type combination is already
+      covered by the 41 synthesized fixtures. The <span class="tag" style="background:#fef3c7;color:#92400e;">NEEDED</span>
+      cells are the highest-priority slots to fill from the StackOverflow dataset.
+      Target: 15–20 new <code>realworld</code> fixtures filling uncovered cells.
+    </p>
+    <div style="overflow-x:auto;">
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th>Kubernetes Resource</th>
+            <th>conceptual</th>
+            <th>yaml_gen</th>
+            <th>relationship</th>
+            <th>followup</th>
+            <th style="background:#1e3a5f;">realworld (target)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Deployment</td><td class="cell-covered">✓</td><td class="cell-covered">✓ ×2</td><td class="cell-covered">✓</td><td class="cell-covered">✓ ×3</td><td class="cell-needed">NEEDED: error scenario</td></tr>
+          <tr><td>Pod / PodSpec</td><td class="cell-covered">✓</td><td class="cell-na">—</td><td class="cell-na">—</td><td class="cell-na">—</td><td class="cell-needed">NEEDED: yaml_gen + relationship</td></tr>
+          <tr><td>Service</td><td class="cell-covered">✓</td><td class="cell-covered">✓</td><td class="cell-covered">✓</td><td class="cell-covered">✓</td><td class="cell-needed">NEEDED: headless service scenario</td></tr>
+          <tr><td>ConfigMap</td><td class="cell-covered">✓</td><td class="cell-covered">✓</td><td class="cell-na">—</td><td class="cell-na">—</td><td class="cell-needed">NEEDED: volume mount scenario</td></tr>
+          <tr><td>Secret</td><td class="cell-covered">✓</td><td class="cell-na">—</td><td class="cell-covered">✓</td><td class="cell-covered">✓</td><td class="cell-needed">NEEDED: TLS secret yaml_gen</td></tr>
+          <tr><td>StatefulSet</td><td class="cell-covered">✓</td><td class="cell-covered">✓</td><td class="cell-covered">✓</td><td class="cell-covered">✓</td><td class="cell-needed">NEEDED: update strategy scenario</td></tr>
+          <tr><td>DaemonSet</td><td class="cell-covered">✓</td><td class="cell-covered">✓</td><td class="cell-na">—</td><td class="cell-na">—</td><td class="cell-needed">NEEDED: toleration scenario</td></tr>
+          <tr><td>Ingress</td><td class="cell-covered">✓</td><td class="cell-covered">✓</td><td class="cell-covered">✓</td><td class="cell-covered">✓</td><td class="cell-needed">NEEDED: TLS + rewrite rule</td></tr>
+          <tr><td>NetworkPolicy</td><td class="cell-na">—</td><td class="cell-covered">✓</td><td class="cell-covered">✓</td><td class="cell-na">—</td><td class="cell-needed">NEEDED: egress allow scenario</td></tr>
+          <tr><td>PVC / PV</td><td class="cell-covered">✓</td><td class="cell-covered">✓</td><td class="cell-covered">✓</td><td class="cell-covered">✓</td><td class="cell-needed">NEEDED: resize / WaitForFirstConsumer</td></tr>
+          <tr><td>Job / CronJob</td><td class="cell-covered">✓</td><td class="cell-covered">✓</td><td class="cell-covered">✓</td><td class="cell-na">—</td><td class="cell-needed">NEEDED: job parallelism</td></tr>
+          <tr><td>HPA</td><td class="cell-covered">✓</td><td class="cell-na">—</td><td class="cell-covered">✓</td><td class="cell-na">—</td><td class="cell-needed">NEEDED: yaml_gen + custom metrics</td></tr>
+          <tr><td>RBAC (Role/RoleBinding)</td><td class="cell-na">—</td><td class="cell-covered">✓ ×2</td><td class="cell-covered">✓</td><td class="cell-na">—</td><td class="cell-needed">NEEDED: conceptual + aggregation</td></tr>
+          <tr><td>ResourceQuota / LimitRange</td><td class="cell-covered">✓</td><td class="cell-na">—</td><td class="cell-na">—</td><td class="cell-na">—</td><td class="cell-needed">NEEDED: yaml_gen + relationship</td></tr>
+          <tr><td>ServiceAccount</td><td class="cell-na">—</td><td class="cell-na">—</td><td class="cell-na">—</td><td class="cell-na">—</td><td class="cell-needed">NEEDED: all types</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══ 6. SELECTION ALGORITHM ═══ -->
+  <div class="section">
+    <div class="section-title"><span class="section-num">6</span>Selection Algorithm (Pseudocode)</div>
+    <div class="code-block">
+<span class="cm"># GraphRAG Kubernetes — Evaluation Question Selection Algorithm</span>
+<span class="cm"># Input : stackoverflow-kubernetes-questions (10K–100K rows)</span>
+<span class="cm"># Output: 15–20 selected questions for tests/fixtures/realworld/</span>
+
+<span class="kw">FUNCTION</span> <span class="fn">select_questions</span>(dataset):
+
+  candidates = []
+  coverage_tracker = <span class="fn">load_existing_fixture_coverage</span>()  <span class="cm"># 41 synthesized fixtures</span>
+  quota = {type: <span class="num">8</span>, resource: <span class="num">5</span>}                            <span class="cm"># max per bucket</span>
+
+  <span class="kw">FOR</span> row <span class="kw">IN</span> dataset:
+    q = row.question_title + <span class="str">" "</span> + row.question_body
+    a = row.answer_body
+    score = row.answer_score
+
+    <span class="cm"># ── HARD GATES ──────────────────────────────────────────────</span>
+    <span class="kw">IF NOT</span> <span class="fn">is_api_spec_answerable</span>(q, a):        <span class="kw">CONTINUE</span>   <span class="cm"># G1</span>
+    resource = <span class="fn">extract_primary_resource</span>(q, a)
+    <span class="kw">IF NOT</span> <span class="fn">exists_in_neo4j_graph</span>(resource):       <span class="kw">CONTINUE</span>   <span class="cm"># G2</span>
+
+    <span class="cm"># ── SOFT GATES ──────────────────────────────────────────────</span>
+    <span class="kw">IF</span> <span class="fn">uses_deprecated_api</span>(q, a):                <span class="kw">SKIP_FLAG</span> = True   <span class="cm"># G3</span>
+    penalty = 0.0
+    <span class="kw">IF</span> <span class="fn">duplicates_existing_fixture</span>(q, coverage_tracker):
+      penalty = <span class="num">-0.30</span>                                          <span class="cm"># G4</span>
+
+    <span class="cm"># ── SCORING ─────────────────────────────────────────────────</span>
+    d1 = <span class="fn">score_graph_answerability</span>(q, a, resource)     <span class="cm"># 1–3, weight 0.30</span>
+    d2 = <span class="fn">score_path_annotability</span>(q, a, resource)       <span class="cm"># 1–3, weight 0.25</span>
+    d3 = <span class="fn">score_question_type_fit</span>(q, a)                 <span class="cm"># 1–3, weight 0.20</span>
+    d4 = <span class="fn">score_so_quality</span>(score, q)                    <span class="cm"># 1–3, weight 0.15</span>
+    d5 = <span class="fn">score_real_world_representativeness</span>(q)        <span class="cm"># 1–3, weight 0.10</span>
+
+    total = (d1*<span class="num">0.30</span>) + (d2*<span class="num">0.25</span>) + (d3*<span class="num">0.20</span>) + (d4*<span class="num">0.15</span>) + (d5*<span class="num">0.10</span>) + penalty
+
+    <span class="kw">IF</span> total >= <span class="num">2.0</span>:
+      fixture_type = <span class="fn">map_to_fixture_type</span>(q)
+      candidates.<span class="fn">append</span>({
+        <span class="str">"question"</span>: q, <span class="str">"resource"</span>: resource,
+        <span class="str">"fixture_type"</span>: fixture_type, <span class="str">"total_score"</span>: total,
+        <span class="str">"scores"</span>: [d1, d2, d3, d4, d5], <span class="str">"answer"</span>: a
+      })
+
+  <span class="cm"># ── DIVERSITY-AWARE SELECTION ────────────────────────────────</span>
+  candidates.<span class="fn">sort</span>(key=<span class="kw">lambda</span> x: x.total_score, reverse=True)
+
+  selected = []
+  type_counts    = defaultdict(int)
+  resource_counts = defaultdict(int)
+
+  <span class="kw">FOR</span> c <span class="kw">IN</span> candidates:
+    <span class="kw">IF</span> type_counts[c.fixture_type] >= quota[<span class="str">"type"</span>]:      <span class="kw">CONTINUE</span>
+    <span class="kw">IF</span> resource_counts[c.resource] >= quota[<span class="str">"resource"</span>]: <span class="kw">CONTINUE</span>
+    <span class="kw">IF</span> coverage_tracker.<span class="fn">is_needed</span>(c.resource, c.fixture_type):
+      selected.<span class="fn">append</span>(c)
+      type_counts[c.fixture_type] += <span class="num">1</span>
+      resource_counts[c.resource] += <span class="num">1</span>
+    <span class="kw">IF</span> len(selected) >= <span class="num">20</span>: <span class="kw">BREAK</span>
+
+  <span class="kw">RETURN</span> selected
+    </div>
+  </div>
+
+  <!-- ═══ 7. WORKED EXAMPLES ═══ -->
+  <div class="section">
+    <div class="section-title"><span class="section-num">7</span>Worked Scoring Examples</div>
+    <p style="color:var(--subtext); font-size:0.9rem; margin-bottom:16px;">
+      These examples demonstrate how the framework applies to typical StackOverflow Kubernetes questions,
+      using patterns representative of the mcipriano dataset.
+    </p>
+
+    <!-- EXAMPLE 1 — ACCEPT -->
+    <div class="demo-card">
+      <div class="q-text">
+        ❓ <em>"How do I mount a ConfigMap as a file inside a Pod volume?"</em><br>
+        <span style="font-size:0.78rem;color:var(--gray);">SO answer score: 47 | Primary resource: ConfigMap + PodSpec</span>
+      </div>
+      <div class="demo-scores">
+        <div class="demo-score-item"><div class="dim">D1 Graph Answerability</div><div class="val green">3</div></div>
+        <div class="demo-score-item"><div class="dim">D2 Path Annotability</div><div class="val green">3</div></div>
+        <div class="demo-score-item"><div class="dim">D3 Type Fit</div><div class="val green">3</div> <div style="font-size:0.72rem;color:var(--gray);">yaml_gen</div></div>
+        <div class="demo-score-item"><div class="dim">D4 SO Quality</div><div class="val green">3</div></div>
+        <div class="demo-score-item"><div class="dim">D5 Representativeness</div><div class="val green">3</div></div>
+        <div class="demo-score-item"><div class="dim">G4 Penalty</div><div class="val green">0</div> <div style="font-size:0.72rem;color:var(--gray);">new: volumeMount pattern</div></div>
+        <div class="demo-score-item" style="background:var(--light-green);border:1px solid #86efac;">
+          <div class="dim">TOTAL</div><div class="val green">3.0</div>
+        </div>
+      </div>
+      <div class="demo-verdict accept">✅ ACCEPTED — Score 3.0 / 3.0</div>
+      <div class="demo-reasoning">
+        <strong>Reasoning:</strong> Fully answerable from graph — ConfigMap node + PodSpec.volumes + VolumeMount form a 2-hop path
+        (ConfigMap → PodSpec via volumes field). Pattern not covered in any existing fixture (ConfigMap coverage only has yaml_gen for
+        env var, not volumeMount). Classic StackOverflow scenario with high upvote score. Maps cleanly to <code>yaml_gen</code> type.
+        Expected path: <code>Pod -[HAS_PROPERTY]→ PodSpec, PodSpec -[HAS_PROPERTY]→ Volume, Volume -[HAS_PROPERTY]→ ConfigMapVolumeSource</code>
+      </div>
+    </div>
+
+    <!-- EXAMPLE 2 — REJECT GATE 1 -->
+    <div class="demo-card">
+      <div class="q-text">
+        ❓ <em>"Why is my pod stuck in Pending state after applying the YAML?"</em><br>
+        <span style="font-size:0.78rem;color:var(--gray);">SO answer score: 31 | Primary resource: Pod</span>
+      </div>
+      <div class="demo-scores">
+        <div class="demo-score-item"><div class="dim">G1 API Scope</div><div class="val red">FAIL</div></div>
+      </div>
+      <div class="demo-verdict reject">❌ DISCARDED at Gate 1 — Kubernetes API Scope</div>
+      <div class="demo-reasoning">
+        <strong>Reasoning:</strong> "Pod stuck in Pending" requires knowledge of scheduler state, node taints, resource availability,
+        and PVC binding status — none of which live in the API spec definition graph. The answer involves operational debugging
+        (kubectl describe pod, events), not API field semantics. The graph cannot answer this question.
+      </div>
+    </div>
+
+    <!-- EXAMPLE 3 — ACCEPT, PARTIAL -->
+    <div class="demo-card">
+      <div class="q-text">
+        ❓ <em>"What is the difference between Deployment and StatefulSet? When should I use each?"</em><br>
+        <span style="font-size:0.78rem;color:var(--gray);">SO answer score: 89 | Primary resource: Deployment, StatefulSet</span>
+      </div>
+      <div class="demo-scores">
+        <div class="demo-score-item"><div class="dim">D1 Graph Answerability</div><div class="val green">3</div></div>
+        <div class="demo-score-item"><div class="dim">D2 Path Annotability</div><div class="val yellow">2</div></div>
+        <div class="demo-score-item"><div class="dim">D3 Type Fit</div><div class="val green">3</div> <div style="font-size:0.72rem;color:var(--gray);">conceptual</div></div>
+        <div class="demo-score-item"><div class="dim">D4 SO Quality</div><div class="val green">3</div></div>
+        <div class="demo-score-item"><div class="dim">D5 Representativeness</div><div class="val green">3</div></div>
+        <div class="demo-score-item"><div class="dim">G4 Penalty</div><div class="val yellow">−0.3</div> <div style="font-size:0.72rem;color:var(--gray);">StatefulSet already covered</div></div>
+        <div class="demo-score-item" style="background:var(--light-green);border:1px solid #86efac;">
+          <div class="dim">TOTAL</div><div class="val green">2.50</div>
+        </div>
+      </div>
+      <div class="demo-verdict accept">✅ ACCEPTED — Score 2.50 / 3.0</div>
+      <div class="demo-reasoning">
+        <strong>Reasoning:</strong> Both Deployment and StatefulSet exist in the graph. The comparison question tests
+        <em>cross-resource conceptual understanding</em>, a pattern not in existing fixtures (all existing conceptual fixtures
+        ask about one resource in isolation). D2 is 2 (not 3) because the "expected_path" spans two separate root nodes — path
+        annotation is less precise than single-resource questions. G4 penalty applied (StatefulSet covered individually) but
+        the comparison angle is new. SO score 89 is high signal. Assign to <code>realworld</code> category,
+        <code>conceptual</code> sub-type.
+      </div>
+    </div>
+
+    <!-- EXAMPLE 4 — REJECT SCORE -->
+    <div class="demo-card">
+      <div class="q-text">
+        ❓ <em>"Kubernetes deployment rollout strategy — bluegreen vs canary deployment on my GKE cluster"</em><br>
+        <span style="font-size:0.78rem;color:var(--gray);">SO answer score: 12 | Primary resource: Deployment</span>
+      </div>
+      <div class="demo-scores">
+        <div class="demo-score-item"><div class="dim">D1 Graph Answerability</div><div class="val yellow">2</div></div>
+        <div class="demo-score-item"><div class="dim">D2 Path Annotability</div><div class="val red">1</div></div>
+        <div class="demo-score-item"><div class="dim">D3 Type Fit</div><div class="val yellow">2</div></div>
+        <div class="demo-score-item"><div class="dim">D4 SO Quality</div><div class="val yellow">2</div></div>
+        <div class="demo-score-item"><div class="dim">D5 Representativeness</div><div class="val red">1</div> <div style="font-size:0.72rem;color:var(--gray);">GKE-specific</div></div>
+        <div class="demo-score-item"><div class="dim">G4 Penalty</div><div class="val yellow">−0.3</div></div>
+        <div class="demo-score-item" style="background:var(--light-red);border:1px solid #fca5a5;">
+          <div class="dim">TOTAL</div><div class="val red">1.55</div>
+        </div>
+      </div>
+      <div class="demo-verdict reject">❌ DISCARDED — Score 1.55 / 3.0 (below 2.0 threshold)</div>
+      <div class="demo-reasoning">
+        <strong>Reasoning:</strong> Blue/green deployment is a deployment strategy pattern, not a K8s API resource field.
+        The graph has <code>DeploymentSpec.strategy</code> (RollingUpdate/Recreate) but not "blue-green" as a concept.
+        Path annotation is impossible (D2=1). Answer is partially GKE-specific (load balancer switching), reducing
+        representativeness. Deployment is already heavily covered (G4 penalty).
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ 8. OUTPUT SPEC ═══ -->
+  <div class="section">
+    <div class="section-title"><span class="section-num">8</span>Output Specification — Selected Fixture Format</div>
+    <div class="output-spec">
+      <p style="color:var(--subtext);font-size:0.9rem;margin-bottom:12px;">
+        Selected questions are saved to <code>tests/fixtures/realworld/</code> with two additional fields
+        (<code>selection_score</code> and <code>so_question_id</code>) for full traceability.
+        The <code>selection_rationale</code> field documents the per-question reasoning, making the
+        evaluation methodology auditable by a thesis examiner.
+      </p>
+      <div class="json-preview">
+<span class="json-comment">// tests/fixtures/realworld/configmap_volume_mount.json</span>
+{
+  <span class="json-key">"id"</span>: <span class="json-str">"configmap_volume_mount"</span>,
+  <span class="json-key">"type"</span>: <span class="json-str">"realworld"</span>,
+  <span class="json-key">"question"</span>: <span class="json-str">"Bagaimana cara mount ConfigMap sebagai file dalam volume di dalam Pod?"</span>,
+  <span class="json-key">"resource"</span>: <span class="json-str">"io.k8s.api.core.v1.ConfigMap"</span>,
+  <span class="json-key">"scope"</span>: <span class="json-str">"Namespaced"</span>,
+  <span class="json-key">"multi_hop"</span>: <span class="json-bool">true</span>,
+
+  <span class="json-comment">// ── Selection metadata (new fields) ──────────────────────</span>
+  <span class="json-key">"so_question_id"</span>: <span class="json-str">"39293507"</span>,           <span class="json-comment">// SO question ID for traceability</span>
+  <span class="json-key">"selection_score"</span>: <span class="json-num">3.0</span>,                   <span class="json-comment">// weighted score from framework</span>
+  <span class="json-key">"selection_scores_breakdown"</span>: {
+    <span class="json-key">"d1_graph_answerability"</span>: <span class="json-num">3</span>,
+    <span class="json-key">"d2_path_annotability"</span>: <span class="json-num">3</span>,
+    <span class="json-key">"d3_type_fit"</span>: <span class="json-num">3</span>,
+    <span class="json-key">"d4_so_quality"</span>: <span class="json-num">3</span>,
+    <span class="json-key">"d5_representativeness"</span>: <span class="json-num">3</span>,
+    <span class="json-key">"g4_penalty"</span>: <span class="json-num">0</span>
+  },
+  <span class="json-key">"selection_rationale"</span>: <span class="json-str">"Fully answerable from graph via 2-hop path (ConfigMap→PodSpec→Volume). Covers volumeMount pattern not in existing fixtures. SO score 47 is high-confidence ground truth. Clean yaml_gen type fit."</span>,
+
+  <span class="json-comment">// ── Standard fixture fields ───────────────────────────────</span>
+  <span class="json-key">"ground_truth"</span>: {
+    <span class="json-key">"answer"</span>: <span class="json-str">"apiVersion: v1\nkind: Pod\nspec:\n  volumes:\n  - name: config-vol\n    configMap:\n      name: my-config\n  containers:\n  - name: app\n    image: nginx\n    volumeMounts:\n    - name: config-vol\n      mountPath: /etc/config"</span>,
+    <span class="json-key">"context"</span>: [<span class="json-str">"ConfigMap: holds configuration data as key-value pairs"</span>, <span class="json-str">"Volume.configMap: adapts a ConfigMap into a volume"</span>],
+    <span class="json-key">"relevant_nodes"</span>: [<span class="json-str">"io.k8s.api.core.v1.ConfigMap"</span>, <span class="json-str">"io.k8s.api.core.v1.Volume"</span>, <span class="json-str">"io.k8s.api.core.v1.VolumeMount"</span>],
+    <span class="json-key">"expected_path"</span>: [<span class="json-str">"PodSpec -[HAS_PROPERTY]-> Volume"</span>, <span class="json-str">"Volume -[HAS_PROPERTY]-> ConfigMapVolumeSource"</span>],
+    <span class="json-key">"required_fields"</span>: [<span class="json-str">"apiVersion"</span>, <span class="json-str">"kind"</span>, <span class="json-str">"spec.volumes"</span>, <span class="json-str">"spec.containers"</span>],
+    <span class="json-key">"expected_yaml_keys"</span>: [<span class="json-str">"spec.volumes"</span>, <span class="json-str">"spec.volumes[0].configMap"</span>, <span class="json-str">"spec.containers[0].volumeMounts"</span>]
+  }
+}
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ FOOTER ═══ -->
+  <hr>
+  <div style="text-align:center; color:var(--gray); font-size:0.82rem; padding: 16px 0 32px;">
+    GraphRAG Kubernetes — Thesis Evaluation Dataset Selection Framework<br>
+    Coverage targets: 15–20 <code>realworld</code> fixtures &nbsp;|&nbsp; 4 Hard/Soft gates &nbsp;|&nbsp; 5 scoring dimensions &nbsp;|&nbsp; Threshold ≥ 2.0 / 3.0
+  </div>
+
+</div>
+</body>
+</html>

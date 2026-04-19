@@ -1,0 +1,28 @@
+{
+  "id": "namespace_quota_relation",
+  "type": "relationship",
+  "question": "Bagaimana Namespace membatasi penggunaan resource melalui ResourceQuota?",
+  "resource": "io.k8s.api.core.v1.Namespace",
+  "scope": "Cluster",
+  "multi_hop": true,
+  "ground_truth": {
+    "answer": "Namespace adalah resource cluster-scoped yang menyediakan isolasi virtual di Kubernetes. ResourceQuota dapat diterapkan ke Namespace untuk membatasi total konsumsi resource (CPU, memory, jumlah Pod, PVC, dll.) di namespace tersebut. Admin membuat ResourceQuota dengan namespace target, dan Kubernetes enforcer akan menolak resource baru yang melampaui quota. Relasi: Namespace ← ResourceQuota -[HAS_PROPERTY]-> ResourceQuotaSpec.",
+    "context": [
+      "Namespace: provides a mechanism for isolating groups of resources within a single cluster",
+      "ResourceQuota: sets aggregate quota restrictions enforced per namespace"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.core.v1.Namespace",
+      "io.k8s.api.core.v1.ResourceQuota",
+      "io.k8s.api.core.v1.ResourceQuotaSpec"
+    ],
+    "expected_path": [
+      "ResourceQuota -[HAS_PROPERTY]-> ResourceQuotaSpec",
+      "ResourceQuotaSpec -[HAS_PROPERTY]-> ScopeSelector"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": []
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

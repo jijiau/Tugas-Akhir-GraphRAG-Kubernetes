@@ -13,6 +13,12 @@ from src.memory.zep_store import ZepMemoryStore
 
 logger = logging.getLogger(__name__)
 
+# Groq free-tier limit: 6,000 tokens/minute.
+# Template overhead (~500 tokens) + question (~100) + response budget (~1,500)
+# leaves ~3,900 tokens for retrieved_data.  At ~4 chars/token → 15,600 chars.
+# Use 12,000 chars to stay comfortably under the hard per-request limit.
+GROQ_MAX_CONTEXT_CHARS = 12_000
+
 # Singleton ZepMemoryStore
 _zep_store = None
 
@@ -32,6 +38,7 @@ class AgentState(TypedDict):
     extracted_intent: dict
     graph_context: str
     reasoning_path: Optional[List[str]]   # ← hop-by-hop traversal trace
+    intent_type: Optional[str]            # ← "explain"|"generate_yaml"|"trace_relationship"|"followup"
     error: Optional[str]
 
 
@@ -72,7 +79,8 @@ def extract_intent_node(state: AgentState):
             raw_content = raw_content.strip()
 
         intent_data = json.loads(raw_content)
-        return {"extracted_intent": intent_data}
+        intent_type = intent_data.get("intent_type", "explain")
+        return {"extracted_intent": intent_data, "intent_type": intent_type}
 
     except json.JSONDecodeError as e:
         logger.error(f"Thinker failed to output valid JSON: {e}")
@@ -89,7 +97,10 @@ def execute_retrieval_node(state: AgentState):
 
     try:
         retriever = StatefulK8sRetriever()
-        graph_context, reasoning_path = retriever.retrieve_context(state["extracted_intent"])
+        intent_type = state.get("intent_type") or "explain"
+        graph_context, reasoning_path = retriever.retrieve_context(
+            state["extracted_intent"], intent_type=intent_type
+        )
         return {"graph_context": graph_context, "reasoning_path": reasoning_path}
     except Exception as e:
         logger.error(f"Custom Retrieval failed: {e}")
@@ -103,15 +114,32 @@ def execute_retrieval_node(state: AgentState):
 def generate_response_node(state: AgentState):
     """The 'Speaker'. Uses LLM + Graph Data to formulate the final answer."""
     try:
+        # Handle upstream errors in Python — never let the LLM see raw error strings
+        # (K8s spec descriptions legitimately contain words like "error"/"failed",
+        # so we only guard on the specific strings the code actually produces).
+        _ERROR_STRINGS = (
+            "Database retrieval failed.",
+            "Error in understanding intent. Cannot retrieve data.",
+        )
+        raw_ctx = state.get("graph_context") or ""
+        if state.get("error") or any(e in raw_ctx for e in _ERROR_STRINGS):
+            return {"messages": [AIMessage(content=(
+                "Maaf, saya tidak dapat menarik konteks dari Knowledge Graph saat ini. "
+                "Mohon perjelas spesifikasi resource yang Anda cari."
+            ))]}
+
         llm = get_speaker_llm()
         chain = RESPONSE_PROMPT | llm
 
-        if state.get("error"):
-            return {"messages": [AIMessage(content=f"System error: {state['error']}")]}
+        # Truncate graph_context to avoid 413 Payload Too Large on Groq free tier.
+        raw_context = raw_ctx  # reuse value computed above
+        if len(raw_context) > GROQ_MAX_CONTEXT_CHARS:
+            raw_context = raw_context[:GROQ_MAX_CONTEXT_CHARS] + "\n... [context truncated]"
+            logger.debug(f"graph_context truncated to {GROQ_MAX_CONTEXT_CHARS} chars")
 
         response = chain.invoke({
             "chat_history": state["chat_history"],
-            "retrieved_data": state["graph_context"],
+            "retrieved_data": raw_context,
             "question": state["question"]
         })
         return {"messages": [AIMessage(content=response.content)]}

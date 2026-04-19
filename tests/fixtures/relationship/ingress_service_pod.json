@@ -1,0 +1,30 @@
+{
+  "id": "ingress_service_pod",
+  "type": "relationship",
+  "question": "Bagaimana alur traffic dari Ingress sampai ke Pod?",
+  "resource": "io.k8s.api.networking.v1.Ingress",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "ground_truth": {
+    "answer": "Ingress menerima traffic HTTP/HTTPS dari luar cluster, meneruskannya ke Service berdasarkan rules (host/path). Service kemudian menggunakan selector untuk menemukan Pod yang sesuai. Alur: Ingress → IngressRule → IngressBackend → Service → Pod.",
+    "context": [
+      "Ingress: manages external access to services, typically HTTP",
+      "IngressRule: host and path rules route traffic to backends"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.networking.v1.Ingress",
+      "io.k8s.api.networking.v1.IngressSpec",
+      "io.k8s.api.networking.v1.IngressRule",
+      "io.k8s.api.core.v1.Service"
+    ],
+    "expected_path": [
+      "Ingress -[HAS_PROPERTY]-> IngressSpec",
+      "IngressSpec -[HAS_PROPERTY]-> IngressRule",
+      "IngressRule -[HAS_PROPERTY]-> HTTPIngressRuleValue"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": []
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/services-networking/ingress/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/service-resources/"
+}

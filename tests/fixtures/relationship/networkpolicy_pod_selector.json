@@ -1,0 +1,28 @@
+{
+  "id": "networkpolicy_pod_selector",
+  "type": "relationship",
+  "question": "Bagaimana NetworkPolicy memilih Pod mana yang dilindungi?",
+  "resource": "io.k8s.api.networking.v1.NetworkPolicy",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "ground_truth": {
+    "answer": "NetworkPolicy menggunakan podSelector untuk memilih Pod target berdasarkan label. Ingress rules menentukan sumber traffic yang diizinkan, sementara egress rules menentukan tujuan yang dibolehkan. Jika podSelector kosong ({}), policy berlaku untuk semua Pod di namespace.",
+    "context": [
+      "NetworkPolicy: defines network traffic rules for pods",
+      "NetworkPolicySpec: podSelector selects pods to apply policy"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.networking.v1.NetworkPolicy",
+      "io.k8s.api.networking.v1.NetworkPolicySpec",
+      "io.k8s.api.networking.v1.NetworkPolicyIngressRule"
+    ],
+    "expected_path": [
+      "NetworkPolicy -[HAS_PROPERTY]-> NetworkPolicySpec",
+      "NetworkPolicySpec -[HAS_PROPERTY]-> NetworkPolicyIngressRule"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": []
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/services-networking/network-policies/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/service-resources/"
+}

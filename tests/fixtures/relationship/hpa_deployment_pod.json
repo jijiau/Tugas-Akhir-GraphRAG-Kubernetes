@@ -1,0 +1,29 @@
+{
+  "id": "hpa_deployment_pod",
+  "type": "relationship",
+  "question": "Bagaimana HPA mengatur jumlah Pod pada Deployment?",
+  "resource": "io.k8s.api.autoscaling.v2.HorizontalPodAutoscaler",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "ground_truth": {
+    "answer": "HPA memonitor metrik (CPU/memory) dan menyesuaikan jumlah replika pada Deployment. HPA mereferensikan target Deployment melalui scaleTargetRef, kemudian Deployment mengupdate ReplicaSet yang mengelola Pod.",
+    "context": [
+      "HorizontalPodAutoscaler: automatically scales workload resource",
+      "HorizontalPodAutoscalerSpec: scaleTargetRef points to the target resource"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscaler",
+      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerSpec",
+      "io.k8s.api.autoscaling.v2.CrossVersionObjectReference",
+      "io.k8s.api.apps.v1.Deployment"
+    ],
+    "expected_path": [
+      "HorizontalPodAutoscaler -[HAS_PROPERTY]-> HorizontalPodAutoscalerSpec",
+      "HorizontalPodAutoscalerSpec -[HAS_PROPERTY]-> CrossVersionObjectReference"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": []
+  },
+  "source_reference": "https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

@@ -1,0 +1,27 @@
+{
+  "id": "configmap_usage",
+  "type": "conceptual",
+  "question": "Apa itu ConfigMap dan bagaimana cara menggunakannya?",
+  "resource": "io.k8s.api.core.v1.ConfigMap",
+  "scope": "Namespaced",
+  "multi_hop": false,
+  "ground_truth": {
+    "answer": "ConfigMap menyimpan data konfigurasi non-rahasia dalam pasangan key-value. Bisa digunakan sebagai environment variables, command-line arguments, atau file konfigurasi dalam volume.",
+    "context": [
+      "ConfigMap adalah Kubernetes resource untuk menyimpan konfigurasi non-sensitif",
+      "ConfigMap menyimpan data dalam format key-value pairs",
+      "Dapat digunakan dengan berbagai cara: sebagai environment variables, command-line arguments, atau mounted sebagai volume",
+      "Ideal untuk memisahkan konfigurasi dari kode aplikasi"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.core.v1.ConfigMap",
+      "io.k8s.api.core.v1.ConfigMapVolumeSource",
+      "io.k8s.api.core.v1.EnvFromSource"
+    ],
+    "expected_path": [],
+    "required_fields": [],
+    "expected_yaml_keys": []
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/configuration/configmap/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

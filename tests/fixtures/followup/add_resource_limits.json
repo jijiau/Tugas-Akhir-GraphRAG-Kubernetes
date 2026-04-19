@@ -1,0 +1,29 @@
+{
+  "id": "add_resource_limits",
+  "type": "followup",
+  "question": "Tambahkan resource limits CPU 500m dan memory 256Mi ke container tadi",
+  "resource": "io.k8s.api.apps.v1.Deployment",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "ground_truth": {
+    "answer": "Tambahkan resources.limits pada spec container: resources:\n  limits:\n    cpu: '500m'\n    memory: '256Mi'\n  requests:\n    cpu: '250m'\n    memory: '128Mi'",
+    "context": [
+      "Container.resources: compute resources required by the container"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.apps.v1.Deployment",
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.ResourceRequirements"
+    ],
+    "expected_path": [
+      "Deployment -[HAS_PROPERTY]-> DeploymentSpec",
+      "DeploymentSpec -[HAS_PROPERTY]-> PodTemplateSpec"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": [
+      "spec.template.spec.containers[0].resources"
+    ]
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

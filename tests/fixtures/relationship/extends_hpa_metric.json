@@ -1,0 +1,30 @@
+{
+  "id": "extends_hpa_metric",
+  "type": "relationship",
+  "question": "Bagaimana HorizontalPodAutoscaler mewarisi definisi MetricSpec dari tipe dasar autoscaling?",
+  "resource": "io.k8s.api.autoscaling.v2.HorizontalPodAutoscaler",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "ground_truth": {
+    "answer": "HorizontalPodAutoscalerSpec mewarisi (extends) struktur MetricSpec melalui relasi allOf. MetricSpec mendefinisikan tipe metrik (Resource, Pods, Object, External, ContainerResource) yang digunakan HPA untuk menentukan threshold scaling. Relasi EXTENDS ini tidak bisa diketahui hanya dari pencarian vektor — hanya tersedia di knowledge graph.",
+    "context": [
+      "HorizontalPodAutoscalerSpec: defines desired behavior of autoscaler",
+      "MetricSpec: defines monitoring of a particular metric — type field selects the variant",
+      "allOf inheritance: HPA metrics extend from a base spec structure"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscaler",
+      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerSpec",
+      "io.k8s.api.autoscaling.v2.MetricSpec"
+    ],
+    "expected_path": [
+      "HorizontalPodAutoscaler -[HAS_PROPERTY]-> HorizontalPodAutoscalerSpec",
+      "HorizontalPodAutoscalerSpec -[HAS_PROPERTY]-> MetricSpec",
+      "MetricSpec -[HAS_PROPERTY]-> ResourceMetricSource"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": []
+  },
+  "source_reference": "https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

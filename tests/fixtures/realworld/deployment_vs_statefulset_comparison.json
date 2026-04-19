@@ -1,0 +1,45 @@
+{
+  "id": "deployment_vs_statefulset_comparison",
+  "type": "realworld",
+  "question": "Apa perbedaan antara Deployment dan StatefulSet? Kapan sebaiknya menggunakan masing-masing?",
+  "resource": "io.k8s.api.apps.v1.Deployment",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "so_question_id": "48072461",
+  "selection_score": 2.45,
+  "selection_scores_breakdown": {
+    "d1_graph_answerability": 3,
+    "d2_path_annotability": 2,
+    "d3_type_fit": 3,
+    "d4_so_quality": 3,
+    "d5_representativeness": 3,
+    "g4_penalty": -0.3
+  },
+  "selection_rationale": "SO answer score 89. Both Deployment and StatefulSet exist in graph. Cross-resource conceptual comparison is a new pattern (all existing conceptual fixtures cover single resources in isolation). D2=2 because expected_path spans two separate root nodes. G4 penalty applied (StatefulSet covered individually) but comparison angle is new.",
+  "ground_truth": {
+    "answer": "Deployment cocok untuk aplikasi stateless yang semua Pod-nya identik dan dapat dibuat ulang kapan saja. StatefulSet digunakan untuk aplikasi stateful yang membutuhkan identitas Pod yang stabil, urutan deployment/termination, dan penyimpanan persisten per-Pod. Contoh: gunakan Deployment untuk web server, gunakan StatefulSet untuk database seperti MySQL atau Cassandra.",
+    "context": [
+      "io.k8s.api.apps.v1.Deployment: enables declarative updates for stateless Pods and ReplicaSets; Pods are interchangeable",
+      "io.k8s.api.apps.v1.StatefulSet: manages stateful applications with stable network IDs and persistent storage per Pod",
+      "io.k8s.api.apps.v1.StatefulSetSpec: volumeClaimTemplates provides stable per-Pod PersistentVolumeClaims"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.apps.v1.Deployment",
+      "io.k8s.api.apps.v1.DeploymentSpec",
+      "io.k8s.api.apps.v1.StatefulSet",
+      "io.k8s.api.apps.v1.StatefulSetSpec"
+    ],
+    "expected_path": [
+      "Deployment -[HAS_PROPERTY]-> DeploymentSpec",
+      "StatefulSet -[HAS_PROPERTY]-> StatefulSetSpec",
+      "StatefulSetSpec -[HAS_PROPERTY]-> PersistentVolumeClaim"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": [],
+    "answer_lang": "id"
+  },
+  "source_reference": "https://stackoverflow.com/questions/48072461",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "so_url": "https://stackoverflow.com/questions/48072461",
+  "so_answer_score": 89
+}

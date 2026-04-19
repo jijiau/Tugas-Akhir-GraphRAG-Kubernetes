@@ -17,9 +17,11 @@
     ],
     "expected_path": [
       "Service -[HAS_PROPERTY]-> ServiceSpec",
-      "ServiceSpec -[SELECTS_POD]-> Pod"
+      "Service -[SELECTS_POD]-> Pod"
     ],
     "required_fields": [],
     "expected_yaml_keys": []
-  }
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/services-networking/service/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
 }

@@ -12,6 +12,32 @@ from src.graph.queries import (
 
 logger = logging.getLogger(__name__)
 
+# ── Intent-aware depth mapping ────────────────────────────────────────────────
+# Depth limits are derived from K8s schema graph structural properties,
+# NOT from the evaluation dataset:
+#
+#   "explain" / "followup" → depth 2
+#     Rationale: depth 1–2 nodes are resource-specific (shared by 2–3 resources).
+#     Depth 3+ introduces generic shared types (PodSpec shared by 23+ resources)
+#     that add noise for definitional questions.
+#
+#   "generate_yaml" / "trace_relationship" → depth 3
+#     Rationale: YAML generation needs depth 1 (spec), depth 2 (spec fields),
+#     depth 3 (container-level fields like image/ports/env).
+#     Relationship traversal in K8s reaches cross-resource bridges at depth 2–3
+#     (e.g. Deployment→DeploymentSpec→PodTemplateSpec→PodSpec).
+#     Depth 4+ is dominated by generic utility types (Quantity, IntOrString,
+#     LocalObjectReference) shared by 19–136 resources — informationally worthless
+#     for distinguishing any specific relationship.
+#
+_DEPTH_BY_INTENT = {
+    "explain":            2,
+    "followup":           2,
+    "generate_yaml":      3,
+    "trace_relationship": 3,
+}
+_DEFAULT_DEPTH = 3   # safe fallback for unknown intent types
+
 
 class StatefulK8sRetriever:
     def __init__(self):
@@ -20,18 +46,33 @@ class StatefulK8sRetriever:
 
     # ── Public entry point ────────────────────────────────────────────────────
 
-    def retrieve_context(self, intent_data: dict, max_depth: int = 4) -> tuple[str, list[str]]:
+    def retrieve_context(
+        self,
+        intent_data: dict,
+        intent_type: str = "explain",
+        max_depth: int | None = None,
+    ) -> tuple[str, list[str]]:
         """
-        Two-phase retrieval:
+        Two-phase retrieval with intent-aware depth control:
           Phase 1 — Exact name match (precision-first).
           Phase 2 — Vector similarity fallback (recall).
 
+        max_depth is resolved in priority order:
+          1. Explicit caller override (max_depth argument)
+          2. Intent-derived from _DEPTH_BY_INTENT mapping
+          3. _DEFAULT_DEPTH fallback
+
         Returns:
             (graph_context_json, reasoning_path)
-            reasoning_path: list of "Parent -[REL]-> Child" strings (proper chain)
+            reasoning_path: list of "Parent -[REL]-> Child" strings
         """
+        # ── Resolve depth ─────────────────────────────────────────────────────
+        depth = max_depth if max_depth is not None \
+            else _DEPTH_BY_INTENT.get(intent_type, _DEFAULT_DEPTH)
+        logger.info(f"[Retriever] intent_type='{intent_type}' → max_depth={depth}")
+
         primary = intent_data.get("primary_resource", "")
-        related  = intent_data.get("related_concepts", [])
+        related = intent_data.get("related_concepts", [])
 
         try:
             # ── Phase 1: Exact match ──────────────────────────────────────────
@@ -39,13 +80,13 @@ class StatefulK8sRetriever:
 
             if root_name:
                 logger.info(f"[Retriever] Exact match: '{primary}' → '{root_name}'")
-                record = self._schema_deps(root_name, max_depth)
+                record = self._schema_deps(root_name, depth)
             else:
                 # ── Phase 2: Vector search ────────────────────────────────────
                 logger.info(f"[Retriever] No exact match for '{primary}', using vector search")
                 search_query = f"{primary} {' '.join(related)} Kubernetes"
                 embedding    = self.vector_mgr.generate_embedding(search_query)
-                record       = self._vector_deps(embedding, max_depth)
+                record       = self._vector_deps(embedding, depth)
                 if record:
                     root_name = record.get("RootResource", "")
 
@@ -57,7 +98,7 @@ class StatefulK8sRetriever:
             record["SchemaDependencies"] = [d for d in deps if d is not None]
 
             # ── Build reasoning path (proper parent → child chain) ────────────
-            reasoning_path = self._build_reasoning_path(root_name, max_depth)
+            reasoning_path = self._build_reasoning_path(root_name, depth)
 
             graph_context = json.dumps(record, indent=2, ensure_ascii=False)
             return graph_context, reasoning_path
@@ -105,7 +146,7 @@ class StatefulK8sRetriever:
             seen   = set()
             path   = []
             for row in rows:
-                edge = f"{row['parent']} -[HAS_PROPERTY]-> {row['child']}"
+                edge = f"{row['parent']} -[{row['rel_type']}]-> {row['child']}"
                 if edge not in seen:
                     seen.add(edge)
                     path.append(edge)

@@ -1,0 +1,31 @@
+{
+  "id": "persistent_volume_concept",
+  "type": "conceptual",
+  "question": "Apa itu PersistentVolume dan PersistentVolumeClaim?",
+  "resource": "io.k8s.api.core.v1.PersistentVolume",
+  "scope": "Cluster",
+  "multi_hop": false,
+  "ground_truth": {
+    "answer": "PersistentVolume (PV) adalah resource penyimpanan di cluster yang di-provision oleh admin atau secara dinamis. PersistentVolumeClaim (PVC) adalah permintaan penyimpanan oleh pengguna. PVC mengikat ke PV yang memenuhi kebutuhan kapasitas dan access mode.",
+    "context": [
+      "PersistentVolume (PV) adalah abstraksi penyimpanan yang di-provision oleh cluster administrator",
+      "PV memiliki lifecycle independen dari Pod yang menggunakannya",
+      "PersistentVolumeClaim (PVC) adalah permintaan penyimpanan dari pengguna",
+      "PVC secara otomatis mengikat ke PV yang memenuhi kriteria: storage class, kapasitas, dan access mode",
+      "Pod menggunakan PVC untuk mengakses penyimpanan, bukan langsung ke PV",
+      "Memungkinkan persistent data yang bertahan lebih lama dari Pod"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.core.v1.PersistentVolume",
+      "io.k8s.api.core.v1.PersistentVolumeSpec",
+      "io.k8s.api.core.v1.PersistentVolumeClaim",
+      "io.k8s.api.core.v1.PersistentVolumeClaimSpec",
+      "io.k8s.api.core.v1.AccessMode"
+    ],
+    "expected_path": [],
+    "required_fields": [],
+    "expected_yaml_keys": []
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

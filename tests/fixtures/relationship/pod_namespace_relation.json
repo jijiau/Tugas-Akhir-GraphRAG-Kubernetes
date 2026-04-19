@@ -1,0 +1,24 @@
+{
+  "id": "pod_namespace_relation",
+  "type": "relationship",
+  "question": "Bagaimana Pod terikat dengan Namespace di Kubernetes?",
+  "resource": "io.k8s.api.core.v1.Pod",
+  "scope": "Namespaced",
+  "multi_hop": false,
+  "ground_truth": {
+    "answer": "Pod terikat langsung ke Namespace melalui field metadata.namespace. Setiap Pod harus berada dalam satu Namespace, dan Namespace berfungsi sebagai boundary isolasi untuk resource Pod tersebut.",
+    "context": [
+      "io.k8s.api.core.v1.Pod: metadata.namespace menentukan Namespace tempat Pod berjalan.",
+      "Pod -[BELONGS_TO]-> Namespace via metadata.namespace"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.core.v1.Pod",
+      "io.k8s.api.core.v1.Namespace"
+    ],
+    "expected_path": [],
+    "required_fields": [],
+    "expected_yaml_keys": []
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/workloads/pods/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

@@ -6,7 +6,7 @@
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
-    "answer": "Ingress YAML dengan spec.rules berisi host app.example.com, http.paths dengan path / dan backend servicePort 80.",
+    "answer": "apiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: example-ingress\nspec:\n  rules:\n    - host: app.example.com\n      http:\n        paths:\n          - path: /\n            pathType: Prefix\n            backend:\n              service:\n                name: my-service\n                port:\n                  number: 80",
     "context": [
       "io.k8s.api.networking.v1.Ingress: Ingress manages external access to services in a cluster.",
       "io.k8s.api.networking.v1.IngressRule: host and http define routing rules"
@@ -20,7 +20,20 @@
       "Ingress -[HAS_PROPERTY]-> IngressSpec",
       "IngressSpec -[HAS_PROPERTY]-> IngressRule"
     ],
-    "required_fields": ["apiVersion", "kind", "metadata", "spec"],
-    "expected_yaml_keys": ["apiVersion", "kind", "metadata", "spec", "spec.rules"]
-  }
+    "required_fields": [
+      "apiVersion",
+      "kind",
+      "metadata",
+      "spec"
+    ],
+    "expected_yaml_keys": [
+      "apiVersion",
+      "kind",
+      "metadata",
+      "spec",
+      "spec.rules"
+    ]
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/services-networking/ingress/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/service-resources/"
 }
