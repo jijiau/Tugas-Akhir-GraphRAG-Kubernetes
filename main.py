@@ -7,7 +7,7 @@ from src.chatbot.graph_agent import create_agent_graph
 
 st.set_page_config(
     page_title="K8s GraphRAG Assistant",
-    page_icon="⎈",
+    page_icon=None,
     layout="wide",
 )
 
@@ -114,20 +114,20 @@ def render_retrieval_trace(reasoning_path: list[str], graph_context_json: str):
     n_nodes   = len(depth_map)
     n_edges   = len(edges)
 
-    with st.expander("🧭 Retrieval Trace — Alur Pencarian Graph", expanded=False):
+    with st.expander("Retrieval Trace — Alur Pencarian Graph", expanded=False):
 
         # ── Metrics row ──────────────────────────────────────────────────────
         c1, c2, c3, c4 = st.columns(4)
-        c1.metric("🔵 Root Resource", root)
-        c2.metric("📍 Nodes", n_nodes)
-        c3.metric("🔗 Unique Edges", n_edges)
-        c4.metric("🌊 Max Depth", max_depth)
+        c1.metric("Root Resource", root)
+        c2.metric("Nodes", n_nodes)
+        c3.metric("Unique Edges", n_edges)
+        c4.metric("Max Depth", max_depth)
 
         st.divider()
 
         # ── Tabs: Graph | Table ───────────────────────────────────────────────
         tab_graph, tab_table, tab_legend = st.tabs(
-            ["🗺️ Graph Visualization", "📋 Edge Table", "🎨 Keterangan Warna"]
+            ["Graph Visualization", "Edge Table", "Keterangan Warna"]
         )
 
         with tab_graph:
@@ -168,11 +168,11 @@ def render_retrieval_trace(reasoning_path: list[str], graph_context_json: str):
             st.markdown("""
 | Warna | Depth | Artinya |
 |-------|-------|---------|
-| 🟦 **Navy gelap** | 0 | Root resource (hasil pencarian utama) |
-| 🔵 **Biru** | 1 | Properti langsung (e.g. `spec`, `status`) |
-| 🔷 **Biru sedang** | 2 | Sub-properti (e.g. `PodTemplateSpec`) |
-| 🩵 **Biru muda** | 3 | Detail lanjut (e.g. `PodSpec`) |
-| 🌐 **Biru pucat** | 4 | Leaf node (e.g. `Container`, `Volume`) |
+| **Navy gelap** | 0 | Root resource (hasil pencarian utama) |
+| **Biru** | 1 | Properti langsung (e.g. `spec`, `status`) |
+| **Biru sedang** | 2 | Sub-properti (e.g. `PodTemplateSpec`) |
+| **Biru muda** | 3 | Detail lanjut (e.g. `PodSpec`) |
+| **Biru pucat** | 4 | Leaf node (e.g. `Container`, `Volume`) |
 
 **Cara membaca graph:**
 - Arah panah = arah relasi schema (parent → child)
@@ -182,7 +182,7 @@ def render_retrieval_trace(reasoning_path: list[str], graph_context_json: str):
 
 
 # ── UI ────────────────────────────────────────────────────────────────────────
-st.title("⎈ K8s GraphRAG Assistant")
+st.title("K8s GraphRAG Assistant")
 st.caption("Chatbot berbasis Knowledge Graph untuk dokumentasi Kubernetes")
 
 # Tampilkan riwayat chat

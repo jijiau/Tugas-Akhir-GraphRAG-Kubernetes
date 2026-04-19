@@ -1,0 +1,24 @@
+{
+  "id": "storageclass_concept",
+  "type": "conceptual",
+  "question": "Apa itu StorageClass dan bagaimana perannya dalam dynamic provisioning?",
+  "resource": "io.k8s.storage.v1.StorageClass",
+  "scope": "Cluster",
+  "multi_hop": false,
+  "ground_truth": {
+    "answer": "StorageClass adalah resource cluster-scoped yang mendefinisikan 'class' penyimpanan yang ditawarkan oleh administrator. Setiap StorageClass memiliki provisioner (misalnya kubernetes.io/aws-ebs), parameters, dan reclaimPolicy. Ketika PVC dibuat dengan storageClassName tertentu, StorageClass menginstruksikan provisioner untuk membuat PersistentVolume secara otomatis (dynamic provisioning). StorageClass adalah resource tingkat cluster — tidak terikat ke namespace.",
+    "context": [
+      "StorageClass: describes the parameters for a class of storage for which PersistentVolumes can be dynamically provisioned",
+      "provisioner: indicates the type of provisioner"
+    ],
+    "relevant_nodes": [
+      "io.k8s.storage.v1.StorageClass",
+      "io.k8s.api.core.v1.PersistentVolumeClaim"
+    ],
+    "expected_path": [],
+    "required_fields": [],
+    "expected_yaml_keys": []
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/storage/storage-classes/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/"
+}

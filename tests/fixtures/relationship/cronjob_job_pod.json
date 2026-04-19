@@ -1,0 +1,30 @@
+{
+  "id": "cronjob_job_pod",
+  "type": "relationship",
+  "question": "Bagaimana CronJob membuat dan mengelola Pod?",
+  "resource": "io.k8s.api.batch.v1.CronJob",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "ground_truth": {
+    "answer": "CronJob membuat Job baru berdasarkan jadwal cron yang ditentukan. Setiap Job yang dibuat kemudian membuat Pod untuk menjalankan tugas. Rantai: CronJob → JobTemplate → Job → Pod.",
+    "context": [
+      "CronJob: manages time-based Jobs",
+      "JobSpec: describes how the job execution will look like"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.batch.v1.CronJob",
+      "io.k8s.api.batch.v1.CronJobSpec",
+      "io.k8s.api.batch.v1.JobTemplateSpec",
+      "io.k8s.api.batch.v1.JobSpec"
+    ],
+    "expected_path": [
+      "CronJob -[HAS_PROPERTY]-> CronJobSpec",
+      "CronJobSpec -[HAS_PROPERTY]-> JobTemplateSpec",
+      "JobTemplateSpec -[HAS_PROPERTY]-> JobSpec"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": []
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

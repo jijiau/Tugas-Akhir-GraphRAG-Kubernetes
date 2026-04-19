@@ -1,0 +1,25 @@
+{
+  "id": "scope_accuracy_node",
+  "type": "conceptual",
+  "question": "Apa perbedaan scope antara Node dan Pod di Kubernetes, dan mengapa penting untuk dipahami?",
+  "resource": "io.k8s.api.core.v1.Node",
+  "scope": "Cluster",
+  "multi_hop": false,
+  "ground_truth": {
+    "answer": "Node adalah resource cluster-scoped — ada di tingkat cluster dan tidak terikat ke namespace tertentu. Pod adalah resource namespaced — harus berada di dalam namespace tertentu. Perbedaan ini penting karena: (1) RBAC permissions berbeda untuk cluster-scoped vs namespaced resources; (2) kubectl commands memerlukan -n <namespace> untuk namespaced resources; (3) ClusterRole bisa mengakses keduanya, sementara Role hanya bisa mengakses namespaced resources dalam satu namespace.",
+    "context": [
+      "Node: represents a worker machine in Kubernetes — cluster-scoped resource",
+      "Pod: the smallest deployable units — namespaced resource"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.core.v1.Node",
+      "io.k8s.api.core.v1.Pod",
+      "io.k8s.api.core.v1.NodeSpec"
+    ],
+    "expected_path": [],
+    "required_fields": [],
+    "expected_yaml_keys": []
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/architecture/nodes/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

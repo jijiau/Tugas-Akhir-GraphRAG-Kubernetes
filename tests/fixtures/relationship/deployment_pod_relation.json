@@ -18,9 +18,11 @@
     ],
     "expected_path": [
       "Deployment -[HAS_PROPERTY]-> DeploymentSpec",
-      "DeploymentSpec -[CONTAINS_POD_TEMPLATE]-> PodTemplateSpec"
+      "DeploymentSpec -[HAS_PROPERTY]-> PodTemplateSpec"
     ],
     "required_fields": [],
     "expected_yaml_keys": []
-  }
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
 }

@@ -1,0 +1,24 @@
+{
+  "id": "required_fields_container",
+  "type": "conceptual",
+  "question": "Field apa yang wajib (required) ada saat mendefinisikan Container di dalam PodSpec?",
+  "resource": "io.k8s.api.core.v1.Container",
+  "scope": "Namespaced",
+  "multi_hop": false,
+  "ground_truth": {
+    "answer": "Berdasarkan Kubernetes API definition graph, satu-satunya field yang ditandai is_required=true pada Container adalah 'name'. Field lain seperti image, ports, env, resources, volumeMounts bersifat opsional menurut API spec — meskipun image sangat dianjurkan. Ini adalah pengetahuan struktural yang hanya bisa diperoleh dari graph traversal pada edge HAS_PROPERTY {is_required: true}, bukan dari generalisasi LLM.",
+    "context": [
+      "Container: a single application container — 'name' is the only required field per API spec",
+      "HAS_PROPERTY edge with is_required=true marks mandatory fields in the knowledge graph"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.PodSpec"
+    ],
+    "expected_path": [],
+    "required_fields": [],
+    "expected_yaml_keys": []
+  },
+  "source_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#Container",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

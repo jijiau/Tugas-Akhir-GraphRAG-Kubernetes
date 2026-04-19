@@ -1,0 +1,39 @@
+{
+  "id": "clusterrolebinding_yaml",
+  "type": "yaml_gen",
+  "question": "Buatkan YAML ClusterRoleBinding untuk memberikan akses ClusterRole 'cluster-admin' ke ServiceAccount 'admin-sa' di namespace kube-system",
+  "resource": "io.k8s.api.rbac.v1.ClusterRoleBinding",
+  "scope": "Cluster",
+  "multi_hop": true,
+  "ground_truth": {
+    "answer": "apiVersion: rbac.authorization.k8s.io/v1\nkind: ClusterRoleBinding\nmetadata:\n  name: admin-binding\nsubjects:\n- kind: ServiceAccount\n  name: admin-sa\n  namespace: kube-system\nroleRef:\n  kind: ClusterRole\n  name: cluster-admin\n  apiGroup: rbac.authorization.k8s.io",
+    "context": [
+      "ClusterRoleBinding: grants cluster-wide permissions defined in a ClusterRole to subjects",
+      "ClusterRole: cluster-scoped role that can be referenced by ClusterRoleBinding"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.rbac.v1.ClusterRoleBinding",
+      "io.k8s.api.rbac.v1.ClusterRole",
+      "io.k8s.api.core.v1.ServiceAccount"
+    ],
+    "expected_path": [
+      "ClusterRoleBinding -[BINDS_ROLE]-> ClusterRole",
+      "ClusterRoleBinding -[BINDS_SERVICE_ACCOUNT]-> ServiceAccount"
+    ],
+    "required_fields": [
+      "apiVersion",
+      "kind",
+      "metadata",
+      "subjects",
+      "roleRef"
+    ],
+    "expected_yaml_keys": [
+      "subjects",
+      "roleRef",
+      "roleRef.kind",
+      "roleRef.name"
+    ]
+  },
+  "source_reference": "https://kubernetes.io/docs/reference/access-authn-authz/rbac/#rolebinding-and-clusterrolebinding",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/authorization-resources/"
+}

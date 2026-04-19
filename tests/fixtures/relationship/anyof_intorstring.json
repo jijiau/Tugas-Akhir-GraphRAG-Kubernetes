@@ -1,0 +1,28 @@
+{
+  "id": "anyof_intorstring",
+  "type": "relationship",
+  "question": "Mengapa field port pada Container bisa menerima nilai integer maupun string?",
+  "resource": "io.k8s.api.core.v1.ContainerPort",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "ground_truth": {
+    "answer": "Field containerPort dan targetPort menggunakan tipe IntOrString yang merupakan anyOf union — bisa berupa integer (nomor port) atau string (nama port). Relasi ANY_OF di knowledge graph merepresentasikan union type ini dari swagger anyOf schema. Ini memungkinkan penulisan port sebagai angka (8080) atau nama (http, https).",
+    "context": [
+      "ContainerPort: represents a network port in a single container",
+      "IntOrString: a type that can hold an int32 or a string",
+      "anyOf: the field accepts any of the listed types"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.core.v1.ContainerPort",
+      "io.k8s.apimachinery.pkg.util.intstr.IntOrString",
+      "io.k8s.api.core.v1.Container"
+    ],
+    "expected_path": [
+      "Container -[HAS_PROPERTY]-> ContainerPort"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": []
+  },
+  "source_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#ContainerPort",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

@@ -1,0 +1,26 @@
+{
+  "id": "daemonset_purpose",
+  "type": "conceptual",
+  "question": "Apa fungsi DaemonSet dan kapan sebaiknya digunakan?",
+  "resource": "io.k8s.api.apps.v1.DaemonSet",
+  "scope": "Namespaced",
+  "multi_hop": false,
+  "ground_truth": {
+    "answer": "DaemonSet memastikan setiap Node menjalankan satu salinan Pod tertentu. Berguna untuk logging agents, monitoring daemons, dan network plugins.",
+    "context": [
+      "DaemonSet adalah Kubernetes controller yang memastikan setiap Node menjalankan satu salinan Pod",
+      "DaemonSetSpec mendefinisikan spesifikasi Pod yang akan dijalankan di setiap Node",
+      "Cocok digunakan untuk menjalankan daemon services seperti log collectors, monitoring agents, dan network plugins"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.apps.v1.DaemonSet",
+      "io.k8s.api.apps.v1.DaemonSetSpec",
+      "io.k8s.api.core.v1.PodTemplateSpec"
+    ],
+    "expected_path": [],
+    "required_fields": [],
+    "expected_yaml_keys": []
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

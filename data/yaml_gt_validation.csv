@@ -1,0 +1,23 @@
+fixture_id,type,resource_kind,syntactic,schema,error
+expose_with_ingress,followup,Ingress,PASS,PASS,
+configmap_volume_mount,realworld,ConfigMap,PASS,PASS,
+hpa_custom_metrics_yaml,realworld,HorizontalPodAutoscaler,PASS,PASS,
+pim_using_argocd_and_i_want,realworld,Namespace,PASS,FAIL,
+serviceaccount_pod_binding,realworld,ServiceAccount,FAIL,N/A,"expected a single document in the stream
+  in ""<unicode string>"", line 1, column 1:
+    apiVersion: v1
+    ^
+but found a"
+clusterrolebinding_yaml,yaml_gen,ClusterRoleBinding,PASS,PASS,
+cronjob_backup,yaml_gen,CronJob,PASS,PASS,
+daemonset_fluentd,yaml_gen,DaemonSet,PASS,PASS,
+deployment_3_replicas,yaml_gen,Deployment,PASS,PASS,
+deployment_liveness_probe,yaml_gen,Deployment,PASS,PASS,
+ingress_rules,yaml_gen,Ingress,PASS,PASS,
+networkpolicy_deny_all,yaml_gen,NetworkPolicy,PASS,PASS,
+pod_configmap_volume,yaml_gen,Pod,PASS,PASS,
+pvc_dynamic,yaml_gen,PersistentVolumeClaim,PASS,PASS,
+rolebinding_dev,yaml_gen,RoleBinding,PASS,PASS,
+service_nodeport,yaml_gen,Service,PASS,PASS,
+statefulset_with_pvc,yaml_gen,StatefulSet,PASS,PASS,
+yaml_layer3_required_fields,yaml_gen,Deployment,PASS,PASS,

@@ -1,0 +1,38 @@
+{
+  "id": "deep_statefulset_container_probe",
+  "type": "relationship",
+  "question": "Bagaimana mendefinisikan liveness probe pada container di dalam StatefulSet?",
+  "resource": "io.k8s.api.apps.v1.StatefulSet",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "ground_truth": {
+    "answer": "Path graph untuk liveness probe pada StatefulSet melewati 4 hop: StatefulSet → StatefulSetSpec → PodTemplateSpec → Container → Probe (livenessProbe). Probe mendefinisikan cara Kubernetes mendeteksi apakah container masih berjalan. Tipe probe yang tersedia: httpGet, tcpSocket, exec, dan grpc. Probe dengan httpGet memerlukan path dan port.",
+    "context": [
+      "StatefulSetSpec: spec of the desired behavior of the StatefulSet",
+      "PodTemplateSpec: describes the data a pod should have when created",
+      "Container: a single application container",
+      "Probe: describes a health check to be performed against a container to determine whether it is alive or ready"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.apps.v1.StatefulSet",
+      "io.k8s.api.apps.v1.StatefulSetSpec",
+      "io.k8s.api.core.v1.PodTemplateSpec",
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.Probe"
+    ],
+    "expected_path": [
+      "StatefulSet -[HAS_PROPERTY]-> StatefulSetSpec",
+      "StatefulSetSpec -[HAS_PROPERTY]-> PodTemplateSpec",
+      "PodTemplateSpec -[HAS_PROPERTY]-> PodSpec",
+      "PodSpec -[HAS_CONTAINER]-> Container",
+      "Container -[HAS_PROPERTY]-> Probe"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": [
+      "spec.template.spec.containers[0].livenessProbe",
+      "spec.template.spec.containers[0].livenessProbe.httpGet"
+    ]
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

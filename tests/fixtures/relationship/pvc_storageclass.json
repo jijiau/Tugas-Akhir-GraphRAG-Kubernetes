@@ -18,9 +18,11 @@
     ],
     "expected_path": [
       "PersistentVolumeClaim -[HAS_PROPERTY]-> PersistentVolumeClaimSpec",
-      "PersistentVolumeClaimSpec -[USES_STORAGE_CLASS]-> StorageClass"
+      "PersistentVolumeClaim -[USES_STORAGE_CLASS]-> StorageClass"
     ],
     "required_fields": [],
     "expected_yaml_keys": []
-  }
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
 }

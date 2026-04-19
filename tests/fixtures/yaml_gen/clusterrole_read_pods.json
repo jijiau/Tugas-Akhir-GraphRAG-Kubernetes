@@ -16,7 +16,18 @@
       "io.k8s.api.rbac.v1.PolicyRule"
     ],
     "expected_path": [],
-    "required_fields": ["apiVersion", "kind", "metadata"],
-    "expected_yaml_keys": ["apiVersion", "kind", "metadata", "rules"]
-  }
+    "required_fields": [
+      "apiVersion",
+      "kind",
+      "metadata"
+    ],
+    "expected_yaml_keys": [
+      "apiVersion",
+      "kind",
+      "metadata",
+      "rules"
+    ]
+  },
+  "source_reference": "https://kubernetes.io/docs/reference/access-authn-authz/rbac/#role-and-clusterrole",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/authorization-resources/"
 }

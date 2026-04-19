@@ -11,9 +11,22 @@
       "io.k8s.api.core.v1.ConfigMap: ConfigMap holds configuration data as key-value pairs.",
       "data field contains the configuration data"
     ],
-    "relevant_nodes": ["io.k8s.api.core.v1.ConfigMap"],
+    "relevant_nodes": [
+      "io.k8s.api.core.v1.ConfigMap"
+    ],
     "expected_path": [],
-    "required_fields": ["apiVersion", "kind", "metadata"],
-    "expected_yaml_keys": ["apiVersion", "kind", "metadata", "data"]
-  }
+    "required_fields": [
+      "apiVersion",
+      "kind",
+      "metadata"
+    ],
+    "expected_yaml_keys": [
+      "apiVersion",
+      "kind",
+      "metadata",
+      "data"
+    ]
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/configuration/configmap/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
 }

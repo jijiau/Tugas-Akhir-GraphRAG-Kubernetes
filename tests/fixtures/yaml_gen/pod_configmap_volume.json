@@ -1,0 +1,43 @@
+{
+  "id": "pod_configmap_volume",
+  "type": "yaml_gen",
+  "question": "Buatkan YAML Pod yang me-mount ConfigMap bernama 'app-config' sebagai volume di path /etc/config",
+  "resource": "io.k8s.api.core.v1.Pod",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "ground_truth": {
+    "answer": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: app-pod\nspec:\n  volumes:\n  - name: config-volume\n    configMap:\n      name: app-config\n  containers:\n  - name: app\n    image: nginx:latest\n    volumeMounts:\n    - name: config-volume\n      mountPath: /etc/config",
+    "context": [
+      "Volume: represents a named volume in a pod",
+      "ConfigMapVolumeSource: adapts a ConfigMap into a volume",
+      "VolumeMount: describes a mounting of a Volume within a container"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.core.v1.Pod",
+      "io.k8s.api.core.v1.PodSpec",
+      "io.k8s.api.core.v1.Volume",
+      "io.k8s.api.core.v1.ConfigMapVolumeSource",
+      "io.k8s.api.core.v1.VolumeMount"
+    ],
+    "expected_path": [
+      "PodSpec -[HAS_PROPERTY]-> Volume",
+      "Volume -[HAS_PROPERTY]-> ConfigMapVolumeSource",
+      "PodSpec -[HAS_PROPERTY]-> Container",
+      "Container -[HAS_PROPERTY]-> VolumeMount"
+    ],
+    "required_fields": [
+      "apiVersion",
+      "kind",
+      "metadata",
+      "spec"
+    ],
+    "expected_yaml_keys": [
+      "spec.volumes",
+      "spec.volumes[0].configMap",
+      "spec.containers[0].volumeMounts",
+      "spec.containers[0].volumeMounts[0].mountPath"
+    ]
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/workloads/pods/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

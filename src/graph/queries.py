@@ -48,27 +48,59 @@ RETURN root.name        AS RootResource,
 """
 
 # ---------------------------------------------------------------------------
+# All semantic relationship types in the K8s graph.
+# Used in PATH_EDGES_QUERY and SCHEMA_DEPS_QUERY to traverse the full graph.
+# Expanding beyond HAS_PROPERTY captures cross-resource relationships:
+#   SCALES_RESOURCE      — HPA → Deployment/StatefulSet/ReplicaSet
+#   CONTAINS_POD_TEMPLATE— Deployment/StatefulSet/DaemonSet/Job → PodTemplateSpec
+#   BINDS_ROLE           — RoleBinding/ClusterRoleBinding → Role/ClusterRole
+#   BINDS_SERVICE_ACCOUNT— RoleBinding/ClusterRoleBinding → ServiceAccount
+#   EXTENDS              — Deployment/Pod → DeploymentSpec/PodSpec
+#   ROUTES_TO_SERVICE    — Ingress → Service
+#   SELECTS_POD          — Service → Pod
+#   USES_STORAGE_CLASS   — PVC → StorageClass
+#   CLAIMS_VOLUME        — StatefulSet → PVC
+#   HAS_CONTAINER        — PodSpec → Container
+#   MOUNTS_VOLUME        — PodSpec → Volume
+#   USES_SECRET          — PodSpec → Secret
+#   USES_SERVICE_ACCOUNT — PodSpec → ServiceAccount
+#   LOADS_CONFIGMAP      — Container → ConfigMap
+#   ONE_OF / ANY_OF      — polymorphic type alternatives
+#   CONTAINS_JOB_TEMPLATE— CronJob → JobTemplateSpec
+# ---------------------------------------------------------------------------
+_ALL_EDGE_TYPES = (
+    "HAS_PROPERTY|SCALES_RESOURCE|CONTAINS_POD_TEMPLATE|CONTAINS_JOB_TEMPLATE"
+    "|BINDS_ROLE|BINDS_SERVICE_ACCOUNT|EXTENDS|HAS_CONTAINER"
+    "|CLAIMS_VOLUME|MOUNTS_VOLUME|USES_STORAGE_CLASS|LOADS_CONFIGMAP"
+    "|USES_SECRET|SELECTS_POD|ROUTES_TO_SERVICE|USES_SERVICE_ACCOUNT"
+    "|ONE_OF|ANY_OF"
+)
+
+# ---------------------------------------------------------------------------
 # Path edges — untuk reasoning path (Explainable AI).
 # Mengembalikan pasangan parent->child yang sebenarnya di setiap hop,
 # bukan root->leaf. Digunakan untuk display trace di Streamlit.
 # Parameter: $root_name (str), max_depth via .format()
 # ---------------------------------------------------------------------------
 PATH_EDGES_QUERY = """
-MATCH p = (root:Definition {{name: $root_name}})-[:HAS_PROPERTY*1..{max_depth}]->(leaf:Definition)
+MATCH p = (root:Definition {{name: $root_name}})
+          -[:{all_edges}*1..{max_depth}]->(leaf:Definition)
 WITH p
 LIMIT 500
 WITH [i IN range(0, size(nodes(p))-2) | {{
-    parent: nodes(p)[i].name,
-    child:  nodes(p)[i+1].name,
-    depth:  i + 1
+    parent:   nodes(p)[i].name,
+    child:    nodes(p)[i+1].name,
+    rel_type: type(relationships(p)[i]),
+    depth:    i + 1
 }}] AS edges
 UNWIND edges AS edge
-RETURN DISTINCT edge.parent AS parent,
-                edge.child  AS child,
-                edge.depth  AS depth
+RETURN DISTINCT edge.parent   AS parent,
+                edge.child    AS child,
+                edge.rel_type AS rel_type,
+                edge.depth    AS depth
 ORDER BY edge.depth ASC, edge.parent ASC
 LIMIT 50
-"""
+""".replace("{all_edges}", _ALL_EDGE_TYPES)
 
 # ---------------------------------------------------------------------------
 # Primary retrieval (vector fallback) — digunakan saat exact match gagal.

@@ -22,5 +22,7 @@
     ],
     "required_fields": [],
     "expected_yaml_keys": []
-  }
+  },
+  "source_reference": "https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
 }

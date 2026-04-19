@@ -1,0 +1,37 @@
+{
+  "id": "rolebinding_dev",
+  "type": "yaml_gen",
+  "question": "Buatkan YAML RoleBinding untuk memberikan akses role 'developer' ke ServiceAccount 'dev-sa' di namespace development",
+  "resource": "io.k8s.api.rbac.v1.RoleBinding",
+  "scope": "Namespaced",
+  "multi_hop": false,
+  "ground_truth": {
+    "answer": "apiVersion: rbac.authorization.k8s.io/v1\nkind: RoleBinding\nmetadata:\n  name: dev-binding\n  namespace: development\nsubjects:\n- kind: ServiceAccount\n  name: dev-sa\n  namespace: development\nroleRef:\n  kind: Role\n  name: developer\n  apiGroup: rbac.authorization.k8s.io",
+    "context": [
+      "RoleBinding untuk menghubungkan ServiceAccount dengan Role",
+      "Subjects berisi ServiceAccount 'dev-sa' di namespace development",
+      "RoleRef menunjuk ke Role 'developer' dengan apiGroup rbac.authorization.k8s.io"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.rbac.v1.RoleBinding",
+      "io.k8s.api.rbac.v1.Role"
+    ],
+    "expected_path": [
+      "RoleBinding -[BINDS_ROLE]-> Role"
+    ],
+    "required_fields": [
+      "apiVersion",
+      "kind",
+      "metadata",
+      "spec"
+    ],
+    "expected_yaml_keys": [
+      "subjects",
+      "roleRef",
+      "roleRef.kind",
+      "roleRef.name"
+    ]
+  },
+  "source_reference": "https://kubernetes.io/docs/reference/access-authn-authz/rbac/#rolebinding-and-clusterrolebinding",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/authorization-resources/"
+}

@@ -6,7 +6,7 @@
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
-    "answer": "StatefulSet YAML dengan volumeClaimTemplates mendefinisikan PVC 10Gi StorageClass standard, di-mount ke /var/lib/mysql.",
+    "answer": "apiVersion: apps/v1\nkind: StatefulSet\nmetadata:\n  name: mysql\nspec:\n  serviceName: mysql\n  replicas: 1\n  selector:\n    matchLabels:\n      app: mysql\n  template:\n    metadata:\n      labels:\n        app: mysql\n    spec:\n      containers:\n        - name: mysql\n          image: mysql:8.0\n          env:\n            - name: MYSQL_ROOT_PASSWORD\n              value: password\n          volumeMounts:\n            - name: mysql-data\n              mountPath: /var/lib/mysql\n  volumeClaimTemplates:\n    - metadata:\n        name: mysql-data\n      spec:\n        accessModes: [\"ReadWriteOnce\"]\n        storageClassName: standard\n        resources:\n          requests:\n            storage: 10Gi",
     "context": [
       "io.k8s.api.apps.v1.StatefulSetSpec: volumeClaimTemplates defines PVC per pod.",
       "io.k8s.api.core.v1.PersistentVolumeClaim: spec.resources.requests.storage defines size"
@@ -18,9 +18,22 @@
     ],
     "expected_path": [
       "StatefulSet -[HAS_PROPERTY]-> StatefulSetSpec",
-      "StatefulSetSpec -[CLAIMS_VOLUME]-> PersistentVolumeClaim"
+      "StatefulSetSpec -[HAS_PROPERTY]-> PersistentVolumeClaim"
     ],
-    "required_fields": ["apiVersion", "kind", "metadata", "spec"],
-    "expected_yaml_keys": ["apiVersion", "kind", "metadata", "spec", "spec.volumeClaimTemplates"]
-  }
+    "required_fields": [
+      "apiVersion",
+      "kind",
+      "metadata",
+      "spec"
+    ],
+    "expected_yaml_keys": [
+      "apiVersion",
+      "kind",
+      "metadata",
+      "spec",
+      "spec.volumeClaimTemplates"
+    ]
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
 }

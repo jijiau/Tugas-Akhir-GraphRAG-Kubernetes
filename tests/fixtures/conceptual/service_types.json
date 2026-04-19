@@ -11,9 +11,14 @@
       "io.k8s.api.core.v1.ServiceSpec: type field determines how Service is exposed.",
       "ClusterIP: default, reachable only within cluster"
     ],
-    "relevant_nodes": ["io.k8s.api.core.v1.Service", "io.k8s.api.core.v1.ServiceSpec"],
+    "relevant_nodes": [
+      "io.k8s.api.core.v1.Service",
+      "io.k8s.api.core.v1.ServiceSpec"
+    ],
     "expected_path": [],
     "required_fields": [],
     "expected_yaml_keys": []
-  }
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/services-networking/service/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
 }

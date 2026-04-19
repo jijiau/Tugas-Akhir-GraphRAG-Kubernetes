@@ -1,0 +1,33 @@
+{
+  "id": "oneof_volume_source",
+  "type": "relationship",
+  "question": "Apa saja jenis sumber volume yang bisa digunakan oleh Pod, dan bagaimana relasinya di graph?",
+  "resource": "io.k8s.api.core.v1.Volume",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "ground_truth": {
+    "answer": "Volume di Kubernetes mendukung banyak jenis sumber (source) yang bersifat ONE_OF — hanya satu yang bisa digunakan per volume. Jenis-jenis utama: ConfigMapVolumeSource, SecretVolumeSource, EmptyDirVolumeSource, PersistentVolumeClaimVolumeSource, dan HostPathVolumeSource. Relasi ONE_OF ini merupakan union type yang direpresentasikan sebagai edge khusus di knowledge graph.",
+    "context": [
+      "Volume: represents a named volume in a pod that may be accessed by any container in the pod",
+      "ConfigMapVolumeSource: adapts a ConfigMap into a volume",
+      "SecretVolumeSource: adapts a Secret into a volume",
+      "oneOf relationship: a Volume can use exactly one source type"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.core.v1.Volume",
+      "io.k8s.api.core.v1.ConfigMapVolumeSource",
+      "io.k8s.api.core.v1.SecretVolumeSource",
+      "io.k8s.api.core.v1.EmptyDirVolumeSource",
+      "io.k8s.api.core.v1.PersistentVolumeClaimVolumeSource"
+    ],
+    "expected_path": [
+      "PodSpec -[HAS_PROPERTY]-> Volume",
+      "Volume -[ONE_OF]-> ConfigMapVolumeSource",
+      "Volume -[ONE_OF]-> SecretVolumeSource"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": []
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/storage/volumes/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

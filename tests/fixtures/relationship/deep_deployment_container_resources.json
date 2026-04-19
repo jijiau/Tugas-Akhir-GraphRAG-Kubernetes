@@ -1,0 +1,39 @@
+{
+  "id": "deep_deployment_container_resources",
+  "type": "relationship",
+  "question": "Bagaimana cara mendefinisikan resource limits dan requests untuk container di dalam sebuah Deployment?",
+  "resource": "io.k8s.api.apps.v1.Deployment",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "ground_truth": {
+    "answer": "Untuk mendefinisikan resource limits/requests, traversal graph melewati 4 hop: Deployment → DeploymentSpec → PodTemplateSpec → Container → ResourceRequirements. Field resources pada Container memiliki dua sub-field: limits (batas maksimum CPU/memory) dan requests (kebutuhan minimum yang dijamin oleh scheduler). Contoh: resources.limits.cpu: '500m', resources.requests.memory: '128Mi'.",
+    "context": [
+      "DeploymentSpec: specification of the desired behavior of the Deployment",
+      "PodTemplateSpec: describes the data a pod should have when created",
+      "Container: a single application container that you want to run within a pod",
+      "ResourceRequirements: describes the compute resource requirements"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.apps.v1.Deployment",
+      "io.k8s.api.apps.v1.DeploymentSpec",
+      "io.k8s.api.core.v1.PodTemplateSpec",
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.ResourceRequirements"
+    ],
+    "expected_path": [
+      "Deployment -[HAS_PROPERTY]-> DeploymentSpec",
+      "DeploymentSpec -[HAS_PROPERTY]-> PodTemplateSpec",
+      "PodTemplateSpec -[HAS_PROPERTY]-> PodSpec",
+      "PodSpec -[HAS_CONTAINER]-> Container",
+      "Container -[HAS_PROPERTY]-> ResourceRequirements"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": [
+      "spec.template.spec.containers[0].resources",
+      "spec.template.spec.containers[0].resources.limits",
+      "spec.template.spec.containers[0].resources.requests"
+    ]
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

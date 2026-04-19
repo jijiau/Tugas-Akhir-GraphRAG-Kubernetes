@@ -1,0 +1,28 @@
+{
+  "id": "statefulset_pvc_pv",
+  "type": "relationship",
+  "question": "Bagaimana StatefulSet mengelola penyimpanan persisten untuk setiap Pod?",
+  "resource": "io.k8s.api.apps.v1.StatefulSet",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "ground_truth": {
+    "answer": "StatefulSet menggunakan volumeClaimTemplates untuk membuat PVC unik bagi setiap Pod replica. Setiap PVC kemudian mengikat ke PersistentVolume yang tersedia. Saat Pod di-reschedule, PVC yang sama tetap terikat sehingga data persisten.",
+    "context": [
+      "StatefulSet: manages stateful applications with unique network identities",
+      "volumeClaimTemplates: list of PVC templates for each pod"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.apps.v1.StatefulSet",
+      "io.k8s.api.apps.v1.StatefulSetSpec",
+      "io.k8s.api.core.v1.PersistentVolumeClaim"
+    ],
+    "expected_path": [
+      "StatefulSet -[HAS_PROPERTY]-> StatefulSetSpec",
+      "StatefulSetSpec -[HAS_PROPERTY]-> PersistentVolumeClaim"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": []
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

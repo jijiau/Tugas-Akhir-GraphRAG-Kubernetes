@@ -1,0 +1,36 @@
+{
+  "id": "pvc_dynamic",
+  "type": "yaml_gen",
+  "question": "Buatkan YAML PersistentVolumeClaim untuk storage 20Gi dengan access mode ReadWriteOnce menggunakan StorageClass standard",
+  "resource": "io.k8s.api.core.v1.PersistentVolumeClaim",
+  "scope": "Namespaced",
+  "multi_hop": false,
+  "ground_truth": {
+    "answer": "apiVersion: v1\nkind: PersistentVolumeClaim\nmetadata:\n  name: data-pvc\nspec:\n  accessModes:\n  - ReadWriteOnce\n  resources:\n    requests:\n      storage: 20Gi\n  storageClassName: standard",
+    "context": [
+      "PersistentVolumeClaim untuk meminta storage dari cluster Kubernetes",
+      "Access mode ReadWriteOnce memungkinkan hanya satu pod menulis ke volume",
+      "Storage request 20Gi dengan StorageClass standard untuk dynamic provisioning"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.core.v1.PersistentVolumeClaim",
+      "io.k8s.api.core.v1.PersistentVolumeClaimSpec"
+    ],
+    "expected_path": [
+      "PersistentVolumeClaim -[HAS_PROPERTY]-> PersistentVolumeClaimSpec"
+    ],
+    "required_fields": [
+      "apiVersion",
+      "kind",
+      "metadata",
+      "spec"
+    ],
+    "expected_yaml_keys": [
+      "spec.accessModes",
+      "spec.resources",
+      "spec.storageClassName"
+    ]
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}
