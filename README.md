@@ -15,8 +15,8 @@ User Question
 │                                                             │
 │  memory → thinker → retriever → speaker → saver → END      │
 │    │         │          │          │         │              │
-│  Zep       GPT-4o    Neo4j      Groq      Zep              │
-│  Store     -mini     Exact+     LLaMA     Store             │
+│  SQLite    GPT-4o    Neo4j      Groq      SQLite            │
+│  Memory    -mini     Exact+     LLaMA     Memory            │
 │            (intent   Vector+    (answer)                    │
 │            +type)    Graph                                  │
 │                      Traversal                              │
@@ -31,12 +31,12 @@ Streamlit UI  (main.py)
 ```
 repo/
 ├── main.py                          # Streamlit entry point
-├── docker-compose.yml               # Postgres (pgvector) + Zep v1
-├── zep.yaml                         # Zep server config (LLM + extractors)
+├── docker-compose.yml               # Postgres (pgvector) — legacy, tidak aktif dipakai
 ├── requirements.txt                 # Python dependencies
 ├── data/
 │   ├── kubernetes_swagger.json      # Full Kubernetes OpenAPI spec
 │   ├── definitions.json             # Extracted definitions section
+│   ├── conversation_memory.db       # SQLite conversation memory (auto-generated)
 │   └── traceability_matrix.csv      # Dataset coverage traceability
 ├── src/
 │   ├── config/settings.py           # Pydantic settings (env vars)
@@ -52,12 +52,19 @@ repo/
 │   ├── ingestion/
 │   │   └── parser.py                # Swagger → Neo4j graph ingestion
 │   ├── memory/
-│   │   └── zep_store.py             # Zep memory + in-process fallback
+│   │   └── zep_store.py             # SQLite conversation memory (ZepMemoryStore API)
 │   ├── retrieval/
 │   │   └── graph_retriever.py       # Simpler vector-only retriever
 │   ├── validation/
 │   │   ├── yaml_validator.py        # PyYAML + kubernetes-validate + Neo4j
 │   │   └── auditor.py               # Graph health audit (node/edge counts)
+│   ├── analysis/
+│   │   ├── eda_base.py              # EDA base class
+│   │   ├── entity_analysis.py       # Entity distribution analysis
+│   │   ├── text_analysis.py         # Description text analysis
+│   │   └── schema_analysis.py       # Schema structure analysis
+│   ├── utils/
+│   │   └── text_utils.py            # Text utility helpers (e.g. safe_truncate_description)
 │   └── models/
 │       └── swagger_models.py        # Pydantic models for swagger parsing
 ├── scripts/
@@ -127,15 +134,15 @@ Edges (18 types):
 - `BINDS_ROLE`, `BINDS_SERVICE_ACCOUNT` — RBAC
 - `SCALES_RESOURCE` — HPA scaling targets
 
-Vector index: `definition_description_vector` on `Definition.description` embeddings (1536-dim, cosine).
+Vector index: `definition_description_vector` on `Definition.embedding` property (1536-dim, cosine).
 
 ### Settings (src/config/settings.py)
 
 All config loaded from `.env` via Pydantic:
 - `neo4j_uri`, `neo4j_username`, `neo4j_password`
-- `zep_base_url` (default `http://localhost:8000`), `zep_api_key`
 - `openai_api_key`, `groq_api_key`
 - `thinker_model` (default `gpt-4o-mini`), `speaker_model` (default `llama-3.1-8b-instant`)
+- `environment` (default `development`)
 
 ### Cypher Queries (src/graph/queries.py)
 
@@ -227,16 +234,15 @@ Three modes via `--mode` flag:
 ## Infrastructure
 
 - **Neo4j**: External (connection via `NEO4J_URI` in `.env`)
-- **Zep v1**: `zepai/zep:1.0.2` via `docker-compose.yml`, with Postgres (`ankane/pgvector:v0.5.1`)
-  - Config: `zep.yaml` mounted at `/app/zep.yaml`
-  - Env: `ZEP_LLM_OPENAI_API_KEY` passed from `.env`'s `OPENAI_API_KEY`
+- **Conversation Memory**: SQLite lokal (`data/conversation_memory.db`) — tidak butuh Docker, zero token cost. Diimplementasikan di `src/memory/zep_store.py` dengan class `ZepMemoryStore` sebagai drop-in replacement dari Zep v1 yang sebelumnya dipakai.
 - **LLMs**: OpenAI (thinker) + Groq (speaker), keys in `.env`
+- **docker-compose.yml**: Hanya berisi Postgres service (legacy dari implementasi Zep sebelumnya) — tidak aktif dipakai.
 
 ## Constraints
 
 - Budget: ~1M IDR for 6 months — minimize LLM token usage
-- Zep summarization uses `gpt-3.5-turbo` (cheapest), `message_window: 24` to reduce call frequency
-- `intent` and `questions` extractors disabled in `zep.yaml` to save tokens
+- Conversation memory menggunakan SQLite lokal (zero token, zero Docker dependency) sebagai pengganti Zep v1
+- Groq free tier: 6.000 tokens/minute — graph_context di-truncate ke 12.000 chars sebelum dikirim ke speaker
 - All evaluations use custom metrics (no ragas dependency)
 - YAML validation uses `kubernetes-validate` library (no live cluster required)
 - Language: Indonesian (Bahasa Indonesia) for user-facing text, English for code/docs

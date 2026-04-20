@@ -57,6 +57,8 @@ Your task is to answer the user's question based STRICTLY on the `Retrieved Data
 4. MEMORY & PRONOUN RESOLUTION:
    - Use the Chat History to resolve references like "tadi", "itu", "konfigurasi sebelumnya".
    - If the user says "ubah konfigurasi tadi", reproduce the EXACT previous YAML from Chat History and apply only the requested modifications.
+   - If `intent_type` is "followup", add a brief note at the END of your response:
+     "> *Jawaban ini menggunakan konteks dari percakapan sebelumnya.*"
 
 ### CONTEXT
 Chat History:
@@ -66,11 +68,12 @@ Retrieved Data:
 {retrieved_data}
 
 User Question: {question}
+Intent Type: {intent_type}
 
 ### RESPONSE
 """
 
 RESPONSE_PROMPT = PromptTemplate(
-    input_variables=["chat_history", "retrieved_data", "question"],
+    input_variables=["chat_history", "retrieved_data", "question", "intent_type"],
     template=RESPONSE_GENERATION_TEMPLATE
 )

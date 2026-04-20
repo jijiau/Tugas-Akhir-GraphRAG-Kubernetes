@@ -37,7 +37,7 @@ Berdasarkan rumusan masalah yang telah dijelaskan pada Bab I.2, tujuan dalam pen
     
     \item Mengembangkan mekanisme GraphRAG dengan menelusuri jalur relasional (\textit{graph traversal}) berdasarkan kueri pengguna, kemudian menginjeksikan \textit{reasoning path} tersebut ke dalam \textit{Large Language Model} (LLM) untuk menghasilkan jawaban konsisten sesuai logika domain Kubernetes.
     
-    \item Mengevaluasi kinerja metode GraphRAG menggunakan parameter \textit{context metrics}, \textit{faithfulness}, dan \textit{syntactic validity}, serta membandingkannya dengan \textit{Vanilla} RAG maupun \textit{Vector-based} RAG dalam meningkatkan presisi \textit{retrieval} dan validitas sintaksis keluaran YAML menggunakan model generatif GPT-4o-mini.
+    \item Mengevaluasi kinerja metode GraphRAG menggunakan parameter \textit{answer quality}, \textit{retrieval quality}, dan \textit{reasoning quality}, serta membandingkannya dengan \textit{Vanilla} RAG maupun \textit{Vector-based} RAG dalam meningkatkan presisi \textit{retrieval} dan validitas sintaksis keluaran YAML menggunakan model generatif GPT-4o-mini.
 \end{enumerate}
 
 % --- Batasan Masalah ---
@@ -50,11 +50,11 @@ Agar penelitian ini tetap fokus dan \textit{feasible} dalam lingkup Tugas Akhir,
 
     \item Luaran penelitian berupa manifes Kubernetes YAML murni (\textit{plain YAML}) berdasarkan \textit{OpenAPI Specification}, dilengkapi jejak penalaran graf (\textit{graph reasoning path}) guna mendeteksi halusinasi LLM.
 
-    \item Luaran file YAML tidak diuji langsung pada klaster Kubernetes nyata (\textit{actual cluster}). Pengujian sistem murni berfokus pada validitas sintaksis menggunakan pustaka \textit{pyyaml} serta evaluasi kinerja berdasarkan dataset uji tervalidasi pakar.
+    \item Luaran file YAML tidak diuji langsung pada klaster Kubernetes nyata (\textit{actual cluster}). Pengujian sistem murni berfokus pada validitas sintaksis menggunakan pustaka \textit{pyyaml} serta evaluasi kinerja berdasarkan dataset uji.
 
     \item Model LLM yang digunakan berasal dari \textit{pre-trained models} yang diakses melalui API (GPT-4o-mini) tanpa proses \textit{fine-tuning}.
 
-    \item Algoritma \textit{graph traversal} dibatasi maksimal 3 lompatan (\textit{hops}) sesuai analisis distribusi kedalaman skema OpenAPI Kubernetes. Kedalaman 1--2 menghasilkan \textit{node} spesifik \textit{resource} yang hanya dibagikan oleh 2--3 \textit{resource}, kedalaman 3 mencapai \textit{field} tingkat kontainer (seperti \textit{image}, \textit{ports}, \textit{env}), sedangkan kedalaman 4+ didominasi tipe generik (\textit{Quantity}, \textit{IntOrString}, \textit{LocalObjectReference}) yang dibagikan oleh 19--136 \textit{resource} sehingga menurunkan presisi konteks. Pembatasan ini bertujuan mengoptimalkan \textit{Context Precision} serta efisiensi beban komputasi pada sumber daya lokal.
+    \item Algoritma \textit{graph traversal} dibatasi maksimal 3 lompatan (\textit{hops}) sesuai analisis distribusi kedalaman skema OpenAPI Kubernetes. Kedalaman 1--2 menghasilkan \textit{node} spesifik \textit{resource} yang hanya dibagikan oleh 2--3 \textit{resource}, kedalaman 3 mencapai \textit{PodSpec}, sedangkan \textit{field} tingkat kontainer (kedalaman 4) tidak diambil karena didominasi tipe generik bersama, sedangkan kedalaman 4+ didominasi tipe generik (\textit{Quantity}, \textit{IntOrString}, \textit{LocalObjectReference}) yang dibagikan oleh 19--136 \textit{resource} sehingga menurunkan presisi konteks. Pembatasan ini bertujuan mengoptimalkan \textit{Context Precision} serta efisiensi beban komputasi pada sumber daya lokal.
 
     \item Proses pengolahan dan pra-pemrosesan data dibatasi pada lingkungan \textbf{Google Colaboratory} dan \textbf{Jupyter Notebook}.
 
@@ -81,13 +81,13 @@ Pelaksanaan Tugas Akhir ini mengadopsi kerangka kerja \textit{Cross-Industry Sta
     Fase ini berfokus pada pengumpulan dan eksplorasi sumber data untuk memahami struktur, kualitas, serta batasannya. Pada penelitian ini, data diperoleh dari spesifikasi resmi Kubernetes OpenAPI yang dianalisis untuk memahami jenis objek Kubernetes, atribut yang dimiliki, serta relasi hierarkis dan referensial antar-objek Kubernetes. Pemahaman ini menentukan objek Kubernetes yang akan dimodelkan dalam \textit{knowledge graph}.
 
     \item \textbf{Persiapan Data (\textit{Data Preparation})} \\
-    Tahapan ini mencakup pembersihan dan transformasi data agar siap digunakan dalam proses pemodelan. Dalam penelitian ini, dilakukan ekstraksi otomatis dari spesifikasi OpenAPI Kubernetes (JSON/YAML) untuk membentuk representasi entitas, yaitu relasi yang dapat dimodelkan sebagai \textit{Knowledge Graph}. Proses ini mencakup identifikasi atribut, pemetaan hierarki \textit{parent–child}, serta penghubungan \textit{cross-resource references}. Hasil akhirnya berupa struktur graf yang terstandarisasi dan siap digunakan pada mekanisme \textit{retrieval}.
+    Tahapan ini mencakup pembersihan dan transformasi data agar siap digunakan dalam proses pemodelan. Dalam penelitian ini, dilakukan ekstraksi berbasis \textit{script} dari spesifikasi OpenAPI Kubernetes (JSON) untuk membentuk representasi entitas, yaitu relasi yang dapat dimodelkan sebagai \textit{Knowledge Graph}. Proses ini mencakup identifikasi objek, pemetaan hubungan antar-objek, serta penghubungan \textit{cross-resource references}. Hasil akhirnya berupa struktur graf yang siap digunakan pada mekanisme \textit{retrieval}.
 
     \item \textbf{Pemodelan (\textit{Modeling})} \\
     Fase ini bertujuan untuk menerapkan algoritma yang sesuai guna menyelesaikan masalah yang telah dirumuskan. Pada penelitian ini, dibangun mekanisme \textit{graph-guided retrieval} yang menelusuri graf menggunakan \textit{graph traversal} berdasarkan kueri pengguna dan menghasilkan \textit{reasoning path}. Jalur penalaran tersebut kemudian diinjeksikan sebagai konteks pada proses RAG untuk memandu LLM dalam menghasilkan jawaban serta konfigurasi YAML yang sesuai dengan logika sistem Kubernetes.
 
     \item \textbf{Evaluasi (\textit{Evaluation})} \\
-    Tahap evaluasi bertujuan menilai kualitas model dan membandingkannya dengan pendekatan alternatif menggunakan metrik terukur. Dalam penelitian ini, kinerja sistem dievaluasi menggunakan metrik \textit{context precision}, \textit{context recall}, \textit{faithfulness}, dan \textit{Syntactic Validity}, kemudian dibandingkan dengan dua \textit{baseline}, yaitu \textit{Vanilla LLM} dan \textit{Vector-based RAG}. Evaluasi dilakukan untuk membuktikan peningkatan relevansi konteks dan penurunan halusinasi semantik pada jawaban teknis.
+    Tahap evaluasi bertujuan menilai kualitas model dan membandingkannya dengan pendekatan alternatif menggunakan metrik yang terukur. Dalam penelitian ini, kinerja sistem dievaluasi menggunakan metrik \textit{answer quality}, \textit{retrieval quality}, dan \textit{reasoning quality}, kemudian dibandingkan dengan dua \textit{baseline}, yaitu \textit{Vanilla LLM} dan \textit{Vector-based RAG}.
 
     \item \textbf{Penyebaran (\textit{Deployment})} \\
     Fase ini berkaitan dengan penyajian hasil implementasi dalam bentuk prototipe dan dokumentasi. Pada penelitian ini, penyebaran diwujudkan dalam bentuk antarmuka web interaktif berbasis Streamlit yang menampilkan jawaban, konfigurasi YAML, serta \textit{reasoning path} sebagai bukti penalaran graf. Selain itu, dokumentasi lengkap disusun sebagai bentuk penyebaran akademik yang memuat rancangan sistem, hasil evaluasi, serta rekomendasi penelitian selanjutnya.

@@ -1,0 +1,18 @@
+\renewcommand{\arraystretch}{1.3}
+\captionsetup[table]{justification=raggedright,singlelinecheck=false}
+\begin{table}[H]
+\caption{Distribusi karakteristik \textit{node} berdasarkan kedalaman penelusuran graf}
+\label{tbl:hop_justification}
+\centering
+\begin{tabular}{| c | p{0.20\textwidth} | p{0.30\textwidth} | p{0.25\textwidth} |}
+\hline
+\textbf{Kedalaman} & \textbf{Karakteristik \textit{Node}} & \textbf{Contoh} & \textbf{Penggunaan} \\
+\hline
+1--2 & Spesifik \textit{resource} (dibagikan 2--3 \textit{resource}) & \textit{DeploymentSpec}, \textit{ServiceSpec} & Tipe \textit{explain}, \textit{followup} \\
+\hline
+3 & \textit{Field} tingkat kontainer & \textit{image}, \textit{ports}, \textit{env}, \textit{resources} & Tipe \textit{generate\_yaml}, \textit{trace\_relationship} \\
+\hline
+4+ & Tipe generik (dibagikan 19--136 \textit{resource}) & \textit{Quantity}, \textit{IntOrString}, \textit{LocalObjectReference} & \textbf{Tidak digunakan} (menurunkan presisi) \\
+\hline
+\end{tabular}
+\end{table}

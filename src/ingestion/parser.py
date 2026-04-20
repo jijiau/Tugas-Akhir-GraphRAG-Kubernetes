@@ -1,14 +1,21 @@
 """
 Swagger Graph Builder for Kubernetes YAML Configuration Generation
 ===================================================================
-Implements 4-Pass Architecture (+ 2.5) for safe, cycle-free graph construction.
+Implements 5-Phase Architecture for safe, cycle-free graph construction.
+
+Phases:
+    Pass 1   — Create Definition nodes (name, kind, scope, description)
+    Pass 1.5 — Generate 1536-dim vector embeddings (text-embedding-3-small)
+    Pass 2   — Build HAS_PROPERTY structural edges ($ref resolution)
+    Pass 2.5 — Build EXTENDS / ONE_OF / ANY_OF inheritance edges
+    Pass 3   — Build 14 semantic edge types (CONTAINS_POD_TEMPLATE, USES_SECRET, etc.)
 
 SCOPE:
     ✅ Ingest: definitions (K8s resource schemas for YAML)
        ├─ Properties & $ref (Pass 2)
        ├─ allOf/oneOf/anyOf inheritance (Pass 2.5)
        └─ Semantic YAML patterns (Pass 3)
-    
+
     ❌ Skip: paths (HTTP API specs - handled by kubectl)
 
 Usage:

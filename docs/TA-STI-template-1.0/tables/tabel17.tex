@@ -12,7 +12,7 @@
 \hline
 \texttt{thinker} & Ekstraksi \textit{intent} & Menganalisis pertanyaan + riwayat, mengeluarkan JSON berisi \texttt{primary\_resource}, \texttt{related\_concepts}, dan \texttt{intent\_type}. & GPT-4o-mini \\
 \hline
-\texttt{retriever} & Eksekusi \textit{retrieval} & Meneruskan JSON intent ke \texttt{StatefulK8sRetriever} untuk retrieval bertingkat; menghasilkan \texttt{graph\_context} dan \texttt{reasoning\_path}. & \texttt{StatefulK8sRetriever} \\
+\texttt{retriever} & Eksekusi \textit{retrieval} & Meneruskan JSON intent ke \texttt{StatefulK8sRetriever} untuk retrieval bertingkat; menghasilkan \texttt{graph\_context} dan \texttt{reasoning\_path}. & \texttt{StatefulK8s Retriever} \\
 \hline
 \texttt{speaker} & Generasi respons & Menggunakan konteks graf dan \textit{reasoning path} untuk menghasilkan jawaban naratif atau blok YAML. & Groq llama-3.1-8b-instant \\
 \hline
