@@ -140,7 +140,8 @@ def generate_response_node(state: AgentState):
         response = chain.invoke({
             "chat_history": state["chat_history"],
             "retrieved_data": raw_context,
-            "question": state["question"]
+            "question": state["question"],
+            "intent_type": state.get("intent_type") or "explain"
         })
         return {"messages": [AIMessage(content=response.content)]}
     except Exception as e:

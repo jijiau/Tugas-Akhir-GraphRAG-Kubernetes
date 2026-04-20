@@ -1,0 +1,18 @@
+\renewcommand{\arraystretch}{1.3}
+\captionsetup[table]{justification=raggedright,singlelinecheck=false}
+\begin{table}[H]
+\caption{Pemetaan kebutuhan bisnis terhadap dimensi dan metrik evaluasi}
+\label{tbl:mapping_bisnis_evaluasi}
+\centering
+\begin{tabular}{| p{0.18\textwidth} | p{0.22\textwidth} | p{0.15\textwidth} | p{0.30\textwidth} |}
+\hline
+\textbf{Kebutuhan Bisnis} & \textbf{Pertanyaan Evaluasi} & \textbf{Dimensi} & \textbf{Metrik Utama} \\
+\hline
+B01 -- Inefisiensi Waktu & Apakah \textit{retrieval} efisien dan tepat sasaran? & RetQ (35\%) & F1@k, NDCG@k, Graph Coverage \\
+\hline
+B02 -- Kesenjangan Pengetahuan & Apakah penalaran berbasis graf menghasilkan konteks yang benar? & ReaQ (25\%) & Hop-Accuracy, Multi-Hop Success Rate, Hallucination Rate \\
+\hline
+B03 -- Risiko Konfigurasi & Apakah keluaran YAML valid dan relevan terhadap kueri? & AnsQ (40\%) & Syntactic Validity, Schema Compliance, Answer Relevance, Faithfulness \\
+\hline
+\end{tabular}
+\end{table}

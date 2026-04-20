@@ -63,7 +63,7 @@ Bagian ini menjelaskan karakteristik data dokumentasi API Kubernetes yang menjad
             \end{enumerate}
         \end{enumerate}
 
-        \item \textbf{\textit{Paths}:} Mendeskripsikan titik akhir (\textit{endpoint}) API, misalnya \texttt{GET /api/v1/pods}, sebagai antarmuka interaksi objek Kubernetes dalam ekosistem klaster. Setiap titik akhir memiliki atribut penentu interaksi komunikasi yang memuat:
+        \item \textbf{\textit{Paths}:} Mendeskripsikan titik akhir (\textit{endpoint}) API, misalnya \texttt{GET /api/v1/ pods}, sebagai antarmuka interaksi objek Kubernetes dalam ekosistem klaster. Setiap titik akhir memiliki atribut penentu interaksi komunikasi yang memuat:
         \begin{enumerate}[a.]
             \item Metode HTTP fungsional (\textit{GET, POST, PUT, PATCH, DELETE}).
             \item Parameter injeksi pada jalur (\textit{path}) dan kueri (\textit{query}).
@@ -101,7 +101,7 @@ Bagian ini menjelaskan karakteristik data dokumentasi API Kubernetes yang menjad
             Kategori ini terpetakan dan direpresentasikan secara utuh di dalam graf karena bersumber langsung dari struktur statis spesifikasi OpenAPI. Relasi pada tingkat ini mencakup:
             \begin{enumerate}[a.]
                 \item \textbf{Sifat Atomik \texttt{Pod} (\textit{Passive Relationships}):} \texttt{Pod} bertindak sebagai unit eksekusi atomik pasif tanpa relasi skema eksplisit ke luar. Relasinya terbentuk secara pasif akibat interaksi struktural dari objek Kubernetes eksternal.
-                \item \textbf{Komposisi Hierarkis (\textit{Hierarchical Composition}):} Terjadi ketika satu objek Kubernetes mengandung definisi objek lain secara utuh. Contoh utamanya adalah \texttt{Deployment} mereferensikan \texttt{Pod} melalui blok \texttt{spec.template} penyimpan keseluruhan spesifikasi \texttt{PodSpec}.
+                \item \textbf{Komposisi Hierarkis (\textit{Hierarchical Composition}):} Terjadi ketika satu objek Kubernetes mengandung definisi objek lain secara utuh. Contoh utamanya adalah \texttt{Deployment} mereferensikan \texttt{Pod} melalui blok \texttt{spec. template} penyimpan keseluruhan spesifikasi \texttt{PodSpec}.
                 \item \textbf{Referensi Langsung (\textit{Direct Reference \& Injection}):} Terjadi ketika sebuah objek Kubernetes memanggil objek lain secara eksplisit pada parameternya. Contohnya adalah injeksi konfigurasi satu arah dari \texttt{ConfigMap} atau \texttt{Secret} ke lingkungan eksekusi \texttt{Pod} seperti pada Kode \ref{lst:contoh-yaml} dan \ref{lst:contoh-yaml-secret}.
             \end{enumerate}
 
@@ -147,77 +147,29 @@ Bagian ini menjelaskan karakteristik data dokumentasi API Kubernetes yang menjad
 
     Berdasarkan analisis pola keterhubungan data di atas, penelitian ini merancang 18 jenis \textit{edge} yang terdistribusi dalam 7 kategori relasi. Taksonomi ini adalah \textbf{kontribusi penelitian} yang dirancang khusus berdasarkan semantik domain Kubernetes, bukan standar yang ada di literatur sebelumnya. Seluruh 18 \textit{edge} type diimplementasikan dalam kode pada variabel \texttt{\_ALL\_EDGE\_TYPES} di \texttt{src/graph/queries.py}.
 
-    \begin{table}[H]
-    \centering
-    \captionsetup{justification=centering}
-    \caption{Taksonomi 18 jenis \textit{edge} dalam \textit{knowledge graph} Kubernetes}
-    \label{tbl:edge_taxonomy_full}
-    \begin{tabular}{| c | l | l | p{0.35\textwidth} |}
-    \hline
-    \textbf{No} & \textbf{\textit{Edge Type}} & \textbf{Kategori} & \textbf{Contoh Relasi} \\
-    \hline
-    1 & \texttt{HAS\_PROPERTY} & Struktural & \textit{Deployment} $\rightarrow$ \textit{spec} \\
-    \hline
-    2 & \texttt{EXTENDS} & Struktural & \textit{Deployment} $\rightarrow$ \textit{ObjectMeta} \\
-    \hline
-    3 & \texttt{ONE\_OF} & Struktural & \textit{Volume} $\rightarrow$ satu sumber penyimpanan \\
-    \hline
-    4 & \texttt{ANY\_OF} & Struktural & \textit{EnvFromSource} $\rightarrow$ \textit{ConfigMap}/\textit{Secret} \\
-    \hline
-    5 & \texttt{CONTAINS\_POD\_TEMPLATE} & \textit{Workload} & \textit{Deployment} $\rightarrow$ \textit{PodTemplateSpec} \\
-    \hline
-    6 & \texttt{CONTAINS\_JOB\_TEMPLATE} & \textit{Workload} & \textit{CronJob} $\rightarrow$ \textit{JobTemplateSpec} \\
-    \hline
-    7 & \texttt{HAS\_CONTAINER} & \textit{Workload} & \textit{PodSpec} $\rightarrow$ \textit{Container} \\
-    \hline
-    8 & \texttt{CLAIMS\_VOLUME} & Penyimpanan & \textit{StatefulSet} $\rightarrow$ \textit{PersistentVolumeClaim} \\
-    \hline
-    9 & \texttt{MOUNTS\_VOLUME} & Penyimpanan & \textit{PodSpec} $\rightarrow$ \textit{Volume} \\
-    \hline
-    10 & \texttt{USES\_STORAGE\_CLASS} & Penyimpanan & \textit{PVC} $\rightarrow$ \textit{StorageClass} \\
-    \hline
-    11 & \texttt{LOADS\_CONFIGMAP} & Konfigurasi & \textit{Container} $\rightarrow$ \textit{ConfigMap} \\
-    \hline
-    12 & \texttt{USES\_SECRET} & Konfigurasi & \textit{PodSpec} $\rightarrow$ \textit{Secret} \\
-    \hline
-    13 & \texttt{SELECTS\_POD} & Jaringan & \textit{Service} $\rightarrow$ \textit{Pod} via \textit{selector} \\
-    \hline
-    14 & \texttt{ROUTES\_TO\_SERVICE} & Jaringan & \textit{Ingress} $\rightarrow$ \textit{Service} \\
-    \hline
-    15 & \texttt{BINDS\_ROLE} & RBAC & \textit{RoleBinding} $\rightarrow$ \textit{Role} \\
-    \hline
-    16 & \texttt{BINDS\_SERVICE\_ACCOUNT} & RBAC & \textit{RoleBinding} $\rightarrow$ \textit{ServiceAccount} \\
-    \hline
-    17 & \texttt{USES\_SERVICE\_ACCOUNT} & RBAC & \textit{PodSpec} $\rightarrow$ \textit{ServiceAccount} \\
-    \hline
-    18 & \texttt{SCALES\_RESOURCE} & \textit{Autoscaling} & \textit{HPA} $\rightarrow$ \textit{Deployment}/\textit{StatefulSet} \\
-    \hline
-    \end{tabular}
-    \end{table}
+    \input{tables/tabel21.tex}
 
     \subsubsection{Justifikasi Batas Kedalaman Penelusuran Graf (3 Lompatan)}
 
     Batas maksimum 3 lompatan (\textit{hops}) dalam penelusuran graf ditetapkan berdasarkan analisis distribusi kedalaman skema OpenAPI Kubernetes. Tabel~\ref{tbl:hop_justification} menunjukkan bahwa karakteristik \textit{node} berubah secara signifikan seiring bertambahnya kedalaman:
 
-    \begin{table}[H]
-    \centering
-    \captionsetup{justification=centering}
-    \caption{Distribusi karakteristik \textit{node} berdasarkan kedalaman penelusuran graf}
-    \label{tbl:hop_justification}
-    \begin{tabular}{| c | p{0.20\textwidth} | p{0.30\textwidth} | p{0.25\textwidth} |}
-    \hline
-    \textbf{Kedalaman} & \textbf{Karakteristik \textit{Node}} & \textbf{Contoh} & \textbf{Penggunaan} \\
-    \hline
-    1--2 & Spesifik \textit{resource} (dibagikan 2--3 \textit{resource}) & \textit{DeploymentSpec}, \textit{ServiceSpec} & Tipe \textit{explain}, \textit{followup} \\
-    \hline
-    3 & \textit{Field} tingkat kontainer & \textit{image}, \textit{ports}, \textit{env}, \textit{resources} & Tipe \textit{generate\_yaml}, \textit{trace\_relationship} \\
-    \hline
-    4+ & Tipe generik (dibagikan 19--136 \textit{resource}) & \textit{Quantity}, \textit{IntOrString}, \textit{LocalObjectReference} & \textbf{Tidak digunakan} (menurunkan presisi) \\
-    \hline
-    \end{tabular}
-    \end{table}
+    \input{tables/tabel22.tex}
 
     Dengan menggunakan kedalaman yang disesuaikan per tipe \textit{intent} (kedalaman 2 untuk \textit{explain}/\textit{followup}, kedalaman 3 untuk \textit{generate\_yaml}/\textit{trace\_relationship}), sistem mengoptimalkan \textit{Context Precision} dengan menghindari injeksi tipe generik yang tidak informatif ke dalam konteks LLM.
+
+    \subsubsection{Analisis Kompleksitas Pertanyaan dan Batasan Kemampuan Sistem}
+
+    Batasan kedalaman traversal memiliki implikasi langsung terhadap jenis pertanyaan
+    yang dapat dijawab secara optimal. Tabel~\ref{tbl:query_complexity} mengklasifikasikan
+    pertanyaan pengguna ke dalam empat tingkat berdasarkan kedalaman informasi yang dibutuhkan
+    dan cakupan pengetahuan graf.
+
+    \input{tables/tabel24.tex}
+
+    Ketika pertanyaan melampaui batas Tier~1, sistem tidak mengembalikan pesan kesalahan,
+    melainkan mengisi kesenjangan konteks menggunakan pengetahuan parametrik LLM
+    (\textit{silent degradation}). Kondisi ini menjadi salah satu faktor yang menjelaskan
+    perbedaan nilai \textit{Retrieval Quality} dan \textit{Answer Quality} pada hasil evaluasi.
 
 \section{Analisis Kebutuhan}
 Tahap analisis kebutuhan berfokus pada identifikasi kapabilitas yang harus
@@ -247,23 +199,7 @@ Kebutuhan non-fungsional mendefinisikan karakteristik kualitas yang harus dimili
 
 Untuk memastikan bahwa setiap dimensi evaluasi sistem memiliki dasar bisnis yang jelas, Tabel~\ref{tbl:mapping_bisnis_evaluasi} memetakan hubungan antara kebutuhan bisnis (B01--B03), dimensi evaluasi, dan metrik yang digunakan.
 
-\begin{table}[H]
-\centering
-\captionsetup{justification=centering}
-\caption{Pemetaan kebutuhan bisnis terhadap dimensi dan metrik evaluasi}
-\label{tbl:mapping_bisnis_evaluasi}
-\begin{tabular}{| p{0.18\textwidth} | p{0.22\textwidth} | p{0.15\textwidth} | p{0.30\textwidth} |}
-\hline
-\textbf{Kebutuhan Bisnis} & \textbf{Pertanyaan Evaluasi} & \textbf{Dimensi} & \textbf{Metrik Utama} \\
-\hline
-B01 -- Inefisiensi Waktu & Apakah \textit{retrieval} efisien dan tepat sasaran? & RetQ (35\%) & F1@k, NDCG@k, Graph Coverage \\
-\hline
-B02 -- Kesenjangan Pengetahuan & Apakah penalaran berbasis graf menghasilkan konteks yang benar? & ReaQ (25\%) & Hop-Accuracy, Multi-Hop Success Rate, Hallucination Rate \\
-\hline
-B03 -- Risiko Konfigurasi & Apakah keluaran YAML valid dan relevan terhadap kueri? & AnsQ (40\%) & Syntactic Validity, Schema Compliance, Answer Relevance, Faithfulness \\
-\hline
-\end{tabular}
-\end{table}
+\input{tables/tabel23.tex}
 
 Pemetaan ini mempertegas bahwa dimensi evaluasi bukan sekadar metrik teknis, melainkan representasi langsung dari dampak bisnis yang ingin dimitigasi oleh sistem GraphRAG.
 

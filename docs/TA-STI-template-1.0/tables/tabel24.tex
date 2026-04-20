@@ -1,0 +1,29 @@
+\begin{table}[H]
+\centering
+\caption{Klasifikasi Tingkat Kompleksitas Pertanyaan Pengguna}
+\label{tbl:query_complexity}
+\begin{tabularx}{\textwidth}{|c|l|X|l|}
+\hline
+\textbf{Tier} & \textbf{Kategori} & \textbf{Karakteristik} & \textbf{Kualitas} \\
+\hline
+1 & Optimal &
+  Satu \textit{resource}, informasi pada kedalaman $\leq 3$ hop.
+  Contoh: \textit{``Apa itu Deployment?''}, \textit{``Buat YAML StatefulSet dengan PVC.''} &
+  Tinggi \\
+\hline
+2 & Terdegradasi &
+  Informasi pada kedalaman 4--5 hop, atau melibatkan dua \textit{resource} utama.
+  Contoh: \textit{``Resource limits container di dalam Deployment.''} &
+  Sedang \\
+\hline
+3 & Di Luar Graf &
+  Membutuhkan data \textit{runtime} atau perintah operasional.
+  Contoh: \textit{``Kenapa Pod saya \textit{CrashLoopBackOff}?''} &
+  Rendah \\
+\hline
+4 & Di Luar Domain &
+  Tidak berkaitan dengan Kubernetes dan ekosistemnya. &
+  Ditolak \\
+\hline
+\end{tabularx}
+\end{table}

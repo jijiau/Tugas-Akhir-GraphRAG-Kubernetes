@@ -1,0 +1,27 @@
+\renewcommand{\arraystretch}{1.3}
+\captionsetup[table]{justification=raggedright,singlelinecheck=false}
+\begin{table}[H]
+\caption{Ringkasan kategori relasi antar-objek Kubernetes}
+\label{tbl:edge_category_summary}
+\begin{tabular}{| p{0.22\textwidth} | c | p{0.45\textwidth} |}
+\hline
+\textbf{Kategori} & \textbf{Jumlah \textit{Edge}} & \textbf{Contoh \textit{Edge}} \\
+\hline
+Struktural & 4 & \texttt{HAS\_PROPERTY}, \texttt{EXTENDS} \\
+\hline
+\textit{Workload} & 3 & \texttt{CONTAINS\_POD\_TEMPLATE} \\
+\hline
+Penyimpanan & 3 & \texttt{CLAIMS\_VOLUME}, \texttt{MOUNTS\_VOLUME} \\
+\hline
+Konfigurasi & 2 & \texttt{LOADS\_CONFIGMAP}, \texttt{USES\_SECRET} \\
+\hline
+Jaringan & 2 & \texttt{SELECTS\_POD}, \texttt{ROUTES\_TO\_SERVICE} \\
+\hline
+RBAC & 3 & \texttt{BINDS\_ROLE}, \texttt{USES\_SERVICE\_ACCOUNT} \\
+\hline
+\textit{Autoscaling} & 1 & \texttt{SCALES\_RESOURCE} \\
+\hline
+\textbf{Total} & \textbf{18} & \\
+\hline
+\end{tabular}
+\end{table}

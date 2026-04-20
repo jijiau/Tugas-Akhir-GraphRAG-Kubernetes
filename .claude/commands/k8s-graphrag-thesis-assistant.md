@@ -6,11 +6,11 @@ description: >
   Neo4j knowledge graph, retrieves context via hybrid retrieval (exact match +
   vector + multi-hop graph traversal across 18 edge types), and generates
   responses through a dual-LLM LangGraph pipeline (GPT-4o-mini thinker +
-  Groq speaker) with Zep session memory. Intent-aware depth mapping controls
-  traversal depth per query type. Covers data ingestion, retrieval debugging,
-  YAML validation, evaluation metric interpretation, dataset validity, and
-  LangGraph agent debugging. User-facing interactions are in Bahasa Indonesia;
-  technical documentation and code remain in English.
+  Groq speaker) with SQLite conversation memory. Intent-aware depth mapping
+  controls traversal depth per query type. Covers data ingestion, retrieval
+  debugging, YAML validation, evaluation metric interpretation, dataset
+  validity, and LangGraph agent debugging. User-facing interactions are in
+  Bahasa Indonesia; technical documentation and code remain in English.
 triggers:
   - analyze k8s swagger
   - validate kubernetes yaml
@@ -44,18 +44,18 @@ explicitly asked.
 Kubernetes swagger.json (definitions only)
         │
         ▼
-[src/ingestion/parser.py]  ← 5-pass SwaggerGraphBuilder
+[src/ingestion/parser.py]  ← 5-phase SwaggerGraphBuilder
         │
         ▼
 [Neo4j]  ← 725 Definition nodes + 18 edge types + 1536-dim vector index
         │
         ▼
 [src/chatbot/graph_agent.py]  ← LangGraph state machine
-    ├─ memory_node      → Zep (http://localhost:8000)
+    ├─ memory_node      → SQLite (data/conversation_memory.db)
     ├─ thinker_node     → GPT-4o-mini  (intent JSON + intent_type)
     ├─ retriever_node   → StatefulK8sRetriever (exact match → vector+graph)
     ├─ speaker_node     → Groq Llama-3.1-8b   (final response)
-    └─ saver_node       → Zep session memory
+    └─ saver_node       → SQLite session memory
         │
         ▼
 [main.py]  ← Streamlit UI with Retrieval Trace expander
@@ -65,14 +65,14 @@ Kubernetes swagger.json (definitions only)
 
 ```python
 class AgentState(TypedDict):
-    messages:         List[BaseMessage]   # accumulated LLM messages
+    messages:         Annotated[List[BaseMessage], operator.add]  # accumulated LLM messages
     question:         str                 # raw user input
     session_id:       str                 # UUID per browser tab (Streamlit)
-    chat_history:     str                 # Zep history string (last 5 turns)
+    chat_history:     str                 # SQLite history string (last 5 turns)
     extracted_intent: dict                # {"primary_resource": str, "related_concepts": [str]}
     intent_type:      Optional[str]       # explain|generate_yaml|trace_relationship|followup
     graph_context:    str                 # JSON from Neo4j retrieval
-    reasoning_path:   List[str]           # ["Deployment -[HAS_PROPERTY]-> DeploymentSpec", ...]
+    reasoning_path:   Optional[List[str]] # ["Deployment -[HAS_PROPERTY]-> DeploymentSpec", ...]
     error:            Optional[str]       # propagated error message
 ```
 
@@ -84,7 +84,7 @@ class AgentState(TypedDict):
 
 ### Running ingestion
 ```bash
-# From project root with venv active
+# From project root with venv active (no Docker required)
 python scripts/ingest_data.py
 ```
 The script calls `SwaggerGraphBuilder(swagger_path).ingest()` which runs 5 passes:
@@ -109,7 +109,7 @@ The script calls `SwaggerGraphBuilder(swagger_path).ingest()` which runs 5 passe
 ### Validate graph after ingestion
 ```bash
 python scripts/validate_graph.py
-# Expected: ~725 Definition nodes, ~1500+ edges
+# Expected: ~725 Definition nodes, ~1500+ edges, K8sResource label on root nodes
 ```
 Or run directly in Neo4j Browser:
 ```cypher
@@ -274,17 +274,17 @@ Outputs to `data/`:
 
 ## Troubleshooting
 
-### Zep connection failures
-**Fix:**
-1. Verify `zep.yaml` has `llm: service: openai`, `model: gpt-3.5-turbo`
-2. Verify `.env` has `ZEP_BASE_URL=http://localhost:8000` (no `/api/v2` suffix)
-3. `docker compose down && docker compose up -d`
-
 ### Neo4j vector index missing
 **Symptom:** `There is no such index: definition_description_vector`
 ```bash
 python -c "from src.graph.vector_index import VectorIndexManager; VectorIndexManager().initialize()"
 ```
+
+### SQLite memory tidak menyimpan riwayat
+**Symptom:** Chatbot tidak mengingat percakapan sebelumnya antar sesi.
+- File DB: `data/conversation_memory.db` — pastikan folder `data/` ada dan writable.
+- Reset memory: hapus `data/conversation_memory.db` → akan dibuat ulang otomatis.
+- Verify: `python -c "from src.memory.zep_store import ZepMemoryStore; s=ZepMemoryStore(); print(s.get_history('test'))"`
 
 ### LangGraph agent returns empty response
 1. Check `state["error"]` — if set, thinker or retriever failed
