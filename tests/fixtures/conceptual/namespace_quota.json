@@ -1,23 +1,37 @@
 {
   "id": "namespace_quota",
   "type": "conceptual",
-  "question": "Apa fungsi ResourceQuota di Kubernetes?",
+  "question": "Bagaimana cara memastikan tim development tidak bisa menggunakan lebih dari 4 CPU dan 8Gi memory di namespace mereka agar tidak mengganggu environment production?",
   "resource": "io.k8s.api.core.v1.ResourceQuota",
   "scope": "Namespaced",
-  "multi_hop": false,
+  "multi_hop": true,
   "ground_truth": {
-    "answer": "ResourceQuota membatasi penggunaan sumber daya (CPU, memory, jumlah Pod, PVC, dll) dalam sebuah Namespace. Ini mencegah satu tim menghabiskan seluruh kapasitas cluster.",
+    "answer": "Buat ResourceQuota di namespace tim development dengan spec.hard yang mendefinisikan batas limits.cpu: '4' dan limits.memory: '8Gi'. Setelah ResourceQuota aktif, setiap Pod di namespace tersebut wajib mencantumkan resource requests dan limits — Pod tanpa resource limits akan ditolak. Untuk memastikan Pod selalu punya limits, tambahkan juga LimitRange di namespace yang sama untuk menset nilai default limits jika tidak didefinisikan di PodSpec.",
     "context": [
-      "io.k8s.api.core.v1.ResourceQuota: ResourceQuota sets aggregate quota restrictions enforced per namespace.",
-      "spec.hard: defines the desired hard limits for each named resource"
+      "io.k8s.api.core.v1.ResourceQuota: membatasi aggregate resource usage dalam sebuah namespace",
+      "io.k8s.api.core.v1.ResourceQuotaSpec: spec.hard mendefinisikan batas hard untuk setiap named resource",
+      "io.k8s.api.core.v1.ResourceQuotaStatus: status.used melacak penggunaan resource saat ini vs batas"
     ],
     "relevant_nodes": [
       "io.k8s.api.core.v1.ResourceQuota",
-      "io.k8s.api.core.v1.ResourceQuotaSpec"
+      "io.k8s.api.core.v1.ResourceQuotaSpec",
+      "io.k8s.api.core.v1.ResourceQuotaStatus",
+      "io.k8s.api.core.v1.ScopeSelector",
+      "io.k8s.apimachinery.pkg.api.resource.Quantity"
     ],
-    "expected_path": [],
+    "expected_path": [
+      "ResourceQuota -[HAS_PROPERTY]-> ResourceQuotaSpec",
+      "ResourceQuota -[HAS_PROPERTY]-> ResourceQuotaStatus",
+      "ResourceQuotaSpec -[HAS_PROPERTY]-> Quantity",
+      "ResourceQuotaSpec -[HAS_PROPERTY]-> ScopeSelector",
+      "ResourceQuotaStatus -[HAS_PROPERTY]-> Quantity"
+    ],
     "required_fields": [],
-    "expected_yaml_keys": []
+    "expected_yaml_keys": [],
+    "key_nodes": [
+      "io.k8s.api.core.v1.ResourceQuota",
+      "io.k8s.api.core.v1.ResourceQuotaSpec"
+    ]
   },
   "source_reference": "https://kubernetes.io/docs/concepts/policy/resource-quotas/",
   "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"

@@ -14,16 +14,35 @@
     "relevant_nodes": [
       "io.k8s.api.batch.v1.CronJob",
       "io.k8s.api.batch.v1.CronJobSpec",
+      "io.k8s.api.batch.v1.CronJobStatus",
+      "io.k8s.api.batch.v1.JobSpec",
       "io.k8s.api.batch.v1.JobTemplateSpec",
-      "io.k8s.api.batch.v1.JobSpec"
+      "io.k8s.api.batch.v1.PodFailurePolicy",
+      "io.k8s.api.batch.v1.SuccessPolicy",
+      "io.k8s.api.core.v1.ObjectReference",
+      "io.k8s.api.core.v1.PodTemplateSpec",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
     ],
     "expected_path": [
+      "CronJob -[CONTAINS_JOB_TEMPLATE]-> JobTemplateSpec",
       "CronJob -[HAS_PROPERTY]-> CronJobSpec",
+      "CronJob -[HAS_PROPERTY]-> CronJobStatus",
       "CronJobSpec -[HAS_PROPERTY]-> JobTemplateSpec",
+      "CronJobStatus -[HAS_PROPERTY]-> ObjectReference",
+      "JobSpec -[HAS_PROPERTY]-> LabelSelector",
+      "JobSpec -[HAS_PROPERTY]-> PodFailurePolicy",
+      "JobSpec -[HAS_PROPERTY]-> PodTemplateSpec",
+      "JobSpec -[HAS_PROPERTY]-> SuccessPolicy",
       "JobTemplateSpec -[HAS_PROPERTY]-> JobSpec"
     ],
     "required_fields": [],
-    "expected_yaml_keys": []
+    "expected_yaml_keys": [],
+    "key_nodes": [
+      "io.k8s.api.batch.v1.CronJob",
+      "io.k8s.api.batch.v1.CronJobSpec",
+      "io.k8s.api.batch.v1.JobTemplateSpec",
+      "io.k8s.api.batch.v1.JobSpec"
+    ]
   },
   "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/",
   "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"

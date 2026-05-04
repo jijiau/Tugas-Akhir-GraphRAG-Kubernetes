@@ -1,0 +1,43 @@
+{
+  "id": "kubectl_export_namespace_resources",
+  "type": "command",
+  "question": "Bagaimana cara mengekspor semua manifest resource (Deployment, Service, ConfigMap, dll.) dari sebuah namespace ke file YAML untuk keperluan backup atau migrasi ke cluster lain?",
+  "resource": "io.k8s.api.core.v1.Namespace",
+  "scope": "Cluster",
+  "multi_hop": false,
+  "ground_truth": {
+    "answer": "Gunakan kubectl get dengan output yaml dan redirect ke file: `kubectl get all,configmap,secret,ingress,pvc -n <namespace> -o yaml > namespace-backup.yaml`. Flag `all` mencakup Pod, Deployment, ReplicaSet, Service, Job, CronJob. Tambahkan resource types lain yang dibutuhkan (configmap, secret, ingress, pvc). Catatan: Secret akan ter-export dalam format base64 — pastikan file disimpan secara aman. Untuk migrasi ke cluster lain, hapus dulu field status, resourceVersion, uid, dan creationTimestamp dari hasil export karena itu adalah runtime metadata yang tidak relevan di cluster tujuan. Tools seperti `velero` atau `kubectl-neat` membantu membersihkan metadata ini secara otomatis.",
+    "context": [
+      "io.k8s.api.core.v1.Namespace: resource cluster-scoped yang mengkelompokkan resource namespaced",
+      "io.k8s.api.apps.v1.Deployment: resource workload yang bisa di-export dan di-apply ke cluster lain",
+      "io.k8s.api.core.v1.ObjectMeta: metadata.resourceVersion dan metadata.uid adalah cluster-specific dan harus dihapus sebelum migrasi"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.apps.v1.Deployment",
+      "io.k8s.api.core.v1.ConfigMap",
+      "io.k8s.api.core.v1.Namespace",
+      "io.k8s.api.core.v1.NamespaceCondition",
+      "io.k8s.api.core.v1.NamespaceSpec",
+      "io.k8s.api.core.v1.NamespaceStatus",
+      "io.k8s.api.core.v1.Service"
+    ],
+    "expected_path": [
+      "Namespace -[HAS_PROPERTY]-> NamespaceSpec",
+      "Namespace -[HAS_PROPERTY]-> NamespaceStatus",
+      "NamespaceStatus -[HAS_PROPERTY]-> NamespaceCondition"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": [],
+    "key_nodes": [
+      "io.k8s.api.apps.v1.Deployment",
+      "io.k8s.api.core.v1.ConfigMap",
+      "io.k8s.api.core.v1.Namespace",
+      "io.k8s.api.core.v1.NamespaceCondition",
+      "io.k8s.api.core.v1.NamespaceSpec",
+      "io.k8s.api.core.v1.NamespaceStatus",
+      "io.k8s.api.core.v1.Service"
+    ]
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

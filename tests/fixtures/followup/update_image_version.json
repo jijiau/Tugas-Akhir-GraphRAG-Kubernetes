@@ -1,0 +1,54 @@
+{
+  "id": "update_image_version",
+  "type": "followup",
+  "question": "Sekarang ubah image container-nya ke versi nginx:1.25.3",
+  "resource": "io.k8s.api.apps.v1.Deployment",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "ground_truth": {
+    "answer": "Update field image pada container spec:\n```yaml\nspec:\n  template:\n    spec:\n      containers:\n      - name: nginx\n        image: nginx:1.25.3\n```\nAtau via kubectl: `kubectl set image deployment/<nama> nginx=nginx:1.25.3`",
+    "context": [
+      "io.k8s.api.core.v1.Container: image field menentukan container image dan tag versi",
+      "io.k8s.api.apps.v1.DeploymentSpec: perubahan pada template.spec.containers memicu rolling update"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.apps.v1.Deployment",
+      "io.k8s.api.apps.v1.DeploymentCondition",
+      "io.k8s.api.apps.v1.DeploymentSpec",
+      "io.k8s.api.apps.v1.DeploymentStatus",
+      "io.k8s.api.apps.v1.DeploymentStrategy",
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.PodSpec",
+      "io.k8s.api.core.v1.PodTemplateSpec",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
+    ],
+    "expected_path": [
+      "Deployment -[CONTAINS_POD_TEMPLATE]-> PodTemplateSpec",
+      "Deployment -[EXTENDS]-> DeploymentSpec",
+      "Deployment -[HAS_PROPERTY]-> DeploymentSpec",
+      "Deployment -[HAS_PROPERTY]-> DeploymentStatus",
+      "DeploymentSpec -[HAS_PROPERTY]-> DeploymentStrategy",
+      "DeploymentSpec -[HAS_PROPERTY]-> LabelSelector",
+      "DeploymentSpec -[HAS_PROPERTY]-> PodTemplateSpec",
+      "DeploymentStatus -[HAS_PROPERTY]-> DeploymentCondition",
+      "PodTemplateSpec -[HAS_PROPERTY]-> PodSpec"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": [
+      "spec.template.spec.containers[0].image"
+    ],
+    "key_nodes": [
+      "io.k8s.api.apps.v1.Deployment",
+      "io.k8s.api.apps.v1.DeploymentCondition",
+      "io.k8s.api.apps.v1.DeploymentSpec",
+      "io.k8s.api.apps.v1.DeploymentStatus",
+      "io.k8s.api.apps.v1.DeploymentStrategy",
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.PodSpec",
+      "io.k8s.api.core.v1.PodTemplateSpec",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
+    ]
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

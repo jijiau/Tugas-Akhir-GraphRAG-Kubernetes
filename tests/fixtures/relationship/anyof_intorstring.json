@@ -13,15 +13,20 @@
       "anyOf: the field accepts any of the listed types"
     ],
     "relevant_nodes": [
+      "io.k8s.api.core.v1.Container",
       "io.k8s.api.core.v1.ContainerPort",
-      "io.k8s.apimachinery.pkg.util.intstr.IntOrString",
-      "io.k8s.api.core.v1.Container"
+      "io.k8s.apimachinery.pkg.util.intstr.IntOrString"
     ],
     "expected_path": [
       "Container -[HAS_PROPERTY]-> ContainerPort"
     ],
     "required_fields": [],
-    "expected_yaml_keys": []
+    "expected_yaml_keys": [],
+    "key_nodes": [
+      "io.k8s.api.core.v1.ContainerPort",
+      "io.k8s.apimachinery.pkg.util.intstr.IntOrString",
+      "io.k8s.api.core.v1.Container"
+    ]
   },
   "source_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#ContainerPort",
   "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"

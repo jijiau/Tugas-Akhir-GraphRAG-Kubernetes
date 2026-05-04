@@ -20,12 +20,18 @@
     "answer": "Itu terlihat seperti masalah EKS terbuka ini: https://github.com/aws/containers-roadmap/issues/298 Jika tha",
     "context": [],
     "relevant_nodes": [
+      "io.k8s.api.rbac.v1.PolicyRule",
       "io.k8s.api.rbac.v1.Role"
     ],
-    "expected_path": [],
+    "expected_path": [
+      "Role -[HAS_PROPERTY]-> PolicyRule"
+    ],
     "required_fields": [],
     "expected_yaml_keys": [],
-    "answer_lang": "id"
+    "answer_lang": "id",
+    "key_nodes": [
+      "io.k8s.api.rbac.v1.Role"
+    ]
   },
   "source_reference": "https://stackoverflow.com/questions/Morariu",
   "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/authorization-resources/",

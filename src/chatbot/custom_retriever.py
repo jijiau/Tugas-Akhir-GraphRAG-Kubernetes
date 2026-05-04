@@ -35,6 +35,7 @@ _DEPTH_BY_INTENT = {
     "followup":           2,
     "generate_yaml":      3,
     "trace_relationship": 3,
+    "planning":           3,
 }
 _DEFAULT_DEPTH = 3   # safe fallback for unknown intent types
 
@@ -101,6 +102,30 @@ class StatefulK8sRetriever:
             reasoning_path = self._build_reasoning_path(root_name, depth)
 
             graph_context = json.dumps(record, indent=2, ensure_ascii=False)
+
+            # ── Planning: also retrieve up to 2 related concepts and merge ────
+            if intent_type == "planning" and related:
+                for extra_resource in related[:2]:
+                    try:
+                        extra_root = self._exact_match(extra_resource)
+                        if not extra_root:
+                            continue
+                        extra_record = self._schema_deps(extra_root, depth)
+                        if not extra_record:
+                            continue
+                        extra_deps = extra_record.get("SchemaDependencies") or []
+                        extra_record["SchemaDependencies"] = [d for d in extra_deps if d is not None]
+                        extra_path = self._build_reasoning_path(extra_root, depth)
+                        graph_context += "\n" + json.dumps(extra_record, indent=2, ensure_ascii=False)
+                        seen_steps = set(reasoning_path)
+                        for step in extra_path:
+                            if step not in seen_steps:
+                                reasoning_path.append(step)
+                                seen_steps.add(step)
+                        logger.info(f"[Retriever] Planning: merged context for '{extra_root}'")
+                    except Exception as ex:
+                        logger.warning(f"[Retriever] Planning extra retrieval failed for '{extra_resource}': {ex}")
+
             return graph_context, reasoning_path
 
         except Exception as e:

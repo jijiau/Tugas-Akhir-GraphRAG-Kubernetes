@@ -13,11 +13,23 @@
       "RoleRef menunjuk ke Role 'developer' dengan apiGroup rbac.authorization.k8s.io"
     ],
     "relevant_nodes": [
+      "io.k8s.api.core.v1.LocalObjectReference",
+      "io.k8s.api.core.v1.ObjectReference",
+      "io.k8s.api.core.v1.ServiceAccount",
+      "io.k8s.api.rbac.v1.PolicyRule",
+      "io.k8s.api.rbac.v1.Role",
       "io.k8s.api.rbac.v1.RoleBinding",
-      "io.k8s.api.rbac.v1.Role"
+      "io.k8s.api.rbac.v1.RoleRef",
+      "io.k8s.api.rbac.v1.Subject"
     ],
     "expected_path": [
-      "RoleBinding -[BINDS_ROLE]-> Role"
+      "Role -[HAS_PROPERTY]-> PolicyRule",
+      "RoleBinding -[BINDS_ROLE]-> Role",
+      "RoleBinding -[BINDS_SERVICE_ACCOUNT]-> ServiceAccount",
+      "RoleBinding -[HAS_PROPERTY]-> RoleRef",
+      "RoleBinding -[HAS_PROPERTY]-> Subject",
+      "ServiceAccount -[HAS_PROPERTY]-> LocalObjectReference",
+      "ServiceAccount -[HAS_PROPERTY]-> ObjectReference"
     ],
     "required_fields": [
       "apiVersion",
@@ -30,6 +42,10 @@
       "roleRef",
       "roleRef.kind",
       "roleRef.name"
+    ],
+    "key_nodes": [
+      "io.k8s.api.rbac.v1.RoleBinding",
+      "io.k8s.api.rbac.v1.Role"
     ]
   },
   "source_reference": "https://kubernetes.io/docs/reference/access-authn-authz/rbac/#rolebinding-and-clusterrolebinding",

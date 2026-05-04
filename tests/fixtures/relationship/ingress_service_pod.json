@@ -1,29 +1,75 @@
 {
   "id": "ingress_service_pod",
   "type": "relationship",
-  "question": "Bagaimana alur traffic dari Ingress sampai ke Pod?",
+  "question": "Saya punya Ingress dengan host app.example.com yang diarahkan ke Service frontend-svc port 80. Pod saya statusnya Running tapi request dari luar masih dapat response 502 Bad Gateway. Bagaimana alur traffic dari Ingress sampai ke Pod dan di mana biasanya masalah terjadi?",
   "resource": "io.k8s.api.networking.v1.Ingress",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
-    "answer": "Ingress menerima traffic HTTP/HTTPS dari luar cluster, meneruskannya ke Service berdasarkan rules (host/path). Service kemudian menggunakan selector untuk menemukan Pod yang sesuai. Alur: Ingress → IngressRule → IngressBackend → Service → Pod.",
+    "answer": "Alur traffic: Ingress Controller menerima request → mencocokkan host/path dengan IngressRule → meneruskan ke Service (frontend-svc:80) → Service memilih Pod via selector matchLabels → request sampai ke container. Error 502 biasanya berarti Ingress Controller bisa menjangkau Service, tapi Service tidak bisa menjangkau Pod. Cek: (1) apakah selector di Service cocok dengan labels di Pod; (2) apakah targetPort di Service cocok dengan containerPort di Pod; (3) apakah Pod benar-benar Ready (bukan hanya Running) — Pod harus melewati readinessProbe dulu sebelum Service mengarahkan traffic ke sana.",
     "context": [
-      "Ingress: manages external access to services, typically HTTP",
-      "IngressRule: host and path rules route traffic to backends"
+      "io.k8s.api.networking.v1.IngressRule: mendefinisikan host dan HTTP path rules ke backend Service",
+      "io.k8s.api.networking.v1.IngressServiceBackend: referensi ke Service name dan port",
+      "io.k8s.api.core.v1.ServiceSpec: selector menentukan Pod mana yang menjadi backend Service",
+      "io.k8s.api.core.v1.ContainerPort: port yang di-expose container — harus cocok dengan targetPort Service"
     ],
     "relevant_nodes": [
+      "io.k8s.api.core.v1.LoadBalancerStatus",
+      "io.k8s.api.core.v1.Pod",
+      "io.k8s.api.core.v1.PodSpec",
+      "io.k8s.api.core.v1.PodStatus",
+      "io.k8s.api.core.v1.Service",
+      "io.k8s.api.core.v1.ServicePort",
+      "io.k8s.api.core.v1.ServiceSpec",
+      "io.k8s.api.core.v1.ServiceStatus",
+      "io.k8s.api.core.v1.SessionAffinityConfig",
+      "io.k8s.api.core.v1.TypedLocalObjectReference",
+      "io.k8s.api.networking.v1.HTTPIngressPath",
+      "io.k8s.api.networking.v1.HTTPIngressRuleValue",
+      "io.k8s.api.networking.v1.Ingress",
+      "io.k8s.api.networking.v1.IngressBackend",
+      "io.k8s.api.networking.v1.IngressLoadBalancerIngress",
+      "io.k8s.api.networking.v1.IngressLoadBalancerStatus",
+      "io.k8s.api.networking.v1.IngressRule",
+      "io.k8s.api.networking.v1.IngressServiceBackend",
+      "io.k8s.api.networking.v1.IngressSpec",
+      "io.k8s.api.networking.v1.IngressStatus",
+      "io.k8s.api.networking.v1.IngressTLS",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.Condition"
+    ],
+    "expected_path": [
+      "HTTPIngressPath -[HAS_PROPERTY]-> IngressBackend",
+      "HTTPIngressRuleValue -[HAS_PROPERTY]-> HTTPIngressPath",
+      "Ingress -[HAS_PROPERTY]-> IngressSpec",
+      "Ingress -[HAS_PROPERTY]-> IngressStatus",
+      "Ingress -[ROUTES_TO_SERVICE]-> Service",
+      "IngressBackend -[HAS_PROPERTY]-> IngressServiceBackend",
+      "IngressBackend -[HAS_PROPERTY]-> TypedLocalObjectReference",
+      "IngressLoadBalancerStatus -[HAS_PROPERTY]-> IngressLoadBalancerIngress",
+      "IngressRule -[HAS_PROPERTY]-> HTTPIngressRuleValue",
+      "IngressSpec -[HAS_PROPERTY]-> IngressBackend",
+      "IngressSpec -[HAS_PROPERTY]-> IngressRule",
+      "IngressSpec -[HAS_PROPERTY]-> IngressTLS",
+      "IngressStatus -[HAS_PROPERTY]-> IngressLoadBalancerStatus",
+      "Pod -[EXTENDS]-> PodSpec",
+      "Pod -[HAS_PROPERTY]-> PodSpec",
+      "Pod -[HAS_PROPERTY]-> PodStatus",
+      "Service -[HAS_PROPERTY]-> ServiceSpec",
+      "Service -[HAS_PROPERTY]-> ServiceStatus",
+      "Service -[SELECTS_POD]-> Pod",
+      "ServiceSpec -[HAS_PROPERTY]-> ServicePort",
+      "ServiceSpec -[HAS_PROPERTY]-> SessionAffinityConfig",
+      "ServiceStatus -[HAS_PROPERTY]-> Condition",
+      "ServiceStatus -[HAS_PROPERTY]-> LoadBalancerStatus"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": [],
+    "key_nodes": [
       "io.k8s.api.networking.v1.Ingress",
       "io.k8s.api.networking.v1.IngressSpec",
       "io.k8s.api.networking.v1.IngressRule",
       "io.k8s.api.core.v1.Service"
-    ],
-    "expected_path": [
-      "Ingress -[HAS_PROPERTY]-> IngressSpec",
-      "IngressSpec -[HAS_PROPERTY]-> IngressRule",
-      "IngressRule -[HAS_PROPERTY]-> HTTPIngressRuleValue"
-    ],
-    "required_fields": [],
-    "expected_yaml_keys": []
+    ]
   },
   "source_reference": "https://kubernetes.io/docs/concepts/services-networking/ingress/",
   "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/service-resources/"

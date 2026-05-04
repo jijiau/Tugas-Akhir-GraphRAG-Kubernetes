@@ -1,0 +1,64 @@
+{
+  "id": "add_liveness_probe",
+  "type": "followup",
+  "question": "Sekarang tambahkan liveness probe HTTP ke endpoint /healthz di port 8080, dengan initialDelaySeconds 15 dan periodSeconds 20",
+  "resource": "io.k8s.api.apps.v1.Deployment",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "ground_truth": {
+    "answer": "Tambahkan livenessProbe pada container spec:\n```yaml\nspec:\n  template:\n    spec:\n      containers:\n      - name: app\n        livenessProbe:\n          httpGet:\n            path: /healthz\n            port: 8080\n          initialDelaySeconds: 15\n          periodSeconds: 20\n```\ninitialDelaySeconds memberi waktu container untuk startup sebelum probe pertama dijalankan. periodSeconds mengatur seberapa sering probe diperiksa.",
+    "context": [
+      "io.k8s.api.core.v1.Probe: konfigurasi health check — livenessProbe, readinessProbe, startupProbe",
+      "io.k8s.api.core.v1.HTTPGetAction: melakukan HTTP GET ke path dan port tertentu sebagai probe",
+      "io.k8s.api.core.v1.Container: livenessProbe menentukan kapan container harus di-restart oleh kubelet"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.apps.v1.Deployment",
+      "io.k8s.api.apps.v1.DeploymentCondition",
+      "io.k8s.api.apps.v1.DeploymentSpec",
+      "io.k8s.api.apps.v1.DeploymentStatus",
+      "io.k8s.api.apps.v1.DeploymentStrategy",
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.HTTPGetAction",
+      "io.k8s.api.core.v1.PodSpec",
+      "io.k8s.api.core.v1.PodTemplateSpec",
+      "io.k8s.api.core.v1.Probe",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
+    ],
+    "expected_path": [
+      "Container -[HAS_PROPERTY]-> Probe",
+      "Deployment -[CONTAINS_POD_TEMPLATE]-> PodTemplateSpec",
+      "Deployment -[EXTENDS]-> DeploymentSpec",
+      "Deployment -[HAS_PROPERTY]-> DeploymentSpec",
+      "Deployment -[HAS_PROPERTY]-> DeploymentStatus",
+      "DeploymentSpec -[HAS_PROPERTY]-> DeploymentStrategy",
+      "DeploymentSpec -[HAS_PROPERTY]-> LabelSelector",
+      "DeploymentSpec -[HAS_PROPERTY]-> PodTemplateSpec",
+      "DeploymentStatus -[HAS_PROPERTY]-> DeploymentCondition",
+      "PodTemplateSpec -[HAS_PROPERTY]-> PodSpec",
+      "Probe -[HAS_PROPERTY]-> HTTPGetAction"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": [
+      "spec.template.spec.containers[0].livenessProbe.httpGet.path",
+      "spec.template.spec.containers[0].livenessProbe.httpGet.port",
+      "spec.template.spec.containers[0].livenessProbe.initialDelaySeconds",
+      "spec.template.spec.containers[0].livenessProbe.periodSeconds"
+    ],
+    "key_nodes": [
+      "io.k8s.api.apps.v1.Deployment",
+      "io.k8s.api.apps.v1.DeploymentCondition",
+      "io.k8s.api.apps.v1.DeploymentSpec",
+      "io.k8s.api.apps.v1.DeploymentStatus",
+      "io.k8s.api.apps.v1.DeploymentStrategy",
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.HTTPGetAction",
+      "io.k8s.api.core.v1.PodSpec",
+      "io.k8s.api.core.v1.PodTemplateSpec",
+      "io.k8s.api.core.v1.Probe",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
+    ]
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

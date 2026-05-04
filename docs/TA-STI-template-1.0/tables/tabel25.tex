@@ -1,0 +1,32 @@
+\renewcommand{\arraystretch}{1.3}
+\captionsetup[table]{justification=raggedright,singlelinecheck=false}
+\begin{table}[H]
+\caption{Dependensi Utama Implementasi Sistem GraphRAG Kubernetes}
+\label{tbl:tech_stack}
+\centering
+\begin{tabular}{| p{0.25\textwidth} | p{0.20\textwidth} | p{0.42\textwidth} |}
+\hline
+\textbf{Komponen} & \textbf{Versi Minimum} & \textbf{Fungsi dalam Sistem} \\
+\hline
+LangGraph & 0.0.20 & Orkestrasi \textit{state machine} pipeline agent (5 node) \\
+\hline
+LangChain & 0.1.0 & Abstraksi integrasi LLM dan \textit{prompt template} \\
+\hline
+Neo4j Python Driver & 5.17.0 & Koneksi dan eksekusi query Cypher ke \textit{knowledge graph} \\
+\hline
+LangChain-OpenAI & 0.0.5 & Integrasi GPT-4o-mini untuk node \textit{Thinker} \\
+\hline
+LangChain-Groq & 0.0.1 & Integrasi Groq \texttt{llama-3.1-8b-instant} untuk node \textit{Speaker} \\
+\hline
+OpenAI SDK & --- & Generasi \textit{embedding} \texttt{text-embedding-3-small} (1.536 dimensi) \\
+\hline
+Streamlit & 1.30.0 & Antarmuka web percakapan berbasis \textit{browser} \\
+\hline
+PyYAML & 6.0 & Validasi sintaksis YAML (Lapis 1) \\
+\hline
+kubernetes-validate & 0.15.0 & Validasi kepatuhan skema Kubernetes v1.29 (Lapis 2) \\
+\hline
+SQLite & \textit{stdlib} & Penyimpanan riwayat percakapan antar-sesi \\
+\hline
+\end{tabular}
+\end{table}

@@ -25,6 +25,9 @@
       "kind",
       "metadata",
       "data"
+    ],
+    "key_nodes": [
+      "io.k8s.api.core.v1.ConfigMap"
     ]
   },
   "source_reference": "https://kubernetes.io/docs/concepts/configuration/configmap/",

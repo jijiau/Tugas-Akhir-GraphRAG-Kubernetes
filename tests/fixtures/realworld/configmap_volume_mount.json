@@ -25,14 +25,14 @@
     ],
     "relevant_nodes": [
       "io.k8s.api.core.v1.ConfigMap",
+      "io.k8s.api.core.v1.ConfigMapVolumeSource",
       "io.k8s.api.core.v1.Volume",
-      "io.k8s.api.core.v1.VolumeMount",
-      "io.k8s.api.core.v1.ConfigMapVolumeSource"
+      "io.k8s.api.core.v1.VolumeMount"
     ],
     "expected_path": [
+      "Container -[HAS_PROPERTY]-> VolumeMount",
       "PodSpec -[HAS_PROPERTY]-> Volume",
-      "Volume -[HAS_PROPERTY]-> ConfigMapVolumeSource",
-      "Container -[HAS_PROPERTY]-> VolumeMount"
+      "Volume -[HAS_PROPERTY]-> ConfigMapVolumeSource"
     ],
     "required_fields": [
       "apiVersion",
@@ -48,7 +48,13 @@
       "spec.containers[0].volumeMounts",
       "spec.containers[0].volumeMounts[0].mountPath"
     ],
-    "answer_lang": "yaml"
+    "answer_lang": "yaml",
+    "key_nodes": [
+      "io.k8s.api.core.v1.ConfigMap",
+      "io.k8s.api.core.v1.Volume",
+      "io.k8s.api.core.v1.VolumeMount",
+      "io.k8s.api.core.v1.ConfigMapVolumeSource"
+    ]
   },
   "source_reference": "https://stackoverflow.com/questions/39293507",
   "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",

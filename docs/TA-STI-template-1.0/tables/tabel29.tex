@@ -1,0 +1,38 @@
+\renewcommand{\arraystretch}{1.3}
+\captionsetup[table]{justification=raggedright,singlelinecheck=false}
+\begin{table}[H]
+\caption{Skor Evaluasi per Dimensi dan Sub-Metrik (97 \textit{Fixture})}
+\label{tbl:dimension_scores}
+\centering
+\begin{tabular}{| p{0.18\textwidth} | c | p{0.30\textwidth} | c |}
+\hline
+\textbf{Dimensi (Bobot)} & \textbf{Skor} & \textbf{Sub-Metrik} & \textbf{Nilai} \\
+\hline
+\multirow{4}{*}{\textbf{AnsQ} (40\%)} & \multirow{4}{*}{0,58} & \textit{Syntactic Validity} & 1,0000 \\
+\cline{3-4}
+ &  & \textit{Schema Compliance} & 0,7895 \\
+\cline{3-4}
+ &  & \textit{Answer Relevance} & 0,6392 \\
+\cline{3-4}
+ &  & \textit{Faithfulness} & 0,4534 \\
+\hline
+\multirow{4}{*}{\textbf{RetQ} (35\%)} & \multirow{4}{*}{0,65} & \textit{Graph Coverage} & 0,8100 \\
+\cline{3-4}
+ &  & \textit{Recall@k} & 0,5579 \\
+\cline{3-4}
+ &  & \textit{NDCG@k} & 0,7051 \\
+\cline{3-4}
+ &  & \textit{Precision@k} & 0,6473 \\
+\hline
+\multirow{4}{*}{\textbf{ReaQ} (25\%)} & \multirow{4}{*}{0,87} & \textit{Multi-Hop Success} & 1,0000 \\
+\cline{3-4}
+ &  & \textit{Hop Accuracy} & 0,8969 \\
+\cline{3-4}
+ &  & \textit{Grounding Score} & 0,6625 \\
+\cline{3-4}
+ &  & \textit{Hallucination Rate} & 0,3375 \\
+\hline
+\multicolumn{2}{|c|}{\textbf{Total Skor Komposit}} & \multicolumn{2}{c|}{\textbf{0,6769}} \\
+\hline
+\end{tabular}
+\end{table}

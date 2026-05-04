@@ -12,16 +12,31 @@
       "roleRef references the Role or ClusterRole; subjects list ServiceAccount/User/Group"
     ],
     "relevant_nodes": [
+      "io.k8s.api.core.v1.LocalObjectReference",
+      "io.k8s.api.core.v1.ObjectReference",
+      "io.k8s.api.core.v1.ServiceAccount",
+      "io.k8s.api.rbac.v1.PolicyRule",
+      "io.k8s.api.rbac.v1.Role",
       "io.k8s.api.rbac.v1.RoleBinding",
       "io.k8s.api.rbac.v1.RoleRef",
       "io.k8s.api.rbac.v1.Subject"
     ],
     "expected_path": [
+      "Role -[HAS_PROPERTY]-> PolicyRule",
       "RoleBinding -[BINDS_ROLE]-> Role",
-      "RoleBinding -[BINDS_SERVICE_ACCOUNT]-> ServiceAccount"
+      "RoleBinding -[BINDS_SERVICE_ACCOUNT]-> ServiceAccount",
+      "RoleBinding -[HAS_PROPERTY]-> RoleRef",
+      "RoleBinding -[HAS_PROPERTY]-> Subject",
+      "ServiceAccount -[HAS_PROPERTY]-> LocalObjectReference",
+      "ServiceAccount -[HAS_PROPERTY]-> ObjectReference"
     ],
     "required_fields": [],
-    "expected_yaml_keys": []
+    "expected_yaml_keys": [],
+    "key_nodes": [
+      "io.k8s.api.rbac.v1.RoleBinding",
+      "io.k8s.api.rbac.v1.RoleRef",
+      "io.k8s.api.rbac.v1.Subject"
+    ]
   },
   "source_reference": "https://kubernetes.io/docs/reference/access-authn-authz/rbac/#rolebinding-and-clusterrolebinding",
   "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/authorization-resources/"

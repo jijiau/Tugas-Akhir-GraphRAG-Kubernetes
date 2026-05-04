@@ -13,15 +13,26 @@
     ],
     "relevant_nodes": [
       "io.k8s.api.core.v1.Namespace",
+      "io.k8s.api.core.v1.NamespaceCondition",
+      "io.k8s.api.core.v1.NamespaceSpec",
+      "io.k8s.api.core.v1.NamespaceStatus",
       "io.k8s.api.core.v1.ResourceQuota",
       "io.k8s.api.core.v1.ResourceQuotaSpec"
     ],
     "expected_path": [
+      "Namespace -[HAS_PROPERTY]-> NamespaceSpec",
+      "Namespace -[HAS_PROPERTY]-> NamespaceStatus",
+      "NamespaceStatus -[HAS_PROPERTY]-> NamespaceCondition",
       "ResourceQuota -[HAS_PROPERTY]-> ResourceQuotaSpec",
       "ResourceQuotaSpec -[HAS_PROPERTY]-> ScopeSelector"
     ],
     "required_fields": [],
-    "expected_yaml_keys": []
+    "expected_yaml_keys": [],
+    "key_nodes": [
+      "io.k8s.api.core.v1.Namespace",
+      "io.k8s.api.core.v1.ResourceQuota",
+      "io.k8s.api.core.v1.ResourceQuotaSpec"
+    ]
   },
   "source_reference": "https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/",
   "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"

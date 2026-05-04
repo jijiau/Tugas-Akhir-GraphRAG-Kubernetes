@@ -12,19 +12,40 @@
       "IngressRule: routes traffic based on host and path"
     ],
     "relevant_nodes": [
+      "io.k8s.api.core.v1.Pod",
+      "io.k8s.api.core.v1.Service",
+      "io.k8s.api.core.v1.ServiceSpec",
+      "io.k8s.api.core.v1.ServiceStatus",
       "io.k8s.api.networking.v1.Ingress",
+      "io.k8s.api.networking.v1.IngressBackend",
+      "io.k8s.api.networking.v1.IngressLoadBalancerStatus",
+      "io.k8s.api.networking.v1.IngressRule",
       "io.k8s.api.networking.v1.IngressSpec",
-      "io.k8s.api.networking.v1.IngressRule"
+      "io.k8s.api.networking.v1.IngressStatus",
+      "io.k8s.api.networking.v1.IngressTLS"
     ],
     "expected_path": [
       "Ingress -[HAS_PROPERTY]-> IngressSpec",
-      "IngressSpec -[HAS_PROPERTY]-> IngressRule"
+      "Ingress -[HAS_PROPERTY]-> IngressStatus",
+      "Ingress -[ROUTES_TO_SERVICE]-> Service",
+      "IngressSpec -[HAS_PROPERTY]-> IngressBackend",
+      "IngressSpec -[HAS_PROPERTY]-> IngressRule",
+      "IngressSpec -[HAS_PROPERTY]-> IngressTLS",
+      "IngressStatus -[HAS_PROPERTY]-> IngressLoadBalancerStatus",
+      "Service -[HAS_PROPERTY]-> ServiceSpec",
+      "Service -[HAS_PROPERTY]-> ServiceStatus",
+      "Service -[SELECTS_POD]-> Pod"
     ],
     "required_fields": [],
     "expected_yaml_keys": [
       "spec.rules",
       "spec.rules[0].host",
       "spec.rules[0].http.paths"
+    ],
+    "key_nodes": [
+      "io.k8s.api.networking.v1.Ingress",
+      "io.k8s.api.networking.v1.IngressSpec",
+      "io.k8s.api.networking.v1.IngressRule"
     ]
   },
   "source_reference": "https://kubernetes.io/docs/concepts/services-networking/ingress/",

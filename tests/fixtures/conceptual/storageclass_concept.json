@@ -12,12 +12,22 @@
       "provisioner: indicates the type of provisioner"
     ],
     "relevant_nodes": [
+      "io.k8s.api.core.v1.PersistentVolumeClaim",
+      "io.k8s.api.core.v1.TopologySelectorLabelRequirement",
+      "io.k8s.api.core.v1.TopologySelectorTerm",
+      "io.k8s.api.storage.v1.StorageClass",
+      "io.k8s.storage.v1.StorageClass"
+    ],
+    "expected_path": [
+      "StorageClass -[HAS_PROPERTY]-> TopologySelectorTerm",
+      "TopologySelectorTerm -[HAS_PROPERTY]-> TopologySelectorLabelRequirement"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": [],
+    "key_nodes": [
       "io.k8s.storage.v1.StorageClass",
       "io.k8s.api.core.v1.PersistentVolumeClaim"
-    ],
-    "expected_path": [],
-    "required_fields": [],
-    "expected_yaml_keys": []
+    ]
   },
   "source_reference": "https://kubernetes.io/docs/concepts/storage/storage-classes/",
   "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/"

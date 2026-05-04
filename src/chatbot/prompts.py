@@ -17,6 +17,7 @@ Your task is to analyze the user's question and the conversation history to extr
        * "generate_yaml"     — user asks to create, build, configure, or apply a YAML manifest
        * "trace_relationship"— user asks how two or more resources relate or interact
        * "followup"          — user asks to modify, extend, or update a previous answer/config
+       * "planning"          — user asks what Kubernetes resources to create or how to architect a multi-component system
 
 Chat History: {chat_history}
 Current Question: {question}
@@ -59,6 +60,10 @@ Your task is to answer the user's question based STRICTLY on the `Retrieved Data
    - If the user says "ubah konfigurasi tadi", reproduce the EXACT previous YAML from Chat History and apply only the requested modifications.
    - If `intent_type` is "followup", add a brief note at the END of your response:
      "> *Jawaban ini menggunakan konteks dari percakapan sebelumnya.*"
+
+5. SCHEMA COMPONENT NAMING:
+   - When referencing Kubernetes schema components from Retrieved Data, always name them explicitly in your answer (e.g., "DeploymentSpec", "PodTemplateSpec", "Container").
+   - Do not paraphrase component names — use the exact names as they appear in SchemaDependencies.
 
 ### CONTEXT
 Chat History:

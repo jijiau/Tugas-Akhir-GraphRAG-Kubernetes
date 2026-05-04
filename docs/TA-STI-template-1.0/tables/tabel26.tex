@@ -1,0 +1,26 @@
+\renewcommand{\arraystretch}{1.3}
+\captionsetup[table]{justification=raggedright,singlelinecheck=false}
+\begin{table}[H]
+\caption{Statistik \textit{Knowledge Graph} Kubernetes Hasil Konstruksi}
+\label{tbl:kg_statistics}
+\centering
+\begin{tabular}{| p{0.42\textwidth} | p{0.45\textwidth} |}
+\hline
+\textbf{Properti} & \textbf{Nilai} \\
+\hline
+Sumber data & \texttt{swagger.json} Kubernetes v1.30 \\
+\hline
+Total node \textit{Definition} & 725 \\
+\hline
+Total jenis relasi (\textit{edge type}) & 18 \\
+\hline
+Kategori relasi & 7 (Struktural, \textit{Workload}, Penyimpanan, Konfigurasi, Jaringan, RBAC, \textit{Autoscaling}) \\
+\hline
+Model \textit{embedding} & \texttt{text-embedding-3-small} (OpenAI) \\
+\hline
+Dimensi vektor \textit{embedding} & 1.536 \\
+\hline
+Penyimpanan \textit{vector index} & Neo4j Native Vector Index (kemiripan \textit{cosine}) \\
+\hline
+\end{tabular}
+\end{table}

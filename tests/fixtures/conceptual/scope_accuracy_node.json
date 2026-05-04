@@ -12,13 +12,46 @@
       "Pod: the smallest deployable units — namespaced resource"
     ],
     "relevant_nodes": [
+      "io.k8s.api.core.v1.AttachedVolume",
+      "io.k8s.api.core.v1.ContainerImage",
+      "io.k8s.api.core.v1.Node",
+      "io.k8s.api.core.v1.NodeAddress",
+      "io.k8s.api.core.v1.NodeCondition",
+      "io.k8s.api.core.v1.NodeConfigSource",
+      "io.k8s.api.core.v1.NodeConfigStatus",
+      "io.k8s.api.core.v1.NodeDaemonEndpoints",
+      "io.k8s.api.core.v1.NodeFeatures",
+      "io.k8s.api.core.v1.NodeRuntimeHandler",
+      "io.k8s.api.core.v1.NodeSpec",
+      "io.k8s.api.core.v1.NodeStatus",
+      "io.k8s.api.core.v1.NodeSystemInfo",
+      "io.k8s.api.core.v1.Pod",
+      "io.k8s.api.core.v1.Taint",
+      "io.k8s.apimachinery.pkg.api.resource.Quantity"
+    ],
+    "expected_path": [
+      "Node -[HAS_PROPERTY]-> NodeSpec",
+      "Node -[HAS_PROPERTY]-> NodeStatus",
+      "NodeSpec -[HAS_PROPERTY]-> NodeConfigSource",
+      "NodeSpec -[HAS_PROPERTY]-> Taint",
+      "NodeStatus -[HAS_PROPERTY]-> AttachedVolume",
+      "NodeStatus -[HAS_PROPERTY]-> ContainerImage",
+      "NodeStatus -[HAS_PROPERTY]-> NodeAddress",
+      "NodeStatus -[HAS_PROPERTY]-> NodeCondition",
+      "NodeStatus -[HAS_PROPERTY]-> NodeConfigStatus",
+      "NodeStatus -[HAS_PROPERTY]-> NodeDaemonEndpoints",
+      "NodeStatus -[HAS_PROPERTY]-> NodeFeatures",
+      "NodeStatus -[HAS_PROPERTY]-> NodeRuntimeHandler",
+      "NodeStatus -[HAS_PROPERTY]-> NodeSystemInfo",
+      "NodeStatus -[HAS_PROPERTY]-> Quantity"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": [],
+    "key_nodes": [
       "io.k8s.api.core.v1.Node",
       "io.k8s.api.core.v1.Pod",
       "io.k8s.api.core.v1.NodeSpec"
-    ],
-    "expected_path": [],
-    "required_fields": [],
-    "expected_yaml_keys": []
+    ]
   },
   "source_reference": "https://kubernetes.io/docs/concepts/architecture/nodes/",
   "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"

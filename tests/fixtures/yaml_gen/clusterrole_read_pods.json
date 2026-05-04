@@ -12,10 +12,18 @@
       "io.k8s.api.rbac.v1.PolicyRule: verbs, apiGroups, resources define permissions"
     ],
     "relevant_nodes": [
+      "io.k8s.api.rbac.v1.AggregationRule",
       "io.k8s.api.rbac.v1.ClusterRole",
-      "io.k8s.api.rbac.v1.PolicyRule"
+      "io.k8s.api.rbac.v1.PolicyRule",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelectorRequirement"
     ],
-    "expected_path": [],
+    "expected_path": [
+      "AggregationRule -[HAS_PROPERTY]-> LabelSelector",
+      "ClusterRole -[HAS_PROPERTY]-> AggregationRule",
+      "ClusterRole -[HAS_PROPERTY]-> PolicyRule",
+      "LabelSelector -[HAS_PROPERTY]-> LabelSelectorRequirement"
+    ],
     "required_fields": [
       "apiVersion",
       "kind",
@@ -26,6 +34,10 @@
       "kind",
       "metadata",
       "rules"
+    ],
+    "key_nodes": [
+      "io.k8s.api.rbac.v1.ClusterRole",
+      "io.k8s.api.rbac.v1.PolicyRule"
     ]
   },
   "source_reference": "https://kubernetes.io/docs/reference/access-authn-authz/rbac/#role-and-clusterrole",

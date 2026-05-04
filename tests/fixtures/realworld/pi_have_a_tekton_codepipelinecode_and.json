@@ -20,12 +20,43 @@
     "answer": "Anda tidak dapat melewatkan parameter tersebut saat menggunakan kubectl create. Ada dua alternatif: Gunakan tkn cli Anda dapat menggunakan <a href=\"https://github.com/tektoncd/cli\" rel=\"no",
     "context": [],
     "relevant_nodes": [
-      "io.k8s.api.core.v1.PersistentVolumeClaim"
+      "io.k8s.api.core.v1.ModifyVolumeStatus",
+      "io.k8s.api.core.v1.PersistentVolumeClaim",
+      "io.k8s.api.core.v1.PersistentVolumeClaimCondition",
+      "io.k8s.api.core.v1.PersistentVolumeClaimSpec",
+      "io.k8s.api.core.v1.PersistentVolumeClaimStatus",
+      "io.k8s.api.core.v1.TopologySelectorLabelRequirement",
+      "io.k8s.api.core.v1.TopologySelectorTerm",
+      "io.k8s.api.core.v1.TypedLocalObjectReference",
+      "io.k8s.api.core.v1.TypedObjectReference",
+      "io.k8s.api.core.v1.VolumeResourceRequirements",
+      "io.k8s.api.storage.v1.StorageClass",
+      "io.k8s.apimachinery.pkg.api.resource.Quantity",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelectorRequirement"
     ],
-    "expected_path": [],
+    "expected_path": [
+      "LabelSelector -[HAS_PROPERTY]-> LabelSelectorRequirement",
+      "PersistentVolumeClaim -[HAS_PROPERTY]-> PersistentVolumeClaimSpec",
+      "PersistentVolumeClaim -[HAS_PROPERTY]-> PersistentVolumeClaimStatus",
+      "PersistentVolumeClaim -[USES_STORAGE_CLASS]-> StorageClass",
+      "PersistentVolumeClaimSpec -[HAS_PROPERTY]-> LabelSelector",
+      "PersistentVolumeClaimSpec -[HAS_PROPERTY]-> TypedLocalObjectReference",
+      "PersistentVolumeClaimSpec -[HAS_PROPERTY]-> TypedObjectReference",
+      "PersistentVolumeClaimSpec -[HAS_PROPERTY]-> VolumeResourceRequirements",
+      "PersistentVolumeClaimStatus -[HAS_PROPERTY]-> ModifyVolumeStatus",
+      "PersistentVolumeClaimStatus -[HAS_PROPERTY]-> PersistentVolumeClaimCondition",
+      "PersistentVolumeClaimStatus -[HAS_PROPERTY]-> Quantity",
+      "StorageClass -[HAS_PROPERTY]-> TopologySelectorTerm",
+      "TopologySelectorTerm -[HAS_PROPERTY]-> TopologySelectorLabelRequirement",
+      "VolumeResourceRequirements -[HAS_PROPERTY]-> Quantity"
+    ],
     "required_fields": [],
     "expected_yaml_keys": [],
-    "answer_lang": "id"
+    "answer_lang": "id",
+    "key_nodes": [
+      "io.k8s.api.core.v1.PersistentVolumeClaim"
+    ]
   },
   "source_reference": "https://stackoverflow.com/questions/jdev",
   "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",

@@ -1,0 +1,64 @@
+{
+  "id": "plan_cronjob_batch",
+  "type": "planning",
+  "question": "Saya perlu sistem yang secara otomatis menjalankan script backup database setiap malam jam 2 pagi, menyimpan hasilnya ke storage, dan mengirim notifikasi jika backup gagal. Resource Kubernetes apa yang tepat untuk ini?",
+  "resource": "io.k8s.api.batch.v1.CronJob",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "ground_truth": {
+    "answer": "Gunakan CronJob sebagai orkestrator utama: (1) CronJob dengan schedule '0 2 * * *' — membuat Job baru setiap malam jam 2 pagi; (2) Job yang dibuat CronJob menjalankan Pod backup; (3) PersistentVolumeClaim — mount ke container backup untuk menyimpan file hasil backup; (4) Secret — simpan credentials database dan storage (jangan hardcode); (5) ConfigMap — simpan konfigurasi backup (nama database, retention policy). Untuk notifikasi gagal: set CronJob.spec.jobTemplate.spec.backoffLimit ke 0 atau nilai rendah, lalu pantau Job yang Failed via monitoring (Prometheus + AlertManager) atau tambahkan container sidecar yang mengirim notifikasi saat proses utama exit dengan error code.",
+    "context": [
+      "io.k8s.api.batch.v1.CronJob: membuat Job secara terjadwal berdasarkan cron expression",
+      "io.k8s.api.batch.v1.CronJobSpec: schedule (cron format), jobTemplate, dan concurrencyPolicy",
+      "io.k8s.api.batch.v1.Job: menjalankan Pod sampai selesai — backoffLimit mengontrol jumlah retry",
+      "io.k8s.api.core.v1.PersistentVolumeClaim: storage untuk menyimpan file backup"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.batch.v1.CronJob",
+      "io.k8s.api.batch.v1.CronJobSpec",
+      "io.k8s.api.batch.v1.CronJobStatus",
+      "io.k8s.api.batch.v1.Job",
+      "io.k8s.api.batch.v1.JobSpec",
+      "io.k8s.api.batch.v1.JobTemplateSpec",
+      "io.k8s.api.batch.v1.PodFailurePolicy",
+      "io.k8s.api.batch.v1.SuccessPolicy",
+      "io.k8s.api.core.v1.ObjectReference",
+      "io.k8s.api.core.v1.PersistentVolumeClaim",
+      "io.k8s.api.core.v1.PodTemplateSpec",
+      "io.k8s.api.core.v1.Secret",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
+    ],
+    "expected_path": [
+      "CronJob -[CONTAINS_JOB_TEMPLATE]-> JobTemplateSpec",
+      "CronJob -[HAS_PROPERTY]-> CronJobSpec",
+      "CronJob -[HAS_PROPERTY]-> CronJobStatus",
+      "CronJobSpec -[HAS_PROPERTY]-> JobTemplateSpec",
+      "CronJobStatus -[HAS_PROPERTY]-> ObjectReference",
+      "Job -[CONTAINS_POD_TEMPLATE]-> PodTemplateSpec",
+      "JobSpec -[HAS_PROPERTY]-> LabelSelector",
+      "JobSpec -[HAS_PROPERTY]-> PodFailurePolicy",
+      "JobSpec -[HAS_PROPERTY]-> PodTemplateSpec",
+      "JobSpec -[HAS_PROPERTY]-> SuccessPolicy",
+      "JobTemplateSpec -[HAS_PROPERTY]-> JobSpec"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": [],
+    "key_nodes": [
+      "io.k8s.api.batch.v1.CronJob",
+      "io.k8s.api.batch.v1.CronJobSpec",
+      "io.k8s.api.batch.v1.CronJobStatus",
+      "io.k8s.api.batch.v1.Job",
+      "io.k8s.api.batch.v1.JobSpec",
+      "io.k8s.api.batch.v1.JobTemplateSpec",
+      "io.k8s.api.batch.v1.PodFailurePolicy",
+      "io.k8s.api.batch.v1.SuccessPolicy",
+      "io.k8s.api.core.v1.ObjectReference",
+      "io.k8s.api.core.v1.PersistentVolumeClaim",
+      "io.k8s.api.core.v1.PodTemplateSpec",
+      "io.k8s.api.core.v1.Secret",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
+    ]
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

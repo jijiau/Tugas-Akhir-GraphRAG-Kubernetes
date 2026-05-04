@@ -1,31 +1,58 @@
 {
   "id": "persistent_volume_concept",
   "type": "conceptual",
-  "question": "Apa itu PersistentVolume dan PersistentVolumeClaim?",
-  "resource": "io.k8s.api.core.v1.PersistentVolume",
-  "scope": "Cluster",
-  "multi_hop": false,
+  "question": "Bagaimana cara memastikan data database MySQL tidak hilang ketika Pod-nya di-restart atau dijadwalkan ulang ke node yang berbeda?",
+  "resource": "io.k8s.api.core.v1.PersistentVolumeClaim",
+  "scope": "Namespaced",
+  "multi_hop": true,
   "ground_truth": {
-    "answer": "PersistentVolume (PV) adalah resource penyimpanan di cluster yang di-provision oleh admin atau secara dinamis. PersistentVolumeClaim (PVC) adalah permintaan penyimpanan oleh pengguna. PVC mengikat ke PV yang memenuhi kebutuhan kapasitas dan access mode.",
+    "answer": "Gunakan PersistentVolumeClaim (PVC) yang di-mount ke container database. PVC meminta storage dari cluster dan mengikat ke PersistentVolume (PV) yang lifecycle-nya independen dari Pod — artinya data tetap ada meskipun Pod dihapus atau dipindah ke node lain. Saat Pod di-reschedule ke node berbeda, Kubernetes otomatis me-remount PVC yang sama ke Pod baru. Untuk database, gunakan accessMode: ReadWriteOnce agar hanya satu Pod yang bisa menulis sekaligus. Pasangkan dengan StorageClass yang mendukung dynamic provisioning agar PV dibuat otomatis saat PVC dibuat.",
     "context": [
-      "PersistentVolume (PV) adalah abstraksi penyimpanan yang di-provision oleh cluster administrator",
-      "PV memiliki lifecycle independen dari Pod yang menggunakannya",
-      "PersistentVolumeClaim (PVC) adalah permintaan penyimpanan dari pengguna",
-      "PVC secara otomatis mengikat ke PV yang memenuhi kriteria: storage class, kapasitas, dan access mode",
-      "Pod menggunakan PVC untuk mengakses penyimpanan, bukan langsung ke PV",
-      "Memungkinkan persistent data yang bertahan lebih lama dari Pod"
+      "io.k8s.api.core.v1.PersistentVolumeClaim: permintaan storage oleh user yang lifecycle-nya independen dari Pod",
+      "io.k8s.api.core.v1.PersistentVolume: resource storage di cluster yang di-provision admin atau secara dinamis",
+      "io.k8s.api.core.v1.PersistentVolumeClaimSpec: accessModes dan resources.requests.storage menentukan kebutuhan storage",
+      "io.k8s.api.core.v1.VolumeMount: mount PVC ke path tertentu di dalam container"
     ],
     "relevant_nodes": [
+      "io.k8s.api.core.v1.ModifyVolumeStatus",
+      "io.k8s.api.core.v1.PersistentVolume",
+      "io.k8s.api.core.v1.PersistentVolumeClaim",
+      "io.k8s.api.core.v1.PersistentVolumeClaimCondition",
+      "io.k8s.api.core.v1.PersistentVolumeClaimSpec",
+      "io.k8s.api.core.v1.PersistentVolumeClaimStatus",
+      "io.k8s.api.core.v1.TopologySelectorTerm",
+      "io.k8s.api.core.v1.TypedLocalObjectReference",
+      "io.k8s.api.core.v1.TypedObjectReference",
+      "io.k8s.api.core.v1.VolumeMount",
+      "io.k8s.api.core.v1.VolumeResourceRequirements",
+      "io.k8s.api.storage.v1.StorageClass",
+      "io.k8s.apimachinery.pkg.api.resource.Quantity",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
+    ],
+    "expected_path": [
+      "PersistentVolume -[HAS_PROPERTY]-> PersistentVolumeSpec",
+      "PersistentVolumeClaim -[HAS_PROPERTY]-> PersistentVolumeClaimSpec",
+      "PersistentVolumeClaim -[HAS_PROPERTY]-> PersistentVolumeClaimStatus",
+      "PersistentVolumeClaim -[USES_STORAGE_CLASS]-> StorageClass",
+      "PersistentVolumeClaimSpec -[HAS_PROPERTY]-> LabelSelector",
+      "PersistentVolumeClaimSpec -[HAS_PROPERTY]-> TypedLocalObjectReference",
+      "PersistentVolumeClaimSpec -[HAS_PROPERTY]-> TypedObjectReference",
+      "PersistentVolumeClaimSpec -[HAS_PROPERTY]-> VolumeResourceRequirements",
+      "PersistentVolumeClaimStatus -[HAS_PROPERTY]-> ModifyVolumeStatus",
+      "PersistentVolumeClaimStatus -[HAS_PROPERTY]-> PersistentVolumeClaimCondition",
+      "PersistentVolumeClaimStatus -[HAS_PROPERTY]-> Quantity",
+      "StorageClass -[HAS_PROPERTY]-> TopologySelectorTerm"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": [],
+    "key_nodes": [
       "io.k8s.api.core.v1.PersistentVolume",
       "io.k8s.api.core.v1.PersistentVolumeSpec",
       "io.k8s.api.core.v1.PersistentVolumeClaim",
       "io.k8s.api.core.v1.PersistentVolumeClaimSpec",
       "io.k8s.api.core.v1.AccessMode"
-    ],
-    "expected_path": [],
-    "required_fields": [],
-    "expected_yaml_keys": []
+    ]
   },
-  "source_reference": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/",
+  "source_reference": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims",
   "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
 }

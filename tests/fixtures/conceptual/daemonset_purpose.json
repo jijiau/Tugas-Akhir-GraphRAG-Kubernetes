@@ -14,12 +14,31 @@
     ],
     "relevant_nodes": [
       "io.k8s.api.apps.v1.DaemonSet",
+      "io.k8s.api.apps.v1.DaemonSetCondition",
+      "io.k8s.api.apps.v1.DaemonSetSpec",
+      "io.k8s.api.apps.v1.DaemonSetStatus",
+      "io.k8s.api.apps.v1.DaemonSetUpdateStrategy",
+      "io.k8s.api.core.v1.PodSpec",
+      "io.k8s.api.core.v1.PodTemplateSpec",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
+    ],
+    "expected_path": [
+      "DaemonSet -[CONTAINS_POD_TEMPLATE]-> PodTemplateSpec",
+      "DaemonSet -[HAS_PROPERTY]-> DaemonSetSpec",
+      "DaemonSet -[HAS_PROPERTY]-> DaemonSetStatus",
+      "DaemonSetSpec -[HAS_PROPERTY]-> DaemonSetUpdateStrategy",
+      "DaemonSetSpec -[HAS_PROPERTY]-> LabelSelector",
+      "DaemonSetSpec -[HAS_PROPERTY]-> PodTemplateSpec",
+      "DaemonSetStatus -[HAS_PROPERTY]-> DaemonSetCondition",
+      "PodTemplateSpec -[HAS_PROPERTY]-> PodSpec"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": [],
+    "key_nodes": [
+      "io.k8s.api.apps.v1.DaemonSet",
       "io.k8s.api.apps.v1.DaemonSetSpec",
       "io.k8s.api.core.v1.PodTemplateSpec"
-    ],
-    "expected_path": [],
-    "required_fields": [],
-    "expected_yaml_keys": []
+    ]
   },
   "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/",
   "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"

@@ -20,12 +20,18 @@
     "answer": "informasi pengguna yang terautentikasi Ketika Anda melihat <a href=\"https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/#defi",
     "context": [],
     "relevant_nodes": [
+      "io.k8s.api.rbac.v1.PolicyRule",
       "io.k8s.api.rbac.v1.Role"
     ],
-    "expected_path": [],
+    "expected_path": [
+      "Role -[HAS_PROPERTY]-> PolicyRule"
+    ],
     "required_fields": [],
     "expected_yaml_keys": [],
-    "answer_lang": "id"
+    "answer_lang": "id",
+    "key_nodes": [
+      "io.k8s.api.rbac.v1.Role"
+    ]
   },
   "source_reference": "https://stackoverflow.com/questions/kawty",
   "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/authorization-resources/",

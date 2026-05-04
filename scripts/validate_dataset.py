@@ -111,8 +111,28 @@ def _extract_so_score(fixture: dict) -> int | None:
 
 
 # ── 3. YAML ground truth validation ──────────────────────────────────────────
+_K8S_STANDARD_GROUPS = {
+    "", "v1",                                   # core group
+    "apps", "batch", "autoscaling",
+    "networking.k8s.io", "storage.k8s.io",
+    "rbac.authorization.k8s.io",
+    "policy", "apiextensions.k8s.io",
+    "admissionregistration.k8s.io",
+}
+
+def _is_standard_k8s(data: dict) -> bool:
+    """Return True if apiVersion belongs to a standard K8s group."""
+    api_version = data.get("apiVersion", "")
+    group = api_version.split("/")[0] if "/" in api_version else ""
+    return group in _K8S_STANDARD_GROUPS
+
 def _validate_yaml_gt(fixture: dict) -> dict:
-    """Validate YAML in ground_truth.answer (yaml_gen and realworld with YAML)."""
+    """Validate YAML in ground_truth.answer (yaml_gen and realworld with YAML).
+
+    Handles:
+    - Multi-document YAML (--- separator): validates all documents.
+    - Non-standard API groups (e.g. argoproj.io): skips schema check.
+    """
     result = {"syntactic": None, "schema": None, "error": ""}
     answer = fixture.get("ground_truth", {}).get("answer", "")
     if "apiVersion:" not in answer:
@@ -120,7 +140,12 @@ def _validate_yaml_gt(fixture: dict) -> dict:
 
     import yaml
     try:
-        data = yaml.safe_load(answer)
+        docs = list(yaml.safe_load_all(answer))
+        docs = [d for d in docs if isinstance(d, dict)]  # skip null docs
+        if not docs:
+            result["syntactic"] = False
+            result["error"] = "No valid YAML documents found"
+            return result
         result["syntactic"] = True
     except Exception as e:
         result["syntactic"] = False
@@ -129,11 +154,15 @@ def _validate_yaml_gt(fixture: dict) -> dict:
 
     try:
         import kubernetes_validate
-        if isinstance(data, dict):
-            kubernetes_validate.validate(data, "1.29", strict=False)
-            result["schema"] = True
-        else:
-            result["schema"] = False
+        schema_results = []
+        for doc in docs:
+            if not _is_standard_k8s(doc):
+                # skip schema validation for third-party CRDs (e.g. argoproj.io)
+                continue
+            kubernetes_validate.validate(doc, "1.29", strict=False)
+            schema_results.append(True)
+        # PASS if all standard docs passed; skip (None) if none were standard
+        result["schema"] = all(schema_results) if schema_results else None
     except ImportError:
         result["schema"] = None  # library not installed
     except Exception as e:
