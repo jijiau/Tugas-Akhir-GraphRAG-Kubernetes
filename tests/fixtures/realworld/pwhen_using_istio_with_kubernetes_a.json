@@ -25,7 +25,10 @@
     "expected_path": [],
     "required_fields": [],
     "expected_yaml_keys": [],
-    "answer_lang": "id"
+    "answer_lang": "id",
+    "key_nodes": [
+      "io.k8s.api.core.v1.Secret"
+    ]
   },
   "source_reference": "https://stackoverflow.com/questions/Boon",
   "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",

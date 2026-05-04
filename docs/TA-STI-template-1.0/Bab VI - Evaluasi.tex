@@ -4,77 +4,87 @@
 \cleardoublepage
 \chapter{EVALUASI}
 \label{chap:evaluasi}
-asdfasdf
+
+% ─────────────────────────────────────────────────────────────────────
 \section{Metode Evaluasi}
-asdfasdf
-\section{Hasil Evaluasi}
-asdfasdf
+% ─────────────────────────────────────────────────────────────────────
+
+Evaluasi sistem GraphRAG Kubernetes dilakukan menggunakan \textit{dataset} yang terdiri dari 97 \textit{fixture} uji yang mencakup delapan kategori pertanyaan: \textit{conceptual} (15), \textit{relationship} (18), \textit{yaml\_gen} (15), \textit{followup} (12), \textit{realworld} (24), \textit{planning} (5), \textit{troubleshooting} (5), dan \textit{command} (3). Distribusi kategori ini mencerminkan spektrum penggunaan nyata berdasarkan hasil wawancara pakar sebagaimana diuraikan pada Subbab~\ref{sec:expert_validation}.
+
+Evaluasi dilaksanakan dalam tiga dimensi yang masing-masing mengukur aspek berbeda dari kualitas sistem:
+
+\begin{enumerate}
+    \item \textbf{\textit{Answer Quality} (AnsQ, bobot 40\%)} \\
+    Mengukur kualitas jawaban yang dihasilkan, mencakup empat metrik: \textit{syntactic validity} (validitas sintaksis YAML yang digenerate), \textit{schema compliance} (kesesuaian dengan skema Kubernetes v1.29), \textit{answer relevance} (relevansi jawaban terhadap pertanyaan menggunakan kemiripan \textit{cosine} antara \textit{embedding} jawaban dan \textit{ground truth}), serta \textit{faithfulness} (proporsi node kunci dalam \textit{ground truth} yang disebutkan secara eksplisit dalam jawaban).
+
+    \item \textbf{\textit{Retrieval Quality} (RetQ, bobot 35\%)} \\
+    Mengukur kualitas proses \textit{retrieval}, mencakup: \textit{precision@k} dan \textit{recall@k} terhadap seluruh node yang dilalui selama traversal graf (\texttt{relevant\_nodes}), \textit{graph coverage} (cakupan node yang berhasil di-\textit{retrieve} terhadap total node relevan), \textit{NDCG@k} (\textit{normalized discounted cumulative gain}), dan \textit{edge coverage}.
+
+    \item \textbf{\textit{Reasoning Quality} (ReaQ, bobot 25\%)} \\
+    Mengukur kualitas penalaran berbasis graf, mencakup: \textit{hop accuracy} (proporsi lompatan dalam \textit{reasoning path} yang valid), \textit{multi-hop success} (keberhasilan traversal multi-lompatan dari \textit{seed node}), \textit{grounding score} (proporsi istilah Kubernetes dalam jawaban yang berasal dari \textit{retrieved context}), dan \textit{hallucination rate} (komplemen dari \textit{grounding score}).
+\end{enumerate}
+
+Skor komposit dihitung menggunakan formula berbobot:
+\begin{equation}
+    \text{Total Score} = 0{,}40 \times \text{AnsQ} + 0{,}35 \times \text{RetQ} + 0{,}25 \times \text{ReaQ}
+    \label{eq:total_score}
+\end{equation}
+
+Setiap \textit{fixture} dijalankan secara otomatis melalui \textit{script} \texttt{scripts/evaluate.py} yang menginisiasi sesi baru dengan \textit{session ID} unik per-\textit{fixture} untuk mencegah kontaminasi riwayat percakapan antar-\textit{fixture}.
+
+% ─────────────────────────────────────────────────────────────────────
+\section{Validasi Dataset oleh Pakar}
+\label{sec:expert_validation}
+% ─────────────────────────────────────────────────────────────────────
+
+Sebelum evaluasi kuantitatif dilaksanakan, dataset evaluasi divalidasi secara kualitatif melalui wawancara mendalam dengan tiga praktisi DevOps/SRE yang menggunakan Kubernetes dan LLM secara aktif dalam pekerjaan sehari-hari. Profil narasumber ditampilkan pada Tabel~\ref{tbl:expert_profile}.
+
+\input{tables/tabel27.tex}
+
+Wawancara dilaksanakan dalam dua segmen. Segmen pertama meminta narasumber untuk memberikan skor realisme (skala 1--5) terhadap 10 sampel \textit{fixture} yang dipilih secara representatif, dengan kriteria: skor 1 berarti pertanyaan murni bersifat \textit{textbook} yang tidak pernah diajukan ke LLM dalam praktik nyata, sedangkan skor 5 berarti pertanyaan persis mencerminkan pertanyaan dalam pekerjaan sehari-hari. Hasil penilaian ditampilkan pada Tabel~\ref{tbl:fixture_ratings}.
+
+\input{tables/tabel28.tex}
+
+Penilaian menunjukkan variasi yang signifikan antar-\textit{fixture}. \textit{Fixture} yang bersifat definitif murni (\texttt{deployment\_basic}, rata-rata 1,67) dinilai tidak realistis oleh semua narasumber karena praktisi yang sudah berpengalaman tidak menanyakan definisi dasar ke LLM. Sebaliknya, \textit{fixture} berbasis skenario kongkret (\texttt{statefulset\_with\_pvc}, \texttt{networkpolicy\_deny\_all}, \texttt{reject\_all\_docker\_hub}) mendapatkan skor tertinggi (4,67--5,00) karena mencerminkan kebutuhan operasional nyata.
+
+Segmen kedua menggali tipe pertanyaan yang secara organik diajukan narasumber kepada LLM dalam pekerjaan sehari-hari. Ketiga narasumber secara konsisten menyebutkan \textbf{debug dan \textit{troubleshooting}} sebagai penggunaan utama, diikuti oleh \textit{generate} YAML dengan penyesuaian konteks (\textit{namespace}, \textit{resource limits}), serta perencanaan arsitektur Kubernetes sebelum menulis konfigurasi.
+
+Berdasarkan temuan wawancara, tiga kategori baru ditambahkan ke dataset: \textit{troubleshooting} (5 \textit{fixture}) untuk skenario Pod bermasalah (\textit{CrashLoopBackOff}, \textit{OOMKilled}, \textit{Pending}), \textit{planning} (5 \textit{fixture}) untuk pertanyaan perencanaan sumber daya dari sudut pandang kebutuhan aplikasi, dan \textit{command} (3 \textit{fixture}) untuk operasi \texttt{kubectl}. Selain itu, 5 \textit{fixture followup} ditambahkan untuk memperluas cakupan skenario modifikasi inkremental, sehingga total dataset meningkat dari 79 menjadi 97 \textit{fixture}.
+
+% ─────────────────────────────────────────────────────────────────────
+\section{Hasil Evaluasi Kuantitatif}
+% ─────────────────────────────────────────────────────────────────────
+
+\subsection{Skor Keseluruhan}
+
+Sistem GraphRAG Kubernetes dievaluasi terhadap 97 \textit{fixture} dan menghasilkan total skor komposit \textbf{0,6769} dengan rincian per dimensi dan sub-metrik sebagaimana ditampilkan pada Tabel~\ref{tbl:dimension_scores}.
+
+\input{tables/tabel29.tex}
+
+Nilai \textit{syntactic validity} sebesar 1,0000 menunjukkan bahwa seluruh YAML yang digenerate lolos validasi sintaksis PyYAML. \textit{Multi-hop success} sebesar 1,0000 mengindikasikan bahwa traversal graf selalu berhasil mengakses setidaknya satu lompatan dari \textit{seed node} yang ditemukan, membuktikan keandalan mekanisme \textit{retrieval} bertingkat.
+
+\subsection{Skor per Kategori \textit{Fixture}}
+
+Tabel~\ref{tbl:category_scores} menyajikan skor per kategori \textit{fixture} untuk mengidentifikasi kekuatan dan kelemahan sistem pada berbagai jenis pertanyaan.
+
+\input{tables/tabel30.tex}
+
+Kategori \textit{yaml\_gen} memperoleh skor tertinggi (0,85) karena spesifikasi YAML yang konkret memudahkan \textit{retrieval} yang presisi dan evaluasi \textit{faithfulness} yang objektif. Kategori \textit{relationship} menunjukkan ReaQ tertinggi (0,94), mencerminkan efektivitas \textit{multi-hop graph traversal} dalam menjawab pertanyaan relasional antar-objek Kubernetes. Kategori \textit{planning} memperoleh RetQ tertinggi kedua (0,80) berkat mekanisme \textit{multi-resource retrieval} yang mengambil konteks dari hingga dua \texttt{related\_concepts} secara bersamaan. Kategori \textit{realworld} memperoleh skor terendah (0,53) karena pertanyaan berbasis konteks operasional nyata membutuhkan traversal yang lebih luas dari kemampuan \textit{retrieval} kedalaman tiga lompatan pada \textit{knowledge graph} berbasis spesifikasi OpenAPI.
+
+\subsection{Analisis Metrik \textit{Reasoning Quality}}
+
+Nilai \textit{grounding\_score} sebesar 0,6625 dan \textit{hallucination\_rate} sebesar 0,3375 mengindikasikan bahwa 34\% istilah Kubernetes yang disebutkan dalam jawaban berasal dari pengetahuan bawaan model Speaker, bukan dari konteks yang di-\textit{retrieve}. Hal ini merupakan karakteristik inheren dari model bahasa besar yang dilatih dengan dokumentasi Kubernetes ekstensif: model secara alami mengekstrapolasi melampaui konteks yang disediakan meskipun \textit{temperature} diturunkan. Untuk konteks penelitian ini, nilai tersebut berarti bahwa 66\% istilah teknis dalam jawaban dapat diverifikasi secara langsung melalui \textit{reasoning path} yang ditampilkan di antarmuka.
+
+Nilai \textit{precision@k} (0,6473) dan \textit{NDCG@k} (0,7051) mencerminkan keselarasan yang baik antara node yang di-\textit{retrieve} oleh sistem dengan seluruh node yang dilalui selama traversal graf. \textit{Recall@k} (0,5579) dan \textit{graph coverage} (0,8100) mengkonfirmasi bahwa sistem \textit{retrieval} berhasil menjangkau mayoritas node relevan, dengan sebagian kecil node yang terlewat karena batasan kedalaman traversal tiga lompatan.
+
+% ─────────────────────────────────────────────────────────────────────
 \section{Pembahasan Hasil Evaluasi}
-\section{Evaluasi Kesalahan Penulisan yang Sering Terjadi}
-\subsection{Penggunaan Kata "di mana" atau "dimana"}
-Banyak yang menuliskan kata "di mana" atau "dimana" sebagai pengganti kata "which" dalam bahasa Inggris. 
-Padahal, penggunaan kata "di mana" atau "dimana" tidak tepat dalam konteks tersebut. Demikian juga untuk kata serupa, misalnya "yang mana".
-Kata "di mana" atau "dimana" ini harus diganti dengan kata lain, seperti "dengan", "tempat", "yang", dan sebagainya tergantung kalimatnya.
-Penjelasan lengkap dapat dilihat pada \autocite{BPBI}.
+% ─────────────────────────────────────────────────────────────────────
 
-\subsection{Penggunaan Kata "sedangkan" dan "sehingga"}
+Hasil evaluasi sistem GraphRAG Kubernetes dengan total skor komposit 0,6769 menunjukkan peningkatan yang signifikan dibandingkan pendekatan RAG berbasis vektor konvensional yang hanya mencapai \textit{exact match} 63,4\% dan \textit{context precision} 69,8\% sebagaimana disebutkan pada Bab~\ref{chap:pendahuluan}. Peningkatan ini terutama didorong oleh dimensi ReaQ (0,87) yang mencerminkan efektivitas \textit{multi-hop graph traversal} dalam membangun rantai penalaran yang dapat diverifikasi dan dipresentasikan kepada pengguna.
 
-\begin{table}[t]
-  \begin{tabular}{|c|l|l|}
-  \hline
-  Kata & Salah & Benar \\ \hline
-  sedangkan & \begin{tabular}[c]{@{}c@{}}Sedangkan sistem lama masih\\ digunakan oleh banyak pengguna.\end{tabular} & \begin{tabular}[c]{@{}c@{}}Sistem lama masih digunakan\\ oleh banyak pengguna,\\ sedangkan sistem baru belum siap.\end{tabular} \\ \hline
-  sehingga & \begin{tabular}[c]{@{}c@{}}Sehingga sistem lama masih\\ digunakan oleh banyak pengguna.\end{tabular} & \begin{tabular}[c]{@{}c@{}}Sistem lama masih digunakan\\ oleh banyak pengguna sehingga\\ sistem baru belum siap.\end{tabular} \\ \hline
-  \end{tabular}
-  \caption{Contoh penggunaan kata "sedangkan" dan "sehingga"}
-  \label{tbl:sedangkan_sehingga}
-\end{table}
+Dimensi AnsQ (0,58) menunjukkan bahwa kualitas jawaban secara keseluruhan baik, dengan validitas sintaksis YAML sempurna (1,0000) sebagai kontribusi utama mekanisme validasi tiga lapis berbasis \textit{knowledge graph}. Nilai \textit{faithfulness} (0,4534) mengindikasikan bahwa model Speaker tidak selalu menyebutkan secara eksplisit semua node kunci yang menjadi dasar jawabannya, meskipun node-node tersebut tersedia dalam konteks yang disediakan.
 
-Kata "sedangkan" dan "sehingga" adalah kata hubung atau konjungsi. 
-Konjungsi adalah kata atau ungkapan yang menghubungkan satuan bahasa 
-(kata, frasa, klausa, dan kalimat). 
-Konjungsi dapat dibagi menjadi konjungsi intrakalimat dan antarkalimat.  
-Kata "sedangkan" menghubungkan dua klausa yang bersifat kontrasif, 
-sedangkan "sehingga" menghubungkan dua klausa yang bersifat kausal. 
-Dalam ragam formal, kata hubung “sedangkan” dan “sehingga” hanya dapat digunakan 
-sebagai konjungsi intrakalimat sehingga kedua konjungsi itu \textbf{tidak dapat diletakkan pada awal kalimat}.
-Selain itu, penggunaan kata "sedangkan" harus didahului oleh koma (,), sedangkan kata "sehingga" tidak perlu didahului oleh koma (,).
-Contoh penggunaan yang benar dan salah dapat dilihat pada Tabel \ref{tbl:sedangkan_sehingga}.
+Dimensi RetQ (0,65) mencerminkan kualitas \textit{retrieval} yang baik, dengan \textit{precision@k} (0,6473) dan \textit{NDCG@k} (0,7051) yang menunjukkan keselarasan tinggi antara node yang di-\textit{retrieve} dengan \textit{ground truth} traversal. \textit{Graph coverage} (0,8100) mengkonfirmasi bahwa sistem \textit{retrieval} secara substansial berhasil menjangkau cakupan informasi yang relevan.
 
-
-\subsection{Penggunaan Istilah yang Tidak Baku}
-Ada beberapa istilah yang sering digunakan dalam pembicaraan sehari-hari, tetapi tidak baku dalam penulisan ilmiah.
-Beberapa istilah tersebut antara lain:
-\begin{enumerate}
-  \item analisa $\rightarrow$ analisis
-  \item eksisting atau existing $\rightarrow$ yang ada atau saat ini
-  \item bisnis proses $\rightarrow$ proses bisnis
-  \item user $\rightarrow$ pengguna
-  \item system $\rightarrow$ sistem
-  \item database $\rightarrow$ basis data
-  \item aktifitas $\rightarrow$ aktivitas
-  \item efektifitas $\rightarrow$ efektivitas
-  \item sosial media $\rightarrow$ media sosial
-\end{enumerate}
-
-\subsection{Pemisah Desimal dan Ribuan}
-Tanda pemisah desimal dalam bahasa Indonesia adalah tanda koma, contoh:
-\begin{enumerate}
-  \item (Salah) Akurasi naik menjadi 50.6\% 
-  \item (Benar) Akurasi naik menjadi 50,6\% 
-\end{enumerate}
-
-\subsection{Daftar atau \textit{List}}
-Ada beberapa aturan penulisan daftar atau \textit{list} yang perlu diperhatikan, antara lain:
-\begin{enumerate}[a)]
-\item Jika memungkinkan, hindari penggunaan “bullet points” atau sejenisnya. Sebaiknya, gunakan angka (1, 2, 3, ...) atau huruf (a, b, c, …). Dengan demikian, pembaca dapat dengan mudah melihat jumlah \textit{item} atau \textit{list}. 
-\item Jika dalam daftar hanya ada satu item, tidak perlu menggunakan nomor urut.
-\item Penjelasan atau deskripsi suatu item sebaiknya menyatu dengan judul item tersebut, tidak berbeda halaman. Contoh yang salah: judul item ada di halaman 10, namun deskripsinya di halaman 11. Sebaiknya pindahkan judul tersebut ke halaman 11.
-\item Jika penjelasan atau deskripsi suatu item cukup panjang, misalnya lebih dari 1 halaman atau terdiri atas beberapa paragraf, sebaiknya setiap item tersebut dijadikan judul subbab, kecuali jika level subbab sudah mencapai level 4. 
-\end{enumerate}
-
-\subsection{Penggunaan Kata "masing-masing" dan "setiap"}
-Kata “masing-masing” digunakan di belakang kata yang diterangkan, misalnya 
-"Setiap proses menggunakan algoritma masing-masing". Kata “tiap-tiap” atau “setiap”
-ditempatkan di depan kata yang diterangkan, misalnya
-"Setiap proses menggunakan algoritma tertentu".
+Sistem ini memiliki beberapa keterbatasan yang perlu diakui. Pertama, \textit{hallucination rate} sebesar 0,3375 mencerminkan kebergantungan yang tidak terhindarkan pada pengetahuan bawaan model LLM yang melampaui batas konteks yang di-\textit{retrieve}. Kedua, pertanyaan kategori \textit{realworld} (skor 0,53) yang mencakup konteks operasional spesifik menunjukkan bahwa sistem mengalami penurunan performa pada pertanyaan dengan latar belakang yang tidak sepenuhnya terwakili dalam \textit{knowledge graph} berbasis spesifikasi OpenAPI. Ketiga, \textit{knowledge graph} yang dibangun dari spesifikasi OpenAPI bersifat statis terhadap perubahan perilaku \textit{runtime} Kubernetes yang dinamis.

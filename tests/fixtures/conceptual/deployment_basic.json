@@ -1,23 +1,46 @@
 {
   "id": "deployment_basic",
   "type": "conceptual",
-  "question": "Apa itu Deployment?",
+  "question": "Apa yang terjadi pada Pod yang sedang berjalan ketika saya update image Deployment ke versi baru? Apakah ada downtime?",
   "resource": "io.k8s.api.apps.v1.Deployment",
   "scope": "Namespaced",
-  "multi_hop": false,
+  "multi_hop": true,
   "ground_truth": {
-    "answer": "Deployment adalah controller yang mengelola ReplicaSet dan memastikan jumlah Pod yang diinginkan berjalan. Mendukung rolling update dan rollback.",
+    "answer": "Secara default Deployment menggunakan strategi RollingUpdate: Pod baru dengan image baru dibuat bertahap sambil Pod lama dihentikan satu per satu. Selama proses ini selalu ada Pod lama yang masih melayani traffic sehingga tidak ada downtime. Parameter maxUnavailable mengontrol berapa Pod boleh mati sekaligus, dan maxSurge mengontrol berapa Pod baru boleh dibuat melebihi jumlah replika yang diinginkan. Jika Pod baru gagal start (misalnya image tidak ditemukan atau crash), rollout otomatis berhenti dan bisa dikembalikan dengan kubectl rollout undo.",
     "context": [
-      "io.k8s.api.apps.v1.Deployment: Deployment enables declarative updates for Pods and ReplicaSets.",
-      "io.k8s.api.apps.v1.DeploymentSpec: spec.replicas defines desired pod count"
+      "io.k8s.api.apps.v1.DeploymentStrategy: type RollingUpdate (default) atau Recreate",
+      "io.k8s.api.apps.v1.RollingUpdateDeployment: maxUnavailable dan maxSurge mengontrol laju rolling update",
+      "io.k8s.api.apps.v1.DeploymentSpec: progressDeadlineSeconds menentukan batas waktu sebelum rollout dianggap gagal"
     ],
     "relevant_nodes": [
       "io.k8s.api.apps.v1.Deployment",
-      "io.k8s.api.apps.v1.DeploymentSpec"
+      "io.k8s.api.apps.v1.DeploymentCondition",
+      "io.k8s.api.apps.v1.DeploymentSpec",
+      "io.k8s.api.apps.v1.DeploymentStatus",
+      "io.k8s.api.apps.v1.DeploymentStrategy",
+      "io.k8s.api.apps.v1.RollingUpdateDeployment",
+      "io.k8s.api.core.v1.PodSpec",
+      "io.k8s.api.core.v1.PodTemplateSpec",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
     ],
-    "expected_path": [],
+    "expected_path": [
+      "Deployment -[CONTAINS_POD_TEMPLATE]-> PodTemplateSpec",
+      "Deployment -[EXTENDS]-> DeploymentSpec",
+      "Deployment -[HAS_PROPERTY]-> DeploymentSpec",
+      "Deployment -[HAS_PROPERTY]-> DeploymentStatus",
+      "DeploymentSpec -[HAS_PROPERTY]-> DeploymentStrategy",
+      "DeploymentSpec -[HAS_PROPERTY]-> LabelSelector",
+      "DeploymentSpec -[HAS_PROPERTY]-> PodTemplateSpec",
+      "DeploymentStatus -[HAS_PROPERTY]-> DeploymentCondition",
+      "DeploymentStrategy -[HAS_PROPERTY]-> RollingUpdateDeployment",
+      "PodTemplateSpec -[HAS_PROPERTY]-> PodSpec"
+    ],
     "required_fields": [],
-    "expected_yaml_keys": []
+    "expected_yaml_keys": [],
+    "key_nodes": [
+      "io.k8s.api.apps.v1.Deployment",
+      "io.k8s.api.apps.v1.DeploymentSpec"
+    ]
   },
   "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
   "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"

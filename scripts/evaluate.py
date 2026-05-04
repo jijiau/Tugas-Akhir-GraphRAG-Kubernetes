@@ -45,9 +45,16 @@ _SCOPE_Q_KEYWORDS = [
 ]
 
 # ── K8s term regex — for grounding check ─────────────────────────────────────
+# Only matches compound CamelCase K8s types (2+ PascalCase segments, e.g. DeploymentSpec)
+# or well-known single-word K8s resources, to avoid matching Indonesian sentence starters.
 _K8S_TERM_RE = re.compile(
     r'\b(?:'
-    r'[A-Z][a-zA-Z]+(?:Spec|List|Status|Config|Policy|Rule|Set|Map|Ref|Claim)?'
+    r'[A-Z][a-z]+(?:[A-Z][a-zA-Z]+)+'
+    r'|Deployment|StatefulSet|DaemonSet|ReplicaSet|CronJob|Ingress'
+    r'|ConfigMap|Secret|Namespace|ServiceAccount|Endpoints|Pod|Service'
+    r'|Node|ResourceQuota|LimitRange|NetworkPolicy|StorageClass'
+    r'|Role|ClusterRole|RoleBinding|ClusterRoleBinding'
+    r'|HorizontalPodAutoscaler|PersistentVolume|PersistentVolumeClaim'
     r'|apiVersion|kubectl|namespace[sd]?|pod[sd]?|deployment[sd]?|service[sd]?'
     r'|configmap[sd]?|secret[sd]?|ingress(?:es)?|statefulset[sd]?|daemonset[sd]?'
     r'|replicaset[sd]?|cronjob[sd]?|job[sd]?|persistentvolume(?:claim)?[sd]?'
@@ -188,9 +195,17 @@ def compute_ansq(
     else:
         scores["answer_relevance"] = _token_f1(answer, gt_answer)
 
-    # Faithfulness — fraction of expected nodes referenced in the answer
-    gt_nodes = [n.split(".")[-1] for n in ground_truth.get("relevant_nodes", [])]
-    hit = sum(1 for n in gt_nodes if n.lower() in answer.lower())
+    # Faithfulness — fraction of key nodes referenced in the answer.
+    # Uses key_nodes (original hand-curated nodes) when available, else relevant_nodes.
+    # This avoids faithfulness being diluted by the expanded retrieval_nodes list.
+    # Handles plural forms (Pod → pods, Namespace → namespaces) common in Indonesian answers.
+    def _node_matches(node: str, answer_lower: str) -> bool:
+        nl = node.lower()
+        return nl in answer_lower or nl + "s" in answer_lower or nl + "es" in answer_lower
+
+    faith_source = ground_truth.get("key_nodes") or ground_truth.get("relevant_nodes", [])
+    gt_nodes = [n.split(".")[-1] for n in faith_source]
+    hit = sum(1 for n in gt_nodes if _node_matches(n, answer.lower()))
     scores["faithfulness"] = hit / len(gt_nodes) if gt_nodes else 1.0
 
     applicable = [v for v in scores.values() if v is not None]
@@ -451,6 +466,12 @@ def run_evaluation(mode: str = "graphrag", output_path: Path = DEFAULT_OUTPUT):
 
     logger.info(f"Running evaluation: mode={mode}, fixtures={len(fixtures)}")
 
+    # Unique run ID prevents Zep memory contamination across evaluation runs.
+    # Without this, re-runs pick up memory from prior runs → wrong intent → wrong retrieval.
+    import uuid as _uuid
+    _run_id = _uuid.uuid4().hex[:8]
+    logger.info(f"[Eval] Evaluation run ID: {_run_id}")
+
     rows = []
     summary = {"ansq": [], "retq": [], "reaq": [], "total": []}
 
@@ -478,7 +499,7 @@ def run_evaluation(mode: str = "graphrag", output_path: Path = DEFAULT_OUTPUT):
 
         result = agent.invoke({
             "question":        question,
-            "session_id":      f"eval_{data['id']}",
+            "session_id":      f"eval_{_run_id}_{data['id']}",
             "messages":        [],
             "chat_history":    "",
             "extracted_intent": {},

@@ -13,11 +13,43 @@
     ],
     "relevant_nodes": [
       "io.k8s.api.apps.v1.StatefulSet",
-      "io.k8s.api.apps.v1.StatefulSetSpec"
+      "io.k8s.api.apps.v1.StatefulSetCondition",
+      "io.k8s.api.apps.v1.StatefulSetOrdinals",
+      "io.k8s.api.apps.v1.StatefulSetPersistentVolumeClaimRetentionPolicy",
+      "io.k8s.api.apps.v1.StatefulSetSpec",
+      "io.k8s.api.apps.v1.StatefulSetStatus",
+      "io.k8s.api.apps.v1.StatefulSetUpdateStrategy",
+      "io.k8s.api.core.v1.PersistentVolumeClaim",
+      "io.k8s.api.core.v1.PersistentVolumeClaimSpec",
+      "io.k8s.api.core.v1.PersistentVolumeClaimStatus",
+      "io.k8s.api.core.v1.PodSpec",
+      "io.k8s.api.core.v1.PodTemplateSpec",
+      "io.k8s.api.storage.v1.StorageClass",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
     ],
-    "expected_path": [],
+    "expected_path": [
+      "PersistentVolumeClaim -[HAS_PROPERTY]-> PersistentVolumeClaimSpec",
+      "PersistentVolumeClaim -[HAS_PROPERTY]-> PersistentVolumeClaimStatus",
+      "PersistentVolumeClaim -[USES_STORAGE_CLASS]-> StorageClass",
+      "PodTemplateSpec -[HAS_PROPERTY]-> PodSpec",
+      "StatefulSet -[CLAIMS_VOLUME]-> PersistentVolumeClaim",
+      "StatefulSet -[CONTAINS_POD_TEMPLATE]-> PodTemplateSpec",
+      "StatefulSet -[HAS_PROPERTY]-> StatefulSetSpec",
+      "StatefulSet -[HAS_PROPERTY]-> StatefulSetStatus",
+      "StatefulSetSpec -[HAS_PROPERTY]-> LabelSelector",
+      "StatefulSetSpec -[HAS_PROPERTY]-> PersistentVolumeClaim",
+      "StatefulSetSpec -[HAS_PROPERTY]-> PodTemplateSpec",
+      "StatefulSetSpec -[HAS_PROPERTY]-> StatefulSetOrdinals",
+      "StatefulSetSpec -[HAS_PROPERTY]-> StatefulSetPersistentVolumeClaimRetentionPolicy",
+      "StatefulSetSpec -[HAS_PROPERTY]-> StatefulSetUpdateStrategy",
+      "StatefulSetStatus -[HAS_PROPERTY]-> StatefulSetCondition"
+    ],
     "required_fields": [],
-    "expected_yaml_keys": []
+    "expected_yaml_keys": [],
+    "key_nodes": [
+      "io.k8s.api.apps.v1.StatefulSet",
+      "io.k8s.api.apps.v1.StatefulSetSpec"
+    ]
   },
   "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/",
   "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"

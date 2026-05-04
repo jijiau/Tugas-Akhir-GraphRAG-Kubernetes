@@ -1,26 +1,35 @@
 {
   "id": "configmap_usage",
   "type": "conceptual",
-  "question": "Apa itu ConfigMap dan bagaimana cara menggunakannya?",
+  "question": "Bagaimana cara memperbarui konfigurasi aplikasi di Kubernetes tanpa harus rebuild image container atau redeploy dari awal?",
   "resource": "io.k8s.api.core.v1.ConfigMap",
   "scope": "Namespaced",
-  "multi_hop": false,
+  "multi_hop": true,
   "ground_truth": {
-    "answer": "ConfigMap menyimpan data konfigurasi non-rahasia dalam pasangan key-value. Bisa digunakan sebagai environment variables, command-line arguments, atau file konfigurasi dalam volume.",
+    "answer": "Simpan konfigurasi di ConfigMap, lalu inject ke container melalui dua cara: (1) sebagai environment variable via envFrom.configMapRef — perubahan ConfigMap baru berlaku setelah Pod di-restart; (2) sebagai volume mount via volumes.configMap — perubahan ConfigMap otomatis ter-reflect di file dalam container dalam beberapa menit tanpa restart Pod. Cara volume mount lebih fleksibel untuk konfigurasi yang sering berubah. Untuk memicu reload tanpa downtime, gunakan rolling update dengan kubectl rollout restart deployment.",
     "context": [
-      "ConfigMap adalah Kubernetes resource untuk menyimpan konfigurasi non-sensitif",
-      "ConfigMap menyimpan data dalam format key-value pairs",
-      "Dapat digunakan dengan berbagai cara: sebagai environment variables, command-line arguments, atau mounted sebagai volume",
-      "Ideal untuk memisahkan konfigurasi dari kode aplikasi"
+      "io.k8s.api.core.v1.ConfigMap: menyimpan konfigurasi non-sensitif sebagai key-value pairs",
+      "io.k8s.api.core.v1.EnvFromSource: inject semua key ConfigMap sebagai environment variables ke container",
+      "io.k8s.api.core.v1.ConfigMapVolumeSource: mount ConfigMap sebagai file di dalam volume container",
+      "io.k8s.api.core.v1.VolumeMount: menentukan path di mana volume di-mount di dalam container"
     ],
     "relevant_nodes": [
       "io.k8s.api.core.v1.ConfigMap",
       "io.k8s.api.core.v1.ConfigMapVolumeSource",
-      "io.k8s.api.core.v1.EnvFromSource"
+      "io.k8s.api.core.v1.EnvFromSource",
+      "io.k8s.api.core.v1.VolumeMount"
     ],
-    "expected_path": [],
+    "expected_path": [
+      "Container -[HAS_PROPERTY]-> EnvFromSource",
+      "Volume -[ONE_OF]-> ConfigMapVolumeSource"
+    ],
     "required_fields": [],
-    "expected_yaml_keys": []
+    "expected_yaml_keys": [],
+    "key_nodes": [
+      "io.k8s.api.core.v1.ConfigMap",
+      "io.k8s.api.core.v1.ConfigMapVolumeSource",
+      "io.k8s.api.core.v1.EnvFromSource"
+    ]
   },
   "source_reference": "https://kubernetes.io/docs/concepts/configuration/configmap/",
   "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"

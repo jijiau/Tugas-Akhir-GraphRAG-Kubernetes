@@ -1,0 +1,60 @@
+{
+  "id": "add_resource_limits_deployment",
+  "type": "followup",
+  "question": "Sekarang tambahkan resource request dan limit untuk container itu: request CPU 100m memory 128Mi, limit CPU 500m memory 512Mi",
+  "resource": "io.k8s.api.apps.v1.Deployment",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "ground_truth": {
+    "answer": "Tambahkan resources pada container spec:\n```yaml\nspec:\n  template:\n    spec:\n      containers:\n      - name: app\n        resources:\n          requests:\n            cpu: 100m\n            memory: 128Mi\n          limits:\n            cpu: 500m\n            memory: 512Mi\n```\nrequests digunakan scheduler untuk memilih node yang cocok. limits adalah batas keras — container yang melebihi memory limit akan di-OOMKill.",
+    "context": [
+      "io.k8s.api.core.v1.ResourceRequirements: requests dan limits untuk CPU dan memory",
+      "io.k8s.api.core.v1.Container: field resources mendefinisikan ResourceRequirements container"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.apps.v1.Deployment",
+      "io.k8s.api.apps.v1.DeploymentCondition",
+      "io.k8s.api.apps.v1.DeploymentSpec",
+      "io.k8s.api.apps.v1.DeploymentStatus",
+      "io.k8s.api.apps.v1.DeploymentStrategy",
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.PodSpec",
+      "io.k8s.api.core.v1.PodTemplateSpec",
+      "io.k8s.api.core.v1.ResourceRequirements",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
+    ],
+    "expected_path": [
+      "Container -[HAS_PROPERTY]-> ResourceRequirements",
+      "Deployment -[CONTAINS_POD_TEMPLATE]-> PodTemplateSpec",
+      "Deployment -[EXTENDS]-> DeploymentSpec",
+      "Deployment -[HAS_PROPERTY]-> DeploymentSpec",
+      "Deployment -[HAS_PROPERTY]-> DeploymentStatus",
+      "DeploymentSpec -[HAS_PROPERTY]-> DeploymentStrategy",
+      "DeploymentSpec -[HAS_PROPERTY]-> LabelSelector",
+      "DeploymentSpec -[HAS_PROPERTY]-> PodTemplateSpec",
+      "DeploymentStatus -[HAS_PROPERTY]-> DeploymentCondition",
+      "PodTemplateSpec -[HAS_PROPERTY]-> PodSpec"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": [
+      "spec.template.spec.containers[0].resources.requests.cpu",
+      "spec.template.spec.containers[0].resources.requests.memory",
+      "spec.template.spec.containers[0].resources.limits.cpu",
+      "spec.template.spec.containers[0].resources.limits.memory"
+    ],
+    "key_nodes": [
+      "io.k8s.api.apps.v1.Deployment",
+      "io.k8s.api.apps.v1.DeploymentCondition",
+      "io.k8s.api.apps.v1.DeploymentSpec",
+      "io.k8s.api.apps.v1.DeploymentStatus",
+      "io.k8s.api.apps.v1.DeploymentStrategy",
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.PodSpec",
+      "io.k8s.api.core.v1.PodTemplateSpec",
+      "io.k8s.api.core.v1.ResourceRequirements",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
+    ]
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

@@ -14,10 +14,24 @@
     ],
     "relevant_nodes": [
       "io.k8s.api.networking.v1.NetworkPolicy",
-      "io.k8s.api.networking.v1.NetworkPolicySpec"
+      "io.k8s.api.networking.v1.NetworkPolicyEgressRule",
+      "io.k8s.api.networking.v1.NetworkPolicyIngressRule",
+      "io.k8s.api.networking.v1.NetworkPolicyPeer",
+      "io.k8s.api.networking.v1.NetworkPolicyPort",
+      "io.k8s.api.networking.v1.NetworkPolicySpec",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelectorRequirement"
     ],
     "expected_path": [
-      "NetworkPolicy -[HAS_PROPERTY]-> NetworkPolicySpec"
+      "LabelSelector -[HAS_PROPERTY]-> LabelSelectorRequirement",
+      "NetworkPolicy -[HAS_PROPERTY]-> NetworkPolicySpec",
+      "NetworkPolicyEgressRule -[HAS_PROPERTY]-> NetworkPolicyPeer",
+      "NetworkPolicyEgressRule -[HAS_PROPERTY]-> NetworkPolicyPort",
+      "NetworkPolicyIngressRule -[HAS_PROPERTY]-> NetworkPolicyPeer",
+      "NetworkPolicyIngressRule -[HAS_PROPERTY]-> NetworkPolicyPort",
+      "NetworkPolicySpec -[HAS_PROPERTY]-> LabelSelector",
+      "NetworkPolicySpec -[HAS_PROPERTY]-> NetworkPolicyEgressRule",
+      "NetworkPolicySpec -[HAS_PROPERTY]-> NetworkPolicyIngressRule"
     ],
     "required_fields": [
       "apiVersion",
@@ -28,6 +42,10 @@
     "expected_yaml_keys": [
       "spec.podSelector",
       "spec.policyTypes"
+    ],
+    "key_nodes": [
+      "io.k8s.api.networking.v1.NetworkPolicy",
+      "io.k8s.api.networking.v1.NetworkPolicySpec"
     ]
   },
   "source_reference": "https://kubernetes.io/docs/concepts/services-networking/network-policies/",

@@ -12,16 +12,44 @@
       "PVC -[USES_STORAGE_CLASS]-> StorageClass"
     ],
     "relevant_nodes": [
+      "io.k8s.api.core.v1.ModifyVolumeStatus",
+      "io.k8s.api.core.v1.PersistentVolumeClaim",
+      "io.k8s.api.core.v1.PersistentVolumeClaimCondition",
+      "io.k8s.api.core.v1.PersistentVolumeClaimSpec",
+      "io.k8s.api.core.v1.PersistentVolumeClaimStatus",
+      "io.k8s.api.core.v1.TopologySelectorLabelRequirement",
+      "io.k8s.api.core.v1.TopologySelectorTerm",
+      "io.k8s.api.core.v1.TypedLocalObjectReference",
+      "io.k8s.api.core.v1.TypedObjectReference",
+      "io.k8s.api.core.v1.VolumeResourceRequirements",
+      "io.k8s.api.storage.v1.StorageClass",
+      "io.k8s.apimachinery.pkg.api.resource.Quantity",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelectorRequirement"
+    ],
+    "expected_path": [
+      "LabelSelector -[HAS_PROPERTY]-> LabelSelectorRequirement",
+      "PersistentVolumeClaim -[HAS_PROPERTY]-> PersistentVolumeClaimSpec",
+      "PersistentVolumeClaim -[HAS_PROPERTY]-> PersistentVolumeClaimStatus",
+      "PersistentVolumeClaim -[USES_STORAGE_CLASS]-> StorageClass",
+      "PersistentVolumeClaimSpec -[HAS_PROPERTY]-> LabelSelector",
+      "PersistentVolumeClaimSpec -[HAS_PROPERTY]-> TypedLocalObjectReference",
+      "PersistentVolumeClaimSpec -[HAS_PROPERTY]-> TypedObjectReference",
+      "PersistentVolumeClaimSpec -[HAS_PROPERTY]-> VolumeResourceRequirements",
+      "PersistentVolumeClaimStatus -[HAS_PROPERTY]-> ModifyVolumeStatus",
+      "PersistentVolumeClaimStatus -[HAS_PROPERTY]-> PersistentVolumeClaimCondition",
+      "PersistentVolumeClaimStatus -[HAS_PROPERTY]-> Quantity",
+      "StorageClass -[HAS_PROPERTY]-> TopologySelectorTerm",
+      "TopologySelectorTerm -[HAS_PROPERTY]-> TopologySelectorLabelRequirement",
+      "VolumeResourceRequirements -[HAS_PROPERTY]-> Quantity"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": [],
+    "key_nodes": [
       "io.k8s.api.core.v1.PersistentVolumeClaim",
       "io.k8s.api.core.v1.PersistentVolumeClaimSpec",
       "io.k8s.api.storage.v1.StorageClass"
-    ],
-    "expected_path": [
-      "PersistentVolumeClaim -[HAS_PROPERTY]-> PersistentVolumeClaimSpec",
-      "PersistentVolumeClaim -[USES_STORAGE_CLASS]-> StorageClass"
-    ],
-    "required_fields": [],
-    "expected_yaml_keys": []
+    ]
   },
   "source_reference": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims",
   "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"

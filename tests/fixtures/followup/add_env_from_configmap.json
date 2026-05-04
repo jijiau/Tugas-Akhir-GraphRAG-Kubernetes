@@ -1,0 +1,66 @@
+{
+  "id": "add_env_from_configmap",
+  "type": "followup",
+  "question": "Sekarang tambahkan environment variable DB_HOST yang nilainya diambil dari key database-host di ConfigMap bernama app-config",
+  "resource": "io.k8s.api.apps.v1.Deployment",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "ground_truth": {
+    "answer": "Tambahkan env pada container spec dengan configMapKeyRef:\n```yaml\nspec:\n  template:\n    spec:\n      containers:\n      - name: app\n        env:\n        - name: DB_HOST\n          valueFrom:\n            configMapKeyRef:\n              name: app-config\n              key: database-host\n```",
+    "context": [
+      "io.k8s.api.core.v1.EnvVar: environment variable yang di-inject ke container",
+      "io.k8s.api.core.v1.EnvVarSource: sumber nilai env var — bisa dari ConfigMap, Secret, atau field Pod",
+      "io.k8s.api.core.v1.ConfigMapKeySelector: referensi ke key tertentu dalam sebuah ConfigMap"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.apps.v1.Deployment",
+      "io.k8s.api.apps.v1.DeploymentCondition",
+      "io.k8s.api.apps.v1.DeploymentSpec",
+      "io.k8s.api.apps.v1.DeploymentStatus",
+      "io.k8s.api.apps.v1.DeploymentStrategy",
+      "io.k8s.api.core.v1.ConfigMapKeySelector",
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.EnvVar",
+      "io.k8s.api.core.v1.EnvVarSource",
+      "io.k8s.api.core.v1.PodSpec",
+      "io.k8s.api.core.v1.PodTemplateSpec",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
+    ],
+    "expected_path": [
+      "Container -[HAS_PROPERTY]-> EnvVar",
+      "Deployment -[CONTAINS_POD_TEMPLATE]-> PodTemplateSpec",
+      "Deployment -[EXTENDS]-> DeploymentSpec",
+      "Deployment -[HAS_PROPERTY]-> DeploymentSpec",
+      "Deployment -[HAS_PROPERTY]-> DeploymentStatus",
+      "DeploymentSpec -[HAS_PROPERTY]-> DeploymentStrategy",
+      "DeploymentSpec -[HAS_PROPERTY]-> LabelSelector",
+      "DeploymentSpec -[HAS_PROPERTY]-> PodTemplateSpec",
+      "DeploymentStatus -[HAS_PROPERTY]-> DeploymentCondition",
+      "EnvVar -[HAS_PROPERTY]-> EnvVarSource",
+      "EnvVarSource -[HAS_PROPERTY]-> ConfigMapKeySelector",
+      "PodTemplateSpec -[HAS_PROPERTY]-> PodSpec"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": [
+      "spec.template.spec.containers[0].env",
+      "spec.template.spec.containers[0].env[0].valueFrom.configMapKeyRef.name",
+      "spec.template.spec.containers[0].env[0].valueFrom.configMapKeyRef.key"
+    ],
+    "key_nodes": [
+      "io.k8s.api.apps.v1.Deployment",
+      "io.k8s.api.apps.v1.DeploymentCondition",
+      "io.k8s.api.apps.v1.DeploymentSpec",
+      "io.k8s.api.apps.v1.DeploymentStatus",
+      "io.k8s.api.apps.v1.DeploymentStrategy",
+      "io.k8s.api.core.v1.ConfigMapKeySelector",
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.EnvVar",
+      "io.k8s.api.core.v1.EnvVarSource",
+      "io.k8s.api.core.v1.PodSpec",
+      "io.k8s.api.core.v1.PodTemplateSpec",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
+    ]
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

@@ -20,12 +20,22 @@
     "answer": "Grup ditentukan oleh metode otentikasi yang dikonfigurasi. Lihat https://kubernetes.io/",
     "context": [],
     "relevant_nodes": [
-      "io.k8s.api.core.v1.Namespace"
+      "io.k8s.api.core.v1.Namespace",
+      "io.k8s.api.core.v1.NamespaceCondition",
+      "io.k8s.api.core.v1.NamespaceSpec",
+      "io.k8s.api.core.v1.NamespaceStatus"
     ],
-    "expected_path": [],
+    "expected_path": [
+      "Namespace -[HAS_PROPERTY]-> NamespaceSpec",
+      "Namespace -[HAS_PROPERTY]-> NamespaceStatus",
+      "NamespaceStatus -[HAS_PROPERTY]-> NamespaceCondition"
+    ],
     "required_fields": [],
     "expected_yaml_keys": [],
-    "answer_lang": "id"
+    "answer_lang": "id",
+    "key_nodes": [
+      "io.k8s.api.core.v1.Namespace"
+    ]
   },
   "source_reference": "https://stackoverflow.com/questions/Toren",
   "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",

@@ -1,4 +1,5 @@
 import uuid
+import re
 import streamlit as st
 from dotenv import load_dotenv
 load_dotenv()
@@ -11,7 +12,61 @@ st.set_page_config(
     layout="wide",
 )
 
-# ── Session state initialization ──────────────────────────────────────────────
+# ── Constants ──────────────────────────────────────────────────────────────────
+
+_INTENT_LABELS = {
+    "explain":            "Penjelasan",
+    "generate_yaml":      "Generate YAML",
+    "trace_relationship": "Relasi Resource",
+    "followup":           "Follow-up",
+}
+
+_API_VERSION_MAP = {
+    "Pod": "v1", "Service": "v1", "ConfigMap": "v1", "Secret": "v1",
+    "PersistentVolumeClaim": "v1", "PersistentVolume": "v1",
+    "Namespace": "v1", "ServiceAccount": "v1", "Endpoints": "v1",
+    "Node": "v1", "ResourceQuota": "v1", "LimitRange": "v1",
+    "Deployment": "apps/v1", "StatefulSet": "apps/v1",
+    "DaemonSet": "apps/v1", "ReplicaSet": "apps/v1",
+    "Job": "batch/v1", "CronJob": "batch/v1",
+    "HorizontalPodAutoscaler": "autoscaling/v2",
+    "Ingress": "networking.k8s.io/v1", "NetworkPolicy": "networking.k8s.io/v1",
+    "Role": "rbac.authorization.k8s.io/v1",
+    "ClusterRole": "rbac.authorization.k8s.io/v1",
+    "RoleBinding": "rbac.authorization.k8s.io/v1",
+    "ClusterRoleBinding": "rbac.authorization.k8s.io/v1",
+    "StorageClass": "storage.k8s.io/v1",
+}
+
+_K8S_DOCS_MAP = {
+    "Deployment":              "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/deployment-v1/",
+    "Pod":                     "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/",
+    "Service":                 "https://kubernetes.io/docs/reference/kubernetes-api/service-resources/service-v1/",
+    "StatefulSet":             "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/stateful-set-v1/",
+    "DaemonSet":               "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/daemon-set-v1/",
+    "ReplicaSet":              "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/replica-set-v1/",
+    "Job":                     "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/job-v1/",
+    "CronJob":                 "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/cron-job-v1/",
+    "ConfigMap":               "https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/config-map-v1/",
+    "Secret":                  "https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/secret-v1/",
+    "PersistentVolume":        "https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/persistent-volume-v1/",
+    "PersistentVolumeClaim":   "https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/persistent-volume-claim-v1/",
+    "StorageClass":            "https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/storage-class-v1/",
+    "Ingress":                 "https://kubernetes.io/docs/reference/kubernetes-api/service-resources/ingress-v1/",
+    "NetworkPolicy":           "https://kubernetes.io/docs/reference/kubernetes-api/policy-resources/network-policy-v1/",
+    "HorizontalPodAutoscaler": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/horizontal-pod-autoscaler-v2/",
+    "ServiceAccount":          "https://kubernetes.io/docs/reference/kubernetes-api/authentication-resources/service-account-v1/",
+    "Role":                    "https://kubernetes.io/docs/reference/kubernetes-api/authorization-resources/role-v1/",
+    "ClusterRole":             "https://kubernetes.io/docs/reference/kubernetes-api/authorization-resources/cluster-role-v1/",
+    "RoleBinding":             "https://kubernetes.io/docs/reference/kubernetes-api/authorization-resources/role-binding-v1/",
+    "ClusterRoleBinding":      "https://kubernetes.io/docs/reference/kubernetes-api/authorization-resources/cluster-role-binding-v1/",
+    "Namespace":               "https://kubernetes.io/docs/reference/kubernetes-api/cluster-resources/namespace-v1/",
+    "Node":                    "https://kubernetes.io/docs/reference/kubernetes-api/cluster-resources/node-v1/",
+    "ResourceQuota":           "https://kubernetes.io/docs/reference/kubernetes-api/policy-resources/resource-quota-v1/",
+    "Endpoints":               "https://kubernetes.io/docs/reference/kubernetes-api/service-resources/endpoints-v1/",
+}
+
+# ── Session state ──────────────────────────────────────────────────────────────
 if "session_id" not in st.session_state:
     st.session_state.session_id = str(uuid.uuid4())
 if "chat_history_display" not in st.session_state:
@@ -20,7 +75,57 @@ if "agent_graph" not in st.session_state:
     st.session_state.agent_graph = create_agent_graph()
 
 
-# ── Retrieval Trace visualization ─────────────────────────────────────────────
+# ── Helper functions ───────────────────────────────────────────────────────────
+
+def _confidence_info(reasoning_path: list) -> tuple[str, str, str]:
+    """Return (label, bg_color, fg_color) based on graph traversal depth."""
+    n = len(reasoning_path)
+    if n == 0:
+        return "Pengetahuan Umum LLM", "#fef3c7", "#92400e"
+    if n <= 3:
+        return "Sebagian dari Graph", "#e0f2fe", "#0369a1"
+    return "Dari Knowledge Graph", "#d1fae5", "#065f46"
+
+
+def _render_intent_row(extracted_intent: dict, reasoning_path: list):
+    """Show intent type badge and confidence indicator above the response."""
+    if not extracted_intent:
+        return
+
+    intent_type  = extracted_intent.get("intent_type", "")
+    primary      = extracted_intent.get("primary_resource", "")
+    intent_label = _INTENT_LABELS.get(intent_type, intent_type)
+    conf_label, conf_bg, conf_fg = _confidence_info(reasoning_path)
+
+    col_intent, col_conf = st.columns([3, 2])
+    with col_intent:
+        st.markdown(
+            f'<span style="background:#dbeafe;color:#1e40af;padding:3px 10px;'
+            f'border-radius:4px;font-size:12px;font-weight:600">{intent_label}</span>'
+            f'&nbsp;&nbsp;<span style="color:#6b7280;font-size:13px">{primary}</span>',
+            unsafe_allow_html=True,
+        )
+    with col_conf:
+        st.markdown(
+            f'<span style="background:{conf_bg};color:{conf_fg};padding:3px 10px;'
+            f'border-radius:4px;font-size:12px">{conf_label}</span>',
+            unsafe_allow_html=True,
+        )
+    st.markdown("<div style='margin-bottom:8px'></div>", unsafe_allow_html=True)
+
+
+def _render_response_with_yaml(content: str):
+    """Render response text, using st.code() for yaml blocks to enable copy button."""
+    parts = re.split(r'```yaml\s*\n(.*?)```', content, flags=re.DOTALL)
+    for i, part in enumerate(parts):
+        if i % 2 == 0:
+            if part.strip():
+                st.markdown(part)
+        else:
+            st.code(part.rstrip(), language="yaml")
+
+
+# ── Retrieval Trace visualization ──────────────────────────────────────────────
 
 def _parse_edges(reasoning_path: list[str]) -> list[tuple[str, str, str]]:
     """Parse 'Parent -[REL]-> Child' strings into (parent, rel, child) tuples."""
@@ -46,7 +151,7 @@ def _bfs_depth(edges: list[tuple]) -> dict[str, int]:
     queue     = [root]
     while queue:
         current = queue.pop(0)
-        for p, r, c in edges:
+        for p, _, c in edges:
             if p == current and c not in depth_map:
                 depth_map[c] = depth_map[current] + 1
                 queue.append(c)
@@ -56,16 +161,14 @@ def _bfs_depth(edges: list[tuple]) -> dict[str, int]:
 def _build_dot(edges: list[tuple], depth_map: dict[str, int],
                max_edges: int = 25) -> str:
     """Build Graphviz DOT string, colour-coded by depth level."""
-    # Limit edges shown in graph to avoid clutter; prefer shallow edges
     shown = sorted(edges, key=lambda e: depth_map.get(e[0], 99))[:max_edges]
 
-    # Depth → (fill colour, font colour)
     palette = {
-        0: ("#1e3a5f", "white"),   # root — dark navy
-        1: ("#2563eb", "white"),   # depth 1 — blue
-        2: ("#3b82f6", "white"),   # depth 2 — medium blue
-        3: ("#60a5fa", "black"),   # depth 3 — sky blue
-        4: ("#bfdbfe", "black"),   # depth 4+ — pale blue
+        0: ("#1e3a5f", "white"),
+        1: ("#2563eb", "white"),
+        2: ("#3b82f6", "white"),
+        3: ("#60a5fa", "black"),
+        4: ("#bfdbfe", "black"),
     }
 
     lines = [
@@ -77,29 +180,27 @@ def _build_dot(edges: list[tuple], depth_map: dict[str, int],
         "",
     ]
 
-    # Nodes
     seen_nodes = set()
-    for p, r, c in shown:
+    for p, _, c in shown:
         for node in (p, c):
             if node not in seen_nodes:
                 seen_nodes.add(node)
-                d     = min(depth_map.get(node, 4), 4)
+                d          = min(depth_map.get(node, 4), 4)
                 fill, font = palette[d]
-                bold  = ", penwidth=2" if d == 0 else ""
+                bold       = ", penwidth=2" if d == 0 else ""
                 lines.append(
                     f'  "{node}" [fillcolor="{fill}", fontcolor="{font}"{bold}];'
                 )
     lines.append("")
 
-    # Edges
-    for p, r, c in shown:
+    for p, _, c in shown:
         lines.append(f'  "{p}" -> "{c}";')
 
     lines.append("}")
     return "\n".join(lines)
 
 
-def render_retrieval_trace(reasoning_path: list[str], graph_context_json: str):
+def render_retrieval_trace(reasoning_path: list[str]):
     """Render the Retrieval Trace section inside an expander."""
     if not reasoning_path:
         return
@@ -113,21 +214,23 @@ def render_retrieval_trace(reasoning_path: list[str], graph_context_json: str):
     max_depth = max(depth_map.values(), default=0)
     n_nodes   = len(depth_map)
     n_edges   = len(edges)
+    api_ver   = _API_VERSION_MAP.get(root, "—")
 
     with st.expander("Retrieval Trace — Alur Pencarian Graph", expanded=False):
 
         # ── Metrics row ──────────────────────────────────────────────────────
-        c1, c2, c3, c4 = st.columns(4)
+        c1, c2, c3, c4, c5 = st.columns(5)
         c1.metric("Root Resource", root)
-        c2.metric("Nodes", n_nodes)
-        c3.metric("Unique Edges", n_edges)
-        c4.metric("Max Depth", max_depth)
+        c2.metric("API Version",   api_ver)
+        c3.metric("Nodes",         n_nodes)
+        c4.metric("Unique Edges",  n_edges)
+        c5.metric("Max Depth",     max_depth)
 
         st.divider()
 
-        # ── Tabs: Graph | Table ───────────────────────────────────────────────
-        tab_graph, tab_table, tab_legend = st.tabs(
-            ["Graph Visualization", "Edge Table", "Keterangan Warna"]
+        # ── Tabs ─────────────────────────────────────────────────────────────
+        tab_graph, tab_table, tab_sources, tab_legend = st.tabs(
+            ["Graph Visualization", "Edge Table", "Sumber Referensi", "Keterangan Warna"]
         )
 
         with tab_graph:
@@ -143,10 +246,10 @@ def render_retrieval_trace(reasoning_path: list[str], graph_context_json: str):
             import pandas as pd
             rows = [
                 {
-                    "Depth": depth_map.get(p, "?"),
-                    "Parent Node": p,
+                    "Depth":        depth_map.get(p, "?"),
+                    "Parent Node":  p,
                     "Relationship": rel,
-                    "Child Node": c,
+                    "Child Node":   c,
                 }
                 for p, rel, c in edges
             ]
@@ -162,7 +265,25 @@ def render_retrieval_trace(reasoning_path: list[str], graph_context_json: str):
                     "Child Node":   st.column_config.TextColumn("Child Node"),
                 },
             )
-            st.caption(f"Total {n_edges} unique edges | {n_nodes} nodes | max depth {max_depth}")
+            st.caption(
+                f"Total {n_edges} unique edges | {n_nodes} nodes | max depth {max_depth}"
+            )
+
+        with tab_sources:
+            all_nodes = {node for p, _, c in edges for node in (p, c)}
+            refs = {n: _K8S_DOCS_MAP[n] for n in all_nodes if n in _K8S_DOCS_MAP}
+            if refs:
+                st.caption("Dokumentasi resmi Kubernetes untuk resource yang ditemukan:")
+                for name in sorted(refs):
+                    url     = refs[name]
+                    api     = _API_VERSION_MAP.get(name, "")
+                    version = f" `{api}`" if api else ""
+                    st.markdown(f"- [{name}]({url}){version}")
+            else:
+                st.caption(
+                    "Tidak ada resource utama yang cocok dengan dokumentasi kubernetes.io "
+                    "pada jalur ini."
+                )
 
         with tab_legend:
             st.markdown("""
@@ -181,19 +302,32 @@ def render_retrieval_trace(reasoning_path: list[str], graph_context_json: str):
             """)
 
 
-# ── UI ────────────────────────────────────────────────────────────────────────
+def render_assistant_message(content: str, extracted_intent: dict,
+                             reasoning_path: list):
+    """Render a full assistant turn: intent badge, response with yaml copy, retrieval trace."""
+    _render_intent_row(extracted_intent, reasoning_path)
+    _render_response_with_yaml(content)
+    render_retrieval_trace(reasoning_path)
+
+
+# ── UI ─────────────────────────────────────────────────────────────────────────
 st.title("K8s GraphRAG Assistant")
 st.caption("Chatbot berbasis Knowledge Graph untuk dokumentasi Kubernetes")
 
-# Tampilkan riwayat chat
+# Render conversation history
 for msg in st.session_state.chat_history_display:
     with st.chat_message(msg["role"]):
-        st.markdown(msg["content"])
-        if msg["role"] == "assistant" and msg.get("reasoning_path"):
-            render_retrieval_trace(msg["reasoning_path"], msg.get("graph_context", ""))
+        if msg["role"] == "assistant":
+            render_assistant_message(
+                msg["content"],
+                msg.get("extracted_intent", {}),
+                msg.get("reasoning_path", []),
+            )
+        else:
+            st.markdown(msg["content"])
 
-# Input pengguna
-if prompt := st.chat_input("Tanyakan tentang Kubernetes... (contoh: Apa itu Deployment?)"):
+# User input
+if prompt := st.chat_input("Tanyakan tentang Kubernetes..."):
     st.session_state.chat_history_display.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
@@ -201,26 +335,27 @@ if prompt := st.chat_input("Tanyakan tentang Kubernetes... (contoh: Apa itu Depl
     with st.chat_message("assistant"):
         with st.spinner("Menelusuri Knowledge Graph..."):
             result = st.session_state.agent_graph.invoke({
-                "question":       prompt,
-                "session_id":     st.session_state.session_id,
-                "messages":       [],
-                "chat_history":   "",
+                "question":         prompt,
+                "session_id":       st.session_state.session_id,
+                "messages":         [],
+                "chat_history":     "",
                 "extracted_intent": {},
-                "graph_context":  "",
-                "reasoning_path": [],
-                "error":          None,
+                "graph_context":    "",
+                "reasoning_path":   [],
+                "error":            None,
             })
 
-        ai_response    = result["messages"][-1].content if result.get("messages") else "Terjadi error."
-        reasoning_path = result.get("reasoning_path") or []
-        graph_context  = result.get("graph_context", "")
+        ai_response      = result["messages"][-1].content if result.get("messages") else "Terjadi error."
+        reasoning_path   = result.get("reasoning_path") or []
+        graph_context    = result.get("graph_context", "")
+        extracted_intent = result.get("extracted_intent") or {}
 
-        st.markdown(ai_response)
-        render_retrieval_trace(reasoning_path, graph_context)
+        render_assistant_message(ai_response, extracted_intent, reasoning_path)
 
     st.session_state.chat_history_display.append({
-        "role":           "assistant",
-        "content":        ai_response,
-        "reasoning_path": reasoning_path,
-        "graph_context":  graph_context,
+        "role":             "assistant",
+        "content":          ai_response,
+        "reasoning_path":   reasoning_path,
+        "graph_context":    graph_context,
+        "extracted_intent": extracted_intent,
     })

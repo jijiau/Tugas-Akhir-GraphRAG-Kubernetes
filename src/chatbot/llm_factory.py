@@ -20,6 +20,6 @@ def get_speaker_llm():
     """
     return ChatGroq(
         model=settings.speaker_model,
-        temperature=0.3, # Slightly creative for conversation
+        temperature=0.1, # Low temperature for faithful RAG while avoiding LLaMA rigidity at 0.0
         api_key=settings.groq_api_key
     )

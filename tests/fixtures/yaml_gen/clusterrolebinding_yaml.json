@@ -12,13 +12,27 @@
       "ClusterRole: cluster-scoped role that can be referenced by ClusterRoleBinding"
     ],
     "relevant_nodes": [
-      "io.k8s.api.rbac.v1.ClusterRoleBinding",
+      "io.k8s.api.core.v1.LocalObjectReference",
+      "io.k8s.api.core.v1.ObjectReference",
+      "io.k8s.api.core.v1.ServiceAccount",
+      "io.k8s.api.rbac.v1.AggregationRule",
       "io.k8s.api.rbac.v1.ClusterRole",
-      "io.k8s.api.core.v1.ServiceAccount"
+      "io.k8s.api.rbac.v1.ClusterRoleBinding",
+      "io.k8s.api.rbac.v1.PolicyRule",
+      "io.k8s.api.rbac.v1.RoleRef",
+      "io.k8s.api.rbac.v1.Subject",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
     ],
     "expected_path": [
+      "AggregationRule -[HAS_PROPERTY]-> LabelSelector",
+      "ClusterRole -[HAS_PROPERTY]-> AggregationRule",
+      "ClusterRole -[HAS_PROPERTY]-> PolicyRule",
       "ClusterRoleBinding -[BINDS_ROLE]-> ClusterRole",
-      "ClusterRoleBinding -[BINDS_SERVICE_ACCOUNT]-> ServiceAccount"
+      "ClusterRoleBinding -[BINDS_SERVICE_ACCOUNT]-> ServiceAccount",
+      "ClusterRoleBinding -[HAS_PROPERTY]-> RoleRef",
+      "ClusterRoleBinding -[HAS_PROPERTY]-> Subject",
+      "ServiceAccount -[HAS_PROPERTY]-> LocalObjectReference",
+      "ServiceAccount -[HAS_PROPERTY]-> ObjectReference"
     ],
     "required_fields": [
       "apiVersion",
@@ -32,6 +46,11 @@
       "roleRef",
       "roleRef.kind",
       "roleRef.name"
+    ],
+    "key_nodes": [
+      "io.k8s.api.rbac.v1.ClusterRoleBinding",
+      "io.k8s.api.rbac.v1.ClusterRole",
+      "io.k8s.api.core.v1.ServiceAccount"
     ]
   },
   "source_reference": "https://kubernetes.io/docs/reference/access-authn-authz/rbac/#rolebinding-and-clusterrolebinding",
