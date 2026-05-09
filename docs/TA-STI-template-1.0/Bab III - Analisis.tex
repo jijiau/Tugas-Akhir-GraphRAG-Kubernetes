@@ -76,7 +76,7 @@ Bagian ini menjelaskan karakteristik data dokumentasi API Kubernetes yang menjad
 
         Sebelum merancang skema \textit{knowledge graph}, analisis data eksploratif (\textit{Exploratory Data Analysis} / EDA) dilakukan terhadap berkas \texttt{kubernetes\_swagger.json} berukuran 3,67 MB guna memetakan skala, kompleksitas struktural, dan sebaran definisi skema. Proses ekstraksi awal berhasil mengidentifikasi 735 definisi skema. Sebanyak 5 entri diabaikan karena teridentifikasi sebagai data bising (\textit{noise}), menyisakan 730 definisi skema valid untuk dievaluasi lebih lanjut.
 
-        Temuan utama dari proses EDA ini dikelompokkan ke dalam tiga metrik krusial:
+        Temuan utama dari proses EDA ini dikelompokkan ke dalam tiga metrik utama:
 
         \begin{enumerate}
             \item \textbf{Distribusi objek Kubernetes \textit{root} vs komponen pendukung}\\
@@ -97,7 +97,7 @@ Bagian ini menjelaskan karakteristik data dokumentasi API Kubernetes yang menjad
 
     \subsubsection{Analisis Keterhubungan Data}
         \begin{enumerate}
-            \item \textbf{Relasi Tingkat Skema (\textit{Schema-Level}) -- Tercakup Penuh 100\%} \\
+            \item \textbf{Relasi Tingkat Skema (\textit{Schema-Level})} \\
             Kategori ini terpetakan dan direpresentasikan secara utuh di dalam graf karena bersumber langsung dari struktur statis spesifikasi OpenAPI. Relasi pada tingkat ini mencakup:
             \begin{enumerate}[a.]
                 \item \textbf{Sifat Atomik \texttt{Pod} (\textit{Passive Relationships}):} \texttt{Pod} bertindak sebagai unit eksekusi atomik pasif tanpa relasi skema eksplisit ke luar. Relasinya terbentuk secara pasif akibat interaksi struktural dari objek Kubernetes eksternal.
@@ -123,15 +123,15 @@ Bagian ini menjelaskan karakteristik data dokumentasi API Kubernetes yang menjad
             \end{minipage}
 
             \vspace{0.3cm}
-            \item \textbf{Relasi Semi-Statis (\textit{Semi-Static}) -- Tercakup Parsial} \\
-            Kategori ini terpetakan ke dalam graf secara konseptual atau sebagai properti \textit{node}, namun tidak membentuk jalur semantik fungsional penuh.
+            \item \textbf{Relasi Semi-Statis (\textit{Semi-Static})} \\
+            Kategori ini terpetakan ke dalam graf secara konseptual atau sebagai properti \textit{node}, namun tidak membentuk jalur semantik fungsional secara utuh.
             \begin{enumerate}[a.]
                 \item \textbf{Asosiasi Label/Selektor (\textit{Label/Selector Association}):} Direpresentasikan sekadar sebagai \textit{edge} konseptual pembentuk topologi graf.
                 \item \textbf{Deteksi Cakupan Klaster (\textit{Cluster-Scope Detection}):} Pembatasan area operasional tidak dipetakan sebagai ruang graf terpisah melainkan diakomodasi melalui atribut properti cakupan (\textit{scope property}) pada setiap \textit{node}.
                 \item \textbf{Anotasi dan Toleransi (\textit{Annotations/Tolerations}):} Nilai konfigurasi tambahan ini hanya disimpan sebagai properti pada \textit{node} tanpa memicu pembentukan \textit{edge} semantik dengan objek Kubernetes lain.
             \end{enumerate}
 
-            \item \textbf{Relasi Tingkat Operasional (\textit{Runtime-Level}) -- Tidak Tercakup} \\
+            \item \textbf{Relasi Tingkat Operasional (\textit{Runtime-Level})} \\
             Kategori ini secara mutlak berada di luar cakupan fungsional sistem GraphRAG. Relasi pada tingkat ini mencakup:
             \begin{enumerate}[a.]
                 \item \textbf{Hierarki Kepemilikan (\textit{OwnerReferences}):} Merupakan atribut metadata operasional penentu pengumpulan sampah sumber daya (\textit{garbage collection}) saat infrastruktur berjalan.
@@ -145,7 +145,7 @@ Bagian ini menjelaskan karakteristik data dokumentasi API Kubernetes yang menjad
 
     \subsubsection{Desain Taksonomi \textit{Edge} untuk \textit{Knowledge Graph} Kubernetes}
 
-    Berdasarkan analisis pola keterhubungan data di atas, penelitian ini merancang 18 jenis \textit{edge} yang terdistribusi dalam 7 kategori relasi. Taksonomi ini adalah \textbf{kontribusi penelitian} yang dirancang khusus berdasarkan semantik domain Kubernetes, bukan standar yang ada di literatur sebelumnya. Seluruh 18 \textit{edge} type diimplementasikan dalam kode pada variabel \texttt{\_ALL\_EDGE\_TYPES} di \texttt{src/graph/queries.py}.
+    Berdasarkan analisis pola keterhubungan data di atas, penelitian ini merancang 18 jenis \textit{edge} yang terdistribusi dalam 7 kategori relasi. Taksonomi ini adalah kontribusi penelitian yang dirancang khusus berdasarkan semantik domain Kubernetes. Seluruh 18 \textit{edge} type diimplementasikan dalam kode pada variabel \texttt{\_ALL\_EDGE\_TYPES} di \texttt{src/graph/queries.py}.
 
     \input{tables/tabel21.tex}
 
