@@ -161,7 +161,8 @@
 \contentsline {subsubsection}{\numberline {III.1.2.4}Analisis Keterhubungan Data}{27}{subsubsection.3.1.2.4}%
 \contentsline {subsubsection}{\numberline {III.1.2.5}Desain Taksonomi \textit {Edge} untuk \textit {Knowledge Graph} Kubernetes}{28}{subsubsection.3.1.2.5}%
 \contentsline {subsubsection}{\numberline {III.1.2.6}Justifikasi Batas Kedalaman Penelusuran Graf (3 Lompatan)}{30}{subsubsection.3.1.2.6}%
-\contentsline {section}{\numberline {III.2}Analisis Kebutuhan}{30}{section.3.2}%
+\contentsline {subsubsection}{\numberline {III.1.2.7}Analisis Kompleksitas Pertanyaan dan Batasan Kemampuan Sistem}{30}{subsubsection.3.1.2.7}%
+\contentsline {section}{\numberline {III.2}Analisis Kebutuhan}{31}{section.3.2}%
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
@@ -172,63 +173,31 @@
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
-\contentsline {subsection}{\numberline {III.2.1}Kebutuhan Fungsional}{32}{subsection.3.2.1}%
-\contentsline {subsection}{\numberline {III.2.2}Kebutuhan Non Fungsional}{35}{subsection.3.2.2}%
-\contentsline {subsection}{\numberline {III.2.3}Pemetaan Kebutuhan Bisnis terhadap Kerangka Evaluasi}{36}{subsection.3.2.3}%
-\contentsline {section}{\numberline {III.3}Alternatif Solusi}{37}{section.3.3}%
-\contentsline {subsection}{\numberline {III.3.1}Hybrid KG--Vector RAG}{37}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {III.2.1}Kebutuhan Fungsional}{33}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {III.2.2}Kebutuhan Non Fungsional}{36}{subsection.3.2.2}%
+\contentsline {subsection}{\numberline {III.2.3}Pemetaan Kebutuhan Bisnis terhadap Kerangka Evaluasi}{37}{subsection.3.2.3}%
+\contentsline {section}{\numberline {III.3}Alternatif Solusi}{38}{section.3.3}%
+\contentsline {subsection}{\numberline {III.3.1}Hybrid KG--Vector RAG}{38}{subsection.3.3.1}%
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
-\contentsline {subsection}{\numberline {III.3.2}\textit {GNN-augmented GraphRAG} (G-Retriever)}{38}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {III.3.2}\textit {GNN-augmented GraphRAG} (G-Retriever)}{39}{subsection.3.3.2}%
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
-\contentsline {subsection}{\numberline {III.3.3}\textit {Hybrid Neural-Symbolic} dengan \textit {Relational DB} (NeuSym-RAG)}{38}{subsection.3.3.3}%
+\contentsline {subsection}{\numberline {III.3.3}\textit {Hybrid Neural-Symbolic} dengan \textit {Relational DB} (NeuSym-RAG)}{39}{subsection.3.3.3}%
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
-\contentsline {section}{\numberline {III.4}Analisis Pemilihan Solusi}{38}{section.3.4}%
-\contentsline {subsection}{\numberline {III.4.1}Rubrik Evaluasi Solusi}{39}{subsection.3.4.1}%
-\contentsline {subsection}{\numberline {III.4.2}Matriks Keputusan \& Justifikasi Penilaian}{40}{subsection.3.4.2}%
-\contentsline {subsection}{\numberline {III.4.3}Analisis Pemilihan dan Penyesuaian (Selection \& Adjustment)}{41}{subsection.3.4.3}%
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\contentsline {chapter}{\numberline {IV}PERANCANGAN}{43}{chapter.4}%
-\contentsline {section}{\numberline {IV.1}Rancangan Solusi Secara Garis Besar}{43}{section.4.1}%
-\contentsline {section}{\numberline {IV.2}Pemetaan Metodologi terhadap Kebutuhan Sistem}{44}{section.4.2}%
-\contentsline {section}{\numberline {IV.3}Perancangan Komponen Sistem}{50}{section.4.3}%
-\contentsline {subsection}{\numberline {IV.3.1}Pipeline \textit {Ingestion} Data}{50}{subsection.4.3.1}%
-\contentsline {subsection}{\numberline {IV.3.2}Perancangan \textit {LangGraph Agent Pipeline}}{52}{subsection.4.3.2}%
-\contentsline {subsection}{\numberline {IV.3.3}Perancangan Mekanisme \textit {Retrieval} Bertingkat}{53}{subsection.4.3.3}%
-\contentsline {subsection}{\numberline {IV.3.4}Perancangan Validasi YAML Tiga Lapis}{54}{subsection.4.3.4}%
-\contentsline {subsection}{\numberline {IV.3.5}Perancangan Antarmuka Web Streamlit}{55}{subsection.4.3.5}%
-\contentsline {chapter}{\numberline {V}IMPLEMENTASI}{57}{chapter.5}%
-\contentsline {chapter}{\numberline {VI}EVALUASI}{59}{chapter.6}%
-\contentsline {section}{\numberline {VI.1}Metode Evaluasi}{59}{section.6.1}%
-\contentsline {section}{\numberline {VI.2}Hasil Evaluasi}{59}{section.6.2}%
-\contentsline {section}{\numberline {VI.3}Pembahasan Hasil Evaluasi}{59}{section.6.3}%
-\contentsline {section}{\numberline {VI.4}Evaluasi Kesalahan Penulisan yang Sering Terjadi}{59}{section.6.4}%
-\contentsline {subsection}{\numberline {VI.4.1}Penggunaan Kata "di mana" atau "dimana"}{59}{subsection.6.4.1}%
-\contentsline {subsection}{\numberline {VI.4.2}Penggunaan Kata "sedangkan" dan "sehingga"}{59}{subsection.6.4.2}%
-\contentsline {subsection}{\numberline {VI.4.3}Penggunaan Istilah yang Tidak Baku}{60}{subsection.6.4.3}%
-\contentsline {subsection}{\numberline {VI.4.4}Pemisah Desimal dan Ribuan}{60}{subsection.6.4.4}%
-\contentsline {subsection}{\numberline {VI.4.5}Daftar atau \textit {List}}{60}{subsection.6.4.5}%
-\contentsline {subsection}{\numberline {VI.4.6}Penggunaan Kata "masing-masing" dan "setiap"}{61}{subsection.6.4.6}%
-\contentsline {chapter}{\numberline {VII}PENUTUP}{63}{chapter.7}%
-\contentsline {section}{\numberline {VII.1}Kesimpulan}{63}{section.7.1}%
-\contentsline {section}{\numberline {VII.2}Saran}{63}{section.7.2}%
+\contentsline {section}{\numberline {III.4}Analisis Pemilihan Solusi}{39}{section.3.4}%
+\contentsline {subsection}{\numberline {III.4.1}Rubrik Evaluasi Solusi}{40}{subsection.3.4.1}%
+\contentsline {subsection}{\numberline {III.4.2}Matriks Keputusan \& Justifikasi Penilaian}{41}{subsection.3.4.2}%
+\contentsline {subsection}{\numberline {III.4.3}Analisis Pemilihan dan Penyesuaian (Selection \& Adjustment)}{42}{subsection.3.4.3}%
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
@@ -237,14 +206,34 @@
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
+\contentsline {chapter}{\numberline {IV}PERANCANGAN}{45}{chapter.4}%
+\contentsline {section}{\numberline {IV.1}Rancangan Solusi Secara Garis Besar}{45}{section.4.1}%
+\contentsline {section}{\numberline {IV.2}Pemetaan Metodologi terhadap Kebutuhan Sistem}{46}{section.4.2}%
+\contentsline {section}{\numberline {IV.3}Perancangan Komponen Sistem}{52}{section.4.3}%
+\contentsline {subsection}{\numberline {IV.3.1}Pipeline \textit {Ingestion} Data}{52}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {IV.3.2}Perancangan \textit {LangGraph Agent Pipeline}}{54}{subsection.4.3.2}%
+\contentsline {subsection}{\numberline {IV.3.3}Perancangan Mekanisme \textit {Retrieval} Bertingkat}{55}{subsection.4.3.3}%
+\contentsline {subsection}{\numberline {IV.3.4}Perancangan Validasi YAML Tiga Lapis}{56}{subsection.4.3.4}%
+\contentsline {subsection}{\numberline {IV.3.5}Perancangan Antarmuka Web Streamlit}{57}{subsection.4.3.5}%
+\contentsline {chapter}{\numberline {V}IMPLEMENTASI}{59}{chapter.5}%
+\contentsline {section}{\numberline {V.1}Lingkungan Implementasi}{59}{section.5.1}%
+\contentsline {section}{\numberline {V.2}Implementasi \textit {Ingestion} Data dan \textit {Knowledge Graph}}{61}{section.5.2}%
+\contentsline {section}{\numberline {V.3}Implementasi \textit {Pipeline} LangGraph}{62}{section.5.3}%
+\contentsline {section}{\numberline {V.4}Implementasi Mekanisme \textit {Retrieval} Bertingkat}{62}{section.5.4}%
+\contentsline {section}{\numberline {V.5}Implementasi Validasi YAML Tiga Lapis}{63}{section.5.5}%
+\contentsline {section}{\numberline {V.6}Implementasi Antarmuka Pengguna}{64}{section.5.6}%
+\contentsline {chapter}{\numberline {VI}EVALUASI}{65}{chapter.6}%
+\contentsline {section}{\numberline {VI.1}Metode Evaluasi}{65}{section.6.1}%
+\contentsline {section}{\numberline {VI.2}Validasi Dataset oleh Pakar}{66}{section.6.2}%
+\contentsline {section}{\numberline {VI.3}Hasil Evaluasi Kuantitatif}{68}{section.6.3}%
+\contentsline {subsection}{\numberline {VI.3.1}Skor Keseluruhan}{68}{subsection.6.3.1}%
+\contentsline {subsection}{\numberline {VI.3.2}Skor per Kategori \textit {Fixture}}{68}{subsection.6.3.2}%
+\contentsline {subsection}{\numberline {VI.3.3}Analisis Metrik \textit {Reasoning Quality}}{69}{subsection.6.3.3}%
+\contentsline {section}{\numberline {VI.4}Pembahasan Hasil Evaluasi}{70}{section.6.4}%
+\contentsline {section}{\numberline {VI.5}Perbandingan dengan Pendekatan \textit {Baseline}}{71}{section.6.5}%
+\contentsline {chapter}{\numberline {VII}PENUTUP}{75}{chapter.7}%
+\contentsline {section}{\numberline {VII.1}Kesimpulan}{75}{section.7.1}%
+\contentsline {section}{\numberline {VII.2}Saran}{75}{section.7.2}%
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
@@ -273,10 +262,26 @@
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
-\contentsline {chapter}{Lampiran \numberline {A}KODE PROGRAM}{69}{appendix.a.A}%
-\contentsline {section}{\numberline {A.1}Perangkat Lunak untuk Akuisisi Data dari Sensor Ultrasonik}{69}{section.a.A.1}%
-\contentsline {section}{\numberline {A.2}Perangkat Lunak untuk Pengolahan Data Akuisisi dan Visualisasi Hasil Pengukuran Jarak}{70}{section.a.A.2}%
-\contentsline {chapter}{Lampiran \numberline {B}HASIL SURVEI LAPANGAN}{71}{appendix.a.B}%
-\contentsline {section}{\numberline {B.1}Foto Survei Lokasi 1}{71}{section.a.B.1}%
-\contentsline {section}{\numberline {B.2}Foto Survei Lokasi 2}{71}{section.a.B.2}%
-\contentsline {section}{\numberline {B.3}Transkrip Wawancara dengan Narasumber}{71}{section.a.B.3}%
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\contentsline {chapter}{Lampiran \numberline {A}KODE PROGRAM}{81}{appendix.a.A}%
+\contentsline {section}{\numberline {A.1}Perangkat Lunak untuk Akuisisi Data dari Sensor Ultrasonik}{81}{section.a.A.1}%
+\contentsline {section}{\numberline {A.2}Perangkat Lunak untuk Pengolahan Data Akuisisi dan Visualisasi Hasil Pengukuran Jarak}{82}{section.a.A.2}%
+\contentsline {chapter}{Lampiran \numberline {B}HASIL SURVEI LAPANGAN}{83}{appendix.a.B}%
+\contentsline {section}{\numberline {B.1}Foto Survei Lokasi 1}{83}{section.a.B.1}%
+\contentsline {section}{\numberline {B.2}Foto Survei Lokasi 2}{83}{section.a.B.2}%
+\contentsline {section}{\numberline {B.3}Transkrip Wawancara dengan Narasumber}{83}{section.a.B.3}%

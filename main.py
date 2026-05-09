@@ -1,5 +1,6 @@
 import uuid
 import re
+from datetime import datetime
 import streamlit as st
 from dotenv import load_dotenv
 load_dotenv()
@@ -73,9 +74,26 @@ if "chat_history_display" not in st.session_state:
     st.session_state.chat_history_display = []
 if "agent_graph" not in st.session_state:
     st.session_state.agent_graph = create_agent_graph()
+if "sessions" not in st.session_state:
+    _now = datetime.now().strftime("%H:%M")
+    st.session_state.sessions = {
+        st.session_state.session_id: {
+            "label": "Percakapan Baru",
+            "display_history": [],
+            "created_at": _now,
+        }
+    }
 
 
 # ── Helper functions ───────────────────────────────────────────────────────────
+
+def _get_session_label(display_history: list) -> str:
+    for msg in display_history:
+        if msg["role"] == "user":
+            text = msg["content"]
+            return text if len(text) <= 40 else text[:37] + "..."
+    return "Percakapan Baru"
+
 
 def _confidence_info(reasoning_path: list) -> tuple[str, str, str]:
     """Return (label, bg_color, fg_color) based on graph traversal depth."""
@@ -311,6 +329,59 @@ def render_assistant_message(content: str, extracted_intent: dict,
 
 
 # ── UI ─────────────────────────────────────────────────────────────────────────
+
+def _switch_session(sid: str):
+    cur_id = st.session_state.session_id
+    st.session_state.sessions[cur_id]["display_history"] = (
+        st.session_state.chat_history_display
+    )
+    st.session_state.sessions[cur_id]["label"] = _get_session_label(
+        st.session_state.chat_history_display
+    )
+    st.session_state.session_id = sid
+    st.session_state.chat_history_display = list(
+        st.session_state.sessions[sid]["display_history"]
+    )
+
+
+with st.sidebar:
+    st.header("Riwayat Percakapan")
+
+    if st.button("Chat Baru", use_container_width=True):
+        cur_id = st.session_state.session_id
+        st.session_state.sessions[cur_id]["display_history"] = (
+            st.session_state.chat_history_display
+        )
+        st.session_state.sessions[cur_id]["label"] = _get_session_label(
+            st.session_state.chat_history_display
+        )
+        new_id = str(uuid.uuid4())
+        _now = datetime.now().strftime("%H:%M")
+        st.session_state.sessions[new_id] = {
+            "label": "Percakapan Baru",
+            "display_history": [],
+            "created_at": _now,
+        }
+        st.session_state.session_id = new_id
+        st.session_state.chat_history_display = []
+        st.rerun()
+
+    st.divider()
+
+    for sid, data in reversed(list(st.session_state.sessions.items())):
+        is_active = (sid == st.session_state.session_id)
+        label = f"[Aktif] {data['label']}" if is_active else data["label"]
+        st.button(
+            label,
+            key=f"sess_{sid}",
+            use_container_width=True,
+            disabled=is_active,
+            on_click=_switch_session,
+            args=(sid,),
+        )
+        st.caption(data["created_at"])
+
+
 st.title("K8s GraphRAG Assistant")
 st.caption("Chatbot berbasis Knowledge Graph untuk dokumentasi Kubernetes")
 

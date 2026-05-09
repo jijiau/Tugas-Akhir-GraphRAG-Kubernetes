@@ -430,10 +430,64 @@ def _load_k8s_vocabulary() -> set:
 
 
 def run_evaluation(mode: str = "graphrag", output_path: Path = DEFAULT_OUTPUT):
-    from src.chatbot.graph_agent import create_agent_graph
     from langchain_openai import OpenAIEmbeddings
 
-    agent = create_agent_graph()
+    # ── Mode-specific invoker ─────────────────────────────────────────────────
+    if mode == "graphrag":
+        from src.chatbot.graph_agent import create_agent_graph
+        _agent = create_agent_graph()
+        def invoke_mode(question, session_id):
+            result = _agent.invoke({
+                "question": question, "session_id": session_id,
+                "messages": [], "chat_history": "",
+                "extracted_intent": {}, "graph_context": "",
+                "reasoning_path": [], "intent_type": None, "error": None,
+            })
+            answer = result["messages"][-1].content if result.get("messages") else ""
+            return answer, result.get("reasoning_path") or [], result.get("graph_context") or ""
+
+    elif mode == "vector":
+        from src.graph.neo4j_client import Neo4jClient
+        from src.graph.vector_index import VectorIndexManager
+        from src.graph.queries import SIMPLE_GRAPH_EXPAND_QUERY
+        from src.chatbot.llm_factory import get_speaker_llm
+        from langchain_core.messages import HumanMessage
+        _db  = Neo4jClient()
+        _vec = VectorIndexManager()
+        _llm = get_speaker_llm()
+        def invoke_mode(question, session_id):
+            embedding = _vec.generate_embedding(question)
+            results   = _db.execute_query(SIMPLE_GRAPH_EXPAND_QUERY, {"embedding": embedding, "top_k": 5})
+            parts = []; node_names = []; seen = set()
+            for r in results:
+                fn      = r.get("node.fullName", "")
+                desc    = r.get("node.description", "")
+                related = r.get("related.fullName", "")
+                short     = fn.split(".")[-1] if fn else ""
+                rel_short = related.split(".")[-1] if related else ""
+                if short and short not in seen:
+                    seen.add(short); node_names.append(short)
+                if rel_short and rel_short not in seen:
+                    seen.add(rel_short); node_names.append(rel_short)
+                snippet = f"Resource: {fn}\nDescription: {desc}\n"
+                if related:
+                    snippet += f"Related To: {related}\n"
+                parts.append(snippet)
+            context = "\n---\n".join(parts)
+            prompt  = f"Context:\n{context}\n\nQuestion: {question}\n\nAnswer:"
+            resp    = _llm.invoke([HumanMessage(content=prompt)])
+            return resp.content, node_names, context
+
+    elif mode == "llm":
+        from src.chatbot.llm_factory import get_speaker_llm
+        from langchain_core.messages import HumanMessage
+        _llm = get_speaker_llm()
+        def invoke_mode(question, session_id):
+            resp = _llm.invoke([HumanMessage(content=question)])
+            return resp.content, [], ""
+
+    else:
+        raise ValueError(f"Unknown mode: {mode}")
 
     # ── One-time initialization ───────────────────────────────────────────────
     # Embedder for AnsQ cosine similarity
@@ -497,21 +551,7 @@ def run_evaluation(mode: str = "graphrag", output_path: Path = DEFAULT_OUTPUT):
 
         logger.info(f"  [{i+1}/{len(fixtures)}] [{fixture_type}] {data['id']}: {question[:60]}...")
 
-        result = agent.invoke({
-            "question":        question,
-            "session_id":      f"eval_{_run_id}_{data['id']}",
-            "messages":        [],
-            "chat_history":    "",
-            "extracted_intent": {},
-            "graph_context":   "",
-            "reasoning_path":  [],
-            "intent_type":     None,
-            "error":           None,
-        })
-
-        answer         = result["messages"][-1].content if result.get("messages") else ""
-        reasoning_path = result.get("reasoning_path") or []
-        graph_context  = result.get("graph_context") or ""
+        answer, reasoning_path, graph_context = invoke_mode(question, f"eval_{_run_id}_{data['id']}")
         fixture_scope  = data.get("scope", "")
 
         ansq = compute_ansq(answer, ground_truth, fixture_type, embedder=embedder)
