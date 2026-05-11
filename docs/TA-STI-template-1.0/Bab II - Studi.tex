@@ -171,7 +171,7 @@ Dalam konteks Kubernetes, komponen API seperti \texttt{Pod}, \texttt{Service}, d
     Teknik ini menyimpan setiap elemen API beserta jalur lengkapnya dalam struktur objek sehingga posisi semantiknya tetap terpelihara.
 
     \item \textbf{\textit{Hybrid index retrieval}}\\
-    Pendekatan ini mengombinasikan pencarian berbasis kesamaan semantik teks dengan pembobotan struktur sintaksis dari objek API. Selain memanfaatkan \textit{embedding} untuk menemukan kemiripan makna antar-teks, sistem juga memberikan prioritas pada elemen yang memiliki signifikansi struktural (misalnya \textit{field} wajib atau relasi antar-objek). Hasilnya, mekanisme \textit{retrieval} menghasilkan konteks yang tidak hanya relevan secara linguistik, tetapi juga benar secara hierarki dan fungsi API.
+    Pendekatan ini mengombinasikan pencarian berbasis kesamaan semantik teks dengan pembobotan struktur sintaksis dari objek API. Selain memanfaatkan \textit{embedding} untuk menemukan kemiripan makna antar-teks, sistem juga memberikan bobot lebih tinggi pada elemen struktural kunci (misalnya \textit{field} wajib atau relasi antar-objek). Hasilnya, mekanisme \textit{retrieval} menghasilkan konteks yang tidak hanya relevan secara linguistik, tetapi juga benar secara hierarki dan fungsi API.
 \end{enumerate}
 
 Dengan demikian, penerapan RAG pada dokumentasi Kubernetes tidak hanya berfungsi sebagai mesin pencarian semantik, tetapi juga menjadi pendekatan mitigasi \textit{hallucination}.
@@ -258,9 +258,9 @@ Pendekatan GraphRAG ini menjadi sangat krusial dalam domain berskala kompleks se
 
 \section{Metrik Evaluasi Sistem Informasi Retrieval}
 
-Evaluasi sistem GraphRAG membutuhkan landasan metrik yang bersumber dari literatur \textit{Information Retrieval} (IR) dan NLP. Bagian ini membahas konsep metrik standar yang menjadi acuan, sedangkan metrik khusus domain Kubernetes (seperti \textit{Graph Coverage}, \textit{Edge Coverage}, \textit{Hop-Accuracy}, \textit{Scope Accuracy}, dan \textit{Graph Field Compliance}) dirancang sebagai kontribusi penelitian dan diperkenalkan pada Bab~\ref{chap:analisis-masalah}.
+Evaluasi sistem GraphRAG membutuhkan landasan metrik yang bersumber dari literatur \textit{Information Retrieval} (IR) dan NLP. Bagian ini membahas konsep metrik standar yang menjadi acuan, sedangkan metrik khusus domain Kubernetes (seperti \textit{Graph Coverage}, \textit{Edge Coverage}, \textit{Hop Accuracy}, \textit{Multi-Hop Success}, \textit{Scope Accuracy}, \textit{Grounding Score}, dan \textit{Hallucination Rate}) dirancang sebagai kontribusi penelitian dan diperkenalkan pada Bab~\ref{chap:analisis-masalah}.
 
-\subsection{Metrik Kualitas Jawaban}
+\subsection{\textit{Answer Quality}}
 
 Evaluasi kualitas jawaban sistem RAG dalam literatur umumnya menggunakan dua metrik berikut:
 
@@ -275,7 +275,7 @@ Evaluasi kualitas jawaban sistem RAG dalam literatur umumnya menggunakan dua met
     Mengukur kesesuaian semantik antara jawaban yang dihasilkan dan maksud asli kueri pengguna \parencite{es_ragas_2023}. Implementasinya umumnya berbasis kemiripan kosinus antara representasi vektor jawaban dan pertanyaan.
 \end{enumerate}
 
-\subsection{Metrik Kualitas Retrieval}
+\subsection{\textit{Retrieval Quality}}
 
 Evaluasi komponen \textit{retrieval} menggunakan metrik standar IR yang mengukur ketepatan dan kelengkapan dokumen yang diambil:
 
@@ -297,7 +297,7 @@ Evaluasi komponen \textit{retrieval} menggunakan metrik standar IR yang mengukur
     Metrik ini penting dalam konteks RAG karena dokumen relevan yang terpotong akibat batasan token LLM tidak memberikan manfaat apapun.
 \end{enumerate}
 
-\subsection{Metrik Validitas Sintaksis YAML}
+\subsection{\textit{Syntactic Validity} dan \textit{Schema Compliance}}
 
 Untuk evaluasi keluaran konfigurasi YAML, dua metrik standar yang relevan adalah:
 
@@ -308,6 +308,20 @@ Untuk evaluasi keluaran konfigurasi YAML, dua metrik standar yang relevan adalah
     \item \textbf{\textit{Schema Compliance}}\\
     Mengukur kelengkapan \textit{required fields} berdasarkan spesifikasi skema yang berlaku, dalam konteks ini spesifikasi OpenAPI Kubernetes v1.30 \parencite{kubernetes_docs}. Catatan: kedua metrik ini hanya relevan untuk \textit{fixture} bertipe \texttt{yaml\_gen}.
 \end{enumerate}
+
+\subsection{\textit{Reasoning Quality}}
+
+Evaluasi dimensi penalaran mengukur sejauh mana jawaban sistem dapat diverifikasi melalui konteks yang di-\textit{retrieve}, bukan semata dari pengetahuan parametrik LLM:
+
+\begin{enumerate}
+    \item \textbf{\textit{Grounding Score}}\\
+    Mengukur proporsi istilah teknis Kubernetes dalam jawaban yang dapat ditelusuri secara langsung ke konteks yang di-\textit{retrieve}, bukan berasal dari pengetahuan bawaan model \parencite{es_ragas_2023}. Nilai tinggi menunjukkan bahwa jawaban berbasis konteks graf, bukan halusinasi.
+
+    \item \textbf{\textit{Hallucination Rate}}\\
+    Komplemen dari \textit{Grounding Score}: mengukur proporsi istilah teknis dalam jawaban yang tidak ditemukan dalam konteks yang disediakan. Secara formal, $\text{Hallucination Rate} = 1 - \text{Grounding Score}$.
+\end{enumerate}
+
+Metrik khusus \textit{graph traversal} (\textit{Hop Accuracy}, \textit{Multi-Hop Success}, \textit{Scope Accuracy}) dirancang sebagai kontribusi penelitian dan diperkenalkan pada Bab~\ref{chap:analisis-masalah}.
 
 Kerangka evaluasi tiga dimensi (\textit{Answer Quality}, \textit{Retrieval Quality}, \textit{Reasoning Quality}) beserta metrik khusus yang dikembangkan untuk domain Kubernetes diuraikan secara rinci pada Bab~\ref{chap:analisis-masalah}.
 

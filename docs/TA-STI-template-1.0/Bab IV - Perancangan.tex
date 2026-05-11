@@ -69,7 +69,7 @@ Setelah mendefinisikan komponen-komponen utama dalam arsitektur sistem, langkah 
 \begin{figure}[H]
     \centering
     \captionsetup{justification=centering}
-    \includegraphics[width=1.0\textwidth]{images/Seq-New.png}
+    \includegraphics[width=1.0\textwidth]{images/Seq-High.png}
     \caption{Diagram Urutan (\textit{Sequence Diagram}) Alur Kerja Sistem GraphRAG}
     \label{fig:sequence_diagram}
 \end{figure}
@@ -83,7 +83,7 @@ Arsitektur pipeline pada Gambar~\ref{fig:architecture_diagram} diimplementasikan
 % --- 4.3.1 ---
 \subsection{Pipeline \textit{Ingestion} Data}
 
-Pipeline \textit{ingestion} bertanggung jawab mengubah spesifikasi OpenAPI Kubernetes (\textit{swagger.json}) menjadi \textit{Knowledge Graph} yang tersimpan di Neo4j dan \textit{vector index} yang tersimpan di ChromaDB. Proses ini dilaksanakan melalui lima \textit{pass} yang dieksekusi secara berurutan sebagaimana ditunjukkan pada Tabel~\ref{tbl:ingestion_pipeline}.
+Pipeline \textit{ingestion} bertanggung jawab mengubah spesifikasi OpenAPI Kubernetes (\textit{swagger.json}) menjadi \textit{Knowledge Graph} yang tersimpan di Neo4j, lengkap dengan \textit{Native Vector Index} untuk pencarian semantik. Proses ini dilaksanakan melalui lima \textit{pass} yang dieksekusi secara berurutan sebagaimana ditunjukkan pada Tabel~\ref{tbl:ingestion_pipeline}.
 
 \input{tables/tabel16.tex}
 
@@ -110,7 +110,7 @@ Node \texttt{retriever} mengimplementasikan \textit{cascading retrieval} dengan 
     Sistem mencari node di Neo4j berdasarkan kecocokan nama eksak dengan entitas yang diekstrak oleh \textit{Thinker}. Jika ditemukan, node ini menjadi \textit{seed node} untuk traversal graf. Pendekatan ini menghasilkan presisi tertinggi karena tidak bergantung pada estimasi semantik.
 
     \item \textbf{Tahap 2: \textit{Vector Similarity} (\textit{Fallback}).} \\
-    Diaktifkan \textit{hanya jika} Tahap 1 tidak menemukan kecocokan eksak. Sistem menghasilkan \textit{embedding} dari kueri pengguna dan mencari node paling mirip di ChromaDB. \textit{Top-k} kandidat menjadi \textit{seed node} untuk traversal.
+    Diaktifkan \textit{hanya jika} Tahap 1 tidak menemukan kecocokan eksak. Sistem menghasilkan \textit{embedding} dari kueri pengguna dan mencari \textit{node} paling mirip menggunakan \textit{Native Vector Index} di Neo4j. \textit{Top-k} kandidat menjadi \textit{seed node} untuk traversal.
 
     \item \textbf{Tahap 3: \textit{Multi-hop Graph Traversal}.} \\
     Dari \textit{seed node}, sistem menelusuri graf di Neo4j secara rekursif. Kedalaman maksimal traversal ditentukan oleh \textit{intent type} yang diklasifikasikan pada node \texttt{thinker} sebagaimana ditunjukkan pada Tabel~\ref{tbl:intent_depth_iv}.
@@ -139,7 +139,7 @@ Sistem disajikan melalui antarmuka web berbasis Streamlit (\texttt{main.py}) yan
     Komponen \texttt{st.chat\_input} dan \texttt{st.chat\_message} menyediakan pengalaman percakapan yang familiar. Riwayat percakapan ditampilkan secara kumulatif dalam satu sesi menggunakan \texttt{st.session\_state}.
 
     \item \textbf{\textit{Retrieval Trace} Expander} \\
-    Setiap respons dilengkapi \textit{expander} yang menampilkan jejak penalaran graf dalam tiga tab: (a) \textbf{Graph Visualization}, yaitu visualisasi \textit{Graphviz DOT} yang dikodekan warna berdasarkan kedalaman node; (b) \textbf{Edge Table}, yaitu tabel terurut seluruh relasi yang ditelusuri; dan (c) \textbf{Keterangan Warna}, yaitu legenda kedalaman graf.
+    Setiap respons dilengkapi \textit{expander} yang menampilkan jejak penalaran graf dalam empat tab: (a) \textbf{Graph Visualization}, yaitu visualisasi \textit{Graphviz DOT} yang dikodekan warna berdasarkan kedalaman \textit{node}; (b) \textbf{Edge Table}, yaitu tabel terurut seluruh relasi yang ditelusuri; (c) \textbf{Referensi}, yaitu tautan resmi \textit{kubernetes.io} untuk setiap \textit{node} yang di-\textit{retrieve}; dan (d) \textbf{Keterangan Warna}, yaitu legenda kedalaman graf.
 
     \item \textbf{Manajemen Sesi} \\
     Setiap sesi browser mendapatkan UUID unik (\texttt{session\_id}) yang digunakan sebagai kunci untuk mengambil dan menyimpan riwayat percakapan di SQLite. Hal ini memungkinkan resolusi pronoun lintas-giliran (misalnya ``tambahkan volume ke konfigurasi tadi'').

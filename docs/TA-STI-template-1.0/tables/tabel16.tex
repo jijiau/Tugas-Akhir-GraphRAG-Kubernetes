@@ -10,7 +10,7 @@
 \hline
 Pass 1 & \textit{Node Creation} & Membuat node definisi dari setiap entri \textit{definitions} swagger.json; menetapkan atribut \texttt{name}, \texttt{kind}, \texttt{scope}, \texttt{description}. & 725 node \textit{definition} di Neo4j \\
 \hline
-Pass 1.5 & \textit{Embedding Generation} & Menghasilkan vektor 1536-dimensi (\textit{text-embedding-3-small}) dari deskripsi setiap node. & \textit{Vector index} di ChromaDB \\
+Pass 1.5 & \textit{Embedding Generation} & Menghasilkan vektor 1536-dimensi (\textit{text-embedding-3-small}) dari deskripsi setiap node. & \textit{Native Vector Index} di Neo4j \\
 \hline
 Pass 2 & \textit{Structural Edges} & Membangun edge \texttt{HAS\_PROPERTY} berdasarkan resolusi \texttt{\$ref} antar-definisi. & 4 jenis \textit{structural edge} \\
 \hline

@@ -55,7 +55,7 @@ Bagian ini menjelaskan karakteristik data dokumentasi API Kubernetes yang menjad
             \item \texttt{type}: Menentukan format tipe data (seperti \textit{object, array, string, integer, boolean}).
             \item \texttt{required}: Mendefinisikan daftar ruas konfigurasi wajib isi.
             \item \texttt{description}: Menyediakan dokumentasi tekstual mengenai fungsionalitas ruas.
-            \item \texttt{\$ref}: Bertindak sebagai referensi silang ke definisi skema bersarang (\textit{nested schema}). Ciri utama dari struktur dokumen ini adalah definisi yang saling mereferensikan secara mendalam. Akibatnya, satu ruas YAML dapat mengarah ke berbagai kemungkinan bentuk, meliputi:
+            \item \texttt{\$ref}: Bertindak sebagai referensi silang ke definisi skema bersarang (\textit{nested schema}). Ciri utama dari struktur dokumen ini adalah ketergantungan referensial bersarang antar-definisi skema. Akibatnya, satu ruas YAML dapat mengarah ke berbagai kemungkinan bentuk, meliputi:
             \begin{enumerate}[i.]
                 \item Definisi objek skema lain.
                 \item Struktur daftar (\textit{list}).
@@ -63,7 +63,7 @@ Bagian ini menjelaskan karakteristik data dokumentasi API Kubernetes yang menjad
             \end{enumerate}
         \end{enumerate}
 
-        \item \textbf{\textit{Paths}:} Mendeskripsikan titik akhir (\textit{endpoint}) API, misalnya \texttt{GET /api/v1/ pods}, sebagai antarmuka interaksi objek Kubernetes dalam ekosistem klaster. Setiap titik akhir memiliki atribut penentu interaksi komunikasi yang memuat:
+        \item \textbf{\textit{Paths}:} Mendeskripsikan \textit{endpoint} API, misalnya \texttt{GET /api/v1/ pods}, sebagai antarmuka interaksi objek Kubernetes dalam ekosistem klaster. Setiap titik akhir memiliki atribut penentu interaksi komunikasi yang memuat:
         \begin{enumerate}[a.]
             \item Metode HTTP fungsional (\textit{GET, POST, PUT, PATCH, DELETE}).
             \item Parameter injeksi pada jalur (\textit{path}) dan kueri (\textit{query}).

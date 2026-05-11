@@ -4,7 +4,31 @@
 \cleardoublepage
 \chapter{PENUTUP}
 \label{chap:penutup}
+
 \section{Kesimpulan}
-Jelaskan secara detail langkah-langkah rencana selanjutnya, hal-hal yang diperlukan atau akan disiapkan, dan risiko dan mitigasinya, yang meliputi:
+
+Penelitian ini telah berhasil mengimplementasikan sistem \textit{Graph Retrieval-Augmented Generation} (GraphRAG) berbasis spesifikasi OpenAPI Kubernetes untuk meningkatkan presisi \textit{retrieval} dan validitas sintaksis konfigurasi Kubernetes. Berdasarkan hasil implementasi dan evaluasi terhadap 97 \textit{fixture} uji, diperoleh tiga kesimpulan utama yang menjawab rumusan masalah penelitian.
+
+\textbf{Pertama}, \textit{knowledge graph} Kubernetes berhasil dibangun dari spesifikasi \texttt{swagger.json} versi v1.30 dengan menghasilkan 725 \textit{node} definisi dan 18 jenis \textit{edge} yang terdistribusi dalam 7 kategori relasi semantik. Taksonomi \textit{edge} yang dirancang secara khusus untuk domain Kubernetes—meliputi relasi struktural (\texttt{HAS\_PROPERTY}, \texttt{EXTENDS}, \texttt{ONE\_OF}, \texttt{ANY\_OF}), relasi \textit{workload} (\texttt{CONTAINS\_POD\_TEMPLATE}, \texttt{HAS\_CONTAINER}), penyimpanan, konfigurasi, jaringan, RBAC, dan \textit{autoscaling}—terbukti mampu merepresentasikan ketergantungan skema Kubernetes secara komprehensif dan dapat ditelusuri secara terprogram.
+
+\textbf{Kedua}, mekanisme GraphRAG yang dikembangkan—menggunakan \textit{cascading retrieval} tiga tahap (kecocokan nama eksak → \textit{vector similarity} → \textit{multi-hop graph traversal}) dengan kedalaman yang disesuaikan per tipe \textit{intent}—berhasil meningkatkan presisi \textit{retrieval} secara signifikan dibandingkan \textit{baseline}. Sistem mencapai skor \textit{Retrieval Quality} (RetQ) sebesar \textbf{0,65}, unggul \textbf{+0,22 poin} di atas \textit{Vector RAG} (0,42) dan \textbf{+0,63 poin} di atas \textit{Vanilla LLM} (0,02). Validitas sintaksis YAML mencapai nilai sempurna (\textbf{1,0000}) berkat mekanisme validasi tiga lapis berbasis \textit{knowledge graph} yang memverifikasi \textit{required fields} secara langsung dari graf.
+
+\textbf{Ketiga}, evaluasi komparatif menunjukkan bahwa GraphRAG memperoleh total skor komposit tertinggi (\textbf{0,6769}) dibandingkan \textit{Vector RAG} (0,6161) dan \textit{Vanilla LLM} (0,3894). Keunggulan GraphRAG bersumber dari dimensi RetQ yang secara konsisten lebih tinggi pada seluruh sub-metrik, mencerminkan kemampuan \textit{multi-hop traversal} dalam menjangkau \textit{intermediate structural nodes} seperti \texttt{DeploymentSpec}, \texttt{PodTemplateSpec}, dan \texttt{Container}. \textit{Vector RAG} sedikit lebih unggul pada dimensi \textit{Answer Quality} (0,60 vs.\ 0,58) karena konteks yang lebih ringkas memudahkan model \textit{Speaker} mengikuti pola skema yang benar. Sistem memiliki keterbatasan yang perlu diakui: \textit{hallucination rate} sebesar 0,34 mencerminkan kebergantungan pada pengetahuan bawaan LLM, dan kategori \textit{realworld} memperoleh skor terendah (0,53) karena pertanyaan operasional nyata sering melampaui batas tiga lompatan traversal.
+
 \section{Saran}
-asdfas
+
+Berdasarkan keterbatasan yang teridentifikasi, beberapa arah pengembangan lanjutan direkomendasikan.
+
+\begin{enumerate}
+    \item \textbf{Perluasan Sumber Data \textit{Knowledge Graph}} \\
+    \textit{Knowledge graph} saat ini dibangun secara eksklusif dari blok \textit{definitions} \texttt{swagger.json} yang bersifat statis. Integrasi dengan sumber data dinamis—seperti status klaster aktual melalui \textit{Kubernetes Watch API} atau log operasional—dapat meningkatkan kemampuan sistem dalam menjawab pertanyaan \textit{realworld} dan \textit{troubleshooting} yang membutuhkan konteks \textit{runtime}.
+
+    \item \textbf{Penerapan \textit{Adaptive Traversal Depth}} \\
+    Batas kedalaman traversal saat ini bersifat statis per tipe \textit{intent}. Penelitian selanjutnya dapat mengeksplorasi penentuan kedalaman yang adaptif berdasarkan kompleksitas kueri aktual atau struktur graf dari \textit{seed node} yang ditemukan, sehingga dapat mengurangi injeksi tipe generik tanpa mengorbankan kelengkapan konteks.
+
+    \item \textbf{Mitigasi \textit{Hallucination} dengan \textit{Constrained Decoding}} \\
+    Nilai \textit{hallucination rate} sebesar 0,34 dapat diturunkan melalui penerapan teknik \textit{constrained decoding} atau \textit{citation-grounded generation}, yaitu membatasi keluaran model \textit{Speaker} hanya pada istilah teknis yang muncul dalam konteks yang di-\textit{retrieve}.
+
+    \item \textbf{Pembaruan Inkremental \textit{Knowledge Graph}} \\
+    Kubernetes merilis versi baru secara berkala dengan penambahan atau perubahan skema. Pengembangan \textit{pipeline} pembaruan inkremental yang dapat mendeteksi perubahan antar-versi \texttt{swagger.json} dan memperbarui \textit{knowledge graph} tanpa rekonstruksi penuh akan meningkatkan ketahanan sistem terhadap evolusi API.
+\end{enumerate}

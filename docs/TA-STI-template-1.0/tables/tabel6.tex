@@ -53,7 +53,7 @@ F-01 (\textit{Structured Schema Representation}) \\ \hline
 \multicolumn{3}{|c|}{\textbf{Modelling}} \\ \hline
 
 \textit{Intent Classification Modeling} &
-Mengklasifikasikan pertanyaan pengguna ke dalam empat tipe \textit{intent}: \textbf{explain} dan \textbf{generate\_yaml} (tipe utama), serta \textbf{trace\_relationship} dan \textbf{followup} (mode pendukung). Setiap tipe menentukan kedalaman penelusuran graf yang digunakan. &
+Mengklasifikasikan pertanyaan pengguna ke dalam lima tipe \textit{intent}: \textbf{explain} dan \textbf{generate\_yaml} (tipe utama), serta \textbf{trace\_relationship}, \textbf{followup}, dan \textbf{planning} (mode pendukung). Setiap tipe menentukan kedalaman penelusuran graf yang digunakan. &
 F-03 (\textit{Intent Classification}) \\ \hline
 
 \textit{Retrieval Strategy Design} &
@@ -75,7 +75,7 @@ F-07 (\textit{Conditional YAML Generation Constraint}) \\ \hline
 \multicolumn{3}{|c|}{\textbf{Input}} \\ \hline
 
 Pertanyaan Pengguna &
-Input teks berupa permintaan teknis dalam bahasa alami yang diklasifikasikan ke salah satu tipe \textit{intent}: \textbf{explain}, \textbf{generate\_yaml}, \textbf{trace\_relationship}, atau \textbf{followup}. &
+Input teks berupa permintaan teknis dalam bahasa alami yang diklasifikasikan ke salah satu tipe \textit{intent}: \textbf{explain}, \textbf{generate\_yaml}, \textbf{trace\_relationship}, \textbf{followup}, atau \textbf{planning}. &
 F-03 (\textit{Intent Classification}) \\ \hline
 
 
@@ -83,7 +83,7 @@ F-03 (\textit{Intent Classification}) \\ \hline
 \multicolumn{3}{|c|}{\textbf{Output}} \\ \hline
 
 Konten Jawaban &
-Keluaran berupa narasi penjelas (untuk \textit{intent} \textbf{explain}, \textbf{trace\_relationship}, \textbf{followup}) atau blok YAML konfigurasi Kubernetes (untuk \textit{intent} \textbf{generate\_yaml}). &
+Keluaran berupa narasi penjelas (untuk \textit{intent} \textbf{explain}, \textbf{trace\_relationship}, \textbf{followup}, dan \textbf{planning}) atau blok YAML konfigurasi Kubernetes (untuk \textit{intent} \textbf{generate\_yaml}). &
 F-07 (\textit{Conditional YAML Generation Constraint}) \\ \hline
 
 \textit{Graph Traceability} &
@@ -94,12 +94,16 @@ F-02 (\textit{Structured Relation Retrieval}) \\ \hline
 % =================== EVALUATION ======================
 \multicolumn{3}{|c|}{\textbf{Evaluation}} \\ \hline
 
-\textit{Retrieval Metrics} &
-Pengukuran \textit{Context Recall} dan \textit{Context Precision} sebagai validasi relevansi relasi. &
+\textit{Answer Quality} (AnsQ) &
+Evaluasi kualitas jawaban mencakup \textit{Syntactic Validity}, \textit{Schema Compliance}, \textit{Answer Relevance}, dan \textit{Faithfulness}. &
 -- (Metrik domain, bukan requirement fungsional) \\ \hline
 
-\textit{Generation Metrics} &
-Evaluasi \textit{Faithfulness} dan \textit{Syntactic Validity} untuk mengukur kualitas hasil YAML. &
+\textit{Retrieval Quality} (RetQ) &
+Evaluasi kualitas \textit{retrieval} mencakup \textit{Precision@k}, \textit{Recall@k}, \textit{NDCG@k}, \textit{Graph Coverage}, dan \textit{Edge Coverage}. &
+-- (Metrik domain, bukan requirement fungsional) \\ \hline
+
+\textit{Reasoning Quality} (ReaQ) &
+Evaluasi kualitas penalaran mencakup \textit{Hop Accuracy}, \textit{Multi-Hop Success}, \textit{Scope Accuracy}, \textit{Grounding Score}, dan \textit{Hallucination Rate}. &
 -- (Metrik domain, bukan requirement fungsional) \\ \hline
 
 

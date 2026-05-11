@@ -8,7 +8,7 @@
 \hline
 \textbf{Node} & \textbf{Fungsi} & \textbf{Aktivitas} & \textbf{Komponen} \\
 \hline
-\texttt{memory} & Ambil riwayat & Membaca 5 giliran percakapan terakhir dari penyimpanan SQLite. & \texttt{ZepMemoryStore} (SQLite) \\
+\texttt{memory} & Ambil riwayat & Membaca 5 giliran percakapan terakhir dari penyimpanan SQLite. & SQLite (\texttt{ZepMemoryStore}) \\
 \hline
 \texttt{thinker} & Ekstraksi \textit{intent} & Menganalisis pertanyaan + riwayat, mengeluarkan JSON berisi \texttt{primary\_resource}, \texttt{related\_concepts}, dan \texttt{intent\_type}. & GPT-4o-mini \\
 \hline
@@ -16,7 +16,7 @@
 \hline
 \texttt{speaker} & Generasi respons & Menggunakan konteks graf dan \textit{reasoning path} untuk menghasilkan jawaban naratif atau blok YAML. & Groq llama-3.1-8b-instant \\
 \hline
-\texttt{saver} & Simpan riwayat & Menyimpan pasangan pertanyaan--jawaban ke SQLite untuk giliran percakapan berikutnya. & \texttt{ZepMemoryStore} (SQLite) \\
+\texttt{saver} & Simpan riwayat & Menyimpan pasangan pertanyaan--jawaban ke SQLite untuk giliran percakapan berikutnya. & SQLite (\texttt{ZepMemoryStore}) \\
 \hline
 \end{tabular}
 \end{table}
