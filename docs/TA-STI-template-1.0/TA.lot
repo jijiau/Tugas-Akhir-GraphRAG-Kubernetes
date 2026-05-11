@@ -153,10 +153,10 @@
 \babel@toc {indonesian}{}\relax 
 \addvspace {10\p@ }
 \contentsline {table}{\numberline {IV.1}{\ignorespaces Pemetaan Tahap Metodologi}}{46}{table.4.1}%
-\contentsline {table}{\numberline {IV.2}{\ignorespaces Lima Fase Pipeline Ingestion Data}}{53}{table.caption.28}%
+\contentsline {table}{\numberline {IV.2}{\ignorespaces Lima Fase Pipeline Ingestion Data}}{52}{table.caption.28}%
 \contentsline {table}{\numberline {IV.3}{\ignorespaces Lima Node LangGraph Agent Pipeline}}{54}{table.caption.29}%
-\contentsline {table}{\numberline {IV.4}{\ignorespaces Pemetaan \textit {Intent Type} terhadap Kedalaman Traversal Graf}}{56}{table.caption.30}%
-\contentsline {table}{\numberline {IV.5}{\ignorespaces Rancangan Tiga Lapis Validasi YAML}}{57}{table.caption.31}%
+\contentsline {table}{\numberline {IV.4}{\ignorespaces Pemetaan \textit {Intent Type} terhadap Kedalaman Traversal Graf}}{55}{table.caption.30}%
+\contentsline {table}{\numberline {IV.5}{\ignorespaces Rancangan Tiga Lapis Validasi YAML}}{56}{table.caption.31}%
 \addvspace {10\p@ }
 \contentsline {table}{\numberline {V.1}{\ignorespaces Dependensi Utama Implementasi Sistem GraphRAG Kubernetes}}{60}{table.caption.32}%
 \contentsline {table}{\numberline {V.2}{\ignorespaces Statistik \textit {Knowledge Graph} Kubernetes Hasil Konstruksi}}{61}{table.caption.33}%

@@ -209,12 +209,12 @@
 \contentsline {chapter}{\numberline {IV}PERANCANGAN}{45}{chapter.4}%
 \contentsline {section}{\numberline {IV.1}Rancangan Solusi Secara Garis Besar}{45}{section.4.1}%
 \contentsline {section}{\numberline {IV.2}Pemetaan Metodologi terhadap Kebutuhan Sistem}{46}{section.4.2}%
-\contentsline {section}{\numberline {IV.3}Perancangan Komponen Sistem}{52}{section.4.3}%
+\contentsline {section}{\numberline {IV.3}Perancangan Komponen Sistem}{51}{section.4.3}%
 \contentsline {subsection}{\numberline {IV.3.1}Pipeline \textit {Ingestion} Data}{52}{subsection.4.3.1}%
-\contentsline {subsection}{\numberline {IV.3.2}Perancangan \textit {LangGraph Agent Pipeline}}{54}{subsection.4.3.2}%
-\contentsline {subsection}{\numberline {IV.3.3}Perancangan Mekanisme \textit {Retrieval} Bertingkat}{55}{subsection.4.3.3}%
+\contentsline {subsection}{\numberline {IV.3.2}Perancangan \textit {LangGraph Agent Pipeline}}{53}{subsection.4.3.2}%
+\contentsline {subsection}{\numberline {IV.3.3}Perancangan Mekanisme \textit {Retrieval} Bertingkat}{54}{subsection.4.3.3}%
 \contentsline {subsection}{\numberline {IV.3.4}Perancangan Validasi YAML Tiga Lapis}{56}{subsection.4.3.4}%
-\contentsline {subsection}{\numberline {IV.3.5}Perancangan Antarmuka Web Streamlit}{57}{subsection.4.3.5}%
+\contentsline {subsection}{\numberline {IV.3.5}Perancangan Antarmuka Web Streamlit}{56}{subsection.4.3.5}%
 \contentsline {chapter}{\numberline {V}IMPLEMENTASI}{59}{chapter.5}%
 \contentsline {section}{\numberline {V.1}Lingkungan Implementasi}{59}{section.5.1}%
 \contentsline {section}{\numberline {V.2}Implementasi \textit {Ingestion} Data dan \textit {Knowledge Graph}}{61}{section.5.2}%
