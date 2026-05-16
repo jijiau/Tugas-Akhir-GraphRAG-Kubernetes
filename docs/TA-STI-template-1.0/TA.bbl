@@ -681,6 +681,84 @@
       \verb 10.1109/TSE.2024.3392499
       \endverb
     \endentry
+    \entry{hsgrag2025acm}{article}{}
+      \name{author}{8}{}{%
+        {{un=0,uniquepart=base,hash=2bf3e84747efee91886d08f0e1de35a6}{%
+           family={Lu},
+           familyi={L\bibinitperiod},
+           given={Zhouyang},
+           giveni={Z\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=9abd6e3b84ff2776adc20c8c8cfa0b5d}{%
+           family={Xu},
+           familyi={X\bibinitperiod},
+           given={Hailin},
+           giveni={H\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=59be4c2ba9dbadf904867aacd8ecbc4a}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={Anrui},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=bfdc78d95e74270231e0e4edb2a23385}{%
+           family={Tang},
+           familyi={T\bibinitperiod},
+           given={Siyuan},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=aee2c60a4a349857cf00a72fd46ed43a}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Junyi},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=cd6d44a040d85e4b28a7ec11e5baa64a}{%
+           family={Feng},
+           familyi={F\bibinitperiod},
+           given={Yifei},
+           giveni={Y\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=28a2181f595d6c9503bab7c90c9e7e92}{%
+           family={Pan},
+           familyi={P\bibinitperiod},
+           given={Wentao},
+           giveni={W\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=c07a670d6240a25a89b3919493f6e49f}{%
+           family={Huang},
+           familyi={H\bibinitperiod},
+           given={Jiangli},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {ACM}%
+      }
+      \strng{namehash}{3c503aabc51ba1830aa52cd346b005da}
+      \strng{fullhash}{cd876ee4665b525954c5ca52fbffd0c6}
+      \strng{bibnamehash}{cd876ee4665b525954c5ca52fbffd0c6}
+      \strng{authorbibnamehash}{cd876ee4665b525954c5ca52fbffd0c6}
+      \strng{authornamehash}{3c503aabc51ba1830aa52cd346b005da}
+      \strng{authorfullhash}{cd876ee4665b525954c5ca52fbffd0c6}
+      \field{sortinit}{L}
+      \field{sortinithash}{7c47d417cecb1f4bd38d1825c427a61a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{author}
+      \field{journaltitle}{ACM Transactions on Design Automation of Electronic Systems}
+      \field{month}{10}
+      \field{number}{6}
+      \field{title}{{HSG-RAG}: Hierarchical Knowledge Base Construction for Embedded System Development}
+      \field{volume}{30}
+      \field{year}{2025}
+      \field{pages}{1\bibrangedash 21}
+      \range{pages}{21}
+      \verb{doi}
+      \verb 10.1145/3731680
+      \endverb
+    \endentry
     \entry{ma_llm_kg_2025}{article}{}
       \name{author}{5}{}{%
         {{un=0,uniquepart=base,hash=0828ba23aa1c041cfdcc6ac2f487d471}{%
@@ -1033,14 +1111,73 @@
       \verb 10.1016/j.aei.2025.103212
       \endverb
     \endentry
+    \entry{civiot2025graphrag}{article}{}
+      \name{author}{5}{}{%
+        {{un=1,uniquepart=given,hash=7962c86fdf79cf6b0022d08a0733c2d0}{%
+           family={Yu},
+           familyi={Y\bibinitperiod},
+           given={Hui-Hung},
+           giveni={H\bibinithyphendelim H\bibinitperiod},
+           givenun=1}}%
+        {{un=0,uniquepart=base,hash=28c66a290dae92be8a66558b3082d749}{%
+           family={Lin},
+           familyi={L\bibinitperiod},
+           given={Wei-Tsun},
+           giveni={W\bibinithyphendelim T\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=e0231f82ee5bd4353b60d8ca22dea71b}{%
+           family={Kuan},
+           familyi={K\bibinitperiod},
+           given={Chih-Wei},
+           giveni={C\bibinithyphendelim W\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=ef60eef46d2b585ea39952048c2a5829}{%
+           family={Yang},
+           familyi={Y\bibinitperiod},
+           given={Chao-Chi},
+           giveni={C\bibinithyphendelim C\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=c88efe9cbe13c5fba03b1ee629adcd8a}{%
+           family={Liao},
+           familyi={L\bibinitperiod},
+           given={Kuan-Min},
+           giveni={K\bibinithyphendelim M\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {MDPI}%
+      }
+      \strng{namehash}{d4942c56fb758bb69155bd0fdfd99c4a}
+      \strng{fullhash}{e0ae6355acadcb75373f80c31e59b854}
+      \strng{bibnamehash}{e0ae6355acadcb75373f80c31e59b854}
+      \strng{authorbibnamehash}{e0ae6355acadcb75373f80c31e59b854}
+      \strng{authornamehash}{d4942c56fb758bb69155bd0fdfd99c4a}
+      \strng{authorfullhash}{e0ae6355acadcb75373f80c31e59b854}
+      \field{sortinit}{Y}
+      \field{sortinithash}{fd67ad5a9ef0f7456bdd9aab10fe1495}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{author}
+      \field{journaltitle}{Future Internet}
+      \field{number}{9}
+      \field{title}{GraphRAG-Enhanced Dialogue Engine for Domain-Specific Question Answering: A Case Study on the Civil {IoT} Taiwan Platform}
+      \field{volume}{17}
+      \field{year}{2025}
+      \field{pages}{414}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.3390/fi17090414
+      \endverb
+    \endentry
     \entry{yu2021visualkg}{article}{}
       \name{author}{4}{}{%
-        {{un=0,uniquepart=base,hash=94658a16389c695058255d9358d09cdd}{%
+        {{un=1,uniquepart=given,hash=94658a16389c695058255d9358d09cdd}{%
            family={Yu},
            familyi={Y\bibinitperiod},
            given={Jun},
            giveni={J\bibinitperiod},
-           givenun=0}}%
+           givenun=1}}%
         {{un=0,uniquepart=base,hash=397532d5aae1b491741f6099b8268321}{%
            family={Zhang},
            familyi={Z\bibinitperiod},
@@ -1162,7 +1299,6 @@
       \field{year}{2024}
     \endentry
   \enddatalist
-  \missing{BPBI}
 \endrefsection
 \endinput
 

@@ -98,12 +98,22 @@ Pipeline terdiri dari lima node yang dieksekusi secara linear sebagaimana ditunj
 
 \input{tables/tabel17.tex}
 
-Pembagian peran \textit{Thinker}--\textit{Speaker} memberikan dua keuntungan teknis: (1) GPT-4o-mini yang memiliki kemampuan pemahaman konteks tinggi difokuskan pada tugas klasifikasi berstruktur (JSON output), sementara (2) Groq \texttt{llama-3.1-8b-instant} yang memiliki latensi rendah difokuskan pada generasi teks panjang. Ini mengoptimalkan kualitas klasifikasi sekaligus menjaga latensi total di bawah batas NF-02 (60 detik).
+Interaksi antar-\textit{node} beserta aliran data melalui \textit{AgentState} ditunjukkan pada Gambar~\ref{fig:langgraph_pipeline}. Setiap panah berlabel \textit{field} \textit{AgentState} yang diteruskan dari satu \textit{node} ke \textit{node} berikutnya, sehingga ketergantungan data antar-tahap dapat dilacak secara eksplisit.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{justification=centering}
+    \includegraphics[width=0.7\textwidth]{{images/Agent-Interaction.png}}
+    \caption{Diagram Interaksi Lima \textit{Node LangGraph Agent Pipeline}}
+    \label{fig:langgraph_pipeline}
+\end{figure}
+
+Pembagian peran \textit{Thinker}--\textit{Speaker} memberikan dua keuntungan teknis: (1) GPT-4o-mini yang memiliki kemampuan pemahaman konteks tinggi difokuskan pada tugas klasifikasi berstruktur (JSON output), sementara (2) Groq \textit{llama-3.1-8b-instant} yang memiliki latensi rendah difokuskan pada generasi teks panjang. Ini mengoptimalkan kualitas klasifikasi sekaligus menjaga latensi total di bawah batas NF-02 (60 detik).
 
 % --- 4.3.3 ---
 \subsection{Perancangan Mekanisme \textit{Retrieval} Bertingkat}
 
-Node \texttt{retriever} mengimplementasikan \textit{cascading retrieval} dengan tiga tahap berurutan. Tahap berikutnya hanya dieksekusi apabila tahap sebelumnya tidak menghasilkan hasil yang memadai, sehingga meminimalkan beban komputasi sekaligus memaksimalkan presisi.
+Node \textit{retriever} mengimplementasikan \textit{cascading retrieval} dengan tiga tahap berurutan. Tahap berikutnya hanya dieksekusi apabila tahap sebelumnya tidak menghasilkan hasil yang memadai, sehingga meminimalkan beban komputasi sekaligus memaksimalkan presisi.
 
 \begin{enumerate}
     \item \textbf{Tahap 1: \textit{Exact Name Match} (Prioritas Utama).} \\
@@ -113,7 +123,7 @@ Node \texttt{retriever} mengimplementasikan \textit{cascading retrieval} dengan 
     Diaktifkan \textit{hanya jika} Tahap 1 tidak menemukan kecocokan eksak. Sistem menghasilkan \textit{embedding} dari kueri pengguna dan mencari \textit{node} paling mirip menggunakan \textit{Native Vector Index} di Neo4j. \textit{Top-k} kandidat menjadi \textit{seed node} untuk traversal.
 
     \item \textbf{Tahap 3: \textit{Multi-hop Graph Traversal}.} \\
-    Dari \textit{seed node}, sistem menelusuri graf di Neo4j secara rekursif. Kedalaman maksimal traversal ditentukan oleh \textit{intent type} yang diklasifikasikan pada node \texttt{thinker} sebagaimana ditunjukkan pada Tabel~\ref{tbl:intent_depth_iv}.
+    Dari \textit{seed node}, sistem menelusuri graf di Neo4j secara rekursif. Kedalaman maksimal traversal ditentukan oleh \textit{intent type} yang diklasifikasikan pada node \textit{thinker} sebagaimana ditunjukkan pada Tabel~\ref{tbl:intent_depth_iv}.
 \end{enumerate}
 
 \input{tables/tabel18.tex}

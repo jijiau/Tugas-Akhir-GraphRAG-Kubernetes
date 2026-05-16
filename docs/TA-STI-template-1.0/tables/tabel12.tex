@@ -23,8 +23,8 @@
 \endlastfoot
 
 T01 - Representasi Struktur Data &
-Menggunakan pemecahan teks secara \textit{linear chunking}, yaitu dokumen hierarkis dipecah menjadi potongan terpisah sehingga hubungan \textit{parent--child} terputus \parencite{cao2025neusymrag}. &
-Terjadi fenomena \textit{loss of deep context}. Sistem gagal memahami kedalaman hierarki, misalnya properti \texttt{limits} merupakan turunan bersarang dari Deployment, karena strukturnya terpisah antar \textit{chunk} \parencite{kotstein_restberta_2024}. \\ \hline
+Menggunakan pemecahan teks secara \textit{linear chunking} ataupun konstruksi \textit{knowledge graph} berbasis ekstraksi entitas generik dari teks, tanpa mendefinisikan taksonomi jenis relasi yang spesifik terhadap semantik domain target \parencite{cao2025neusymrag, civiot2025graphrag, hsgrag2025acm}. &
+Terjadi \textit{loss of deep context} dan ambiguitas semantik relasi. Sistem gagal memahami kedalaman hierarki bersarang (misalnya properti \texttt{limits} sebagai turunan dari Deployment) sekaligus tidak dapat membedakan jenis relasi antar-objek Kubernetes---kepemilikan, ketergantungan konfigurasi, akses jaringan, dan kebijakan RBAC memiliki perilaku \textit{traversal} yang berbeda \parencite{kotstein_restberta_2024}. \\ \hline
 
 T02 - Mekanisme Validasi &
 Validasi bergantung pada model LLM atau aturan manual berbasis \textit{hard constraints} yang harus ditulis satu per satu \parencite{wan2025empowering}. &
@@ -32,11 +32,11 @@ Risiko terjadinya \textit{syntactic hallucination} tinggi (LLM mengarang \textit
 
 T03 - Ambiguitas Entitas & 
 Mengandalkan frekuensi kemunculan kata kunci (\textit{keyword frequency}) atau kedekatan vektor semata. &
-Terdapat ambiguitas pada pola \textit{loose coupling} karena \textit{keywords} (misal: \texttt{labels}, \texttt{ports}) muncul berulang di banyak objek berbeda. Hal ini menyebabkan tercampurnya konteks antar-objek (\textit{contextual mixing}). \\ \hline
+Terdapat ambiguitas pada pola \textit{loose coupling} karena \textit{keywords} (misal: \textit{labels}, \textit{ports}) muncul berulang di banyak objek berbeda. Hal ini menyebabkan tercampurnya konteks antar-objek (\textit{contextual mixing}). \\ \hline
 
 T04 - Pemeliharaan Pengetahuan &
-Membutuhkan \textit{fine-tuning} ulang model atau pembaruan aturan manual ketika terjadi perubahan versi API \parencite{rag_survey}. &
-Tidak efisien, mudah menjadi \textit{obsolete}, dan sensitif terhadap perubahan versi Kubernetes yang dirilis secara berkala (±4 bulan). \\ \hline
+Membutuhkan \textit{fine-tuning} ulang model atau pembaruan aturan manual ketika terjadi perubahan versi API \parencite{rag_survey}. Penelitian GraphRAG terkini pada domain teknis serupa pun masih menghadapi keterbatasan yang sama berupa \textit{knowledge graph} yang bersifat statis tanpa mekanisme pembaruan dinamis \parencite{civiot2025graphrag, hsgrag2025acm}. &
+Tidak efisien, mudah menjadi \textit{obsolete}, dan sensitif terhadap perubahan versi Kubernetes yang dirilis secara berkala ($\pm$4 bulan). \\ \hline
 
 T05 - Akurasi Jawaban &
 Sistem cenderung menghasilkan jawaban naratif umum dan tidak memberikan jaminan presisi sintaksis konfigurasi YAML. &

@@ -24,9 +24,9 @@ Penelitian ini bertujuan untuk menjawab pertanyaan-pertanyaan berikut,
 \begin{enumerate}
     \item Bagaimana membangun \textit{knowledge graph} dari spesifikasi Kubernetes guna merepresentasikan struktur dan relasi antar-objek konfigurasi secara komprehensif?
     
-    \item Bagaimana merancang mekanisme GraphRAG yang memanfaatkan representasi struktural dalam \textit{knowledge graph} untuk meningkatkan presisi \textit{retrieval} pada konfigurasi Kubernetes?
+    \item Bagaimana merancang mekanisme GraphRAG yang memanfaatkan representasi struktural dalam \textit{knowledge graph} untuk meningkatkan kualitas \textit{retrieval} pada konfigurasi Kubernetes?
     
-    \item Bagaimana perbandingan kinerja antara GraphRAG, \textit{Vanilla} RAG, dan \textit{Vector-based} RAG dalam meningkatkan presisi \textit{retrieval} serta validitas sintaksis konfigurasi Kubernetes?
+    \item Bagaimana perbandingan kinerja antara GraphRAG, \textit{Vanilla} RAG, dan \textit{Vector-based} RAG dalam hal kualitas \textit{retrieval}, kualitas jawaban (\textit{answer quality}), dan kualitas penalaran (\textit{reasoning quality}) pada konfigurasi Kubernetes?
 \end{enumerate}
 
 % --- Tujuan ---
@@ -37,7 +37,7 @@ Berdasarkan rumusan masalah yang telah dijelaskan pada Bab I.2, tujuan dalam pen
     
     \item Mengembangkan mekanisme GraphRAG dengan menelusuri jalur relasional (\textit{graph traversal}) berdasarkan kueri pengguna, kemudian menginjeksikan \textit{reasoning path} tersebut ke dalam \textit{Large Language Model} (LLM) untuk menghasilkan jawaban konsisten sesuai logika domain Kubernetes.
     
-    \item Mengevaluasi kinerja metode GraphRAG menggunakan parameter \textit{answer quality}, \textit{retrieval quality}, dan \textit{reasoning quality}, serta membandingkannya dengan \textit{Vanilla} RAG maupun \textit{Vector-based} RAG dalam meningkatkan presisi \textit{retrieval} dan validitas sintaksis konfigurasi Kubernetes, dengan komponen \textit{Thinker} berbasis GPT-4o-mini dan \textit{Speaker} berbasis Groq \texttt{llama-3.1-8b-instant}.
+    \item Mengevaluasi kinerja metode GraphRAG menggunakan parameter \textit{answer quality}, \textit{retrieval quality}, dan \textit{reasoning quality}, serta membandingkannya dengan \textit{Vanilla} RAG maupun \textit{Vector-based} RAG pada konteks konfigurasi Kubernetes, dengan komponen \textit{Thinker} berbasis GPT-4o-mini dan \textit{Speaker} berbasis Groq \textit{llama-3.1-8b-instant}.
 \end{enumerate}
 
 % --- Batasan Masalah ---
@@ -52,7 +52,7 @@ Agar penelitian ini tetap fokus dan \textit{feasible} dalam lingkup Tugas Akhir,
 
     \item Luaran file YAML tidak diuji langsung pada klaster Kubernetes nyata (\textit{actual cluster}). Pengujian sistem murni berfokus pada validitas sintaksis menggunakan pustaka \textit{pyyaml} serta evaluasi kinerja berdasarkan dataset uji.
 
-    \item Model LLM yang digunakan berasal dari \textit{pre-trained models} yang diakses melalui API, yaitu \textbf{GPT-4o-mini} sebagai \textit{Thinker} dan \textbf{Groq \texttt{llama-3.1-8b-instant}} sebagai \textit{Speaker}, tanpa proses \textit{fine-tuning}.
+    \item Model LLM yang digunakan berasal dari \textit{pre-trained models} yang diakses melalui API, yaitu \textbf{GPT-4o-mini} sebagai \textit{Thinker} dan \textbf{Groq \textit{llama-3.1-8b-instant}} sebagai \textit{Speaker}, tanpa proses \textit{fine-tuning}.
 
     \item Algoritma \textit{graph traversal} dibatasi maksimal 3 lompatan (\textit{hops}) sesuai analisis distribusi kedalaman skema OpenAPI Kubernetes. Kedalaman 1--2 menghasilkan \textit{node} spesifik \textit{resource} yang hanya dibagikan oleh 2--3 \textit{resource}, kedalaman 3 mencapai \textit{PodSpec}, sedangkan \textit{field} tingkat kontainer (kedalaman 4) tidak diambil karena didominasi tipe generik bersama, sedangkan kedalaman 4+ didominasi tipe generik (\textit{Quantity}, \textit{IntOrString}, \textit{LocalObjectReference}) yang dibagikan oleh 19--136 \textit{resource} sehingga menurunkan presisi konteks. Pembatasan ini bertujuan mengoptimalkan \textit{Context Precision} serta efisiensi beban komputasi pada sumber daya lokal.
 
