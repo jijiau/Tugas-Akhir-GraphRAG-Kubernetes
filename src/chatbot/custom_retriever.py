@@ -39,6 +39,12 @@ _DEPTH_BY_INTENT = {
 }
 _DEFAULT_DEPTH = 3   # safe fallback for unknown intent types
 
+# Intents yang memerlukan traversal multi-entity (primary + related_concepts).
+# trace_relationship dan generate_yaml sering melibatkan 2+ resource yang tidak
+# terhubung dalam 3 hop dari primary saja — sehingga context entity kedua perlu
+# diambil secara independen, sama seperti yang sudah dilakukan untuk planning.
+_MULTI_ENTITY_INTENTS = {"planning", "trace_relationship", "generate_yaml"}
+
 
 class StatefulK8sRetriever:
     def __init__(self):
@@ -103,8 +109,13 @@ class StatefulK8sRetriever:
 
             graph_context = json.dumps(record, indent=2, ensure_ascii=False)
 
-            # ── Planning: also retrieve up to 2 related concepts and merge ────
-            if intent_type == "planning" and related:
+            # ── Multi-entity: retrieve up to 2 related concepts and merge ────────
+            # Applies to planning, trace_relationship, and generate_yaml.
+            # trace_relationship / generate_yaml often span 2+ resources that are
+            # not reachable within 3 hops from primary alone (e.g. HPA→Deployment,
+            # Secret→Container). Independent traversal of each related concept
+            # closes this gap without changing depth limits.
+            if intent_type in _MULTI_ENTITY_INTENTS and related:
                 for extra_resource in related[:2]:
                     try:
                         extra_root = self._exact_match(extra_resource)
@@ -122,9 +133,9 @@ class StatefulK8sRetriever:
                             if step not in seen_steps:
                                 reasoning_path.append(step)
                                 seen_steps.add(step)
-                        logger.info(f"[Retriever] Planning: merged context for '{extra_root}'")
+                        logger.info(f"[Retriever] Multi-entity ({intent_type}): merged context for '{extra_root}'")
                     except Exception as ex:
-                        logger.warning(f"[Retriever] Planning extra retrieval failed for '{extra_resource}': {ex}")
+                        logger.warning(f"[Retriever] Multi-entity extra retrieval failed for '{extra_resource}': {ex}")
 
             return graph_context, reasoning_path
 
