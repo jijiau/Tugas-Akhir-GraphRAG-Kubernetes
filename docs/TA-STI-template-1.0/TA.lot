@@ -45,7 +45,25 @@
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
-\contentsline {table}{\numberline {II.1}{\ignorespaces Ringkasan kategori relasi antar-objek Kubernetes}}{10}{table.caption.16}%
+\contentsline {table}{\numberline {II.1}{\ignorespaces Ringkasan kategori relasi antar-objek Kubernetes}}{12}{table.caption.16}%
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
@@ -109,24 +127,16 @@
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {III.1}{\ignorespaces Taksonomi 18 jenis \textit {edge} dalam \textit {knowledge graph} Kubernetes}}{29}{table.caption.20}%
-\contentsline {table}{\numberline {III.2}{\ignorespaces Distribusi karakteristik \textit {node} berdasarkan kedalaman penelusuran graf}}{30}{table.caption.21}%
-\contentsline {table}{\numberline {III.3}{\ignorespaces Klasifikasi Tingkat Kompleksitas Pertanyaan Pengguna}}{31}{table.caption.22}%
-\contentsline {table}{\numberline {III.4}{\ignorespaces \textit {Technical Gap Analysis} pada Domain Kubernetes}}{32}{table.3.4}%
+\contentsline {table}{\numberline {III.1}{\ignorespaces Taksonomi 18 jenis \textit {edge} dalam \textit {knowledge graph} Kubernetes}}{33}{table.caption.20}%
+\contentsline {table}{\numberline {III.2}{\ignorespaces Distribusi karakteristik \textit {node} berdasarkan kedalaman penelusuran graf}}{34}{table.caption.21}%
+\contentsline {table}{\numberline {III.3}{\ignorespaces Klasifikasi Tingkat Kompleksitas Pertanyaan Pengguna}}{35}{table.caption.22}%
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
+\contentsline {table}{\numberline {III.4}{\ignorespaces \textit {Technical Gap Analysis} pada Domain Kubernetes}}{36}{table.3.4}%
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\contentsline {table}{\numberline {III.5}{\ignorespaces Pemetaan Kebutuhan Bisnis terhadap \textit {Technical Gap} dan Kebutuhan Fungsional}}{34}{table.caption.23}%
-\contentsline {table}{\numberline {III.6}{\ignorespaces Kebutuhan Fungsional Sistem}}{34}{table.3.6}%
-\contentsline {table}{\numberline {III.7}{\ignorespaces Kebutuhan Non-Fungsional Sistem}}{37}{table.3.7}%
-\contentsline {table}{\numberline {III.8}{\ignorespaces Pemetaan kebutuhan bisnis terhadap dimensi dan metrik evaluasi}}{38}{table.caption.24}%
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
@@ -141,8 +151,28 @@
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
-\contentsline {table}{\numberline {III.9}{\ignorespaces Rubrik Penilaian Kriteria Evaluasi Solusi}}{40}{table.3.9}%
-\contentsline {table}{\numberline {III.10}{\ignorespaces Matriks Perbandingan Solusi Berdasarkan Rubrik Evaluasi}}{41}{table.3.10}%
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\contentsline {table}{\numberline {III.5}{\ignorespaces Pemetaan Kebutuhan Bisnis terhadap \textit {Technical Gap} dan Kebutuhan Fungsional}}{38}{table.caption.23}%
+\contentsline {table}{\numberline {III.6}{\ignorespaces Kebutuhan Fungsional Sistem}}{38}{table.3.6}%
+\contentsline {table}{\numberline {III.7}{\ignorespaces Kebutuhan Non-Fungsional Sistem}}{41}{table.3.7}%
+\contentsline {table}{\numberline {III.8}{\ignorespaces Pemetaan kebutuhan bisnis terhadap dimensi dan metrik evaluasi}}{42}{table.caption.24}%
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\contentsline {table}{\numberline {III.9}{\ignorespaces Rubrik Penilaian Kriteria Evaluasi Solusi}}{44}{table.3.9}%
+\contentsline {table}{\numberline {III.10}{\ignorespaces Matriks Perbandingan Solusi Berdasarkan Rubrik Evaluasi}}{45}{table.3.10}%
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
@@ -152,21 +182,25 @@
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {IV.1}{\ignorespaces Pemetaan Tahap Metodologi}}{46}{table.4.1}%
-\contentsline {table}{\numberline {IV.2}{\ignorespaces Lima Fase Pipeline Ingestion Data}}{52}{table.caption.28}%
-\contentsline {table}{\numberline {IV.3}{\ignorespaces Lima Node LangGraph Agent Pipeline}}{54}{table.caption.29}%
-\contentsline {table}{\numberline {IV.4}{\ignorespaces Pemetaan \textit {Intent Type} terhadap Kedalaman Traversal Graf}}{55}{table.caption.30}%
-\contentsline {table}{\numberline {IV.5}{\ignorespaces Rancangan Tiga Lapis Validasi YAML}}{56}{table.caption.31}%
+\contentsline {table}{\numberline {IV.1}{\ignorespaces Pemetaan Tahap Metodologi}}{50}{table.4.1}%
+\contentsline {table}{\numberline {IV.2}{\ignorespaces Lima Fase Pipeline Ingestion Data}}{57}{table.caption.28}%
+\contentsline {table}{\numberline {IV.3}{\ignorespaces Lima Node LangGraph Agent Pipeline}}{59}{table.caption.29}%
+\contentsline {table}{\numberline {IV.4}{\ignorespaces Pemetaan \textit {Intent Type} terhadap Kedalaman Traversal Graf}}{62}{table.caption.31}%
+\contentsline {table}{\numberline {IV.5}{\ignorespaces Rancangan Tiga Lapis Validasi YAML}}{63}{table.caption.32}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {V.1}{\ignorespaces Dependensi Utama Implementasi Sistem GraphRAG Kubernetes}}{60}{table.caption.32}%
-\contentsline {table}{\numberline {V.2}{\ignorespaces Statistik \textit {Knowledge Graph} Kubernetes Hasil Konstruksi}}{61}{table.caption.33}%
+\contentsline {table}{\numberline {V.1}{\ignorespaces Dependensi Utama Implementasi Sistem GraphRAG Kubernetes}}{66}{table.caption.33}%
+\contentsline {table}{\numberline {V.2}{\ignorespaces Statistik \textit {Knowledge Graph} Kubernetes Hasil Konstruksi}}{67}{table.caption.34}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {VI.1}{\ignorespaces Profil Narasumber Wawancara Validasi Dataset}}{66}{table.caption.34}%
-\contentsline {table}{\numberline {VI.2}{\ignorespaces Penilaian Realisme Sampel \textit {Fixture} oleh Pakar (Skala 1--5)}}{67}{table.caption.35}%
-\contentsline {table}{\numberline {VI.3}{\ignorespaces Skor Evaluasi per Dimensi dan Sub-Metrik (97 \textit {Fixture})}}{68}{table.caption.36}%
-\contentsline {table}{\numberline {VI.4}{\ignorespaces Skor Evaluasi per Kategori \textit {Fixture}}}{69}{table.caption.37}%
-\contentsline {table}{\numberline {VI.5}{\ignorespaces Perbandingan Skor Evaluasi: Vanilla LLM vs.\ Vector RAG vs.\ GraphRAG (97 \textit {Fixture})}}{72}{table.caption.38}%
+\contentsline {table}{\numberline {VI.1}{\ignorespaces Profil Narasumber Wawancara Validasi Dataset}}{72}{table.caption.35}%
+\contentsline {table}{\numberline {VI.2}{\ignorespaces Penilaian Realisme Sampel \textit {Fixture} oleh Pakar (Skala 1--5)}}{73}{table.caption.36}%
+\contentsline {table}{\numberline {VI.3}{\ignorespaces Skor Evaluasi per Dimensi dan Sub-Metrik (97 \textit {Fixture})}}{74}{table.caption.37}%
+\contentsline {table}{\numberline {VI.4}{\ignorespaces Skor Evaluasi per Kategori \textit {Fixture}}}{75}{table.caption.38}%
+\contentsline {table}{\numberline {VI.5}{\ignorespaces Perbandingan Skor Evaluasi: Vanilla LLM vs.\ Vector RAG vs.\ GraphRAG (97 \textit {Fixture})}}{78}{table.caption.39}%
 \addvspace {10\p@ }
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 

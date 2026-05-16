@@ -100,9 +100,9 @@ Bagian ini menjelaskan karakteristik data dokumentasi API Kubernetes yang menjad
             \item \textbf{Relasi Tingkat Skema (\textit{Schema-Level})} \\
             Kategori ini terpetakan dan direpresentasikan secara utuh di dalam graf karena bersumber langsung dari struktur statis spesifikasi OpenAPI. Relasi pada tingkat ini mencakup:
             \begin{enumerate}[a.]
-                \item \textbf{Sifat Atomik \texttt{Pod} (\textit{Passive Relationships}):} \texttt{Pod} bertindak sebagai unit eksekusi atomik pasif tanpa relasi skema eksplisit ke luar. Relasinya terbentuk secara pasif akibat interaksi struktural dari objek Kubernetes eksternal.
-                \item \textbf{Komposisi Hierarkis (\textit{Hierarchical Composition}):} Terjadi ketika satu objek Kubernetes mengandung definisi objek lain secara utuh. Contoh utamanya adalah \texttt{Deployment} mereferensikan \texttt{Pod} melalui blok \texttt{spec. template} penyimpan keseluruhan spesifikasi \texttt{PodSpec}.
-                \item \textbf{Referensi Langsung (\textit{Direct Reference \& Injection}):} Terjadi ketika sebuah objek Kubernetes memanggil objek lain secara eksplisit pada parameternya. Contohnya adalah injeksi konfigurasi satu arah dari \texttt{ConfigMap} atau \texttt{Secret} ke lingkungan eksekusi \texttt{Pod} seperti pada Kode \ref{lst:contoh-yaml} dan \ref{lst:contoh-yaml-secret}.
+                \item \textbf{Sifat Atomik \textit{Pod} (\textit{Passive Relationships}):} \textit{Pod} bertindak sebagai unit eksekusi atomik pasif tanpa relasi skema eksplisit ke luar. Relasinya terbentuk secara pasif akibat interaksi struktural dari objek Kubernetes eksternal.
+                \item \textbf{Komposisi Hierarkis (\textit{Hierarchical Composition}):} Terjadi ketika satu objek Kubernetes mengandung definisi objek lain secara utuh. Contoh utamanya adalah \textit{Deployment} mereferensikan \textit{Pod} melalui blok \texttt{spec. template} penyimpan keseluruhan spesifikasi \textit{PodSpec}.
+                \item \textbf{Referensi Langsung (\textit{Direct Reference \& Injection}):} Terjadi ketika sebuah objek Kubernetes memanggil objek lain secara eksplisit pada parameternya. Contohnya adalah injeksi konfigurasi satu arah dari \textit{ConfigMap} atau \textit{Secret} ke lingkungan eksekusi \textit{Pod} seperti pada Kode \ref{lst:contoh-yaml} dan \ref{lst:contoh-yaml-secret}.
             \end{enumerate}
 
             \begin{minipage}{0.48\textwidth}
@@ -174,8 +174,7 @@ Bagian ini menjelaskan karakteristik data dokumentasi API Kubernetes yang menjad
 \section{Analisis Kebutuhan}
 Tahap analisis kebutuhan berfokus pada identifikasi kapabilitas yang harus
 dimiliki sistem guna menjawab tujuan penelitian dan kebutuhan bisnis. Untuk memastikan bahwa kebutuhan yang dirumuskan bersifat relevan
-dengan masalah yang dihadapi, dilakukan analisis kesenjangan teknis (\textit{technical gap}) pada pendekatan yang ada saat ini
-pada sistem \textit{Retrieval-Augmented Generation} pada Tabel \ref{tbl:comparison_existing_graphRAG}.
+dengan masalah yang dihadapi, dilakukan analisis kesenjangan teknis (\textit{technical gap}) pada pendekatan yang ada saat ini pada sistem \textit{Retrieval-Augmented Generation}, termasuk pendekatan GraphRAG terkini pada domain teknis serupa \parencite{civiot2025graphrag, hsgrag2025acm}, pada Tabel \ref{tbl:comparison_existing_graphRAG}.
 \input{tables/tabel12.tex}
 
 \subsection{Kebutuhan Fungsional}
@@ -270,7 +269,7 @@ Berdasarkan hasil penilaian kuantitatif pada Tabel~\ref{tbl:matriks_solutions}, 
     \item \textbf{GNN-augmented GraphRAG (G-Retriever)}
     \begin{enumerate}[a.]
         \item \textbf{K1 = 5}:
-        Representasi graf Kubernetes sangat sesuai diproses oleh GNN yang sensitif terhadap struktur topologi dan relasi \textit{multi-hop} (\texttt{Deployment} $\rightarrow$ \texttt{PodTemplate} $\rightarrow$ \texttt{Container}).
+        Representasi graf Kubernetes sangat sesuai diproses oleh GNN yang sensitif terhadap struktur topologi dan relasi \textit{multi-hop} (\textit{Deployment} $\rightarrow$ \textit{PodTemplate} $\rightarrow$ \textit{Container}).
 
         \item \textbf{K2 = 3}:
         Kemampuan generatif bergantung pada subgraf hasil PCST. LLM menghasilkan jawaban berdasarkan subgraf, tetapi tidak menyusun struktur baru secara fleksibel.
@@ -311,7 +310,7 @@ Oleh karena itu, penelitian ini mengusulkan penyesuaian strategi sebagai berikut
     \item Implementasi solusi Kubernetes : Validasi berbasis struktur otomatis melalui penelusuran graf (\textit{Graph-Native Structural Traversal}).
 \end{enumerate}
 
-Pendekatan ini menjadikan topologi \textit{knowledge graph} sebagai validator bawaan. Jika relasi antar-objek Kubernetes ditemukan secara eksplisit pada graf (misalnya \texttt{Service} $\rightarrow$ \texttt{Deployment} melalui \textit{selector}), maka konfigurasi tersebut dianggap valid tanpa perlu mendefinisikan aturan tambahan.
+Pendekatan ini menjadikan topologi \textit{knowledge graph} sebagai validator bawaan. Jika relasi antar-objek Kubernetes ditemukan secara eksplisit pada graf (misalnya \textit{Service} $\rightarrow$ \textit{Deployment} melalui \textit{selector}), maka konfigurasi tersebut dianggap valid tanpa perlu mendefinisikan aturan tambahan.
 
 \begin{quote}
 \textbf{Kesimpulan:} Solusi akhir yang dipilih adalah \textit{GraphRAG with Structural Traversal}, yaitu adaptasi dari arsitektur Hybrid KG--Vector RAG yang menggantikan validasi aturan \textit{hard constraints} dengan validasi relasional dari topologi graf. Pendekatan ini meningkatkan efisiensi pemeliharaan dan menekan risiko halusinasi konfigurasi Kubernetes.

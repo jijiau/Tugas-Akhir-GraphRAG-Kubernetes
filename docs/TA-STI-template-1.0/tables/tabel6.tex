@@ -40,13 +40,13 @@ F-05 (\textit{Attribute Enrichment}) \\ \hline
 
 Konstruksi Topologi Graf &
 Transformasi struktur JSON menjadi node–edge dengan relasi referensial dan hierarkis. &
-F-01 (\textit{Structured Schema Representation}),
+F-01 (\textit{Structured Object Representation}),
 F-02 (\textit{Structured Relation Retrieval}),
 F-05 (\textit{Attribute Enrichment}) \\ \hline
 
 Neo4j \textit{Data Loading} &
 Memuat hasil konstruksi graf ke basis data Neo4j agar dapat ditelusuri kembali saat retrieval. &
-F-01 (\textit{Structured Schema Representation}) \\ \hline
+F-01 (\textit{Structured Object Representation}) \\ \hline
 
 
 % =================== MODELLING ======================
@@ -69,6 +69,11 @@ F-07 (\textit{Conditional YAML Generation Constraint}) \\ \hline
 \textit{Validation Logic} &
 Integrasi prosedur validasi YAML tiga lapis sebagai mekanisme \textit{fail-safe}: sintaksis (\textit{yaml.safe\_load}), skema (\textit{kubernetes-validate}), dan ketersediaan \textit{required fields} via Neo4j. &
 F-07 (\textit{Conditional YAML Generation Constraint}) \\ \hline
+
+\textit{Conversation Memory Management} &
+Penyimpanan dan pengambilan riwayat percakapan menggunakan SQLite melalui node \textit{memory} (load riwayat di awal giliran) dan \textit{saver} (simpan respons di akhir giliran) dalam \textit{pipeline} LangGraph, guna mendukung intent \textbf{followup} yang membutuhkan konteks dari giliran sebelumnya. &
+F-03 (\textit{Intent Classification}),
+F-04 (\textit{Context Construction \& Injection}) \\ \hline
 
 
 % =================== INPUT ======================

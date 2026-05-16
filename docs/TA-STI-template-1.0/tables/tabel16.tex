@@ -12,11 +12,11 @@ Pass 1 & \textit{Node Creation} & Membuat node definisi dari setiap entri \texti
 \hline
 Pass 1.5 & \textit{Embedding Generation} & Menghasilkan vektor 1536-dimensi (\textit{text-embedding-3-small}) dari deskripsi setiap node. & \textit{Native Vector Index} di Neo4j \\
 \hline
-Pass 2 & \textit{Structural Edges} & Membangun edge \texttt{HAS\_PROPERTY} berdasarkan resolusi \texttt{\$ref} antar-definisi. & 4 jenis \textit{structural edge} \\
+Pass 2 & \textit{Structural Edges} & Membangun edge \textit{HAS\_PROPERTY} berdasarkan resolusi \texttt{\$ref} antar-definisi. & 4 jenis \textit{structural edge} \\
 \hline
-Pass 2.5 & \textit{Inheritance Edges} & Membangun edge \texttt{EXTENDS}, \texttt{ONE\_OF}, \texttt{ANY\_OF} dari blok \texttt{allOf}/\texttt{oneOf}/\texttt{anyOf}. & Edge hierarki skema \\
+Pass 2.5 & \textit{Inheritance Edges} & Membangun edge \textit{EXTENDS}, \textit{ONE\_OF}, \textit{ANY\_OF} dari blok \texttt{allOf}/\texttt{oneOf}/\texttt{anyOf}. & Edge hierarki skema \\
 \hline
-Pass 3 & \textit{Semantic Edges} & Membangun 14 jenis \textit{semantic edge} berdasarkan pola YAML Kubernetes (contoh: \texttt{CONTAINS\_POD\_TEMPLATE}, \texttt{USES\_SECRET}). & 14 jenis \textit{semantic edge} \\
+Pass 3 & \textit{Semantic Edges} & Membangun 14 jenis \textit{semantic edge} berdasarkan pola YAML Kubernetes (contoh: \textit{CONTAINS\_POD\_TEMPLATE}, \textit{USES\_SECRET}). & 14 jenis \textit{semantic edge} \\
 \hline
 \end{tabular}
 \end{table}

@@ -8,15 +8,15 @@
 \hline
 \textbf{Node} & \textbf{Fungsi} & \textbf{Aktivitas} & \textbf{Komponen} \\
 \hline
-\texttt{memory} & Ambil riwayat & Membaca 5 giliran percakapan terakhir dari penyimpanan SQLite. & SQLite (\texttt{ZepMemoryStore}) \\
+\textit{memory} & Ambil riwayat & Membaca 5 giliran percakapan terakhir dari penyimpanan SQLite. & SQLite (\textit{ZepMemoryStore}) \\
 \hline
-\texttt{thinker} & Ekstraksi \textit{intent} & Menganalisis pertanyaan + riwayat, mengeluarkan JSON berisi \texttt{primary\_resource}, \texttt{related\_concepts}, dan \texttt{intent\_type}. & GPT-4o-mini \\
+\textit{thinker} & Ekstraksi \textit{intent} & Menganalisis pertanyaan + riwayat, mengeluarkan JSON berisi \textit{primary\_resource}, \textit{related\_concepts}, dan \textit{intent\_type}. & GPT-4o-mini \\
 \hline
-\texttt{retriever} & Eksekusi \textit{retrieval} & Meneruskan JSON intent ke \texttt{StatefulK8sRetriever} untuk retrieval bertingkat; menghasilkan \texttt{graph\_context} dan \texttt{reasoning\_path}. & \texttt{StatefulK8s Retriever} \\
+\textit{retriever} & Eksekusi \textit{retrieval} & Meneruskan JSON intent ke \textit{StatefulK8sRetriever} untuk retrieval bertingkat; menghasilkan \textit{graph\_context} dan \textit{reasoning\_path}. & \textit{StatefulK8s Retriever} \\
 \hline
-\texttt{speaker} & Generasi respons & Menggunakan konteks graf dan \textit{reasoning path} untuk menghasilkan jawaban naratif atau blok YAML. & Groq llama-3.1-8b-instant \\
+\textit{speaker} & Generasi respons & Menggunakan konteks graf dan \textit{reasoning path} untuk menghasilkan jawaban naratif atau blok YAML. & Groq llama-3.1-8b-instant \\
 \hline
-\texttt{saver} & Simpan riwayat & Menyimpan pasangan pertanyaan--jawaban ke SQLite untuk giliran percakapan berikutnya. & SQLite (\texttt{ZepMemoryStore}) \\
+\textit{saver} & Simpan riwayat & Menyimpan pasangan pertanyaan--jawaban ke SQLite untuk giliran percakapan berikutnya. & SQLite (\textit{ZepMemoryStore}) \\
 \hline
 \end{tabular}
 \end{table}

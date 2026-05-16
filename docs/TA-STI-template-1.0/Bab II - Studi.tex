@@ -64,7 +64,7 @@ Antar-objek ini saling terikat melalui berbagai jenis relasi semantik yang dapat
 
 \input{tables/tabel20.tex}
 
-Pemetaan relasi kepemilikan (\textit{ownership}) dan ketergantungan fungsional (\textit{dependencies}) inilah yang akan secara langsung dikonversi menjadi skema graf pengetahuan (\textit{knowledge graph}) pada penelitian ini. Sebagai contoh, sebuah \textit{Deployment} secara hierarkis memiliki sub-sumber daya \textit{PodSpec} melalui relasi \texttt{CONTAINS\_POD\_TEMPLATE}, dan \textit{Pod} tersebut memiliki ketergantungan operasional terhadap \textit{ConfigMap} tertentu melalui relasi \texttt{LOADS\_CONFIGMAP}. Total terdapat 18 jenis \textit{edge} yang terdistribusi dalam 7 kategori relasi sebagaimana dirangkum pada Tabel~\ref{tbl:edge_category_summary}. Desain taksonomi \textit{edge} secara rinci dibahas pada Bab~\ref{chap:analisis-masalah}.
+Pemetaan relasi kepemilikan (\textit{ownership}) dan ketergantungan fungsional (\textit{dependencies}) inilah yang akan secara langsung dikonversi menjadi skema graf pengetahuan (\textit{knowledge graph}) pada penelitian ini. Sebagai contoh, sebuah \textit{Deployment} secara hierarkis memiliki sub-sumber daya \textit{PodSpec} melalui relasi \textit{CONTAINS\_POD\_TEMPLATE}, dan \textit{Pod} tersebut memiliki ketergantungan operasional terhadap \textit{ConfigMap} tertentu melalui relasi \textit{LOADS\_CONFIGMAP}. Total terdapat 18 jenis \textit{edge} yang terdistribusi dalam 7 kategori relasi sebagaimana dirangkum pada Tabel~\ref{tbl:edge_category_summary}. Desain taksonomi \textit{edge} secara rinci dibahas pada Bab~\ref{chap:analisis-masalah}.
 \subsection{Manifes YAML dan \textit{Infrastructure as Code}}
 
 Pengembang berinteraksi dengan model sumber daya Kubernetes melalui pendekatan \textit{Infrastructure as Code} (IaC) \parencite{k8s_docs_concepts}. Pendekatan ini mewajibkan pengguna untuk mendeklarasikan wujud infrastruktur yang diinginkan (\textit{desired state}) ke dalam bentuk dokumen teks berformat YAML. Setiap manifes YAML standar wajib memiliki empat atribut struktural utama agar dapat diterima oleh API Kubernetes:
@@ -138,7 +138,7 @@ Arsitektur \textit{Retrieval-Augmented Generation} (RAG) merupakan pendekatan hi
         \item \textit{Concatenation} \\
         Sistem menggabungkan pertanyaan pengguna dengan konten dokumen yang ditemukan.
         \item \textit{Formatting} \\
-        Struktur informasi dapat diberikan dalam format teks baku, tabel, \textit{JSON schema}, \texttt{instruction-style}, atau bentuk terstruktur lainnya.
+        Struktur informasi dapat diberikan dalam format teks baku, tabel, \textit{JSON schema}, \textit{instruction-style}, atau bentuk terstruktur lainnya.
         \item \textit{Constraint Injection} \\
         Sistem memberikan batasan eksplisit, misalnya \textit{``jawab hanya menggunakan konteks yang diberikan, jangan menambah informasi baru''}, untuk mencegah LLM berhalusinasi.
     \end{enumerate}
@@ -162,7 +162,7 @@ Arsitektur \textit{Retrieval-Augmented Generation} (RAG) merupakan pendekatan hi
 
 Dokumentasi Web API, termasuk Kubernetes, memiliki karakteristik unik berupa kombinasi deskripsi sintaks terstruktur (misalnya skema JSON/YAML) dan penjelasan semantik dalam bentuk teks alami. Penelitian \textcite{kotstein_restberta_2024} menunjukkan bahwa pemrosesan semantik terhadap dokumentasi API dapat dilakukan tanpa ontologi formal dengan memetakan makna berdasarkan nama parameter, struktur hierarkis, dan deskripsi bahasa alami.
 
-Dalam konteks Kubernetes, komponen API seperti \texttt{Pod}, \texttt{Service}, dan \texttt{Deployment} direpresentasikan melalui skema bertingkat yang bersifat kompleks dan memiliki ketergantungan semantik. Oleh karena itu, implementasi RAG pada domain ini membutuhkan,
+Dalam konteks Kubernetes, komponen API seperti \textit{Pod}, \textit{Service}, dan \textit{Deployment} direpresentasikan melalui skema bertingkat yang bersifat kompleks dan memiliki ketergantungan semantik. Oleh karena itu, implementasi RAG pada domain ini membutuhkan,
 \begin{enumerate}
     \item \textbf{\textit{Schema-aware semantic chunking}}\\
     Teknik ini memastikan bahwa pemotongan dokumen (\textit{chunking}) dilakukan mengikuti struktur skema objek API. Setiap potongan teks harus mewakili satu entitas atau blok atribut yang utuh sehingga relasi antar-\textit{field} tidak terpisah atau kehilangan konteks. Dengan demikian, representasi vektor yang dihasilkan tetap mempertahankan hierarki objek.
@@ -306,7 +306,7 @@ Untuk evaluasi keluaran konfigurasi YAML, dua metrik standar yang relevan adalah
     Mengukur persentase keluaran YAML yang dapat diurai tanpa galat menggunakan \textit{parser} standar seperti \texttt{pyyaml}. Metrik ini bersifat biner: dokumen YAML valid atau tidak valid.
 
     \item \textbf{\textit{Schema Compliance}}\\
-    Mengukur kelengkapan \textit{required fields} berdasarkan spesifikasi skema yang berlaku, dalam konteks ini spesifikasi OpenAPI Kubernetes v1.30 \parencite{kubernetes_docs}. Catatan: kedua metrik ini hanya relevan untuk \textit{fixture} bertipe \texttt{yaml\_gen}.
+    Mengukur kelengkapan \textit{required fields} berdasarkan spesifikasi skema yang berlaku, dalam konteks ini spesifikasi OpenAPI Kubernetes v1.30 \parencite{kubernetes_docs}. Catatan: kedua metrik ini hanya relevan untuk \textit{fixture} bertipe \textit{yaml\_gen}.
 \end{enumerate}
 
 \subsection{\textit{Reasoning Quality}}
@@ -324,5 +324,30 @@ Evaluasi dimensi penalaran mengukur sejauh mana jawaban sistem dapat diverifikas
 Metrik khusus \textit{graph traversal} (\textit{Hop Accuracy}, \textit{Multi-Hop Success}, \textit{Scope Accuracy}) dirancang sebagai kontribusi penelitian dan diperkenalkan pada Bab~\ref{chap:analisis-masalah}.
 
 Kerangka evaluasi tiga dimensi (\textit{Answer Quality}, \textit{Retrieval Quality}, \textit{Reasoning Quality}) beserta metrik khusus yang dikembangkan untuk domain Kubernetes diuraikan secara rinci pada Bab~\ref{chap:analisis-masalah}.
+
+\section{Penelitian Terkait}
+\label{sec:penelitian-terkait}
+
+Bagian ini merangkum tiga penelitian terdahulu yang paling relevan terhadap pendekatan yang dikembangkan dalam penelitian ini. Ketiga penelitian tersebut dipilih karena secara bersama-sama merepresentasikan perkembangan mutakhir penerapan \textit{Knowledge Graph} dan RAG pada domain teknis spesifik, sehingga membentuk pijakan perbandingan langsung terhadap kontribusi yang diajukan.
+
+\subsection{GraphRAG untuk Platform IoT Domain-Spesifik}
+
+\textcite{civiot2025graphrag} mengembangkan mesin dialog tanya jawab berbasis GraphRAG untuk membantu pengguna mengambil informasi secara presisi dari \textit{Civil IoT Taiwan Data Service Platform}. Penelitian ini membangun \textit{Knowledge Graph} secara semi-otomatis menggunakan GPT-4.1 untuk mengekstraksi entitas dan relasi dari dokumen platform, kemudian menggunakan model Llama-3-TAIDE-LX-8B untuk menerjemahkan pertanyaan bahasa alami pengguna ke jalur kueri graf. Sistem berhasil melampaui nilai F1 sebesar 0.7 pada kueri multi-entitas dan terbukti efektif menghindari halusinasi pada kasus data yang tidak tersedia.
+
+Keterbatasan utamanya adalah \textit{Knowledge Graph} yang bersifat statis tanpa mekanisme pembaruan dinamis, serta biaya adaptasi yang tinggi untuk platform lain. Perbedaan kunci dengan penelitian ini terletak pada sumber data dan topologi graf: penelitian \textcite{civiot2025graphrag} membangun graf dari narasi dokumen tidak terstruktur dengan entitas IoT yang beragam, sedangkan penelitian ini membangun graf dari skema OpenAPI Kubernetes yang bersifat deterministik dengan taksonomi relasi yang didefinisikan secara eksplisit.
+
+\subsection{RAG Hibrida KG-Vektor untuk Manufaktur Pintar}
+
+\textcite{wan2025empowering} mengusulkan kerangka kerja Q\&A berbasis RAG hibrida yang menggabungkan \textit{Knowledge Graph} Neo4j dengan pencarian vektor untuk domain \textit{Design for Additive Manufacturing} (DfAM). Konstruksi KG dilakukan berdasarkan metadata dari 69 publikasi teknis, diperkuat dengan \textit{Semantic Alignment} dan \textit{Prompt Enhancement} (PE) berbasis konstrain domain. Kombinasi pendekatan hibrida tersebut dengan GPT-4o menghasilkan akurasi 77.8\% \textit{Exact Match} dan 76.5\% \textit{Context Precision}, melampaui pendekatan RAG vektor atau graf secara mandiri.
+
+Keterbatasan utamanya adalah latensi tinggi akibat proses pencarian hibrida yang kompleks, serta KG yang belum mendukung pembaruan data secara dinamis. Penelitian ini mengadopsi konsep hibrida KG-vektor yang sama, namun memperluas mekanisme \textit{retrieval} dengan pencocokan eksak berbasis nama \textit{resource} dan penelusuran multi-hop mengikuti taksonomi 18 jenis relasi Kubernetes yang dirancang secara domain-spesifik.
+
+\subsection{HSG-RAG: Konstruksi Basis Pengetahuan Hierarkis untuk Domain Teknis}
+
+\textcite{hsgrag2025acm} mengembangkan HSG-RAG (\textit{Hierarchical Semantic Graph Retrieval Augmented Generation}), sebuah metode konstruksi dan pencarian basis pengetahuan bertingkat untuk mendukung pengembangan sistem \textit{embedded}. Graf dibangun dari korpus dokumen teknis SDK dan \textit{datasheet} tiga platform perangkat keras (ESP32S3, STM32F103, JL701) menggunakan LLM, mencakup dua lapisan relasi: jarak dekat antar-paragraf dan jarak jauh berbasis kemiripan semantik. Strategi pencarian \textit{top-down} memecah kueri pengguna menjadi sub-kueri yang ditelusuri secara bertahap di dalam graf, menghasilkan jawaban yang lebih spesifik, ringkas, dan lengkap dibandingkan VanillaRAG maupun GraphRAG konvensional.
+
+Keterbatasan utamanya adalah belum adanya mekanisme verifikasi otomatis kebenaran kode yang dihasilkan, serta cakupan evaluasi yang masih terbatas pada beberapa platform perangkat keras. Penelitian ini mengadopsi konsep dekomposisi kueri dan penelusuran bertingkat yang serupa, namun menerapkannya pada skema Kubernetes yang memiliki hierarki objek lebih terstruktur dan jenis relasi antar-\textit{resource} yang terdefinisi secara formal dalam spesifikasi OpenAPI.
+
+Ketiga penelitian terdahulu secara konsisten memvalidasi efektivitas pendekatan GraphRAG dalam domain teknis spesifik, sekaligus mengidentifikasi dua pola keterbatasan yang berulang: (1) KG bersifat statis tanpa mekanisme pembaruan dinamis, dan (2) taksonomi relasi yang belum disesuaikan dengan karakteristik skema target secara mendalam. Penelitian ini merespons kedua pola keterbatasan tersebut secara domain-spesifik untuk Kubernetes.
 
 Berdasarkan kajian literatur yang telah dipaparkan, teridentifikasi dua kesenjangan utama yang menjadi landasan penelitian ini. Pertama, pendekatan RAG berbasis vektor konvensional terbukti tidak memadai untuk domain Kubernetes karena gagal menangkap relasi hierarkis dan referensial yang menentukan validitas konfigurasi \parencite{wan2025empowering}. Kedua, meskipun integrasi \textit{Knowledge Graph} dalam RAG telah menunjukkan peningkatan signifikan pada domain umum, belum ada rancangan taksonomi relasi dan mekanisme \textit{traversal} yang secara spesifik disesuaikan untuk skema OpenAPI Kubernetes. Bab selanjutnya menganalisis karakteristik data, kebutuhan sistem, dan alternatif pendekatan solusi untuk menjawab kedua kesenjangan tersebut.

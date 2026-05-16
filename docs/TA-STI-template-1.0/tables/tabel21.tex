@@ -8,41 +8,41 @@
 \hline
 \textbf{No} & \textbf{\textit{Edge Type}} & \textbf{Kategori} & \textbf{Contoh Relasi} \\
 \hline
-1 & \texttt{HAS\_PROPERTY} & Struktural & \textit{Deployment} $\rightarrow$ \textit{spec} \\
+1 & \textit{HAS\_PROPERTY} & Struktural & \textit{Deployment} $\rightarrow$ \textit{spec} \\
 \hline
-2 & \texttt{EXTENDS} & Struktural & \textit{Deployment} $\rightarrow$ \textit{ObjectMeta} \\
+2 & \textit{EXTENDS} & Struktural & \textit{Deployment} $\rightarrow$ \textit{ObjectMeta} \\
 \hline
-3 & \texttt{ONE\_OF} & Struktural & \textit{Volume} $\rightarrow$ satu sumber penyimpanan \\
+3 & \textit{ONE\_OF} & Struktural & \textit{Volume} $\rightarrow$ satu sumber penyimpanan \\
 \hline
-4 & \texttt{ANY\_OF} & Struktural & \textit{EnvFromSource} $\rightarrow$ \textit{ConfigMap}/\textit{Secret} \\
+4 & \textit{ANY\_OF} & Struktural & \textit{EnvFromSource} $\rightarrow$ \textit{ConfigMap}/\textit{Secret} \\
 \hline
-5 & \texttt{CONTAINS\_POD\_TEMPLATE} & \textit{Workload} & \textit{Deployment} $\rightarrow$ \textit{PodTemplateSpec} \\
+5 & \textit{CONTAINS\_POD\_TEMPLATE} & \textit{Workload} & \textit{Deployment} $\rightarrow$ \textit{PodTemplateSpec} \\
 \hline
-6 & \texttt{CONTAINS\_JOB\_TEMPLATE} & \textit{Workload} & \textit{CronJob} $\rightarrow$ \textit{JobTemplateSpec} \\
+6 & \textit{CONTAINS\_JOB\_TEMPLATE} & \textit{Workload} & \textit{CronJob} $\rightarrow$ \textit{JobTemplateSpec} \\
 \hline
-7 & \texttt{HAS\_CONTAINER} & \textit{Workload} & \textit{PodSpec} $\rightarrow$ \textit{Container} \\
+7 & \textit{HAS\_CONTAINER} & \textit{Workload} & \textit{PodSpec} $\rightarrow$ \textit{Container} \\
 \hline
-8 & \texttt{CLAIMS\_VOLUME} & Penyimpanan & \textit{StatefulSet} $\rightarrow$ \textit{PersistentVolumeClaim} \\
+8 & \textit{CLAIMS\_VOLUME} & Penyimpanan & \textit{StatefulSet} $\rightarrow$ \textit{PersistentVolumeClaim} \\
 \hline
-9 & \texttt{MOUNTS\_VOLUME} & Penyimpanan & \textit{PodSpec} $\rightarrow$ \textit{Volume} \\
+9 & \textit{MOUNTS\_VOLUME} & Penyimpanan & \textit{PodSpec} $\rightarrow$ \textit{Volume} \\
 \hline
-10 & \texttt{USES\_STORAGE\_CLASS} & Penyimpanan & \textit{PVC} $\rightarrow$ \textit{StorageClass} \\
+10 & \textit{USES\_STORAGE\_CLASS} & Penyimpanan & \textit{PVC} $\rightarrow$ \textit{StorageClass} \\
 \hline
-11 & \texttt{LOADS\_CONFIGMAP} & Konfigurasi & \textit{Container} $\rightarrow$ \textit{ConfigMap} \\
+11 & \textit{LOADS\_CONFIGMAP} & Konfigurasi & \textit{Container} $\rightarrow$ \textit{ConfigMap} \\
 \hline
-12 & \texttt{USES\_SECRET} & Konfigurasi & \textit{PodSpec} $\rightarrow$ \textit{Secret} \\
+12 & \textit{USES\_SECRET} & Konfigurasi & \textit{PodSpec} $\rightarrow$ \textit{Secret} \\
 \hline
-13 & \texttt{SELECTS\_POD} & Jaringan & \textit{Service} $\rightarrow$ \textit{Pod} via \textit{selector} \\
+13 & \textit{SELECTS\_POD} & Jaringan & \textit{Service} $\rightarrow$ \textit{Pod} via \textit{selector} \\
 \hline
-14 & \texttt{ROUTES\_TO\_SERVICE} & Jaringan & \textit{Ingress} $\rightarrow$ \textit{Service} \\
+14 & \textit{ROUTES\_TO\_SERVICE} & Jaringan & \textit{Ingress} $\rightarrow$ \textit{Service} \\
 \hline
-15 & \texttt{BINDS\_ROLE} & RBAC & \textit{RoleBinding} $\rightarrow$ \textit{Role} \\
+15 & \textit{BINDS\_ROLE} & RBAC & \textit{RoleBinding} $\rightarrow$ \textit{Role} \\
 \hline
-16 & \texttt{BINDS\_SERVICE\_ACCOUNT} & RBAC & \textit{RoleBinding} $\rightarrow$ \textit{ServiceAccount} \\
+16 & \textit{BINDS\_SERVICE\_ACCOUNT} & RBAC & \textit{RoleBinding} $\rightarrow$ \textit{ServiceAccount} \\
 \hline
-17 & \texttt{USES\_SERVICE\_ACCOUNT} & RBAC & \textit{PodSpec} $\rightarrow$ \textit{ServiceAccount} \\
+17 & \textit{USES\_SERVICE\_ACCOUNT} & RBAC & \textit{PodSpec} $\rightarrow$ \textit{ServiceAccount} \\
 \hline
-18 & \texttt{SCALES\_RESOURCE} & \textit{Autoscaling} & \textit{HPA} $\rightarrow$ \textit{Deployment}/\textit{StatefulSet} \\
+18 & \textit{SCALES\_RESOURCE} & \textit{Autoscaling} & \textit{HPA} $\rightarrow$ \textit{Deployment}/\textit{StatefulSet} \\
 \hline
 \end{tabular}
 \end{table}
