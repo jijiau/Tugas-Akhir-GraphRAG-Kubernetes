@@ -40,10 +40,9 @@ _DEPTH_BY_INTENT = {
 _DEFAULT_DEPTH = 3   # safe fallback for unknown intent types
 
 # Intents yang memerlukan traversal multi-entity (primary + related_concepts).
-# trace_relationship dan generate_yaml sering melibatkan 2+ resource yang tidak
-# terhubung dalam 3 hop dari primary saja — sehingga context entity kedua perlu
-# diambil secara independen, sama seperti yang sudah dilakukan untuk planning.
-_MULTI_ENTITY_INTENTS = {"planning", "trace_relationship", "generate_yaml"}
+# trace_relationship dikeluarkan karena penambahan entity kedua menyebabkan
+# precision penalty di RetQ (lebih banyak node diambil dari yang relevan).
+_MULTI_ENTITY_INTENTS = {"planning", "generate_yaml"}
 
 
 class StatefulK8sRetriever:
