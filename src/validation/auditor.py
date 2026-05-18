@@ -5,7 +5,7 @@ Performs comprehensive graph validation and generates thesis-ready statistics.
 """
 
 from src.graph.neo4j_client import Neo4jClient
-from typing import Dict, Any, List
+from typing import Dict, Any
 import logging
 from datetime import datetime
 
@@ -31,6 +31,8 @@ class GraphAuditor:
             "missing_field_types": self.check_missing_field_types(),
             "broken_references": self.check_broken_references(),
             "semantic_relationships": self.check_semantic_relationships(),
+            "workload_completeness_missing": self.check_workload_completeness(),
+            "scales_coherence_violations": self.check_scales_resource_coherence(),
             "timestamp": datetime.now().isoformat(),
             "graph_health_score": self.calculate_health_score()
         }
@@ -135,6 +137,33 @@ class GraphAuditor:
         
         return results
 
+    def check_workload_completeness(self) -> list:
+        """Verify all Workload resources have CONTAINS_POD_TEMPLATE edge."""
+        query = """
+            MATCH (r:Definition)
+            WHERE r.kind IN ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job']
+            AND NOT (r)-[:CONTAINS_POD_TEMPLATE]->()
+            RETURN r.kind as kind
+        """
+        results = self.db.execute_query(query)
+        missing = [r["kind"] for r in results if r]
+        if missing:
+            logger.warning(f"Workload resources missing CONTAINS_POD_TEMPLATE: {missing}")
+        return missing
+
+    def check_scales_resource_coherence(self) -> list:
+        """Verify SCALES_RESOURCE only targets scalable workload resources."""
+        query = """
+            MATCH (h)-[:SCALES_RESOURCE]->(t)
+            WHERE NOT t.kind IN ['Deployment','StatefulSet','ReplicaSet']
+            RETURN t.kind as invalid_target
+        """
+        results = self.db.execute_query(query)
+        violations = [r["invalid_target"] for r in results if r]
+        if violations:
+            logger.warning(f"SCALES_RESOURCE coherence violations (invalid targets): {violations}")
+        return violations
+
     def calculate_health_score(self) -> int:
         """Calculates overall graph health score (0-100)."""
         score = 100
@@ -151,7 +180,14 @@ class GraphAuditor:
         semantic = self.check_semantic_relationships()
         missing_semantic = sum(1 for count in semantic.values() if count == 0)
         score -= min(missing_semantic * 3, 20)
-        
+
+        # Semantic coherence penalties (new checks)
+        workload_missing = self.check_workload_completeness()
+        score -= min(len(workload_missing) * 5, 20)
+
+        coherence_violations = self.check_scales_resource_coherence()
+        score -= min(len(coherence_violations) * 5, 10)
+
         return max(0, score)
 
     def get_graph_density(self) -> Dict[str, float]:

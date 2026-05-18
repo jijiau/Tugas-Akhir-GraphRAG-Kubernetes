@@ -1,6 +1,7 @@
 {
   "id": "add_readiness_probe",
   "type": "followup",
+  "context_question": "Buat YAML Deployment nginx",
   "question": "Tambahkan readiness probe HTTP di path /ready port 8080 pada konfigurasi tadi",
   "resource": "io.k8s.api.apps.v1.Deployment",
   "scope": "Namespaced",
