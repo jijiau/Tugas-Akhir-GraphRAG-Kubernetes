@@ -1,6 +1,7 @@
 {
   "id": "add_liveness_probe",
   "type": "followup",
+  "context_question": "Buat YAML Deployment nginx",
   "question": "Sekarang tambahkan liveness probe HTTP ke endpoint /healthz di port 8080, dengan initialDelaySeconds 15 dan periodSeconds 20",
   "resource": "io.k8s.api.apps.v1.Deployment",
   "scope": "Namespaced",

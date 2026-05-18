@@ -1,6 +1,7 @@
 {
   "id": "add_resource_limits_deployment",
   "type": "followup",
+  "context_question": "Buat YAML Deployment nginx",
   "question": "Sekarang tambahkan resource request dan limit untuk container itu: request CPU 100m memory 128Mi, limit CPU 500m memory 512Mi",
   "resource": "io.k8s.api.apps.v1.Deployment",
   "scope": "Namespaced",

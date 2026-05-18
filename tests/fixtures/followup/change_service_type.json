@@ -1,6 +1,7 @@
 {
   "id": "change_service_type",
   "type": "followup",
+  "context_question": "Buat YAML Service ClusterIP untuk nginx di port 80",
   "question": "Ubah tipe service itu menjadi LoadBalancer",
   "resource": "io.k8s.api.core.v1.Service",
   "scope": "Namespaced",

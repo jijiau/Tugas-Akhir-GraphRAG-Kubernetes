@@ -1,6 +1,7 @@
 {
   "id": "update_image_version",
   "type": "followup",
+  "context_question": "Buat YAML Deployment nginx:1.24 dengan 2 replika",
   "question": "Sekarang ubah image container-nya ke versi nginx:1.25.3",
   "resource": "io.k8s.api.apps.v1.Deployment",
   "scope": "Namespaced",

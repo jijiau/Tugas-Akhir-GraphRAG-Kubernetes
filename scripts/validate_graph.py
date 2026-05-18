@@ -71,6 +71,19 @@ def main():
     print(f"   • Orphan Resources: {orphans} {'✅' if orphans == 0 else '⚠️'}")
     print(f"   • Missing Field Types: {missing_fields} {'✅' if missing_fields == 0 else '⚠️'}")
     print(f"   • Broken References: {broken} {'✅' if broken == 0 else '⚠️'}")
+
+    # New: semantic coherence checks
+    workload_missing = results.get('workload_completeness_missing', [])
+    coherence_violations = results.get('scales_coherence_violations', [])
+    print(f"\n🧠 SEMANTIC COHERENCE CHECKS:")
+    if workload_missing:
+        print(f"   • Workload missing CONTAINS_POD_TEMPLATE: {workload_missing} ⚠️")
+    else:
+        print(f"   • Workload CONTAINS_POD_TEMPLATE completeness: OK ✅")
+    if coherence_violations:
+        print(f"   • SCALES_RESOURCE invalid targets: {coherence_violations} ⚠️")
+    else:
+        print(f"   • SCALES_RESOURCE coherence: OK ✅")
     
     # === SEMANTIC RELATIONSHIPS ===
     print(f"\n🎯 SEMANTIC RELATIONSHIPS (YAML Patterns):")

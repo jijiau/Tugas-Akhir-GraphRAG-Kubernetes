@@ -100,7 +100,7 @@ class AgentState(TypedDict):
     session_id: str
     chat_history: str
     extracted_intent: dict
-    intent_type: Optional[str]            # explain|generate_yaml|trace_relationship|followup
+    intent_type: Optional[str]            # explain|generate_yaml|trace_relationship|followup|planning
     graph_context: str
     reasoning_path: Optional[List[str]]   # graph traversal trace
     error: Optional[str]
@@ -115,6 +115,7 @@ _DEPTH_BY_INTENT = {
     "followup":            2,
     "generate_yaml":       3,
     "trace_relationship":  3,
+    "planning":            3,
 }
 _DEFAULT_DEPTH = 3
 ```

@@ -1,6 +1,7 @@
 {
   "id": "add_hpa_to_deployment",
   "type": "followup",
+  "context_question": "Buat YAML Deployment nginx dengan 3 replika",
   "question": "Sekarang tambahkan HPA untuk Deployment itu dengan minimum 2 replika, maksimum 10 replika, dan trigger scale-up saat CPU mencapai 60%",
   "resource": "io.k8s.api.autoscaling.v2.HorizontalPodAutoscaler",
   "scope": "Namespaced",

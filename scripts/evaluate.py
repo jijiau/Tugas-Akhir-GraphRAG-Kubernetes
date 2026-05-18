@@ -34,6 +34,14 @@ ANSQ_WEIGHT = 0.40
 RETQ_WEIGHT = 0.35
 REAQ_WEIGHT = 0.25
 
+# Pipeline error strings emitted by graph_agent when OpenAI/retriever/speaker fails
+_PIPELINE_ERROR_MSGS = (
+    "Maaf, saya tidak dapat menarik konteks dari Knowledge Graph saat ini.",
+    "Terjadi error saat membuat respons.",
+)
+# Backoff (seconds) between per-fixture retries: attempt 1→15s, 2→30s, 3→60s
+_FIXTURE_RETRY_BACKOFF = [15, 30, 60]
+
 
 # ── Scope question detection keywords ────────────────────────────────────────
 # Evaluate scope_accuracy only when the question explicitly asks about scope
@@ -429,6 +437,25 @@ def _load_k8s_vocabulary() -> set:
         return set()
 
 
+def _check_openai_health() -> None:
+    """Ping OpenAI API before evaluation starts. Aborts if unreachable."""
+    import os
+    from openai import OpenAI, APIConnectionError, APIStatusError
+    try:
+        client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"), timeout=10)
+        client.models.list()
+        logger.info("[HealthCheck] OpenAI API reachable ✓")
+    except APIConnectionError as e:
+        logger.error(f"[HealthCheck] OpenAI API tidak dapat dijangkau: {e}")
+        sys.exit("[ERROR] Evaluasi dibatalkan — OpenAI API tidak tersedia. Coba lagi setelah koneksi pulih.")
+    except APIStatusError as e:
+        logger.error(f"[HealthCheck] OpenAI API error {e.status_code}: {e.message}")
+        sys.exit(f"[ERROR] Evaluasi dibatalkan — OpenAI mengembalikan status {e.status_code}.")
+    except Exception as e:
+        logger.error(f"[HealthCheck] OpenAI health check gagal: {e}")
+        sys.exit(f"[ERROR] Evaluasi dibatalkan — tidak dapat memverifikasi OpenAI API: {e}")
+
+
 def run_evaluation(mode: str = "graphrag", output_path: Path = DEFAULT_OUTPUT):
     from langchain_openai import OpenAIEmbeddings
 
@@ -520,38 +547,120 @@ def run_evaluation(mode: str = "graphrag", output_path: Path = DEFAULT_OUTPUT):
 
     logger.info(f"Running evaluation: mode={mode}, fixtures={len(fixtures)}")
 
+    # ── Health check ─────────────────────────────────────────────────────────
+    _check_openai_health()
+
     # Unique run ID prevents Zep memory contamination across evaluation runs.
     # Without this, re-runs pick up memory from prior runs → wrong intent → wrong retrieval.
     import uuid as _uuid
     _run_id = _uuid.uuid4().hex[:8]
     logger.info(f"[Eval] Evaluation run ID: {_run_id}")
 
-    rows = []
-    summary = {"ansq": [], "retq": [], "reaq": [], "total": []}
+    # ── Checkpoint / resume ───────────────────────────────────────────────────
+    # If the output CSV already has rows, skip those fixtures and append new ones.
+    # To start fresh, delete the output file before running.
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    completed_ids: set = set()
+    is_resuming = output_path.exists() and output_path.stat().st_size > 0
 
-    # Sub-metric accumulators for detailed CLI output
+    summary = {"ansq": [], "retq": [], "reaq": [], "total": []}
     ansq_subs = {"syntactic_validity": [], "schema_compliance": [], "answer_relevance": [], "faithfulness": []}
     retq_subs = {"precision_at_k": [], "recall_at_k": [], "f1_at_k": [], "graph_coverage": [], "ndcg_at_k": [], "edge_coverage": []}
     reaq_subs = {"hop_accuracy": [], "multi_hop_success": [], "scope_accuracy": [], "hallucination_rate": [], "grounding_score": []}
+    type_data: dict = {}
 
-    # Per-type sub-metric accumulators
-    type_data: dict = {}   # type -> {ansq_score: [], retq_score: [], reaq_score: [], total: []}
+    if is_resuming:
+        with open(output_path, newline="", encoding="utf-8") as _f:
+            for _row in csv.DictReader(_f):
+                _id = _row["id"]
+                completed_ids.add(_id)
+                def _fv(col, r=_row):
+                    v = r.get(col, "")
+                    return float(v) if v else None
+                _a = _fv("ansq_ansq_score"); _r = _fv("retq_retq_score")
+                _q = _fv("reaq_reaq_score"); _t = _fv("total_score")
+                if _a is not None: summary["ansq"].append(_a)
+                if _r is not None: summary["retq"].append(_r)
+                if _q is not None: summary["reaq"].append(_q)
+                if _t is not None: summary["total"].append(_t)
+                for k in ansq_subs:
+                    v = _fv(f"ansq_{k}")
+                    if v is not None: ansq_subs[k].append(v)
+                for k in retq_subs:
+                    v = _fv(f"retq_{k}")
+                    if v is not None: retq_subs[k].append(v)
+                for k in reaq_subs:
+                    v = _fv(f"reaq_{k}")
+                    if v is not None: reaq_subs[k].append(v)
+                _t2 = _row.get("type", "")
+                if _t2:
+                    if _t2 not in type_data:
+                        type_data[_t2] = {"ansq": [], "retq": [], "reaq": [], "total": []}
+                    if _a is not None: type_data[_t2]["ansq"].append(_a)
+                    if _r is not None: type_data[_t2]["retq"].append(_r)
+                    if _q is not None: type_data[_t2]["reaq"].append(_q)
+                    if _t is not None: type_data[_t2]["total"].append(_t)
+        logger.info(f"[Resume] {len(completed_ids)} fixtures already done — skipping them")
 
+    # ─────────────────────────────────────────────────────────────────────────
+    rows = []
     # Inter-fixture delay (seconds) to stay under Groq free-tier TPM (6,000/min)
     INTER_FIXTURE_DELAY = 3
+    _invoked_at_least_once = False
+
+    # CSV writer: append if resuming, write (with header) if fresh
+    _csv_file = open(output_path, "a" if is_resuming else "w", newline="", encoding="utf-8")
+    _fieldnames_written = is_resuming  # header already present when resuming
 
     for i, fpath in enumerate(fixtures):
-        if i > 0:
+        data = json.loads(fpath.read_text(encoding="utf-8"))
+
+        if data["id"] in completed_ids:
+            logger.info(f"  [SKIP {i+1}/{len(fixtures)}] {data['id']} (already completed)")
+            continue
+
+        if _invoked_at_least_once:
             time.sleep(INTER_FIXTURE_DELAY)
 
-        data          = json.loads(fpath.read_text(encoding="utf-8"))
         fixture_type  = data["type"]
         ground_truth  = data["ground_truth"]
         question      = _strip_html(data["question"]) if fixture_type == "realworld" else data["question"]
 
         logger.info(f"  [{i+1}/{len(fixtures)}] [{fixture_type}] {data['id']}: {question[:60]}...")
 
-        answer, reasoning_path, graph_context = invoke_mode(question, f"eval_{_run_id}_{data['id']}")
+        # For followup fixtures: pre-run context_question in same session to seed conversation memory
+        _session_id = f"eval_{_run_id}_{data['id']}"
+        context_question = data.get("context_question")
+        if context_question:
+            logger.info(f"    [context] pre-running: {context_question[:80]}...")
+            try:
+                invoke_mode(context_question, _session_id)
+                time.sleep(1)
+            except Exception as _ctx_err:
+                logger.warning(f"    [context] pre-run failed (non-fatal): {_ctx_err}")
+
+        # Per-fixture retry: if the pipeline returns an error message, wait and retry
+        answer = reasoning_path = graph_context = None
+        for _attempt in range(len(_FIXTURE_RETRY_BACKOFF) + 1):
+            answer, reasoning_path, graph_context = invoke_mode(question, _session_id)
+            _invoked_at_least_once = True
+            if not any(m in answer for m in _PIPELINE_ERROR_MSGS):
+                break
+            if _attempt < len(_FIXTURE_RETRY_BACKOFF):
+                _wait = _FIXTURE_RETRY_BACKOFF[_attempt]
+                logger.warning(
+                    f"  [RETRY {_attempt+1}/{len(_FIXTURE_RETRY_BACKOFF)}] {data['id']} returned pipeline error. "
+                    f"Waiting {_wait}s before retry..."
+                )
+                time.sleep(_wait)
+            else:
+                _csv_file.close()
+                sys.exit(
+                    f"[ERROR] Evaluasi dihentikan — fixture '{data['id']}' mengembalikan pipeline error "
+                    f"setelah {len(_FIXTURE_RETRY_BACKOFF)} retry. "
+                    f"Periksa koneksi OpenAI, lalu jalankan ulang — progress tersimpan, evaluasi akan lanjut dari fixture ini."
+                )
+
         fixture_scope  = data.get("scope", "")
 
         ansq = compute_ansq(answer, ground_truth, fixture_type, embedder=embedder)
@@ -612,13 +721,17 @@ def run_evaluation(mode: str = "graphrag", output_path: Path = DEFAULT_OUTPUT):
         type_data[t]["reaq"].append(reaq["reaq_score"])
         type_data[t]["total"].append(total)
 
-    # ── Write CSV ─────────────────────────────────────────────────────────────
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    fieldnames = list(rows[0].keys())
-    with open(output_path, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerows(rows)
+        # ── Checkpoint: write row immediately so progress survives interruption ──
+        if not _fieldnames_written:
+            _writer = csv.DictWriter(_csv_file, fieldnames=list(row.keys()))
+            _writer.writeheader()
+            _fieldnames_written = True
+        else:
+            _writer = csv.DictWriter(_csv_file, fieldnames=list(row.keys()))
+        _writer.writerow(row)
+        _csv_file.flush()
+
+    _csv_file.close()
 
     # ── Print summary ─────────────────────────────────────────────────────────
     avg = lambda lst: sum(lst) / len(lst) if lst else 0.0
@@ -628,7 +741,7 @@ def run_evaluation(mode: str = "graphrag", output_path: Path = DEFAULT_OUTPUT):
 
     print()
     print("=" * W)
-    print(f"  Evaluation Results  |  mode: {mode}  |  {len(rows)} questions")
+    print(f"  Evaluation Results  |  mode: {mode}  |  {len(summary['total'])} questions")
     print("=" * W)
     print(f"  AnsQ (Answer Quality)    : {avg(summary['ansq']):.4f}  [weight 40%]")
     print(f"  RetQ (Retrieval Quality) : {avg(summary['retq']):.4f}  [weight 35%]")

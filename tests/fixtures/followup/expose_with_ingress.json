@@ -1,6 +1,7 @@
 {
   "id": "expose_with_ingress",
   "type": "followup",
+  "context_question": "Buat YAML Service ClusterIP untuk nginx di port 80",
   "question": "Sekarang buatkan Ingress untuk mengekspos Service ini di domain app.example.com",
   "resource": "io.k8s.api.networking.v1.Ingress",
   "scope": "Namespaced",

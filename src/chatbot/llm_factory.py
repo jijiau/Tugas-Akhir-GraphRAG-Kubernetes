@@ -1,5 +1,4 @@
 from langchain_openai import ChatOpenAI
-from langchain_groq import ChatGroq
 from src.config.settings import settings
 
 def get_thinker_llm():
@@ -10,16 +9,20 @@ def get_thinker_llm():
     return ChatOpenAI(
         model=settings.thinker_model,
         temperature=0.0, # Deterministic for code gen
-        api_key=settings.openai_api_key
+        api_key=settings.openai_api_key,
+        max_retries=3,   # retry on transient connection errors
+        timeout=30,      # prevent indefinite hangs
     )
 
 def get_speaker_llm():
     """
-    Returns the 'Speaker' model (Groq).
-    Why: Low latency, low cost for natural language generation.
+    Returns the 'Speaker' model (OpenAI GPT-4o-mini).
+    Why: Better instruction following and lower hallucination rate than Groq llama.
     """
-    return ChatGroq(
+    return ChatOpenAI(
         model=settings.speaker_model,
-        temperature=0.1, # Low temperature for faithful RAG while avoiding LLaMA rigidity at 0.0
-        api_key=settings.groq_api_key
+        temperature=0.1,
+        api_key=settings.openai_api_key,
+        max_retries=2,
+        timeout=30,
     )

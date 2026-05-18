@@ -137,11 +137,18 @@ def generate_response_node(state: AgentState):
             raw_context = raw_context[:GROQ_MAX_CONTEXT_CHARS] + "\n... [context truncated]"
             logger.debug(f"graph_context truncated to {GROQ_MAX_CONTEXT_CHARS} chars")
 
+        # Fix 5: Prevent false "followup" context note in new sessions with no real history.
+        chat_history = state["chat_history"]
+        intent_type = state.get("intent_type") or "explain"
+        _EMPTY_HISTORY = ("", "Belum ada riwayat percakapan.")
+        if intent_type == "followup" and chat_history.strip() in _EMPTY_HISTORY:
+            intent_type = "explain"
+
         response = chain.invoke({
-            "chat_history": state["chat_history"],
+            "chat_history": chat_history,
             "retrieved_data": raw_context,
             "question": state["question"],
-            "intent_type": state.get("intent_type") or "explain"
+            "intent_type": intent_type
         })
         return {"messages": [AIMessage(content=response.content)]}
     except Exception as e:
