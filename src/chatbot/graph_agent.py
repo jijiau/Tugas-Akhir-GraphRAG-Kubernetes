@@ -90,25 +90,30 @@ def extract_intent_node(state: AgentState):
         return {"error": str(e)}
 
 
-def execute_retrieval_node(state: AgentState):
-    """Passes the extracted JSON intent to the deterministic Python retriever."""
-    if state.get("error"):
-        return {"graph_context": "Error in understanding intent. Cannot retrieve data.", "reasoning_path": []}
+def _make_retrieval_node(ablation_mode: str | None = None):
+    """Returns an execute_retrieval_node closure bound to ablation_mode."""
+    def execute_retrieval_node(state: AgentState):
+        """Passes the extracted JSON intent to the deterministic Python retriever."""
+        if state.get("error"):
+            return {"graph_context": "Error in understanding intent. Cannot retrieve data.", "reasoning_path": []}
 
-    try:
-        retriever = StatefulK8sRetriever()
-        intent_type = state.get("intent_type") or "explain"
-        graph_context, reasoning_path = retriever.retrieve_context(
-            state["extracted_intent"], intent_type=intent_type
-        )
-        return {"graph_context": graph_context, "reasoning_path": reasoning_path}
-    except Exception as e:
-        logger.error(f"Custom Retrieval failed: {e}")
-        return {
-            "graph_context": "Database retrieval failed.",
-            "reasoning_path": [],
-            "error": str(e)
-        }
+        try:
+            retriever = StatefulK8sRetriever()
+            intent_type = state.get("intent_type") or "explain"
+            graph_context, reasoning_path = retriever.retrieve_context(
+                state["extracted_intent"],
+                intent_type=intent_type,
+                ablation_mode=ablation_mode,
+            )
+            return {"graph_context": graph_context, "reasoning_path": reasoning_path}
+        except Exception as e:
+            logger.error(f"Custom Retrieval failed: {e}")
+            return {
+                "graph_context": "Database retrieval failed.",
+                "reasoning_path": [],
+                "error": str(e)
+            }
+    return execute_retrieval_node
 
 
 def generate_response_node(state: AgentState):
@@ -174,13 +179,13 @@ def save_memory_node(state: AgentState):
 
 
 # --- Graph Construction ---
-def create_agent_graph():
+def create_agent_graph(ablation_mode: str | None = None):
     """Compiles the LangGraph state machine."""
     workflow = StateGraph(AgentState)
 
     workflow.add_node("memory",    retrieve_memory_node)
     workflow.add_node("thinker",   extract_intent_node)
-    workflow.add_node("retriever", execute_retrieval_node)
+    workflow.add_node("retriever", _make_retrieval_node(ablation_mode))
     workflow.add_node("speaker",   generate_response_node)
     workflow.add_node("saver",     save_memory_node)
 
