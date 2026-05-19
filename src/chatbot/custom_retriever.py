@@ -57,6 +57,7 @@ class StatefulK8sRetriever:
         intent_data: dict,
         intent_type: str = "explain",
         max_depth: int | None = None,
+        ablation_mode: str | None = None,
     ) -> tuple[str, list[str]]:
         """
         Two-phase retrieval with intent-aware depth control:
@@ -64,29 +65,49 @@ class StatefulK8sRetriever:
           Phase 2 — Vector similarity fallback (recall).
 
         max_depth is resolved in priority order:
-          1. Explicit caller override (max_depth argument)
-          2. Intent-derived from _DEPTH_BY_INTENT mapping
-          3. _DEFAULT_DEPTH fallback
+          1. ablation_mode override ('depth_2' / 'depth_3')
+          2. Explicit caller override (max_depth argument)
+          3. Intent-derived from _DEPTH_BY_INTENT mapping
+          4. _DEFAULT_DEPTH fallback
+
+        ablation_mode values (ablation study only — None in production):
+          'no_phase1'       A1: skip exact match, go straight to vector
+          'no_multihop'     A2: seed node only, no schema_deps traversal
+          'depth_2'         A3: override all intents to depth=2
+          'depth_3'         A4: override all intents to depth=3
+          'no_multi_entity' A6c: disable multi-entity retrieval for all intents
 
         Returns:
             (graph_context_json, reasoning_path)
             reasoning_path: list of "Parent -[REL]-> Child" strings
         """
         # ── Resolve depth ─────────────────────────────────────────────────────
-        depth = max_depth if max_depth is not None \
-            else _DEPTH_BY_INTENT.get(intent_type, _DEFAULT_DEPTH)
-        logger.info(f"[Retriever] intent_type='{intent_type}' → max_depth={depth}")
+        if ablation_mode == 'depth_2':
+            depth = 2
+        elif ablation_mode == 'depth_3':
+            depth = 3
+        else:
+            depth = max_depth if max_depth is not None \
+                else _DEPTH_BY_INTENT.get(intent_type, _DEFAULT_DEPTH)
+        logger.info(f"[Retriever] intent_type='{intent_type}' ablation='{ablation_mode}' → max_depth={depth}")
 
         primary = intent_data.get("primary_resource", "")
         related = intent_data.get("related_concepts", [])
 
         try:
-            # ── Phase 1: Exact match ──────────────────────────────────────────
-            root_name = self._exact_match(primary)
+            # ── Phase 1: Exact match (A1: skipped) ───────────────────────────
+            if ablation_mode == 'no_phase1':
+                root_name = None
+            else:
+                root_name = self._exact_match(primary)
 
             if root_name:
                 logger.info(f"[Retriever] Exact match: '{primary}' → '{root_name}'")
-                record = self._schema_deps(root_name, depth)
+                if ablation_mode == 'no_multihop':
+                    # A2: seed node only — no multi-hop traversal
+                    record = {"RootResource": root_name, "SchemaDependencies": []}
+                else:
+                    record = self._schema_deps(root_name, depth)
             else:
                 # ── Phase 2: Vector search ────────────────────────────────────
                 logger.info(f"[Retriever] No exact match for '{primary}', using vector search")
@@ -95,6 +116,12 @@ class StatefulK8sRetriever:
                 record       = self._vector_deps(embedding, depth)
                 if record:
                     root_name = record.get("RootResource", "")
+                    if ablation_mode == 'no_multihop':
+                        record = {
+                            "RootResource": root_name,
+                            "Description": record.get("Description", ""),
+                            "SchemaDependencies": [],
+                        }
 
             if not record:
                 return "Tidak ada skema Kubernetes yang relevan di dalam Knowledge Graph.", []
@@ -103,18 +130,22 @@ class StatefulK8sRetriever:
             deps = record.get("SchemaDependencies") or []
             record["SchemaDependencies"] = [d for d in deps if d is not None]
 
-            # ── Build reasoning path (proper parent → child chain) ────────────
-            reasoning_path = self._build_reasoning_path(root_name, depth)
+            # ── Build reasoning path (A2: skipped) ───────────────────────────
+            if ablation_mode == 'no_multihop':
+                reasoning_path = []
+            else:
+                reasoning_path = self._build_reasoning_path(root_name, depth)
 
             graph_context = json.dumps(record, indent=2, ensure_ascii=False)
 
             # ── Multi-entity: retrieve up to 2 related concepts and merge ────────
-            # Applies to planning, trace_relationship, and generate_yaml.
-            # trace_relationship / generate_yaml often span 2+ resources that are
-            # not reachable within 3 hops from primary alone (e.g. HPA→Deployment,
-            # Secret→Container). Independent traversal of each related concept
-            # closes this gap without changing depth limits.
-            if intent_type in _MULTI_ENTITY_INTENTS and related:
+            # Applies to planning and generate_yaml (A6c disables entirely).
+            # These intents often span 2+ resources not reachable within 3 hops
+            # from primary alone (e.g. HPA→Deployment, Secret→Container).
+            effective_multi_entity = (
+                set() if ablation_mode == 'no_multi_entity' else _MULTI_ENTITY_INTENTS
+            )
+            if intent_type in effective_multi_entity and related:
                 for extra_resource in related[:2]:
                     try:
                         extra_root = self._exact_match(extra_resource)

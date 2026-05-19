@@ -2,6 +2,15 @@
 """
 GraphRAG Evaluation Script — Three-Dimension Custom Metrics
 Usage: python scripts/evaluate.py [--mode graphrag] [--output data/eval_results.csv]
+       python scripts/evaluate.py --mode graphrag --ablation no_phase1 --output data/eval_results_ablation_A1.csv
+
+Ablation modes (--ablation):
+  no_phase1       A1: skip exact match, go straight to vector search
+  no_multihop     A2: seed node only, no multi-hop traversal
+  depth_2         A3: override all intents to depth=2
+  depth_3         A4: override all intents to depth=3
+  no_yaml_layer3  A5: skip Neo4j required-field check in Layer 3 of YAML validation
+  no_multi_entity A6c: disable multi-entity retrieval for all intents
 
 Dimensions:
   AnsQ (40%): Answer Quality  — syntactic validity, schema compliance, faithfulness, answer relevance
@@ -150,6 +159,7 @@ def compute_ansq(
     ground_truth: dict,
     fixture_type: str,
     embedder=None,
+    ablation_mode: str | None = None,
 ) -> dict:
     """
     Answer Quality metrics.
@@ -159,6 +169,8 @@ def compute_ansq(
       schema_compliance   — (yaml_gen only) does YAML pass kubernetes-validate?
       answer_relevance    — cosine similarity vs ground truth answer (fallback: token F1)
       faithfulness        — fraction of expected nodes referenced in the answer
+      layer3_compliance   — (yaml_gen, ablation runs only) Neo4j required-field check;
+                            None for production (ablation_mode=None) and for A5 ablation
     """
     scores = {}
 
@@ -215,6 +227,29 @@ def compute_ansq(
     gt_nodes = [n.split(".")[-1] for n in faith_source]
     hit = sum(1 for n in gt_nodes if _node_matches(n, answer.lower()))
     scores["faithfulness"] = hit / len(gt_nodes) if gt_nodes else 1.0
+
+    # Layer 3 compliance — Neo4j required-field check (ablation study only)
+    # Included for all ablation modes EXCEPT no_yaml_layer3 (A5) and production (None).
+    # This lets us measure how much L3 contributes to YAML answer quality.
+    if fixture_type == "yaml_gen" and ablation_mode is not None and ablation_mode != "no_yaml_layer3":
+        yaml_candidate = _extract_yaml_block(answer)
+        try:
+            import yaml as _yaml
+            _data = _yaml.safe_load(yaml_candidate)
+            if isinstance(_data, dict):
+                from src.validation.yaml_validator import YAMLValidator
+                _kind = _data.get("kind", "")
+                _vresult = YAMLValidator().validate(yaml_candidate, _kind)
+                if _vresult["syntax_errors"]:
+                    scores["layer3_compliance"] = None  # L1 failed, L3 never ran
+                else:
+                    scores["layer3_compliance"] = 1.0 if not _vresult["missing_fields"] else 0.0
+            else:
+                scores["layer3_compliance"] = None
+        except Exception:
+            scores["layer3_compliance"] = None
+    else:
+        scores["layer3_compliance"] = None  # N/A: production run, A5, or non-yaml_gen
 
     applicable = [v for v in scores.values() if v is not None]
     scores["ansq_score"] = sum(applicable) / len(applicable) if applicable else 0.0
@@ -456,13 +491,13 @@ def _check_openai_health() -> None:
         sys.exit(f"[ERROR] Evaluasi dibatalkan — tidak dapat memverifikasi OpenAI API: {e}")
 
 
-def run_evaluation(mode: str = "graphrag", output_path: Path = DEFAULT_OUTPUT):
+def run_evaluation(mode: str = "graphrag", output_path: Path = DEFAULT_OUTPUT, ablation_mode: str | None = None):
     from langchain_openai import OpenAIEmbeddings
 
     # ── Mode-specific invoker ─────────────────────────────────────────────────
     if mode == "graphrag":
         from src.chatbot.graph_agent import create_agent_graph
-        _agent = create_agent_graph()
+        _agent = create_agent_graph(ablation_mode=ablation_mode)
         def invoke_mode(question, session_id):
             result = _agent.invoke({
                 "question": question, "session_id": session_id,
@@ -545,7 +580,7 @@ def run_evaluation(mode: str = "graphrag", output_path: Path = DEFAULT_OUTPUT):
         logger.error(f"No fixtures found in {FIXTURES_DIR}")
         sys.exit(1)
 
-    logger.info(f"Running evaluation: mode={mode}, fixtures={len(fixtures)}")
+    logger.info(f"Running evaluation: mode={mode}, ablation={ablation_mode}, fixtures={len(fixtures)}")
 
     # ── Health check ─────────────────────────────────────────────────────────
     _check_openai_health()
@@ -564,7 +599,7 @@ def run_evaluation(mode: str = "graphrag", output_path: Path = DEFAULT_OUTPUT):
     is_resuming = output_path.exists() and output_path.stat().st_size > 0
 
     summary = {"ansq": [], "retq": [], "reaq": [], "total": []}
-    ansq_subs = {"syntactic_validity": [], "schema_compliance": [], "answer_relevance": [], "faithfulness": []}
+    ansq_subs = {"syntactic_validity": [], "schema_compliance": [], "answer_relevance": [], "faithfulness": [], "layer3_compliance": []}
     retq_subs = {"precision_at_k": [], "recall_at_k": [], "f1_at_k": [], "graph_coverage": [], "ndcg_at_k": [], "edge_coverage": []}
     reaq_subs = {"hop_accuracy": [], "multi_hop_success": [], "scope_accuracy": [], "hallucination_rate": [], "grounding_score": []}
     type_data: dict = {}
@@ -663,7 +698,7 @@ def run_evaluation(mode: str = "graphrag", output_path: Path = DEFAULT_OUTPUT):
 
         fixture_scope  = data.get("scope", "")
 
-        ansq = compute_ansq(answer, ground_truth, fixture_type, embedder=embedder)
+        ansq = compute_ansq(answer, ground_truth, fixture_type, embedder=embedder, ablation_mode=ablation_mode)
         retq = compute_retq(reasoning_path, ground_truth)
         reaq = compute_reaq(
             reasoning_path, answer, ground_truth, fixture_type,
@@ -741,7 +776,8 @@ def run_evaluation(mode: str = "graphrag", output_path: Path = DEFAULT_OUTPUT):
 
     print()
     print("=" * W)
-    print(f"  Evaluation Results  |  mode: {mode}  |  {len(summary['total'])} questions")
+    _abl_label = f"  ablation: {ablation_mode}" if ablation_mode else ""
+    print(f"  Evaluation Results  |  mode: {mode}{_abl_label}  |  {len(summary['total'])} questions")
     print("=" * W)
     print(f"  AnsQ (Answer Quality)    : {avg(summary['ansq']):.4f}  [weight 40%]")
     print(f"  RetQ (Retrieval Quality) : {avg(summary['retq']):.4f}  [weight 35%]")
@@ -791,8 +827,12 @@ def run_evaluation(mode: str = "graphrag", output_path: Path = DEFAULT_OUTPUT):
 # ── Entry point ───────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
+    _ABLATION_CHOICES = ["no_phase1", "no_multihop", "depth_2", "depth_3", "no_yaml_layer3", "no_multi_entity"]
     parser = argparse.ArgumentParser(description="GraphRAG Evaluation")
-    parser.add_argument("--mode",   default="graphrag", choices=["graphrag", "vector", "llm"])
-    parser.add_argument("--output", default=str(DEFAULT_OUTPUT))
+    parser.add_argument("--mode",     default="graphrag", choices=["graphrag", "vector", "llm"])
+    parser.add_argument("--output",   default=str(DEFAULT_OUTPUT))
+    parser.add_argument("--ablation", default=None, choices=_ABLATION_CHOICES,
+                        help="Ablation mode for the graphrag pipeline (A1-A6c). "
+                             "Only meaningful with --mode graphrag.")
     args = parser.parse_args()
-    run_evaluation(mode=args.mode, output_path=Path(args.output))
+    run_evaluation(mode=args.mode, output_path=Path(args.output), ablation_mode=args.ablation)
