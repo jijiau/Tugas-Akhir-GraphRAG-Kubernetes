@@ -1,0 +1,63 @@
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+
+# Secrets
+.env
+
+# Runtime data (auto-generated, should not be baked into image)
+data/conversation_memory.db
+data/eval_results_*.csv
+data/boundary_condition_gain.csv
+data/statistical_test_results.csv
+
+# Large data files not needed at runtime
+data/kubernetes_swagger.json
+data/definitions.json
+
+# Dev / research artifacts
+docs/
+tests/
+scripts/analyze_*.py
+scripts/boundary_condition.py
+scripts/compare_*.py
+scripts/debug_*.py
+scripts/depth_sensitivity*.py
+scripts/eda_*.py
+scripts/evaluate.py
+scripts/expand_*.py
+scripts/gen_lampiran*.py
+scripts/generate_ppt.py
+scripts/run_baseline.py
+scripts/run_eda.py
+scripts/select_*.py
+scripts/statistical_test.py
+scripts/test_*.py
+scripts/translate_*.py
+scripts/validate_dataset.py
+scripts/validate_graph.py
+
+# Thesis drafts & metadata
+*.zip
+*.aux *.bcf *.lof *.lol *.lot *.out *.toc *.pdf
+CHANGES_SESSION.md
+THESIS_UPDATE_CHECKLIST.md
+TA_context.md
+interview/
+logs/
+
+# Git
+.git/
+.gitignore
+.claude/
+
+# IDE
+.vscode/
+.idea/
+*.iml

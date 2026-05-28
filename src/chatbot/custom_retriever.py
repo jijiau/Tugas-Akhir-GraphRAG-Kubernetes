@@ -82,10 +82,13 @@ class StatefulK8sRetriever:
             reasoning_path: list of "Parent -[REL]-> Child" strings
         """
         # ── Resolve depth ─────────────────────────────────────────────────────
-        if ablation_mode == 'depth_2':
-            depth = 2
-        elif ablation_mode == 'depth_3':
-            depth = 3
+        # ablation_mode 'depth_N' (e.g. 'depth_1', 'depth_4') overrides all intents.
+        if ablation_mode is not None and ablation_mode.startswith('depth_'):
+            try:
+                depth = int(ablation_mode.split('_', 1)[1])
+            except (IndexError, ValueError):
+                depth = max_depth if max_depth is not None \
+                    else _DEPTH_BY_INTENT.get(intent_type, _DEFAULT_DEPTH)
         else:
             depth = max_depth if max_depth is not None \
                 else _DEPTH_BY_INTENT.get(intent_type, _DEFAULT_DEPTH)

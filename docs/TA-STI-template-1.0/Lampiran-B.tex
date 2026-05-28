@@ -1,8 +1,146 @@
 \cleardoublepage
-\chapter{HASIL SURVEI LAPANGAN}
-\section{Foto Survei Lokasi 1}
-Teks survei lokasi 1.
-\section{Foto Survei Lokasi 2}
-Teks survei lokasi 2.
-\section{Transkrip Wawancara dengan Narasumber}
-Teks transkrip wawancara.
+\chapter{FIXTURE EVALUASI PAKAR}
+
+Lampiran ini menyajikan 10 \textit{fixture} evaluasi yang digunakan dalam validasi pakar (\textit{expert evaluation}) sebagaimana diuraikan pada Subbab~\ref{subsec:expert-eval}. Setiap \textit{fixture} mewakili satu pertanyaan beserta \textit{ground truth} yang mencakup \textit{relevant nodes} dan \textit{expected path} di \textit{knowledge graph}. \textit{Field} \texttt{answer} dan \texttt{context} dikecualikan dari tampilan ini untuk mempertahankan objektivitas penilaian. Tabel~\ref{tbl:fixture-summary} merangkum distribusi 10 \textit{fixture} tersebut.
+
+\begin{table}[h]
+\centering
+\caption{Ringkasan 10 Fixture Evaluasi Pakar}
+\label{tbl:fixture-summary}
+\begin{tabular}{|c|l|l|l|c|c|}
+\hline
+\textbf{No} & \textbf{ID} & \textbf{Tipe} & \textbf{Resource Utama} & \textbf{Scope} & \textbf{Multi-Hop} \\
+\hline
+1 & \texttt{deployment\_basic}            & konseptual   & Deployment                       & Namespaced & Ya \\
+2 & \texttt{service\_types}               & konseptual   & Service                          & Namespaced & Ya \\
+3 & \texttt{scale\_existing\_deployment}  & lanjutan     & Deployment                       & Namespaced & Tidak \\
+4 & \texttt{ingress\_service\_pod}        & relasional   & Ingress                          & Namespaced & Ya \\
+5 & \texttt{hpa\_deployment\_pod}         & relasional   & HorizontalPodAutoscaler          & Namespaced & Ya \\
+6 & \texttt{cronjob\_backup}              & generasi YAML & CronJob                         & Namespaced & Ya \\
+7 & \texttt{networkpolicy\_deny\_all}     & generasi YAML & NetworkPolicy                   & Namespaced & Tidak \\
+8 & \texttt{statefulset\_with\_pvc}       & generasi YAML & StatefulSet                     & Namespaced & Ya \\
+9 & \texttt{pi\_want\_to\_reject\_...}    & skenario nyata & Namespace                      & Cluster    & Ya \\
+10 & \texttt{kubectl\_find\_pods\_...}    & perintah      & Pod                             & Namespaced & Tidak \\
+\hline
+\end{tabular}
+\end{table}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Fixture B.1 — \texttt{deployment\_basic} (Konseptual)}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\textit{Fixture} ini menguji pemahaman sistem terhadap mekanisme \textit{RollingUpdate} Deployment: bagaimana Pod diperbarui saat \textit{image} berubah dan apakah terjadi \textit{downtime}.
+
+\lstinputlisting[
+    language=json,
+    caption={\texttt{fixture-deployment-basic.json} — Konseptual: Pembaruan Image Deployment},
+    label={lst:fixture-deployment-basic}
+]{listings/fixture-deployment-basic.json}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Fixture B.2 — \texttt{service\_types} (Konseptual)}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\textit{Fixture} ini menguji kemampuan sistem membandingkan dua mekanisme \textit{expose} aplikasi: Service tipe LoadBalancer versus Ingress, beserta pertimbangan \textit{trade-off}-nya.
+
+\lstinputlisting[
+    language=json,
+    caption={\texttt{fixture-service-types.json} — Konseptual: Service LoadBalancer vs.\ Ingress},
+    label={lst:fixture-service-types}
+]{listings/fixture-service-types.json}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Fixture B.3 — \texttt{scale\_existing\_deployment} (Lanjutan)}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\textit{Fixture} bertipe \textit{followup} ini mengukur kemampuan sistem memanfaatkan konteks percakapan sebelumnya (pembuatan Deployment nginx) untuk menjawab pertanyaan lanjutan tentang perubahan jumlah replika.
+
+\lstinputlisting[
+    language=json,
+    caption={\texttt{fixture-scale-existing-deployment.json} — Lanjutan: Skalakan Replika Deployment},
+    label={lst:fixture-scale-deployment}
+]{listings/fixture-scale-existing-deployment.json}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Fixture B.4 — \texttt{ingress\_service\_pod} (Relasional)}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\textit{Fixture} ini menguji penelusuran relasi multi-hop: alur traffic dari Ingress melalui Service hingga ke Pod, dan identifikasi titik kegagalan pada error 502.
+
+\lstinputlisting[
+    language=json,
+    caption={\texttt{fixture-ingress-service-pod.json} — Relasional: Alur Traffic Ingress→Service→Pod},
+    label={lst:fixture-ingress-service}
+]{listings/fixture-ingress-service-pod.json}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Fixture B.5 — \texttt{hpa\_deployment\_pod} (Relasional)}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\textit{Fixture} ini menguji kemampuan sistem menjelaskan siklus kerja HPA: alur dari pembacaan metrik CPU hingga pembaruan \texttt{spec.replicas} di Deployment, dan diagnosis ketika HPA tidak berfungsi.
+
+\lstinputlisting[
+    language=json,
+    caption={\texttt{fixture-hpa-deployment-pod.json} — Relasional: HPA dan Penskalaan Otomatis},
+    label={lst:fixture-hpa-deployment}
+]{listings/fixture-hpa-deployment-pod.json}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Fixture B.6 — \texttt{cronjob\_backup} (Generasi YAML)}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\textit{Fixture} generasi YAML ini mengukur kemampuan sistem menghasilkan manifes CronJob yang valid dengan jadwal \textit{cron} yang tepat dan konfigurasi \textit{job template} yang benar.
+
+\lstinputlisting[
+    language=json,
+    caption={\texttt{fixture-cronjob-backup.json} — Generasi YAML: CronJob Backup Database},
+    label={lst:fixture-cronjob}
+]{listings/fixture-cronjob-backup.json}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Fixture B.7 — \texttt{networkpolicy\_deny\_all} (Generasi YAML)}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\textit{Fixture} ini menguji generasi NetworkPolicy dengan \textit{empty podSelector} untuk memblokir semua \textit{ingress traffic} ke namespace—pola keamanan yang umum tetapi memerlukan pemahaman semantik \texttt{podSelector: \{\}}.
+
+\lstinputlisting[
+    language=json,
+    caption={\texttt{fixture-networkpolicy-deny-all.json} — Generasi YAML: NetworkPolicy Deny-All},
+    label={lst:fixture-networkpolicy}
+]{listings/fixture-networkpolicy-deny-all.json}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Fixture B.8 — \texttt{statefulset\_with\_pvc} (Generasi YAML)}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\textit{Fixture} ini menguji generasi StatefulSet dengan \texttt{volumeClaimTemplates}—field yang spesifik untuk StatefulSet dan tidak ada di Deployment—untuk menguji kemampuan sistem membedakan kedua \textit{workload} tersebut.
+
+\lstinputlisting[
+    language=json,
+    caption={\texttt{fixture-statefulset-with-pvc.json} — Generasi YAML: StatefulSet dengan PVC},
+    label={lst:fixture-statefulset}
+]{listings/fixture-statefulset-with-pvc.json}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Fixture B.9 — \texttt{pi\_want\_to\_reject\_all\_docker} (Skenario Nyata)}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\textit{Fixture} bertipe \textit{realworld} ini berasal dari pertanyaan Stack Overflow. Pertanyaan tentang kebijakan pembatasan \textit{docker registry} menguji kemampuan sistem mengarahkan pengguna ke konsep \textit{Admission Controller} yang tidak memiliki representasi langsung sebagai node di KG.
+
+\lstinputlisting[
+    language=json,
+    caption={\texttt{fixture-pi-reject-docker-registry.json} — Skenario Nyata: Kebijakan Registry Docker},
+    label={lst:fixture-reject-docker}
+]{listings/fixture-pi-reject-docker-registry.json}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Fixture B.10 — \texttt{kubectl\_find\_pods\_with\_env} (Perintah)}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\textit{Fixture} bertipe \textit{command} ini menguji kemampuan sistem memberikan perintah \texttt{kubectl} yang tepat untuk mencari \textit{environment variable} di seluruh Pod—pertanyaan operasional yang membutuhkan pemahaman struktur \texttt{Container.env} dan \texttt{envFrom}.
+
+\lstinputlisting[
+    language=json,
+    caption={\texttt{fixture-kubectl-find-pods-with-env.json} — Perintah: Pencarian Environment Variable},
+    label={lst:fixture-kubectl-env}
+]{listings/fixture-kubectl-find-pods-with-env.json}

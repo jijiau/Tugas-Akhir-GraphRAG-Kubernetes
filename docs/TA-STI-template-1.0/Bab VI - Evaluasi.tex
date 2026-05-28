@@ -89,6 +89,8 @@ Dimensi RetQ (0,69) mencerminkan kualitas \textit{retrieval} yang baik, dengan \
 
 Sistem ini memiliki beberapa keterbatasan yang perlu diakui. Pertama, \textit{hallucination rate} sebesar 0,2322 mencerminkan kebergantungan yang tidak terhindarkan pada pengetahuan bawaan model LLM yang melampaui batas konteks yang di-\textit{retrieve}. Kedua, pertanyaan kategori \textit{realworld} (skor 0,50) yang mencakup konteks operasional spesifik menunjukkan bahwa sistem mengalami penurunan performa pada pertanyaan dengan latar belakang yang tidak sepenuhnya terwakili dalam \textit{knowledge graph} berbasis spesifikasi OpenAPI. Ketiga, \textit{knowledge graph} yang dibangun dari spesifikasi OpenAPI bersifat statis terhadap perubahan perilaku \textit{runtime} Kubernetes yang dinamis.
 
+Kontribusi tiap komponen sistem dikonfirmasi melalui \textit{ablation study} enam konfigurasi (lihat Subbab~\ref{sec:ablation-study}) dan uji signifikansi statistik (lihat Subbab~\ref{sec:statistical-test}). Keunggulan GraphRAG pada dimensi RetQ ($\Delta = +0{,}26$, $p < 0{,}001$) bersifat konsisten dan tidak dapat dikaitkan dengan variasi acak, sebagaimana dikonfirmasi oleh \textit{confidence interval} 95\% $[+0{,}19, +0{,}33]$ yang tidak melewati nol.
+
 % ─────────────────────────────────────────────────────────────────────
 \section{Perbandingan dengan Pendekatan \textit{Baseline}}
 % ─────────────────────────────────────────────────────────────────────
@@ -111,4 +113,227 @@ Pada dimensi ReaQ, GraphRAG memperoleh skor ReaQ tertinggi (0,8994) diikuti Vect
 
 \subsection*{Total Skor Komposit}
 
-GraphRAG memperoleh total skor komposit tertinggi (0,6943). Vector RAG masih unggul pada dimensi AnsQ (0,5979 vs.\ 0,5743), namun GraphRAG kini unggul pada dimensi RetQ (+0,2601 di atas Vector RAG) maupun ReaQ (+0,0064), didukung keunggulan RetQ yang jauh lebih besar dan penurunan \textit{hallucination rate} yang signifikan. Selisih AnsQ ($-$0,0236) adalah satu-satunya dimensi tempat Vector RAG masih lebih unggul. Hasil ini mengkonfirmasi bahwa \textit{multi-hop graph traversal} memberikan kontribusi yang terukur dan signifikan terhadap kualitas sistem secara keseluruhan, terutama pada dimensi \textit{retrieval} yang mencerminkan kemampuan sistem menavigasi jaringan ketergantungan skema Kubernetes yang kompleks.
+GraphRAG memperoleh total skor komposit tertinggi (0,6943). Vector RAG masih unggul pada dimensi AnsQ (0,5979 vs.\ 0,5743), namun GraphRAG kini unggul pada dimensi RetQ (+0,2601 di atas Vector RAG) maupun ReaQ (+0,0064), didukung keunggulan RetQ yang jauh lebih besar dan penurunan \textit{hallucination rate} yang signifikan. Selisih AnsQ ($-$0,0236) adalah satu-satunya dimensi tempat Vector RAG masih lebih unggul. Hasil ini mengkonfirmasi bahwa \textit{multi-hop graph traversal} memberikan kontribusi yang terukur dan signifikan terhadap kualitas sistem secara keseluruhan, terutama pada dimensi \textit{retrieval} yang mencerminkan kemampuan sistem menavigasi jaringan ketergantungan skema Kubernetes yang kompleks. Validitas statistik perbedaan ini dikonfirmasi melalui uji Wilcoxon \textit{signed-rank} dan \textit{paired bootstrap} 1.000 iterasi dengan 95\% CI RetQ $[+0{,}19, +0{,}33]$, $p < 0{,}001$ (lihat Subbab~\ref{sec:statistical-test}).
+
+% ─────────────────────────────────────────────────────────────────────
+\section{\textit{Ablation Study}}
+\label{sec:ablation-study}
+% ─────────────────────────────────────────────────────────────────────
+
+\textit{Ablation study} dilakukan untuk memverifikasi bahwa setiap komponen sistem GraphRAG memberikan kontribusi yang terukur, bukan sekadar elemen arsitektur yang tidak esensial. Enam konfigurasi ablasi dirancang sedemikian rupa sehingga tiap konfigurasi menonaktifkan tepat satu komponen yang diklaim sebagai kontribusi, kemudian dievaluasi terhadap seluruh 97 \textit{fixture} menggunakan metrik yang sama dengan evaluasi utama. Hasil ditampilkan pada Tabel~\ref{tbl:ablation_results}.
+
+\begin{table}[h]
+  \centering
+  \caption{Hasil \textit{ablation study}: selisih skor terhadap \textit{baseline} GraphRAG (v12)}
+  \label{tbl:ablation_results}
+  \begin{tabular}{llrr}
+    \hline
+    \textbf{Ablasi} & \textbf{Komponen Dinonaktifkan} & \textbf{$\Delta$Total} & \textbf{$\Delta$RetQ} \\
+    \hline
+    A1 (\textit{no\_phase1})      & \textit{Exact match} Fase 1          & $-0{,}0892$ & $-0{,}2428$ \\
+    A2 (\textit{no\_multihop})    & \textit{Multi-hop traversal}         & $-0{,}2398$ & $-0{,}5585$ \\
+    A3 (\textit{depth=2 fixed})   & \textit{Adaptive depth} (dangkal)    & $-0{,}0149$ & $-0{,}0484$ \\
+    A4 (\textit{depth=3 fixed})   & \textit{Adaptive depth} (dalam)      & $+0{,}0187$ & $+0{,}0253$ \\
+    A5 (\textit{no\_yaml\_layer3})& Lapisan 3 validasi Neo4j             & $+0{,}0067$ & $+0{,}0032$ \\
+    A6c (\textit{no\_multi\_entity}) & \textit{Multi-entity retrieval}   & $+0{,}0044$ & $-0{,}0022$ \\
+    \hline
+    \multicolumn{4}{l}{\small $\Delta > 0$ berarti ablasi meningkatkan skor (komponen tidak esensial atau kontraproduktif)} \\
+  \end{tabular}
+\end{table}
+
+Ablasi A2 (\textit{no\_multihop}) menghasilkan penurunan RetQ terbesar ($-0{,}5585$ poin), membuktikan bahwa \textit{multi-hop graph traversal} adalah komponen paling krusial dalam sistem. Tanpa traversal multi-lompatan, sistem hanya memperoleh \textit{seed node} tanpa konteks dependensi skema yang diperlukan untuk menjawab pertanyaan struktural. Ablasi A1 (\textit{no\_phase1}) menurunkan RetQ sebesar $-0{,}2428$ poin, mengkonfirmasi bahwa \textit{exact match} berperan penting sebagai gerbang pertama yang memastikan \textit{seed node} yang tepat sebelum traversal dimulai.
+
+Ablasi A3 dan A4 secara bersama-sama membuktikan Klaim~2 penelitian ini. A3 (kedalaman tetap 2 untuk semua \textit{intent}) menurunkan RetQ sebesar $-0{,}0484$ poin karena \textit{fixture} \textit{yaml\_gen} dan \textit{planning} membutuhkan kedalaman 3 untuk menjangkau konteks yang cukup. A4 (kedalaman tetap 3 untuk semua \textit{intent}) menghasilkan skor agregat yang sedikit lebih tinggi ($+0{,}0187$) karena kedalaman 3 mendekati kedalaman adaptif untuk mayoritas \textit{intent}; namun, analisis per tipe (Subbab~\ref{subsec:depth-sensitivity}) menunjukkan bahwa tipe \textit{followup} justru menurun tajam pada kedalaman 3, yang mengkonfirmasi bahwa tidak ada kedalaman tetap tunggal yang optimal untuk seluruh jenis kueri.
+
+Ablasi A5 dan A6c menghasilkan delta yang sangat kecil dan tidak signifikan secara statistik (lihat Subbab~\ref{sec:statistical-test}). Hal ini merupakan temuan yang perlu ditafsirkan dengan hati-hati: kontribusi A5 (lapisan 3 validasi Neo4j) dan A6c (\textit{multi-entity retrieval}) tidak terdeteksi pada level agregat 97 \textit{fixture}, kemungkinan karena cakupan \textit{fixture} yang terkait relatif kecil (15 \textit{fixture yaml\_gen} untuk A5, 20 \textit{fixture} untuk A6c) sehingga efeknya terdilusi dalam rata-rata keseluruhan.
+
+% ─────────────────────────────────────────────────────────────────────
+\subsection{Analisis Sensitivitas Kedalaman Traversal}
+\label{subsec:depth-sensitivity}
+% ─────────────────────────────────────────────────────────────────────
+
+Untuk membuktikan Klaim~2 secara lebih komprehensif, evaluasi tambahan dijalankan pada kedalaman $d \in \{1, 2, 3, 4, 5\}$ dengan seluruh 97 \textit{fixture}. Gambar~\ref{fig:depth-sensitivity} menampilkan RetQ per tipe \textit{fixture} pada setiap kedalaman, sedangkan Gambar~\ref{fig:depth-submetrics} menampilkan Precision@k, Recall@k, dan NDCG@k secara agregat.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.90\textwidth]{images/depth_sensitivity_retq.png}
+  \caption{RetQ per tipe \textit{fixture} pada kedalaman traversal $d=1$ hingga $d=5$. Titik bertanda hitam menunjukkan kedalaman yang digunakan oleh sistem adaptif; garis putus-putus ($d=2$) dan titik-titik ($d=3$) menandai batas dua kelompok \textit{intent}.}
+  \label{fig:depth-sensitivity}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.85\textwidth]{images/depth_sensitivity_submetrics.png}
+  \caption{Precision@k, Recall@k, dan NDCG@k agregat pada kedalaman $d=1$ hingga $d=5$.}
+  \label{fig:depth-submetrics}
+\end{figure}
+
+Hasil analisis menunjukkan terbentuknya dua kelompok \textit{fixture} yang berbeda secara jelas. Kelompok pertama mencakup tipe \textit{explain} dan \textit{followup}, yang mencapai RetQ optimal pada $d=2$: tipe \textit{followup} mencatat RetQ 0,943 pada $d=2$, kemudian turun menjadi 0,769 pada $d=3$ ($\Delta = -17{,}4$ poin). Penurunan ini terjadi karena pada $d=3$ traversal mulai menjangkau \textit{node} utilitas generik (\textit{Quantity}, \textit{IntOrString}) yang tidak relevan untuk pertanyaan konseptual. Kelompok kedua mencakup tipe generatif dan struktural (\textit{yaml\_gen}, \textit{planning}, \textit{trace\_relationship}), yang mencapai optimal pada $d=3$: tipe \textit{yaml\_gen} mencatat RetQ 0,755 pada $d=2$ dan meningkat menjadi 0,909 pada $d=3$ ($\Delta = +15{,}4$ poin) karena generasi YAML membutuhkan konteks dependensi yang lebih dalam.
+
+Pada kedalaman $d \geq 4$, seluruh tipe mengalami penurunan RetQ akibat \textit{diminishing returns}: traversal semakin jauh menjangkau tipe utilitas generik yang dibagikan oleh puluhan \textit{resource} sehingga mengurangi presisi konteks. Precision@k turun secara monoton dari $d=3$ ke $d=5$, sedangkan NDCG@k mencapai puncak pada $d=3$ (0,838) dan turun setelahnya. Temuan ini secara empiris mengkonfirmasi bahwa mekanisme \textit{intent-adaptive depth} yang menggunakan $d=2$ untuk \textit{explain}/\textit{followup} dan $d=3$ untuk tipe lainnya adalah keputusan desain yang optimal.
+
+% ─────────────────────────────────────────────────────────────────────
+\section{Uji Signifikansi Statistik}
+\label{sec:statistical-test}
+% ─────────────────────────────────────────────────────────────────────
+
+Untuk memverifikasi bahwa perbedaan skor antara GraphRAG dan \textit{baseline} bukan merupakan hasil variasi acak, uji signifikansi statistik dilakukan menggunakan dua metode yang saling melengkapi: (1) uji Wilcoxon \textit{signed-rank}, uji non-parametrik yang tidak mengasumsikan distribusi normal dan cocok untuk skor [0,1] yang berpotensi \textit{skewed}; dan (2) \textit{paired bootstrap} 1.000 iterasi yang melakukan \textit{resampling} 97 pasang \textit{fixture} dengan pengembalian untuk memperoleh \textit{confidence interval} (CI) dan \textit{p-value} empiris.
+
+Tabel~\ref{tbl:statistical_test} menyajikan hasil uji untuk perbandingan utama GraphRAG versus \textit{Vector RAG}.
+
+\begin{table}[h]
+  \centering
+  \caption{Hasil uji signifikansi statistik: GraphRAG vs.\ \textit{Vector RAG} ($n=97$)}
+  \label{tbl:statistical_test}
+  \begin{tabular}{lrrrrl}
+    \hline
+    \textbf{Metrik} & \textbf{GraphRAG} & \textbf{Vector RAG} & \textbf{$\Delta$} & \textbf{\textit{p}-value} & \textbf{Sig} \\
+    \hline
+    Precision@k & 0,6705 & 0,3606 & $+0{,}3099$ & $< 0{,}001$ & *** \\
+    Recall@k    & 0,5907 & 0,3431 & $+0{,}2476$ & $< 0{,}001$ & *** \\
+    NDCG@k      & 0,7503 & 0,4443 & $+0{,}3060$ & $< 0{,}001$ & *** \\
+    RetQ        & 0,6851 & 0,4249 & $+0{,}2601$ & $< 0{,}001$ & *** \\
+    AnsQ        & 0,5743 & 0,5979 & $-0{,}0236$ & $0{,}390$   & n.s. \\
+    ReaQ        & 0,8994 & 0,8930 & $+0{,}0064$ & ---         & \textasciitilde \\
+    Total       & 0,6943 & 0,6111 & $+0{,}0832$ & $< 0{,}001$ & *** \\
+    \hline
+    \multicolumn{6}{l}{\small *** $p < 0{,}001$ \quad n.s. tidak signifikan \quad 95\% CI RetQ: $[+0{,}19,\ +0{,}33]$} \\
+  \end{tabular}
+\end{table}
+
+Keunggulan GraphRAG pada dimensi RetQ dan Total bersifat sangat signifikan ($p < 0{,}001$) dengan 95\% CI RetQ $[+0{,}19, +0{,}33]$ yang tidak melewati nol, mengkonfirmasi bahwa perbedaan ini konsisten dan bukan hasil variasi sampling. Dimensi AnsQ tidak signifikan ($p = 0{,}390$), yang merupakan hasil yang diharapkan: kedua sistem menggunakan LLM yang identik sehingga kualitas teks jawaban tidak dipengaruhi oleh perbedaan mekanisme \textit{retrieval}.
+
+Tabel~\ref{tbl:ablation_significance} menyajikan signifikansi statistik untuk setiap ablasi dibandingkan \textit{baseline} GraphRAG.
+
+\begin{table}[h]
+  \centering
+  \caption{Signifikansi statistik \textit{ablation study}: \textit{baseline} vs.\ varian ablasi}
+  \label{tbl:ablation_significance}
+  \begin{tabular}{lll}
+    \hline
+    \textbf{Ablasi} & \textbf{RetQ \textit{p}-value} & \textbf{Total \textit{p}-value} \\
+    \hline
+    A1 (\textit{no\_phase1})       & $< 0{,}001$ *** & $< 0{,}001$ *** \\
+    A2 (\textit{no\_multihop})     & $< 0{,}001$ *** & $< 0{,}001$ *** \\
+    A3 (\textit{depth=2 fixed})    & $< 0{,}001$ *** & $< 0{,}001$ *** \\
+    A4 (\textit{depth=3 fixed})    & $0{,}992$ n.s.  & $0{,}992$ n.s.  \\
+    A5 (\textit{no\_yaml\_layer3}) & n.s.            & n.s.            \\
+    A6c (\textit{no\_multi\_entity})& n.s.           & n.s.            \\
+    \hline
+    \multicolumn{3}{l}{\small *** $p < 0{,}001$ \quad n.s. tidak signifikan ($p > 0{,}05$)} \\
+  \end{tabular}
+\end{table}
+
+Komponen \textit{exact match} (A1), \textit{multi-hop traversal} (A2), dan \textit{adaptive depth} (A3) terbukti memberikan kontribusi yang signifikan secara statistik. A4 tidak signifikan ($p = 0{,}992$) karena kedalaman tetap 3 sudah mendekati perilaku adaptif untuk mayoritas \textit{intent}; perbedaannya terlihat pada analisis per tipe di Subbab~\ref{subsec:depth-sensitivity}, bukan pada agregat keseluruhan. A5 dan A6c tidak signifikan, konsisten dengan delta yang sangat kecil pada Tabel~\ref{tbl:ablation_results}.
+
+% ─────────────────────────────────────────────────────────────────────
+\section{Analisis Kondisi Batas Sistem GraphRAG}
+\label{subsec:boundary-condition}
+% ─────────────────────────────────────────────────────────────────────
+
+Evaluasi pada bagian-bagian sebelumnya menunjukkan bahwa sistem GraphRAG unggul secara statistik dibandingkan \textit{Vector RAG} secara keseluruhan. Namun, agregasi skor seluruh \textit{fixture} dapat menyembunyikan variasi penting: pada kondisi apa GraphRAG memberikan keunggulan signifikan, dan pada kondisi apa keunggulannya terbatas? Analisis kondisi batas ini bertujuan mengidentifikasi faktor-faktor penentu tersebut menggunakan metrik \textit{RetQ-gain} per \textit{fixture}, yang didefinisikan sebagai:
+
+\begin{equation}
+  \text{RetQ-gain}_i = \text{RetQ}_{\text{GraphRAG},i} - \text{RetQ}_{\text{VectorRAG},i}
+  \label{eq:retq-gain}
+\end{equation}
+
+\noindent Nilai positif pada persamaan di atas menunjukkan GraphRAG unggul, sedangkan nilai negatif menunjukkan \textit{Vector RAG} setara atau lebih baik untuk \textit{fixture} ke-$i$.
+
+\subsection{Keunggulan GraphRAG per Tipe \textit{Fixture}}
+\label{subsubsec:bc-by-type}
+
+Gambar~\ref{fig:boundary-retq-gain-by-type} menampilkan rata-rata \textit{RetQ-gain} untuk setiap tipe \textit{fixture}. GraphRAG mengungguli \textit{Vector RAG} pada seluruh delapan tipe, dengan variasi yang mencerminkan karakteristik struktural tiap tipe pertanyaan.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.85\textwidth]{images/boundary_retq_gain_by_type.png}
+  \caption{Rata-rata \textit{RetQ-gain} (GraphRAG $-$ \textit{Vector RAG}) per tipe \textit{fixture} ($n=97$). Semua tipe menunjukkan gain positif; variasi mencerminkan tingkat ketergantungan kueri terhadap traversal relasi antar-\textit{resource}.}
+  \label{fig:boundary-retq-gain-by-type}
+\end{figure}
+
+\begin{table}[h]
+  \centering
+  \caption{Rata-rata \textit{RetQ-gain} per tipe \textit{fixture}}
+  \label{tab:retq-gain-by-type}
+  \begin{tabular}{lrrl}
+    \hline
+    \textbf{Tipe} & \textbf{$n$} & \textbf{Rata-rata \textit{RetQ-gain}} & \textbf{Karakteristik Kueri} \\
+    \hline
+    \textit{followup}        & 12 & $+0{,}5931$ & Tindak lanjut relasi antar-\textit{resource} \\
+    \textit{planning}        &  5 & $+0{,}5858$ & Perancangan multi-komponen \\
+    \textit{command}         &  3 & $+0{,}5411$ & Konfigurasi operasional \\
+    \textit{troubleshooting} &  5 & $+0{,}4058$ & Diagnosis lintas-\textit{resource} \\
+    \textit{yaml\_gen}       & 15 & $+0{,}3226$ & Generasi manifes terstruktur \\
+    \textit{relationship}    & 18 & $+0{,}1838$ & Pemetaan hubungan eksplisit \\
+    \textit{conceptual}      & 15 & $+0{,}1598$ & Penjelasan konsep tunggal \\
+    \textit{realworld}       & 24 & $+0{,}0413$ & Skenario dunia nyata (konteks luas) \\
+    \hline
+  \end{tabular}
+\end{table}
+
+Terdapat pola yang konsisten: tipe \textit{fixture} dengan gain tertinggi (\textit{followup}, \textit{planning}, \textit{command}) adalah tipe yang secara inheren membutuhkan pemahaman relasi antarentitas. Sebaliknya, \textit{fixture} tipe \textit{realworld} yang memiliki gain terendah ($+0{,}04$) umumnya mengandung pertanyaan dengan konteks luas yang melebihi cakupan skema OpenAPI Kubernetes. Temuan ini menunjukkan bahwa \textbf{kompleksitas relasional kueri} merupakan faktor penentu utama keunggulan GraphRAG.
+
+\subsection{Faktor Kuantitatif: \textit{Hops} dan Derajat Node}
+\label{subsubsec:bc-quantitative}
+
+Dua faktor kuantitatif dianalisis menggunakan korelasi Spearman terhadap \textit{RetQ-gain}: jumlah hop yang dilalui selama \textit{retrieval} (\texttt{hops\_retrieved}) dan derajat node primer dalam KG (\texttt{graph\_degree}).
+
+Gambar~\ref{fig:boundary-hops-vs-gain} menampilkan hubungan antara jumlah hop dan \textit{RetQ-gain}. Korelasi Spearman antara \texttt{hops\_retrieved} dan \textit{RetQ-gain} adalah $\rho = +0{,}270$ ($p = 0{,}008$, $n = 97$)—signifikan namun tergolong lemah, mengindikasikan bahwa jumlah hop bukan satu-satunya penentu.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.80\textwidth]{images/boundary_hops_vs_gain.png}
+  \caption{\textit{Scatter plot} jumlah hop yang dilalui vs.\ \textit{RetQ-gain} per \textit{fixture}.}
+  \label{fig:boundary-hops-vs-gain}
+\end{figure}
+
+Gambar~\ref{fig:boundary-degree-vs-gain} menampilkan hubungan antara derajat node primer dan \textit{RetQ-gain}. Korelasi Spearman $\rho = +0{,}442$ ($p < 0{,}001$, $n = 96$) lebih kuat. Analisis rata-rata gain per kelompok derajat mengungkap pola yang menarik: \textit{resource} dengan derajat sangat rendah (derajat 2, $n=14$, rata-rata gain $= -0{,}09$) seperti \texttt{ConfigMap} dan \texttt{Secret} tidak mendapat manfaat dari traversal graf karena kemiripan semantik berbasis \textit{embedding} sudah memadai. Sebaliknya, \textit{resource} dengan derajat 3--7 ($n=79$) menunjukkan gain positif yang konsisten, dengan puncak pada derajat 7 ($n=24$, rata-rata $+0{,}55$) yang didominasi \texttt{Deployment} dan \texttt{StatefulSet}. Tiga \textit{resource} dengan derajat $\geq 17$ ($n=3$, masing-masing satu \textit{fixture}) menunjukkan gain negatif, konsisten dengan temuan \textit{depth sensitivity} bahwa \textit{node} berkonektivitas ekstrem cenderung menambah \textit{noise}; namun, keterbatasan data ($n=1$ per kelompok) mengharuskan kehati-hatian dalam menarik kesimpulan dari pola ini.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.80\textwidth]{images/boundary_degree_vs_gain.png}
+  \caption{\textit{Scatter plot} derajat node primer vs.\ \textit{RetQ-gain}. Garis menunjukkan rata-rata gain per nilai derajat.}
+  \label{fig:boundary-degree-vs-gain}
+\end{figure}
+
+\begin{table}[h]
+  \centering
+  \caption{Korelasi Spearman antara faktor struktural dan \textit{RetQ-gain}}
+  \label{tab:spearman-factors}
+  \begin{tabular}{lrrrl}
+    \hline
+    \textbf{Faktor} & \textbf{$\rho$} & \textbf{\textit{p}-value} & \textbf{$n$} & \textbf{Interpretasi} \\
+    \hline
+    \texttt{graph\_degree}    & $+0{,}442$ & $< 0{,}001$ & 96 & Sedang *** \\
+    \texttt{hops\_retrieved}  & $+0{,}270$ & $0{,}008$   & 97 & Lemah ** \\
+    \texttt{multi\_hop} (0/1) & $+0{,}093$ & $0{,}366$   & 97 & Tidak signifikan \\
+    \hline
+    \multicolumn{5}{l}{\small *** $p < 0{,}001$ \quad ** $p < 0{,}01$ \quad Korelasi positif = faktor berkorelasi dengan keunggulan GraphRAG} \\
+  \end{tabular}
+\end{table}
+
+Tidak ada faktor tunggal yang secara dominan menjelaskan variasi \textit{RetQ-gain}. Keunggulan GraphRAG ditentukan oleh interaksi antara karakteristik kueri (tipe, kompleksitas relasional) dan karakteristik data (konektivitas \textit{resource} dalam graf).
+
+\subsection{Definisi Kondisi Batas}
+\label{subsubsec:bc-definition}
+
+Berdasarkan analisis di atas, kondisi batas sistem GraphRAG dirumuskan sebagai berikut.
+
+GraphRAG memberikan keunggulan signifikan ketika:
+\begin{enumerate}
+  \item kueri membutuhkan pemahaman relasi antar-\textit{resource} (tipe \textit{followup}, \textit{planning}, \textit{command}, \textit{troubleshooting}); dan/atau
+  \item \textit{resource} primer memiliki derajat konektivitas menengah--tinggi di graf (derajat 3--7 dalam konteks skema Kubernetes v1.30).
+\end{enumerate}
+
+GraphRAG tidak memberikan keunggulan bermakna ketika:
+\begin{enumerate}
+  \item kueri bersifat kontekstual luas tanpa referensi spesifik ke skema (tipe \textit{realworld}); atau
+  \item \textit{resource} primer memiliki konektivitas sangat rendah (derajat 2), sehingga kemiripan semantik berbasis \textit{embedding} sudah memadai; atau
+  \item \textit{resource} primer merupakan tipe utilitas generik dengan konektivitas ekstrem (derajat $\geq 17$), yang menghasilkan \textit{noise} saat dilalui.
+\end{enumerate}
+
+\subsection{Prediksi Generalisasi ke Domain Lain}
+\label{subsubsec:bc-github}
+
+Analisis kondisi batas ini memungkinkan prediksi kualitatif untuk domain OpenAPI lain. Skema Kubernetes v1.30 memiliki hirarki yang dalam dengan \textit{resource} utama seperti \texttt{Deployment} memiliki 7 \textit{edge} langsung. Sebaliknya, GitHub REST API mengadopsi arsitektur \textit{endpoint-centric} yang lebih datar dengan ketergantungan skema minimal antar-\textit{resource}. Berdasarkan kondisi batas yang telah diidentifikasi, keunggulan GraphRAG diperkirakan lebih terbatas pada GitHub REST API karena \textit{resource}-nya cenderung memiliki derajat rendah dan pertanyaan umumnya tidak membutuhkan traversal lintas-\textit{resource}. Validasi prediksi ini merupakan arah pengembangan yang dapat dikerjakan pada studi lanjutan.

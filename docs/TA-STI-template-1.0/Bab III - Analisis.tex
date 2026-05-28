@@ -149,6 +149,8 @@ Bagian ini menjelaskan karakteristik data dokumentasi API Kubernetes yang menjad
 
     \input{tables/tabel21.tex}
 
+    Graf yang dibangun bersifat \textit{directed graph}: setiap \textit{edge} A$\rightarrow$B mencerminkan referensi tipe dalam skema OpenAPI (A memiliki \textit{field} bertipe B). Arah ini bukan arbitrer---ia merepresentasikan dependensi struktural yang deterministik dan dapat diverifikasi langsung dari \texttt{swagger.json}. Akibatnya, traversal yang dimulai dari \textit{node} A tidak dapat menjangkau \textit{node} yang mereferensikan A kecuali terdapat \textit{edge} keluar eksplisit dari A ke \textit{node} tersebut. Misalnya, \textit{edge} \texttt{RoleBinding}$\rightarrow$\texttt{ServiceAccount} ada dalam graf, sedangkan \textit{edge} \texttt{ServiceAccount}$\rightarrow$\texttt{RoleBinding} tidak ada---sehingga traversal yang dimulai dari \textit{ServiceAccount} tidak dapat mencapai \textit{RoleBinding} melalui penelusuran \textit{edge} keluar.
+
     \subsubsection{Justifikasi Batas Kedalaman Penelusuran Graf (3 Lompatan)}
 
     Batas maksimum 3 lompatan (\textit{hops}) dalam penelusuran graf ditetapkan berdasarkan analisis distribusi kedalaman skema OpenAPI Kubernetes. Tabel~\ref{tbl:hop_justification} menunjukkan bahwa karakteristik \textit{node} berubah secara signifikan seiring bertambahnya kedalaman:

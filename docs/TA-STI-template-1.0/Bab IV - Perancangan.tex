@@ -108,7 +108,7 @@ Interaksi antar-\textit{node} beserta aliran data melalui \textit{AgentState} di
     \label{fig:langgraph_pipeline}
 \end{figure}
 
-Pembagian peran \textit{Thinker}--\textit{Speaker} memberikan dua keuntungan teknis: (1) GPT-4o-mini yang memiliki kemampuan pemahaman konteks tinggi difokuskan pada tugas klasifikasi berstruktur (JSON output), sementara (2) Groq \textit{llama-3.1-8b-instant} yang memiliki latensi rendah difokuskan pada generasi teks panjang. Ini mengoptimalkan kualitas klasifikasi sekaligus menjaga latensi total di bawah batas NF-02 (60 detik).
+Pembagian peran \textit{Thinker}--\textit{Speaker} memanfaatkan model yang sama (GPT-4o-mini) untuk kedua peran: (1) \textit{Thinker} menggunakan GPT-4o-mini dengan \texttt{temperature}=0,0 untuk menghasilkan keluaran JSON yang deterministik; (2) \textit{Speaker} juga menggunakan GPT-4o-mini sehingga pemahaman skema Kubernetes konsisten antara tahap ekstraksi \textit{intent} dan tahap generasi jawaban. Penggunaan model yang sama menjaga kohesi semantik sekaligus menyederhanakan dependensi infrastruktur.
 
 % --- 4.3.3 ---
 \subsection{Perancangan Mekanisme \textit{Retrieval} Bertingkat}
@@ -127,6 +127,8 @@ Node \textit{retriever} mengimplementasikan \textit{cascading retrieval} dengan 
 \end{enumerate}
 
 \input{tables/tabel18.tex}
+
+Keputusan desain kedalaman pada Tabel~\ref{tbl:intent_depth_iv} didasarkan pada analisis distribusi skema OpenAPI pada Bab~\ref{chap:analisis-masalah}. Validasi empiris atas keputusan ini—yang membuktikan bahwa tidak ada kedalaman tetap tunggal yang optimal untuk seluruh tipe \textit{intent}—disajikan pada Subbab~\ref{subsec:depth-sensitivity}.
 
 Setelah traversal selesai, sistem membangun \textit{reasoning path} berupa daftar string dengan format \texttt{Parent -[REL]-> Child} yang merepresentasikan jalur relasional yang dilalui. \textit{Reasoning path} ini disertakan dalam \textit{prompt} LLM dan ditampilkan kepada pengguna sebagai bukti penalaran yang dapat diverifikasi.
 

@@ -157,22 +157,35 @@ def _parse_edges(reasoning_path: list[str]) -> list[tuple[str, str, str]]:
 
 
 def _bfs_depth(edges: list[tuple]) -> dict[str, int]:
-    """Assign depth to each node via BFS from the root."""
+    """
+    Assign depth to each node via BFS from ALL roots.
+    Multi-entity retrieval (generate_yaml/planning) produces reasoning paths
+    rooted at multiple resources, so we must seed BFS from every root.
+    """
     if not edges:
         return {}
     parents  = {e[0] for e in edges}
     children = {e[2] for e in edges}
     roots    = parents - children
-    root     = next(iter(roots)) if roots else edges[0][0]
+    if not roots:
+        roots = {edges[0][0]}  # cyclic fallback
 
-    depth_map = {root: 0}
-    queue     = [root]
+    depth_map = {r: 0 for r in roots}
+    queue     = list(roots)
     while queue:
         current = queue.pop(0)
         for p, _, c in edges:
             if p == current and c not in depth_map:
                 depth_map[c] = depth_map[current] + 1
                 queue.append(c)
+
+    # Safety net for disconnected subgraphs — every node must have an int depth
+    # so the DataFrame in render_retrieval_trace stays mono-typed (Int64).
+    fallback_depth = (max(depth_map.values()) + 1) if depth_map else 0
+    for p, _, c in edges:
+        for node in (p, c):
+            if node not in depth_map:
+                depth_map[node] = fallback_depth
     return depth_map
 
 
@@ -264,14 +277,18 @@ def render_retrieval_trace(reasoning_path: list[str]):
             import pandas as pd
             rows = [
                 {
-                    "Depth":        depth_map.get(p, "?"),
+                    "Depth":        depth_map.get(p, pd.NA),
                     "Parent Node":  p,
                     "Relationship": rel,
                     "Child Node":   c,
                 }
                 for p, rel, c in edges
             ]
-            df = pd.DataFrame(rows).sort_values(["Depth", "Parent Node"])
+            df = pd.DataFrame(rows)
+            # Force nullable integer dtype so st.dataframe NumberColumn never
+            # receives mixed int+str (PyArrow ArrowInvalid).
+            df["Depth"] = df["Depth"].astype("Int64")
+            df = df.sort_values(["Depth", "Parent Node"], na_position="last")
             st.dataframe(
                 df,
                 use_container_width=True,

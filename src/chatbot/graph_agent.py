@@ -2,6 +2,7 @@
 import json
 import logging
 import operator
+import re
 from typing import TypedDict, List, Annotated, Optional
 from langgraph.graph import StateGraph, END
 from langchain_core.messages import AIMessage, BaseMessage
@@ -146,7 +147,8 @@ def generate_response_node(state: AgentState):
         chat_history = state["chat_history"]
         intent_type = state.get("intent_type") or "explain"
         _EMPTY_HISTORY = ("", "Belum ada riwayat percakapan.")
-        if intent_type == "followup" and chat_history.strip() in _EMPTY_HISTORY:
+        history_is_empty = chat_history.strip() in _EMPTY_HISTORY
+        if intent_type == "followup" and history_is_empty:
             intent_type = "explain"
 
         response = chain.invoke({
@@ -155,7 +157,19 @@ def generate_response_node(state: AgentState):
             "question": state["question"],
             "intent_type": intent_type
         })
-        return {"messages": [AIMessage(content=response.content)]}
+
+        # Fix 6 (defense-in-depth): GPT-4o-mini occasionally still hallucinates
+        # the memory-context note even with the demoted intent_type and the
+        # tightened prompt. Strip it deterministically when history is empty.
+        final_content = response.content
+        if history_is_empty:
+            note_pattern = re.compile(
+                r"\n*>\s*\*?\s*Jawaban ini menggunakan konteks[^\n]*\*?\s*\n*",
+                flags=re.IGNORECASE,
+            )
+            final_content = note_pattern.sub("\n", final_content).rstrip()
+
+        return {"messages": [AIMessage(content=final_content)]}
     except Exception as e:
         logger.error(f"Response Gen failed: {e}")
         return {"messages": [AIMessage(content="Terjadi error saat membuat respons.")]}

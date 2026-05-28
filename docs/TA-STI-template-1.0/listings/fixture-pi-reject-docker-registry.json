@@ -1,0 +1,24 @@
+{
+  "id": "pi_want_to_reject_all_docker",
+  "type": "realworld",
+  "question": "I want to reject all docker registries except my own one. I'm looking for some kind of policies for docker registries and their images. For example my registry name is registry.my.company.com. How can I enforce this at the cluster level?",
+  "resource": "io.k8s.api.core.v1.Namespace",
+  "scope": "Cluster",
+  "multi_hop": true,
+  "ground_truth": {
+    "relevant_nodes": [
+      "io.k8s.api.core.v1.Namespace",
+      "io.k8s.api.core.v1.NamespaceCondition",
+      "io.k8s.api.core.v1.NamespaceSpec",
+      "io.k8s.api.core.v1.NamespaceStatus"
+    ],
+    "expected_path": [
+      "Namespace -[HAS_PROPERTY]-> NamespaceSpec",
+      "Namespace -[HAS_PROPERTY]-> NamespaceStatus",
+      "NamespaceStatus -[HAS_PROPERTY]-> NamespaceCondition"
+    ],
+    "key_nodes": [
+      "io.k8s.api.core.v1.Namespace"
+    ]
+  }
+}

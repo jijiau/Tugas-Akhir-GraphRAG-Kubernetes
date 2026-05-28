@@ -1,10 +1,95 @@
 \cleardoublepage
 \chapter{KODE PROGRAM}
-Pada umumnya, kode program tidak perlu disertakan di dalam laporan tugas akhir karena kode program biasanya sangat panjang
-dan sudah disimpan dalam bentuk berkas-berkas elektronik terpisah di repositori daring. 
-Namun, jika ada bagian kode program singkat yang penting untuk ditulis dalam laporan tugas akhir, 
-bagian tersebut dapat disertakan di dalam laporan.
-\section{Perangkat Lunak untuk Akuisisi Data dari Sensor Ultrasonik}
-\lstinputlisting[language=Python, caption=Binary search code]{listings/binary-search-python.tex}  
-\section{Perangkat Lunak untuk Pengolahan Data Akuisisi dan Visualisasi Hasil Pengukuran Jarak} 
-asdjfkjashdkjfas
+
+Lampiran ini menyajikan kode sumber komponen inti sistem \textit{GraphRAG} Kubernetes yang dibahas pada Bab~\ref{chap:implementasi}. Setiap kode telah disederhanakan komentar (\textit{humanized}) untuk keterbacaan: komentar yang hanya mengulang nama variabel dihilangkan, sedangkan komentar yang menjelaskan \textit{alasan} keputusan desain dipertahankan. Kode lengkap beserta riwayat komit tersedia di repositori proyek.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Manajemen Memori Percakapan (\textit{ZepMemoryStore})}
+% ─────────────────────────────────────────────────────────────────────────────
+
+Kelas \textit{ZepMemoryStore} pada berkas \texttt{src/memory/zep\_store.py} menyediakan penyimpanan riwayat percakapan berbasis SQLite lokal sebagai pengganti Zep Cloud.
+
+\lstinputlisting[
+    language=Python,
+    style=pythonstyle,
+    caption={\texttt{src/memory/zep\_store.py} — Manajemen Memori Percakapan},
+    label={lst:zep-store}
+]{listings/zep-store.py}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{\textit{Pipeline Ingestion} Data (\textit{SwaggerGraphBuilder})}
+% ─────────────────────────────────────────────────────────────────────────────
+
+Kelas \textit{SwaggerGraphBuilder} pada berkas \texttt{src/ingestion/parser.py} mengimplementasikan pipeline 5-fase untuk mengubah \texttt{swagger.json} Kubernetes menjadi \textit{knowledge graph} di Neo4j.
+
+\lstinputlisting[
+    language=Python,
+    style=pythonstyle,
+    caption={\texttt{src/ingestion/parser.py} — Pipeline Ingestion Data (SwaggerGraphBuilder)},
+    label={lst:parser}
+]{listings/parser.py}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{\textit{LangGraph Agent Pipeline}}
+% ─────────────────────────────────────────────────────────────────────────────
+
+Berkas \texttt{src/chatbot/graph\_agent.py} mendefinisikan \textit{state machine} LangGraph yang mengorkestrasi lima node pipeline: \textit{memory} $\rightarrow$ \textit{thinker} $\rightarrow$ \textit{retriever} $\rightarrow$ \textit{speaker} $\rightarrow$ \textit{saver}.
+
+\lstinputlisting[
+    language=Python,
+    style=pythonstyle,
+    caption={\texttt{src/chatbot/graph\_agent.py} — LangGraph Agent Pipeline},
+    label={lst:graph-agent}
+]{listings/graph-agent.py}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Mekanisme \textit{Retrieval} Bertingkat (\textit{StatefulK8sRetriever})}
+% ─────────────────────────────────────────────────────────────────────────────
+
+Kelas \textit{StatefulK8sRetriever} pada berkas \texttt{src/chatbot/custom\_retriever.py} mengimplementasikan \textit{cascading retrieval} dengan kontrol kedalaman berbasis \textit{intent}.
+
+\lstinputlisting[
+    language=Python,
+    style=pythonstyle,
+    caption={\texttt{src/chatbot/custom\_retriever.py} — Mekanisme Retrieval Bertingkat},
+    label={lst:custom-retriever}
+]{listings/custom-retriever.py}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Validasi YAML Tiga Lapis (\textit{YAMLValidator})}
+% ─────────────────────────────────────────────────────────────────────────────
+
+Kelas \textit{YAMLValidator} pada berkas \texttt{src/validation/yaml\_validator.py} mengimplementasikan validasi YAML tiga lapis: sintaksis PyYAML, kepatuhan skema \textit{kubernetes-validate}, dan verifikasi \textit{required fields} dari \textit{knowledge graph}.
+
+\lstinputlisting[
+    language=Python,
+    style=pythonstyle,
+    caption={\texttt{src/validation/yaml\_validator.py} — Validasi YAML Tiga Lapis},
+    label={lst:yaml-validator}
+]{listings/yaml-validator.py}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Query Cypher Neo4j}
+% ─────────────────────────────────────────────────────────────────────────────
+
+Berkas \texttt{src/graph/queries.py} mendefinisikan seluruh konstanta query Cypher yang digunakan oleh sistem sebagai \textit{single source of truth}. Query ini mencakup \textit{exact match}, traversal multi-hop, \textit{vector search}, dan validasi \textit{required fields}.
+
+\lstinputlisting[
+    language=Python,
+    style=pythonstyle,
+    caption={\texttt{src/graph/queries.py} — Query Cypher Neo4j},
+    label={lst:queries}
+]{listings/queries.py}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Fungsi Metrik Evaluasi}
+% ─────────────────────────────────────────────────────────────────────────────
+
+Potongan berikut dari \texttt{scripts/evaluate.py} menampilkan tiga fungsi komputasi metrik inti: \texttt{compute\_ansq()}, \texttt{compute\_retq()}, dan \texttt{compute\_reaq()}. Bagian \textit{orchestrator} (mode invoker, checkpoint, dan summary printing) dihilangkan untuk singkatnya; implementasi lengkap tersedia di repositori proyek.
+
+\lstinputlisting[
+    language=Python,
+    style=pythonstyle,
+    caption={\texttt{scripts/evaluate.py} — Fungsi Metrik Evaluasi (AnsQ, RetQ, ReaQ)},
+    label={lst:evaluate}
+]{listings/evaluate.py}
