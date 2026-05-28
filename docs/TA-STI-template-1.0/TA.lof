@@ -180,17 +180,18 @@
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {IV.1}{\ignorespaces Rancangan solusi berdasarkan metodologi CRISP--DM}}{49}{figure.caption.25}%
+\contentsline {figure}{\numberline {IV.1}{\ignorespaces Rancangan solusi berdasarkan metodologi CRISP--DM}}{50}{figure.caption.25}%
 \contentsline {figure}{\numberline {IV.2}{\ignorespaces \textit {Architecture Diagram} Solusi \textit {GraphRAG} untuk Mitigasi Halusinasi pada Sistem RAG--LLM}}{55}{figure.caption.26}%
 \contentsline {figure}{\numberline {IV.3}{\ignorespaces Diagram Urutan (\textit {Sequence Diagram}) Alur Kerja Sistem GraphRAG}}{56}{figure.caption.27}%
 \contentsline {figure}{\numberline {IV.4}{\ignorespaces Diagram Interaksi Lima \textit {Node LangGraph Agent Pipeline}}}{60}{figure.caption.30}%
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {V.1}{\ignorespaces Analisis pemilihan batas karakter \textit {graph context}. Panel~(a) menunjukkan distribusi bimodal panjang konteks pada 97 \textit {fixture}: 79 kueri (81,4\%) menghasilkan 11.606 karakter dan 18 kueri (18,6\%) menghasilkan 17.849 karakter, dengan garis hijau menandai batas yang dipilih (12.000 karakter). Panel~(b) menunjukkan skor evaluasi empiris (\textit {Total} tertimbang, AnsQ, RetQ, ReaQ) sebagai fungsi nilai batas untuk lima kandidat yang diuji. Batas 12.000 karakter mencapai \textit {Total} tertinggi (0,6989) dan ditetapkan sebagai nilai operasional.}}{69}{figure.caption.35}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {VI.1}{\ignorespaces RetQ per tipe \textit {fixture} pada kedalaman traversal $d=1$ hingga $d=5$. Titik bertanda hitam menunjukkan kedalaman yang digunakan oleh sistem adaptif; garis putus-putus ($d=2$) dan titik-titik ($d=3$) menandai batas dua kelompok \textit {intent}.}}{82}{figure.caption.41}%
-\contentsline {figure}{\numberline {VI.2}{\ignorespaces Precision@k, Recall@k, dan NDCG@k agregat pada kedalaman $d=1$ hingga $d=5$.}}{83}{figure.caption.42}%
-\contentsline {figure}{\numberline {VI.3}{\ignorespaces Rata-rata \textit {RetQ-gain} (GraphRAG $-$ \textit {Vector RAG}) per tipe \textit {fixture} ($n=97$). Semua tipe menunjukkan gain positif; variasi mencerminkan tingkat ketergantungan kueri terhadap traversal relasi antar-\textit {resource}.}}{85}{figure.caption.45}%
-\contentsline {figure}{\numberline {VI.4}{\ignorespaces \textit {Scatter plot} jumlah hop yang dilalui vs.\ \textit {RetQ-gain} per \textit {fixture}.}}{86}{figure.caption.47}%
-\contentsline {figure}{\numberline {VI.5}{\ignorespaces \textit {Scatter plot} derajat node primer vs.\ \textit {RetQ-gain}. Garis menunjukkan rata-rata gain per nilai derajat.}}{86}{figure.caption.48}%
+\contentsline {figure}{\numberline {VI.1}{\ignorespaces RetQ per tipe \textit {fixture} pada kedalaman traversal $d=1$ hingga $d=5$. Titik bertanda hitam menunjukkan kedalaman yang digunakan oleh sistem adaptif; garis putus-putus ($d=2$) dan titik-titik ($d=3$) menandai batas dua kelompok \textit {intent}.}}{84}{figure.caption.42}%
+\contentsline {figure}{\numberline {VI.2}{\ignorespaces Precision@k, Recall@k, dan NDCG@k agregat pada kedalaman $d=1$ hingga $d=5$.}}{85}{figure.caption.43}%
+\contentsline {figure}{\numberline {VI.3}{\ignorespaces Rata-rata \textit {RetQ-gain} (GraphRAG $-$ \textit {Vector RAG}) per tipe \textit {fixture} ($n=97$). Semua tipe menunjukkan gain positif; variasi mencerminkan tingkat ketergantungan kueri terhadap traversal relasi antar-\textit {resource}.}}{87}{figure.caption.46}%
+\contentsline {figure}{\numberline {VI.4}{\ignorespaces \textit {Scatter plot} jumlah hop yang dilalui vs.\ \textit {RetQ-gain} per \textit {fixture}.}}{88}{figure.caption.48}%
+\contentsline {figure}{\numberline {VI.5}{\ignorespaces \textit {Scatter plot} derajat node primer vs.\ \textit {RetQ-gain}. Garis menunjukkan rata-rata gain per nilai derajat.}}{88}{figure.caption.49}%
 \addvspace {10\p@ }
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
@@ -244,5 +245,6 @@
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
+\addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
