@@ -1,0 +1,33 @@
+{
+  "id": "networkpolicy_deny_all",
+  "type": "yaml_gen",
+  "question": "Buatkan YAML NetworkPolicy untuk memblokir semua traffic masuk ke namespace production",
+  "resource": "io.k8s.api.networking.v1.NetworkPolicy",
+  "scope": "Namespaced",
+  "multi_hop": false,
+  "ground_truth": {
+    "relevant_nodes": [
+      "io.k8s.api.networking.v1.NetworkPolicy",
+      "io.k8s.api.networking.v1.NetworkPolicyEgressRule",
+      "io.k8s.api.networking.v1.NetworkPolicyIngressRule",
+      "io.k8s.api.networking.v1.NetworkPolicyPeer",
+      "io.k8s.api.networking.v1.NetworkPolicyPort",
+      "io.k8s.api.networking.v1.NetworkPolicySpec",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelectorRequirement"
+    ],
+    "expected_path": [
+      "LabelSelector -[HAS_PROPERTY]-> LabelSelectorRequirement",
+      "NetworkPolicy -[HAS_PROPERTY]-> NetworkPolicySpec",
+      "NetworkPolicyEgressRule -[HAS_PROPERTY]-> NetworkPolicyPeer",
+      "NetworkPolicyEgressRule -[HAS_PROPERTY]-> NetworkPolicyPort",
+      "NetworkPolicyIngressRule -[HAS_PROPERTY]-> NetworkPolicyPeer",
+      "NetworkPolicyIngressRule -[HAS_PROPERTY]-> NetworkPolicyPort",
+      "NetworkPolicySpec -[HAS_PROPERTY]-> LabelSelector",
+      "NetworkPolicySpec -[HAS_PROPERTY]-> NetworkPolicyEgressRule",
+      "NetworkPolicySpec -[HAS_PROPERTY]-> NetworkPolicyIngressRule"
+    ],
+    "required_fields": ["apiVersion", "kind", "metadata", "spec"],
+    "expected_yaml_keys": ["spec.podSelector", "spec.policyTypes"]
+  }
+}

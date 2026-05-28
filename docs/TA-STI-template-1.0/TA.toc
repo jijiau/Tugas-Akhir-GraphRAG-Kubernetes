@@ -48,8 +48,12 @@
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
 \contentsline {section}{\numberline {I.2}Rumusan Masalah}{3}{section.1.2}%
-\contentsline {section}{\numberline {I.3}Tujuan}{3}{section.1.3}%
+\contentsline {section}{\numberline {I.3}Tujuan}{4}{section.1.3}%
 \contentsline {section}{\numberline {I.4}Batasan Masalah}{4}{section.1.4}%
 \contentsline {section}{\numberline {I.5}Metodologi}{5}{section.1.5}%
 \babel@toc {english}{}\relax 
@@ -266,9 +270,21 @@
 \contentsline {subsection}{\numberline {VI.3.3}Analisis Metrik \textit {Reasoning Quality}}{75}{subsection.6.3.3}%
 \contentsline {section}{\numberline {VI.4}Pembahasan Hasil Evaluasi}{76}{section.6.4}%
 \contentsline {section}{\numberline {VI.5}Perbandingan dengan Pendekatan \textit {Baseline}}{77}{section.6.5}%
-\contentsline {chapter}{\numberline {VII}PENUTUP}{81}{chapter.7}%
-\contentsline {section}{\numberline {VII.1}Kesimpulan}{81}{section.7.1}%
-\contentsline {section}{\numberline {VII.2}Saran}{82}{section.7.2}%
+\contentsline {section}{\numberline {VI.6}\textit {Ablation Study}}{80}{section.6.6}%
+\contentsline {subsection}{\numberline {VI.6.1}Analisis Sensitivitas Kedalaman Traversal}{81}{subsection.6.6.1}%
+\contentsline {section}{\numberline {VI.7}Uji Signifikansi Statistik}{82}{section.6.7}%
+\contentsline {section}{\numberline {VI.8}Analisis Kondisi Batas Sistem GraphRAG}{84}{section.6.8}%
+\contentsline {subsection}{\numberline {VI.8.1}Keunggulan GraphRAG per Tipe \textit {Fixture}}{84}{subsection.6.8.1}%
+\contentsline {subsection}{\numberline {VI.8.2}Faktor Kuantitatif: \textit {Hops} dan Derajat Node}{85}{subsection.6.8.2}%
+\contentsline {subsection}{\numberline {VI.8.3}Definisi Kondisi Batas}{87}{subsection.6.8.3}%
+\contentsline {subsection}{\numberline {VI.8.4}Prediksi Generalisasi ke Domain Lain}{87}{subsection.6.8.4}%
+\contentsline {chapter}{\numberline {VII}PENUTUP}{89}{chapter.7}%
+\contentsline {section}{\numberline {VII.1}Kesimpulan}{89}{section.7.1}%
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\contentsline {section}{\numberline {VII.2}Saran}{90}{section.7.2}%
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
@@ -317,10 +333,10 @@
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
-\contentsline {chapter}{Lampiran \numberline {A}KODE PROGRAM}{87}{appendix.a.A}%
-\contentsline {section}{\numberline {A.1}Perangkat Lunak untuk Akuisisi Data dari Sensor Ultrasonik}{87}{section.a.A.1}%
-\contentsline {section}{\numberline {A.2}Perangkat Lunak untuk Pengolahan Data Akuisisi dan Visualisasi Hasil Pengukuran Jarak}{88}{section.a.A.2}%
-\contentsline {chapter}{Lampiran \numberline {B}HASIL SURVEI LAPANGAN}{89}{appendix.a.B}%
-\contentsline {section}{\numberline {B.1}Foto Survei Lokasi 1}{89}{section.a.B.1}%
-\contentsline {section}{\numberline {B.2}Foto Survei Lokasi 2}{89}{section.a.B.2}%
-\contentsline {section}{\numberline {B.3}Transkrip Wawancara dengan Narasumber}{89}{section.a.B.3}%
+\contentsline {chapter}{Lampiran \numberline {A}KODE PROGRAM}{97}{appendix.a.A}%
+\contentsline {section}{\numberline {A.1}Perangkat Lunak untuk Akuisisi Data dari Sensor Ultrasonik}{97}{section.a.A.1}%
+\contentsline {section}{\numberline {A.2}Perangkat Lunak untuk Pengolahan Data Akuisisi dan Visualisasi Hasil Pengukuran Jarak}{98}{section.a.A.2}%
+\contentsline {chapter}{Lampiran \numberline {B}HASIL SURVEI LAPANGAN}{99}{appendix.a.B}%
+\contentsline {section}{\numberline {B.1}Foto Survei Lokasi 1}{99}{section.a.B.1}%
+\contentsline {section}{\numberline {B.2}Foto Survei Lokasi 2}{99}{section.a.B.2}%
+\contentsline {section}{\numberline {B.3}Transkrip Wawancara dengan Narasumber}{99}{section.a.B.3}%

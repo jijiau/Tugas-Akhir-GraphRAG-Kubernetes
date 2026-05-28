@@ -7,8 +7,11 @@ Usage: python scripts/evaluate.py [--mode graphrag] [--output data/eval_results.
 Ablation modes (--ablation):
   no_phase1       A1: skip exact match, go straight to vector search
   no_multihop     A2: seed node only, no multi-hop traversal
+  depth_1         override all intents to depth=1
   depth_2         A3: override all intents to depth=2
   depth_3         A4: override all intents to depth=3
+  depth_4         override all intents to depth=4
+  depth_5         override all intents to depth=5
   no_yaml_layer3  A5: skip Neo4j required-field check in Layer 3 of YAML validation
   no_multi_entity A6c: disable multi-entity retrieval for all intents
 
@@ -341,6 +344,7 @@ def compute_reaq(
     fixture_scope: str = "",
     question: str = "",
     k8s_vocabulary: set = None,
+    cgg_mode: bool = False,
 ) -> dict:
     """
     Reasoning Quality metrics.
@@ -350,8 +354,10 @@ def compute_reaq(
       multi_hop_success    — did multi-hop questions produce a traversal?
       scope_accuracy       — conditional: only scored when question asks about scope
                              OR resource is Cluster-scoped
-      grounding_score      — 1 - hallucination_rate; uses canonical K8s vocab from
-                             Neo4j (not raw graph_context JSON) for better calibration
+      grounding_score      — 1 - hallucination_rate.
+                             Normal mode: checked against global K8s vocab from Neo4j.
+                             CGG mode (cgg_mode=True): checked against this query's
+                             graph_context only — stricter, penalises terms not retrieved.
     """
     fixture_type  = _effective_type(fixture_type, ground_truth)
     expected_path = ground_truth.get("expected_path", [])
@@ -417,23 +423,24 @@ def compute_reaq(
             scope_accuracy = 1.0  # no scope expectation
 
     # ── Hallucination Rate — K8s Vocabulary Grounding ─────────────────────────
-    # Extract K8s API terms from the answer, then check how many appear in the
-    # canonical vocabulary loaded from Neo4j (all Definition node names).
-    # This avoids false positives from matching against graph_context JSON structure.
-    answer_terms = set(t.lower() for t in _K8S_TERM_RE.findall(answer))
-
-    if answer_terms:
-        if k8s_vocabulary:
-            grounded = sum(1 for t in answer_terms if t in k8s_vocabulary)
-        else:
-            # Fallback: match against graph_context text
-            ctx_lower = graph_context.lower()
-            grounded  = sum(1 for t in answer_terms if t in ctx_lower)
-        hallucination_rate = 1.0 - grounded / len(answer_terms)
+    if cgg_mode:
+        # CGG mode: check terms against this query's graph_context only.
+        # Stricter — terms not present in retrieved context count as hallucinations.
+        from src.validation.cgg_validator import cgg_grounding_score
+        grounding_score, hallucination_rate = cgg_grounding_score(answer, graph_context)
     else:
-        hallucination_rate = 0.0
-
-    grounding_score = 1.0 - hallucination_rate
+        # Normal mode: check against canonical K8s vocab from Neo4j (global).
+        answer_terms = set(t.lower() for t in _K8S_TERM_RE.findall(answer))
+        if answer_terms:
+            if k8s_vocabulary:
+                grounded = sum(1 for t in answer_terms if t in k8s_vocabulary)
+            else:
+                ctx_lower = graph_context.lower()
+                grounded  = sum(1 for t in answer_terms if t in ctx_lower)
+            hallucination_rate = 1.0 - grounded / len(answer_terms)
+        else:
+            hallucination_rate = 0.0
+        grounding_score = 1.0 - hallucination_rate
     reaq_score = (hop_accuracy + multi_hop_success + scope_accuracy + grounding_score) / 4
 
     return {
@@ -491,7 +498,7 @@ def _check_openai_health() -> None:
         sys.exit(f"[ERROR] Evaluasi dibatalkan — tidak dapat memverifikasi OpenAI API: {e}")
 
 
-def run_evaluation(mode: str = "graphrag", output_path: Path = DEFAULT_OUTPUT, ablation_mode: str | None = None):
+def run_evaluation(mode: str = "graphrag", output_path: Path = DEFAULT_OUTPUT, ablation_mode: str | None = None, cgg_mode: bool = False):
     from langchain_openai import OpenAIEmbeddings
 
     # ── Mode-specific invoker ─────────────────────────────────────────────────
@@ -580,7 +587,7 @@ def run_evaluation(mode: str = "graphrag", output_path: Path = DEFAULT_OUTPUT, a
         logger.error(f"No fixtures found in {FIXTURES_DIR}")
         sys.exit(1)
 
-    logger.info(f"Running evaluation: mode={mode}, ablation={ablation_mode}, fixtures={len(fixtures)}")
+    logger.info(f"Running evaluation: mode={mode}, ablation={ablation_mode}, cgg={cgg_mode}, fixtures={len(fixtures)}")
 
     # ── Health check ─────────────────────────────────────────────────────────
     _check_openai_health()
@@ -706,6 +713,7 @@ def run_evaluation(mode: str = "graphrag", output_path: Path = DEFAULT_OUTPUT, a
             fixture_scope=fixture_scope,
             question=question,
             k8s_vocabulary=k8s_vocabulary,
+            cgg_mode=cgg_mode,
         )
 
         total = (
@@ -777,7 +785,8 @@ def run_evaluation(mode: str = "graphrag", output_path: Path = DEFAULT_OUTPUT, a
     print()
     print("=" * W)
     _abl_label = f"  ablation: {ablation_mode}" if ablation_mode else ""
-    print(f"  Evaluation Results  |  mode: {mode}{_abl_label}  |  {len(summary['total'])} questions")
+    _cgg_label = "  cgg: ON" if cgg_mode else ""
+    print(f"  Evaluation Results  |  mode: {mode}{_abl_label}{_cgg_label}  |  {len(summary['total'])} questions")
     print("=" * W)
     print(f"  AnsQ (Answer Quality)    : {avg(summary['ansq']):.4f}  [weight 40%]")
     print(f"  RetQ (Retrieval Quality) : {avg(summary['retq']):.4f}  [weight 35%]")
@@ -827,12 +836,20 @@ def run_evaluation(mode: str = "graphrag", output_path: Path = DEFAULT_OUTPUT, a
 # ── Entry point ───────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
-    _ABLATION_CHOICES = ["no_phase1", "no_multihop", "depth_2", "depth_3", "no_yaml_layer3", "no_multi_entity"]
+    _ABLATION_CHOICES = [
+        "no_phase1", "no_multihop",
+        "depth_1", "depth_2", "depth_3", "depth_4", "depth_5",
+        "no_yaml_layer3", "no_multi_entity",
+    ]
     parser = argparse.ArgumentParser(description="GraphRAG Evaluation")
     parser.add_argument("--mode",     default="graphrag", choices=["graphrag", "vector", "llm"])
     parser.add_argument("--output",   default=str(DEFAULT_OUTPUT))
     parser.add_argument("--ablation", default=None, choices=_ABLATION_CHOICES,
-                        help="Ablation mode for the graphrag pipeline (A1-A6c). "
+                        help="Ablation mode for the graphrag pipeline. "
+                             "depth_N overrides traversal depth for ALL intents. "
                              "Only meaningful with --mode graphrag.")
+    parser.add_argument("--cgg", action="store_true", default=False,
+                        help="Enable CGG mode: grounding_score checked against retrieved "
+                             "graph_context (strict) instead of global K8s vocabulary.")
     args = parser.parse_args()
-    run_evaluation(mode=args.mode, output_path=Path(args.output), ablation_mode=args.ablation)
+    run_evaluation(mode=args.mode, output_path=Path(args.output), ablation_mode=args.ablation, cgg_mode=args.cgg)

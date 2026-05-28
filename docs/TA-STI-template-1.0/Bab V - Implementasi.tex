@@ -13,7 +13,7 @@ Implementasi sistem \textit{GraphRAG} Kubernetes dilaksanakan menggunakan bahasa
 
 \input{tables/tabel25.tex}
 
-Sistem memanfaatkan dua layanan LLM yang berbeda sesuai perannya masing-masing. \textbf{OpenAI GPT-4o-mini} bertindak sebagai \textit{Thinker} untuk mengekstraksi \textit{intent} kueri ke dalam format JSON terstruktur; model ini dipilih karena kemampuan pemahaman konteks yang tinggi dan dukungan \textit{structured output}. \textbf{Groq \textit{llama-3.1-8b-instant}} bertindak sebagai \textit{Speaker} untuk menghasilkan respons naratif; model ini dipilih karena latensi \textit{inference} yang rendah dan biaya operasional yang efisien.
+Sistem memanfaatkan \textbf{OpenAI GPT-4o-mini} untuk kedua peran LLM. \textit{Thinker} menggunakan GPT-4o-mini untuk mengekstraksi \textit{intent} kueri ke dalam format JSON terstruktur berkat kemampuan pemahaman konteks yang tinggi dan dukungan \textit{structured output}. \textit{Speaker} juga menggunakan GPT-4o-mini untuk menghasilkan respons naratif; penggunaan model yang sama dipilih guna memastikan konsistensi pemahaman skema Kubernetes antara tahap ekstraksi \textit{intent} dan tahap generasi jawaban.
 
 Untuk penyimpanan percakapan, sistem menggunakan \textbf{SQLite} lokal yang diakses melalui kelas \textit{ZepMemoryStore} di \texttt{src/memory/zep\_store.py}. Keputusan ini diambil karena Zep Cloud versi 1 memanggil LLM internal untuk ekstraksi entitas yang menambah latensi dan biaya token tanpa nilai tambah bagi penelitian ini. SQLite memberikan persistensi yang memadai tanpa ketergantungan infrastruktur tambahan.
 
@@ -55,12 +55,12 @@ Untuk \textit{intent} yang melibatkan lebih dari satu sumber daya—yaitu \texti
 
 \textit{Reasoning path} dibangun oleh \textit{method} \texttt{\_build\_reasoning\_path()} melalui eksekusi \texttt{PATH\_EDGES\_QUERY} yang menghasilkan daftar \textit{string} berformat \texttt{"Parent -{[}REL{]}-> Child"}, merepresentasikan jalur traversal yang sesungguhnya dari graf—bukan pintasan langsung dari \textit{root} ke \textit{leaf}. Alur keseluruhan mekanisme ini ditunjukkan pada Gambar~\ref{fig:cascading-retrieval}.
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.85\textwidth]{images/flowchart-cascading-retrieval.png}
-    \caption{Alur mekanisme \textit{cascading retrieval} pada \textit{StatefulK8sRetriever}}
-    \label{fig:cascading-retrieval}
-\end{figure}
+% \begin{figure}[ht]
+%     \centering
+%     \includegraphics[width=0.85\textwidth]{images/flowchart-cascading-retrieval.png}
+%     \caption{Alur mekanisme \textit{cascading retrieval} pada \textit{StatefulK8sRetriever}}
+%     \label{fig:cascading-retrieval}
+% \end{figure}
 
 % ─────────────────────────────────────────────────────────────────────
 \section{Implementasi Validasi YAML Tiga Lapis}

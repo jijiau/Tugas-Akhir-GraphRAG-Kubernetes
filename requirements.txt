@@ -1,44 +1,30 @@
-# Core
+# Runtime dependencies only — install this in production/Docker
+# Dev-only deps (jupyter, matplotlib, pytest, etc.) are in requirements-dev.txt
+
+# Orchestration
 langchain>=0.1.0
 langchain-community>=0.0.10
 langgraph>=0.0.20
+
+# Graph database
 neo4j>=5.17.0
 langchain-neo4j>=0.1.0
 
-# LLM Providers (Multi-Agent)
+# LLM providers
 langchain-openai>=0.0.5
 langchain-groq>=0.0.1
 
-# Memory — SQLite (stdlib, no additional package needed)
-# zep-python dihapus: diganti SQLite untuk menghilangkan Graphiti/LLM overhead
-
-# Validation & Utils
+# Config & validation
 pydantic>=2.5.0
 pydantic-settings>=2.1.0
-python-dotenv>=1.0.0
+python-dotenv==1.2.1
+
+# UI
 streamlit>=1.30.0
+
+# YAML validation
 pyyaml>=6.0
 kubernetes-validate>=0.15.0
 
-# Embeddings (Local)
-sentence-transformers>=2.2.2
-
-python-dotenv==1.2.1
-
-# Core
-numpy>=1.24.0
-pandas>=2.0.0
-
-# Visualization
-matplotlib>=3.7.0
-seaborn>=0.12.0
-
-# Testing
-pytest>=7.3.0
-pytest-cov>=4.1.0
-
-# Optional: for interactive notebooks
-jupyter>=1.0.0
-
-#for zep retry logic
+# Retry
 tenacity==8.2.3

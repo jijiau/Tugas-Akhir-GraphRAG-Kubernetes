@@ -1,0 +1,8 @@
+comparison,metric,mean_graphrag,mean_baseline,delta,wilcoxon_p,bootstrap_p,ci_low,ci_high,significant_0.05
+GraphRAG_vs_VectorRAG,Precision@k,0.6705,0.3606,0.3099,0.0,0.0,0.2353,0.3816,yes
+GraphRAG_vs_VectorRAG,Recall@k,0.5907,0.3431,0.2476,0.0,0.0,0.1564,0.3332,yes
+GraphRAG_vs_VectorRAG,NDCG@k,0.7503,0.4443,0.306,0.0,0.0,0.2184,0.38,yes
+GraphRAG_vs_VectorRAG,RetQ,0.6851,0.4249,0.2601,0.0,0.0,0.1854,0.3279,yes
+GraphRAG_vs_VectorRAG,AnsQ,0.5743,0.5979,-0.0236,0.3902,0.885,-0.0612,0.0124,no
+GraphRAG_vs_VectorRAG,ReaQ,0.8994,0.893,0.0064,0.0429,0.229,-0.0118,0.0232,yes
+GraphRAG_vs_VectorRAG,Total,0.6943,0.6111,0.0832,0.0,0.0,0.0513,0.1126,yes

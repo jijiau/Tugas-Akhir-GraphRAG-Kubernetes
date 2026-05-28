@@ -22,5 +22,6 @@ __pycache__/
 
 zep.yaml
 docker-compose.yaml
+docker-compose.yml
 
 .claude

@@ -1,0 +1,39 @@
+{
+  "id": "service_types",
+  "type": "conceptual",
+  "question": "Kapan sebaiknya menggunakan Service tipe LoadBalancer dibanding Ingress untuk expose aplikasi ke internet? Apa perbedaan dan trade-off-nya?",
+  "resource": "io.k8s.api.core.v1.Service",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "ground_truth": {
+    "relevant_nodes": [
+      "io.k8s.api.core.v1.LoadBalancerStatus",
+      "io.k8s.api.core.v1.Pod",
+      "io.k8s.api.core.v1.PodSpec",
+      "io.k8s.api.core.v1.PodStatus",
+      "io.k8s.api.core.v1.Service",
+      "io.k8s.api.core.v1.ServicePort",
+      "io.k8s.api.core.v1.ServiceSpec",
+      "io.k8s.api.core.v1.ServiceStatus",
+      "io.k8s.api.core.v1.SessionAffinityConfig",
+      "io.k8s.api.networking.v1.Ingress",
+      "io.k8s.api.networking.v1.IngressRule",
+      "io.k8s.api.networking.v1.IngressSpec",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.Condition"
+    ],
+    "expected_path": [
+      "Ingress -[HAS_PROPERTY]-> IngressSpec",
+      "IngressSpec -[HAS_PROPERTY]-> IngressRule",
+      "Pod -[EXTENDS]-> PodSpec",
+      "Pod -[HAS_PROPERTY]-> PodSpec",
+      "Pod -[HAS_PROPERTY]-> PodStatus",
+      "Service -[HAS_PROPERTY]-> ServiceSpec",
+      "Service -[HAS_PROPERTY]-> ServiceStatus",
+      "Service -[SELECTS_POD]-> Pod",
+      "ServiceSpec -[HAS_PROPERTY]-> ServicePort",
+      "ServiceSpec -[HAS_PROPERTY]-> SessionAffinityConfig",
+      "ServiceStatus -[HAS_PROPERTY]-> Condition",
+      "ServiceStatus -[HAS_PROPERTY]-> LoadBalancerStatus"
+    ]
+  }
+}

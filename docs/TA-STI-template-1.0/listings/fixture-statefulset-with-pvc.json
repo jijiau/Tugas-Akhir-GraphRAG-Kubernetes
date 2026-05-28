@@ -1,0 +1,56 @@
+{
+  "id": "statefulset_with_pvc",
+  "type": "yaml_gen",
+  "question": "Buat YAML StatefulSet untuk database MySQL dengan PersistentVolumeClaim 10Gi",
+  "resource": "io.k8s.api.apps.v1.StatefulSet",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "ground_truth": {
+    "relevant_nodes": [
+      "io.k8s.api.apps.v1.StatefulSet",
+      "io.k8s.api.apps.v1.StatefulSetSpec",
+      "io.k8s.api.apps.v1.StatefulSetStatus",
+      "io.k8s.api.apps.v1.StatefulSetUpdateStrategy",
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.PersistentVolumeClaim",
+      "io.k8s.api.core.v1.PersistentVolumeClaimSpec",
+      "io.k8s.api.core.v1.PodSpec",
+      "io.k8s.api.core.v1.PodTemplateSpec",
+      "io.k8s.api.storage.v1.StorageClass",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
+    ],
+    "expected_path": [
+      "LabelSelector -[HAS_PROPERTY]-> LabelSelectorRequirement",
+      "PersistentVolumeClaim -[HAS_PROPERTY]-> PersistentVolumeClaimSpec",
+      "PersistentVolumeClaim -[HAS_PROPERTY]-> PersistentVolumeClaimStatus",
+      "PersistentVolumeClaim -[USES_STORAGE_CLASS]-> StorageClass",
+      "PersistentVolumeClaimSpec -[HAS_PROPERTY]-> VolumeResourceRequirements",
+      "PodSpec -[HAS_CONTAINER]-> Container",
+      "PodSpec -[HAS_PROPERTY]-> Container",
+      "PodSpec -[MOUNTS_VOLUME]-> Volume",
+      "PodTemplateSpec -[HAS_PROPERTY]-> PodSpec",
+      "StatefulSet -[CLAIMS_VOLUME]-> PersistentVolumeClaim",
+      "StatefulSet -[CONTAINS_POD_TEMPLATE]-> PodTemplateSpec",
+      "StatefulSet -[HAS_PROPERTY]-> StatefulSetSpec",
+      "StatefulSet -[HAS_PROPERTY]-> StatefulSetStatus",
+      "StatefulSetSpec -[HAS_PROPERTY]-> LabelSelector",
+      "StatefulSetSpec -[HAS_PROPERTY]-> PersistentVolumeClaim",
+      "StatefulSetSpec -[HAS_PROPERTY]-> PodTemplateSpec",
+      "StatefulSetSpec -[HAS_PROPERTY]-> StatefulSetUpdateStrategy",
+      "StatefulSetUpdateStrategy -[HAS_PROPERTY]-> RollingUpdateStatefulSetStrategy"
+    ],
+    "required_fields": ["apiVersion", "kind", "metadata", "spec"],
+    "expected_yaml_keys": [
+      "apiVersion",
+      "kind",
+      "metadata",
+      "spec",
+      "spec.volumeClaimTemplates"
+    ],
+    "key_nodes": [
+      "io.k8s.api.apps.v1.StatefulSet",
+      "io.k8s.api.apps.v1.StatefulSetSpec",
+      "io.k8s.api.core.v1.PersistentVolumeClaim"
+    ]
+  }
+}

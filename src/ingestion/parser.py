@@ -321,7 +321,6 @@ class SwaggerGraphBuilder:
         print(f"   ✓ Created {inheritance_count} inheritance edges and {union_count} union edges")
 
     def _pass_3_build_semantic_edges(self):
-        # 🔧 FIXED: All target resources are now directly querying for root `kind`
         semantic_rules = [
             ("Deployment → PodTemplate", "MATCH (d:Definition {kind: 'Deployment'})-[:HAS_PROPERTY {name: 'spec'}]->(spec)-[:HAS_PROPERTY {name: 'template'}]->(t) MERGE (d)-[:CONTAINS_POD_TEMPLATE]->(t)"),
             ("ReplicaSet → PodTemplate", "MATCH (rs:Definition {kind: 'ReplicaSet'})-[:HAS_PROPERTY {name: 'spec'}]->(spec)-[:HAS_PROPERTY {name: 'template'}]->(t) MERGE (rs)-[:CONTAINS_POD_TEMPLATE]->(t)"),

@@ -1,0 +1,40 @@
+{
+  "id": "kubectl_find_pods_with_env",
+  "type": "command",
+  "question": "Bagaimana cara mencari tahu di Pod mana saja environment variable DATABASE_URL digunakan di seluruh namespace cluster Kubernetes saya?",
+  "resource": "io.k8s.api.core.v1.Pod",
+  "scope": "Namespaced",
+  "multi_hop": false,
+  "ground_truth": {
+    "relevant_nodes": [
+      "io.k8s.api.core.v1.ConfigMap",
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.EnvFromSource",
+      "io.k8s.api.core.v1.EnvVar",
+      "io.k8s.api.core.v1.Pod",
+      "io.k8s.api.core.v1.PodSpec",
+      "io.k8s.api.core.v1.PodStatus",
+      "io.k8s.api.core.v1.Secret",
+      "io.k8s.api.core.v1.ServiceAccount",
+      "io.k8s.api.core.v1.Volume",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
+    ],
+    "expected_path": [
+      "Container -[HAS_PROPERTY]-> ContainerPort",
+      "Container -[HAS_PROPERTY]-> EnvFromSource",
+      "Container -[HAS_PROPERTY]-> EnvVar",
+      "Container -[HAS_PROPERTY]-> VolumeMount",
+      "Container -[LOADS_CONFIGMAP]-> ConfigMap",
+      "Pod -[EXTENDS]-> PodSpec",
+      "Pod -[HAS_PROPERTY]-> PodSpec",
+      "Pod -[HAS_PROPERTY]-> PodStatus",
+      "PodSpec -[HAS_CONTAINER]-> Container",
+      "PodSpec -[HAS_PROPERTY]-> Container",
+      "PodSpec -[HAS_PROPERTY]-> Volume",
+      "PodSpec -[MOUNTS_VOLUME]-> Volume",
+      "PodSpec -[USES_SECRET]-> Secret",
+      "PodSpec -[USES_SERVICE_ACCOUNT]-> ServiceAccount",
+      "PodStatus -[HAS_PROPERTY]-> ContainerStatus"
+    ]
+  }
+}

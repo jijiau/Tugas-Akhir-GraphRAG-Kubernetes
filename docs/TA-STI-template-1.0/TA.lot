@@ -32,6 +32,10 @@
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
 \addvspace {10\p@ }
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
@@ -196,7 +200,16 @@
 \contentsline {table}{\numberline {VI.3}{\ignorespaces Skor Evaluasi per Dimensi dan Sub-Metrik (97 \textit {Fixture})}}{74}{table.caption.37}%
 \contentsline {table}{\numberline {VI.4}{\ignorespaces Skor Evaluasi per Kategori \textit {Fixture}}}{75}{table.caption.38}%
 \contentsline {table}{\numberline {VI.5}{\ignorespaces Perbandingan Skor Evaluasi: Vanilla LLM vs.\ Vector RAG vs.\ GraphRAG (97 \textit {Fixture})}}{78}{table.caption.39}%
+\contentsline {table}{\numberline {VI.6}{\ignorespaces Hasil \textit {ablation study}: selisih skor terhadap \textit {baseline} GraphRAG (v12)}}{80}{table.caption.40}%
+\contentsline {table}{\numberline {VI.7}{\ignorespaces Hasil uji signifikansi statistik: GraphRAG vs.\ \textit {Vector RAG} ($n=97$)}}{83}{table.caption.43}%
+\contentsline {table}{\numberline {VI.8}{\ignorespaces Signifikansi statistik \textit {ablation study}: \textit {baseline} vs.\ varian ablasi}}{84}{table.caption.44}%
+\contentsline {table}{\numberline {VI.9}{\ignorespaces Rata-rata \textit {RetQ-gain} per tipe \textit {fixture}}}{85}{table.caption.46}%
+\contentsline {table}{\numberline {VI.10}{\ignorespaces Korelasi Spearman antara faktor struktural dan \textit {RetQ-gain}}}{87}{table.caption.49}%
 \addvspace {10\p@ }
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 

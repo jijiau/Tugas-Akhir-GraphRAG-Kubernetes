@@ -30,7 +30,11 @@
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
-\contentsline {figure}{\numberline {I.1}{\ignorespaces Tahapan model referensi CRISP-DM \blx@tocontentsinit {0}\parencite {niaksu2015}}}{5}{figure.caption.14}%
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\contentsline {figure}{\numberline {I.1}{\ignorespaces Tahapan model referensi CRISP-DM \blx@tocontentsinit {0}\parencite {niaksu2015}}}{6}{figure.caption.14}%
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \addvspace {10\p@ }
@@ -182,7 +186,16 @@
 \contentsline {figure}{\numberline {IV.4}{\ignorespaces Diagram Interaksi Lima \textit {Node LangGraph Agent Pipeline}}}{60}{figure.caption.30}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {VI.1}{\ignorespaces RetQ per tipe \textit {fixture} pada kedalaman traversal $d=1$ hingga $d=5$. Titik bertanda hitam menunjukkan kedalaman yang digunakan oleh sistem adaptif; garis putus-putus ($d=2$) dan titik-titik ($d=3$) menandai batas dua kelompok \textit {intent}.}}{82}{figure.caption.41}%
+\contentsline {figure}{\numberline {VI.2}{\ignorespaces Precision@k, Recall@k, dan NDCG@k agregat pada kedalaman $d=1$ hingga $d=5$.}}{83}{figure.caption.42}%
+\contentsline {figure}{\numberline {VI.3}{\ignorespaces Rata-rata \textit {RetQ-gain} (GraphRAG $-$ \textit {Vector RAG}) per tipe \textit {fixture} ($n=97$). Semua tipe menunjukkan gain positif; variasi mencerminkan tingkat ketergantungan kueri terhadap traversal relasi antar-\textit {resource}.}}{85}{figure.caption.45}%
+\contentsline {figure}{\numberline {VI.4}{\ignorespaces \textit {Scatter plot} jumlah hop yang dilalui vs.\ \textit {RetQ-gain} per \textit {fixture}.}}{86}{figure.caption.47}%
+\contentsline {figure}{\numberline {VI.5}{\ignorespaces \textit {Scatter plot} derajat node primer vs.\ \textit {RetQ-gain}. Garis menunjukkan rata-rata gain per nilai derajat.}}{86}{figure.caption.48}%
 \addvspace {10\p@ }
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 

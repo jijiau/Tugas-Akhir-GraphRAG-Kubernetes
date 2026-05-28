@@ -1,4 +1,25 @@
+---
+title: K8s GraphRAG Chatbot
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # Thesis GraphRAG-Kubernetes Implementation
+
+## Live Demo
+
+Access the chatbot directly — no installation required:
+
+**[Live Demo on Hugging Face Spaces](https://huggingface.co/spaces/jihanaurelia/k8s-graphrag-chatbot)**
+
+Example questions to try:
+- "Apa perbedaan antara Deployment dan StatefulSet?"
+- "Buat YAML Deployment nginx dengan 3 replica dan resource limits"
+- "Bagaimana Service terhubung ke Pod melalui selector?"
+- "Saya perlu isolasi antara tim frontend dan backend di cluster yang sama — apa saja yang perlu dikonfigurasi?"
+
+---
 
 ## Project Overview
 
