@@ -186,7 +186,7 @@
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {IV.1}{\ignorespaces Pemetaan Tahap Metodologi}}{50}{table.4.1}%
+\contentsline {table}{\numberline {IV.1}{\ignorespaces Pemetaan Tahap Metodologi}}{51}{table.4.1}%
 \contentsline {table}{\numberline {IV.2}{\ignorespaces Lima Fase Pipeline Ingestion Data}}{57}{table.caption.28}%
 \contentsline {table}{\numberline {IV.3}{\ignorespaces Lima Node LangGraph Agent Pipeline}}{59}{table.caption.29}%
 \contentsline {table}{\numberline {IV.4}{\ignorespaces Pemetaan \textit {Intent Type} terhadap Kedalaman Traversal Graf}}{62}{table.caption.31}%
@@ -195,16 +195,16 @@
 \contentsline {table}{\numberline {V.1}{\ignorespaces Dependensi Utama Implementasi Sistem GraphRAG Kubernetes}}{66}{table.caption.33}%
 \contentsline {table}{\numberline {V.2}{\ignorespaces Statistik \textit {Knowledge Graph} Kubernetes Hasil Konstruksi}}{67}{table.caption.34}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {VI.1}{\ignorespaces Profil Narasumber Wawancara Validasi Dataset}}{72}{table.caption.35}%
-\contentsline {table}{\numberline {VI.2}{\ignorespaces Penilaian Realisme Sampel \textit {Fixture} oleh Pakar (Skala 1--5)}}{73}{table.caption.36}%
-\contentsline {table}{\numberline {VI.3}{\ignorespaces Skor Evaluasi per Dimensi dan Sub-Metrik (97 \textit {Fixture})}}{74}{table.caption.37}%
-\contentsline {table}{\numberline {VI.4}{\ignorespaces Skor Evaluasi per Kategori \textit {Fixture}}}{75}{table.caption.38}%
-\contentsline {table}{\numberline {VI.5}{\ignorespaces Perbandingan Skor Evaluasi: Vanilla LLM vs.\ Vector RAG vs.\ GraphRAG (97 \textit {Fixture})}}{78}{table.caption.39}%
-\contentsline {table}{\numberline {VI.6}{\ignorespaces Hasil \textit {ablation study}: selisih skor terhadap \textit {baseline} GraphRAG (v12)}}{80}{table.caption.40}%
-\contentsline {table}{\numberline {VI.7}{\ignorespaces Hasil uji signifikansi statistik: GraphRAG vs.\ \textit {Vector RAG} ($n=97$)}}{83}{table.caption.43}%
-\contentsline {table}{\numberline {VI.8}{\ignorespaces Signifikansi statistik \textit {ablation study}: \textit {baseline} vs.\ varian ablasi}}{84}{table.caption.44}%
-\contentsline {table}{\numberline {VI.9}{\ignorespaces Rata-rata \textit {RetQ-gain} per tipe \textit {fixture}}}{85}{table.caption.46}%
-\contentsline {table}{\numberline {VI.10}{\ignorespaces Korelasi Spearman antara faktor struktural dan \textit {RetQ-gain}}}{87}{table.caption.49}%
+\contentsline {table}{\numberline {VI.1}{\ignorespaces Profil Narasumber Wawancara Validasi Dataset}}{74}{table.caption.36}%
+\contentsline {table}{\numberline {VI.2}{\ignorespaces Penilaian Realisme Sampel \textit {Fixture} oleh Pakar (Skala 1--5)}}{75}{table.caption.37}%
+\contentsline {table}{\numberline {VI.3}{\ignorespaces Skor Evaluasi per Dimensi dan Sub-Metrik (97 \textit {Fixture})}}{76}{table.caption.38}%
+\contentsline {table}{\numberline {VI.4}{\ignorespaces Skor Evaluasi per Kategori \textit {Fixture}}}{77}{table.caption.39}%
+\contentsline {table}{\numberline {VI.5}{\ignorespaces Perbandingan Skor Evaluasi: Vanilla LLM vs.\ Vector RAG vs.\ GraphRAG (97 \textit {Fixture})}}{80}{table.caption.40}%
+\contentsline {table}{\numberline {VI.6}{\ignorespaces Hasil \textit {ablation study}: selisih skor terhadap \textit {baseline} GraphRAG (v12)}}{82}{table.caption.41}%
+\contentsline {table}{\numberline {VI.7}{\ignorespaces Hasil uji signifikansi statistik: GraphRAG vs.\ \textit {Vector RAG} ($n=97$)}}{85}{table.caption.44}%
+\contentsline {table}{\numberline {VI.8}{\ignorespaces Signifikansi statistik \textit {ablation study}: \textit {baseline} vs.\ varian ablasi}}{86}{table.caption.45}%
+\contentsline {table}{\numberline {VI.9}{\ignorespaces Rata-rata \textit {RetQ-gain} per tipe \textit {fixture}}}{87}{table.caption.47}%
+\contentsline {table}{\numberline {VI.10}{\ignorespaces Korelasi Spearman antara faktor struktural dan \textit {RetQ-gain}}}{89}{table.caption.50}%
 \addvspace {10\p@ }
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
@@ -260,3 +260,8 @@
 \babel@toc {indonesian}{}\relax 
 \addvspace {10\p@ }
 \addvspace {10\p@ }
+\contentsline {table}{\numberline {B.1}{\ignorespaces Ringkasan 10 Fixture Evaluasi Pakar}}{141}{table.caption.52}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {C.1}{\ignorespaces Nilai Metrik AnsQ per Fixture (97 Fixture)}}{155}{table.a.C.1}%
+\contentsline {table}{\numberline {C.2}{\ignorespaces Nilai Metrik RetQ per Fixture (97 Fixture)}}{158}{table.a.C.2}%
+\contentsline {table}{\numberline {C.3}{\ignorespaces Nilai Metrik ReaQ per Fixture (97 Fixture)}}{161}{table.a.C.3}%

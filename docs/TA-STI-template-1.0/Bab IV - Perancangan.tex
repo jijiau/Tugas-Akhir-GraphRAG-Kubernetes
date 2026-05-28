@@ -2,7 +2,7 @@
 % BAB IV PERANCANGAN
 % ==========================================
 \cleardoublepage
-\chapter{PERANCANGAN}
+\chapter{PERANCANGAN SISTEM \textit{GRAPHRAG} BERBASIS \textit{KNOWLEDGE GRAPH} KUBERNETES}
 \label{chap:perancangan}
 
 \section{Rancangan Solusi Secara Garis Besar}
@@ -75,7 +75,7 @@ Setelah mendefinisikan komponen-komponen utama dalam arsitektur sistem, langkah 
 \end{figure}
 
 % ------------------------------------------------------------------
-\section{Perancangan Komponen Sistem}
+\section{Perancangan \textit{Pipeline} Ekstraksi dan \textit{Knowledge Graph}}
 % ------------------------------------------------------------------
 
 Arsitektur pipeline pada Gambar~\ref{fig:architecture_diagram} diimplementasikan melalui empat komponen teknis utama yang bekerja secara berurutan: pipeline ingestion data, mekanisme \textit{LangGraph agent}, retrieval bertingkat, serta validasi YAML. Berikut ini diuraikan rancangan masing-masing komponen beserta keterhubungannya terhadap kebutuhan fungsional sistem.
@@ -89,7 +89,11 @@ Pipeline \textit{ingestion} bertanggung jawab mengubah spesifikasi OpenAPI Kuber
 
 Urutan \textit{pass} ini bersifat deterministik dan tidak dapat dibalik: node harus ada sebelum edge dapat dibuat (Pass 1 mendahului Pass 2), dan \textit{embedding} harus dihasilkan sebelum \textit{vector index} dapat digunakan pada tahap \textit{retrieval}. Total edge yang dihasilkan mencakup 18 jenis yang terdistribusi dalam 7 kategori relasi sebagaimana dirancang pada Bab~\ref{chap:analisis-masalah}.
 
-% --- 4.3.2 ---
+% ------------------------------------------------------------------
+\section{Perancangan Mekanisme \textit{GraphRAG}}
+% ------------------------------------------------------------------
+
+% --- 4.4.1 ---
 \subsection{Perancangan \textit{LangGraph Agent Pipeline}}
 
 Komponen \textit{chatbot} dirancang menggunakan \textit{LangGraph} sebagai \textit{state machine} yang mengorkestrasi alur pemrosesan dari input pengguna hingga respons akhir. \textit{LangGraph} dipilih karena mendukung pengelolaan \textit{state} yang persisten antar-node dan kontrol alur yang eksplisit. Kedua properti ini penting untuk memastikan bahwa setiap tahap (ekstraksi intent, retrieval, dan generasi) dapat diaudit secara independen.
@@ -110,7 +114,7 @@ Interaksi antar-\textit{node} beserta aliran data melalui \textit{AgentState} di
 
 Pembagian peran \textit{Thinker}--\textit{Speaker} memanfaatkan model yang sama (GPT-4o-mini) untuk kedua peran: (1) \textit{Thinker} menggunakan GPT-4o-mini dengan \texttt{temperature}=0,0 untuk menghasilkan keluaran JSON yang deterministik; (2) \textit{Speaker} juga menggunakan GPT-4o-mini sehingga pemahaman skema Kubernetes konsisten antara tahap ekstraksi \textit{intent} dan tahap generasi jawaban. Penggunaan model yang sama menjaga kohesi semantik sekaligus menyederhanakan dependensi infrastruktur.
 
-% --- 4.3.3 ---
+% --- 4.4.2 ---
 \subsection{Perancangan Mekanisme \textit{Retrieval} Bertingkat}
 
 Node \textit{retriever} mengimplementasikan \textit{cascading retrieval} dengan tiga tahap berurutan. Tahap berikutnya hanya dieksekusi apabila tahap sebelumnya tidak menghasilkan hasil yang memadai, sehingga meminimalkan beban komputasi sekaligus memaksimalkan presisi.
@@ -132,8 +136,9 @@ Keputusan desain kedalaman pada Tabel~\ref{tbl:intent_depth_iv} didasarkan pada 
 
 Setelah traversal selesai, sistem membangun \textit{reasoning path} berupa daftar string dengan format \texttt{Parent -[REL]-> Child} yang merepresentasikan jalur relasional yang dilalui. \textit{Reasoning path} ini disertakan dalam \textit{prompt} LLM dan ditampilkan kepada pengguna sebagai bukti penalaran yang dapat diverifikasi.
 
-% --- 4.3.4 ---
-\subsection{Perancangan Validasi YAML Tiga Lapis}
+% ------------------------------------------------------------------
+\section{Perancangan Validasi YAML Tiga Lapis}
+% ------------------------------------------------------------------
 
 Validasi YAML dieksekusi secara kondisional: hanya dipicu apabila \textit{intent} pengguna diklasifikasikan sebagai \textbf{generate\_yaml}. Proses validasi terdiri dari tiga lapisan yang dieksekusi secara berurutan; lapisan berikutnya dilewati apabila lapisan sebelumnya sudah menemukan kegagalan.
 
@@ -141,20 +146,24 @@ Validasi YAML dieksekusi secara kondisional: hanya dipicu apabila \textit{intent
 
 Lapis 3 merupakan kontribusi penelitian ini. Alih-alih mengandalkan \textit{dry-run} ke klaster Kubernetes (yang memerlukan infrastruktur nyata), pemeriksaan \textit{required fields} dilakukan langsung terhadap \textit{Knowledge Graph} yang telah dibangun pada tahap \textit{ingestion}. Apabila salah satu lapis mendeteksi kegagalan, antarmuka menampilkan peringatan \texttt{Warning: Potential Syntax Error} sesuai spesifikasi NF-01.
 
-% --- 4.3.5 ---
-\subsection{Perancangan Antarmuka Web Streamlit}
-
-Sistem disajikan melalui antarmuka web berbasis Streamlit (\texttt{main.py}) yang berfungsi sebagai \textit{entry point} utama. Antarmuka dirancang dengan tiga komponen utama:
-
-\begin{enumerate}
-    \item \textbf{\textit{Chat Interface}} \\
-    Komponen \texttt{st.chat\_input} dan \texttt{st.chat\_message} menyediakan pengalaman percakapan yang familiar. Riwayat percakapan ditampilkan secara kumulatif dalam satu sesi menggunakan \texttt{st.session\_state}.
-
-    \item \textbf{\textit{Retrieval Trace} Expander} \\
-    Setiap respons dilengkapi \textit{expander} yang menampilkan jejak penalaran graf dalam empat tab: (a) \textbf{Graph Visualization}, yaitu visualisasi \textit{Graphviz DOT} yang dikodekan warna berdasarkan kedalaman \textit{node}; (b) \textbf{Edge Table}, yaitu tabel terurut seluruh relasi yang ditelusuri; (c) \textbf{Referensi}, yaitu tautan resmi \textit{kubernetes.io} untuk setiap \textit{node} yang di-\textit{retrieve}; dan (d) \textbf{Keterangan Warna}, yaitu legenda kedalaman graf.
-
-    \item \textbf{Manajemen Sesi} \\
-    Setiap sesi browser mendapatkan UUID unik (\texttt{session\_id}) yang digunakan sebagai kunci untuk mengambil dan menyimpan riwayat percakapan di SQLite. Hal ini memungkinkan resolusi pronoun lintas-giliran (misalnya ``tambahkan volume ke konfigurasi tadi'').
-\end{enumerate}
-
-
+% ====================================================================
+% PHASE 1: Konten 4.3.5 lama (Antarmuka Web Streamlit) dipindah ke sini.
+% PHASE 4 TODO: ringkas jadi 1-2 kalimat di 4.1 dan/atau 4.2; pertimbangkan
+% pemindahan detail teknis (4 tab retrieval trace, session UUID, Graphviz)
+% ke Lampiran terpisah.
+%
+% \subsection{Perancangan Antarmuka Web Streamlit}
+%
+% Sistem disajikan melalui antarmuka web berbasis Streamlit (\texttt{main.py}) yang berfungsi sebagai \textit{entry point} utama. Antarmuka dirancang dengan tiga komponen utama:
+%
+% \begin{enumerate}
+%     \item \textbf{\textit{Chat Interface}} \\
+%     Komponen \texttt{st.chat\_input} dan \texttt{st.chat\_message} menyediakan pengalaman percakapan yang familiar. Riwayat percakapan ditampilkan secara kumulatif dalam satu sesi menggunakan \texttt{st.session\_state}.
+%
+%     \item \textbf{\textit{Retrieval Trace} Expander} \\
+%     Setiap respons dilengkapi \textit{expander} yang menampilkan jejak penalaran graf dalam empat tab: (a) \textbf{Graph Visualization}, yaitu visualisasi \textit{Graphviz DOT} yang dikodekan warna berdasarkan kedalaman \textit{node}; (b) \textbf{Edge Table}, yaitu tabel terurut seluruh relasi yang ditelusuri; (c) \textbf{Referensi}, yaitu tautan resmi \textit{kubernetes.io} untuk setiap \textit{node} yang di-\textit{retrieve}; dan (d) \textbf{Keterangan Warna}, yaitu legenda kedalaman graf.
+%
+%     \item \textbf{Manajemen Sesi} \\
+%     Setiap sesi browser mendapatkan UUID unik (\texttt{session\_id}) yang digunakan sebagai kunci untuk mengambil dan menyimpan riwayat percakapan di SQLite. Hal ini memungkinkan resolusi pronoun lintas-giliran (misalnya ``tambahkan volume ke konfigurasi tadi'').
+% \end{enumerate}
+% ====================================================================
