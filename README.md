@@ -7,6 +7,14 @@ pinned: false
 
 # Thesis GraphRAG-Kubernetes Implementation
 
+## Live Demo
+
+Chatbot dapat diakses di: https://huggingface.co/spaces/jijiau/k8s-graphrag-chatbot
+
+Access by invitation only (private Space). Contact the author to request access.
+
+---
+
 ## Project Overview
 
 This is an undergraduate thesis project building a **GraphRAG chatbot for Kubernetes** using only the `definitions` section of `data/kubernetes_swagger.json`. The system ingests Kubernetes API definitions into a Neo4j knowledge graph, performs hybrid retrieval (exact match + vector similarity + multi-hop graph traversal), and generates answers through a dual-LLM pipeline (GPT-4o-mini "thinker" for intent extraction, Groq LLaMA "speaker" for response generation). The UI is Streamlit.
