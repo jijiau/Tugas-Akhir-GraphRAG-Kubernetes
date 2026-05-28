@@ -7,20 +7,6 @@ pinned: false
 
 # Thesis GraphRAG-Kubernetes Implementation
 
-## Live Demo
-
-Access the chatbot directly — no installation required:
-
-**[Live Demo on Hugging Face Spaces](https://huggingface.co/spaces/jihanaurelia/k8s-graphrag-chatbot)**
-
-Example questions to try:
-- "Apa perbedaan antara Deployment dan StatefulSet?"
-- "Buat YAML Deployment nginx dengan 3 replica dan resource limits"
-- "Bagaimana Service terhubung ke Pod melalui selector?"
-- "Saya perlu isolasi antara tim frontend dan backend di cluster yang sama — apa saja yang perlu dikonfigurasi?"
-
----
-
 ## Project Overview
 
 This is an undergraduate thesis project building a **GraphRAG chatbot for Kubernetes** using only the `definitions` section of `data/kubernetes_swagger.json`. The system ingests Kubernetes API definitions into a Neo4j knowledge graph, performs hybrid retrieval (exact match + vector similarity + multi-hop graph traversal), and generates answers through a dual-LLM pipeline (GPT-4o-mini "thinker" for intent extraction, Groq LLaMA "speaker" for response generation). The UI is Streamlit.
