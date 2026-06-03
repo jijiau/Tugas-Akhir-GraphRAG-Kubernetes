@@ -8,10 +8,10 @@
 \section{Rancangan Solusi Secara Garis Besar}
 
 Berdasarkan hasil analisis karakteristik data, pola keterhubungan komponen Kubernetes,
-serta pemetaan kebutuhan fungsional dan non-fungsional yang telah dijelaskan pada 
-bagian sebelumnya, langkah selanjutnya adalah merumuskan rancangan solusi yang akan 
-dikembangkan dalam penelitian ini. Rancangan solusi ini disusun secara sistematis 
-mengacu pada metodologi \textit{Cross-Industry Standard Process for Data Mining} 
+serta pemetaan kebutuhan fungsional dan non-fungsional yang telah dijelaskan pada
+bagian sebelumnya, langkah selanjutnya adalah merumuskan rancangan solusi yang akan
+dikembangkan dalam penelitian ini. Rancangan solusi ini disusun secara sistematis
+mengacu pada metodologi \textit{Cross-Industry Standard Process for Data Mining}
 (CRISP--DM) sebagaimana ditampilkan pada Gambar~\ref{fig:crispdm_diagram}.
 
 \begin{figure}[H]
@@ -22,148 +22,344 @@ mengacu pada metodologi \textit{Cross-Industry Standard Process for Data Mining}
     \label{fig:crispdm_diagram}
 \end{figure}
 
+% ------------------------------------------------------------------
 \section{Pemetaan Metodologi terhadap Kebutuhan Sistem}
+% ------------------------------------------------------------------
 
 Tahapan metodologi penelitian sebagaimana digambarkan pada Gambar~\ref{fig:crispdm_diagram}
-menjadi landasan utama dalam perumusan kebutuhan sistem. 
-Setiap aktivitas pada tahap \textit{Data Preparation}, \textit{Modelling}, \textit{Input Processing}, 
-\textit{Output Generation}, \textit{Evaluation}, dan \textit{Deployment} dipetakan secara langsung 
-terhadap kebutuhan fungsional yang harus dipenuhi oleh sistem. 
-Pemetaan ini memastikan bahwa rancangan solusi GraphRAG tidak hanya bersifat konseptual, 
-namun juga merefleksikan proses yang dibutuhkan untuk mencapai tujuan penelitian. 
-Hubungan antara tahapan metodologi dan kebutuhan fungsional ditunjukkan pada 
+menjadi landasan utama dalam perumusan kebutuhan sistem.
+Setiap aktivitas pada tahap \textit{Data Preparation}, \textit{Modelling}, \textit{Input Processing},
+\textit{Output Generation}, \textit{Evaluation}, dan \textit{Deployment} dipetakan secara langsung
+terhadap kebutuhan fungsional yang harus dipenuhi oleh sistem.
+Pemetaan ini memastikan bahwa rancangan solusi GraphRAG tidak hanya bersifat konseptual,
+namun juga merefleksikan proses yang dibutuhkan untuk mencapai tujuan penelitian.
+Hubungan antara tahapan metodologi dan kebutuhan fungsional ditunjukkan pada
 Tabel~\ref{tbl:mapping_methodology_requirements}.
 
 \input{tables/tabel6.tex}
 
-Pemetaan pada Tabel~\ref{tbl:mapping_methodology_requirements} menunjukkan bahwa 
-seluruh tahapan metodologis yang digunakan dalam penelitian ini memiliki keterhubungan 
-langsung dengan kebutuhan fungsional yang dirancang. Setiap proses dalam 
-\textit{Data Preparation}, \textit{Modelling}, \textit{Input Processing}, 
-\textit{Output Generation}, \textit{Evaluation}, dan \textit{Deployment} 
-telah diterjemahkan menjadi kapabilitas sistem yang operasional, terukur, 
+Pemetaan pada Tabel~\ref{tbl:mapping_methodology_requirements} menunjukkan bahwa
+seluruh tahapan metodologis yang digunakan dalam penelitian ini memiliki keterhubungan
+langsung dengan kebutuhan fungsional yang dirancang. Setiap proses dalam
+\textit{Data Preparation}, \textit{Modelling}, \textit{Input Processing},
+\textit{Output Generation}, \textit{Evaluation}, dan \textit{Deployment}
+telah diterjemahkan menjadi kapabilitas sistem yang operasional, terukur,
 dan selaras dengan tujuan penelitian.
+Rancangan masing-masing kebutuhan fungsional diuraikan secara terperinci pada
+Subbab~\ref{sec:perancangan-kg} hingga Subbab~\ref{sec:perancangan-baseline}.
 
-Namun, untuk memastikan bahwa seluruh fungsi tersebut dapat berjalan secara
-terintegrasi, dibutuhkan rancangan alur teknis yang sistematis dan dapat
-diimplementasikan secara konsisten melalui setiap tahapan eksekusi. Oleh karena
-itu, diperlukan suatu \textit{pipeline arsitektural} yang bekerja dari awal hingga
-akhir. \textit{Pipeline} ini tidak hanya memvisualisasikan interaksi antar modul, tetapi juga menunjukkan dependensi logis yang mengikat
-sistem komputasi yang utuh.
-
-Dengan demikian, perancangan \textit{architecture pipeline} berikut disusun untuk
-menyajikan gambaran menyeluruh mengenai tahapan proses, struktur komponen,
-aliran data (\textit{data flow}), serta kontrol logika untuk setiap
-kebutuhan fungsional .
+Untuk memberikan gambaran menyeluruh sebelum penjelasan detail tiap komponen,
+Gambar~\ref{fig:architecture_diagram} menyajikan \textit{architecture diagram} yang
+menggambarkan komponen sistem secara statis beserta keterhubungannya,
+sedangkan Gambar~\ref{fig:sequence_diagram} menggambarkan alur interaksi antar-komponen
+secara kronologis dari masukan pengguna hingga keluaran akhir.
 
 \begin{figure}[H]
     \centering
     \captionsetup{justification=centering}
     \includegraphics[width=1.00\textwidth]{images/Architecture.png}
-    \caption{\textit{Architecture Diagram} Solusi \textit{GraphRAG} untuk Mitigasi Halusinasi pada Sistem RAG--LLM}
+    \caption{\textit{Architecture Diagram} Sistem \textit{GraphRAG} Kubernetes}
     \label{fig:architecture_diagram}
 \end{figure}
-
-Setelah mendefinisikan komponen-komponen utama dalam arsitektur sistem, langkah selanjutnya adalah memetakan interaksi antar-komponen tersebut secara kronologis. Untuk menggambarkan aliran data diproses mulai dari input pengguna hingga validasi output, Gambar \ref{fig:sequence_diagram} menyajikan \textit{Sequence Diagram} yang merinci mekanisme pertukaran informasi pada sistem.
 
 \begin{figure}[H]
     \centering
     \captionsetup{justification=centering}
-    \includegraphics[width=1.0\textwidth]{images/Seq-High.png}
+    \includegraphics[width=1.00\textwidth]{images/Seq-High.png}
     \caption{Diagram Urutan (\textit{Sequence Diagram}) Alur Kerja Sistem GraphRAG}
     \label{fig:sequence_diagram}
 \end{figure}
 
 % ------------------------------------------------------------------
-\section{Perancangan \textit{Pipeline} Ekstraksi dan \textit{Knowledge Graph}}
+\section{Perancangan \textit{Knowledge Graph} Kubernetes}
+\label{sec:perancangan-kg}
 % ------------------------------------------------------------------
 
-Arsitektur pipeline pada Gambar~\ref{fig:architecture_diagram} diimplementasikan melalui empat komponen teknis utama yang bekerja secara berurutan: pipeline ingestion data, mekanisme \textit{LangGraph agent}, retrieval bertingkat, serta validasi YAML. Berikut ini diuraikan rancangan masing-masing komponen beserta keterhubungannya terhadap kebutuhan fungsional sistem.
+Kontribusi pertama penelitian ini, sebagaimana dirumuskan pada Bab~\ref{chap:pendahuluan},
+adalah merancang \textit{pipeline} konstruksi \textit{knowledge graph} yang bersifat
+deterministik berbasis skema OpenAPI Kubernetes (\textit{schema-derived deterministic KG construction}).
+Graf dibangun langsung dari \texttt{swagger.json} melalui aturan transformasi yang eksplisit
+sehingga hasil ekstraksi konsisten antar-eksekusi, berbeda dengan pendekatan berbasis LLM yang
+menghasilkan struktur graf bervariasi karena bersifat stokastik.
+Perancangan \textit{knowledge graph} mencakup tiga aspek yang saling melengkapi:
+\begin{enumerate}
+    \item \textit{pipeline ingestion} untuk representasi objek (F-01),
+    \item strategi pembentukan relasi graf yang menjadi fondasi \textit{retrieval} (F-02), dan
+    \item vektorisasi semantik untuk pencarian berbasis kemiripan (F-05).
+\end{enumerate}
 
 % --- 4.3.1 ---
-\subsection{Pipeline \textit{Ingestion} Data}
+\subsection{Perancangan \textit{Pipeline Ingestion} dan Representasi Objek}
+\label{subsec:pipeline-ingestion}
 
-Pipeline \textit{ingestion} bertanggung jawab mengubah spesifikasi OpenAPI Kubernetes (\textit{swagger.json}) menjadi \textit{Knowledge Graph} yang tersimpan di Neo4j, lengkap dengan \textit{Native Vector Index} untuk pencarian semantik. Proses ini dilaksanakan melalui lima \textit{pass} yang dieksekusi secara berurutan sebagaimana ditunjukkan pada Tabel~\ref{tbl:ingestion_pipeline}.
-
-\input{tables/tabel16.tex}
-
-Urutan \textit{pass} ini bersifat deterministik dan tidak dapat dibalik: node harus ada sebelum edge dapat dibuat (Pass 1 mendahului Pass 2), dan \textit{embedding} harus dihasilkan sebelum \textit{vector index} dapat digunakan pada tahap \textit{retrieval}. Total edge yang dihasilkan mencakup 18 jenis yang terdistribusi dalam 7 kategori relasi sebagaimana dirancang pada Bab~\ref{chap:analisis-masalah}.
-
-% ------------------------------------------------------------------
-\section{Perancangan Mekanisme \textit{GraphRAG}}
-% ------------------------------------------------------------------
-
-% --- 4.4.1 ---
-\subsection{Perancangan \textit{LangGraph Agent Pipeline}}
-
-Komponen \textit{chatbot} dirancang menggunakan \textit{LangGraph} sebagai \textit{state machine} yang mengorkestrasi alur pemrosesan dari input pengguna hingga respons akhir. \textit{LangGraph} dipilih karena mendukung pengelolaan \textit{state} yang persisten antar-node dan kontrol alur yang eksplisit. Kedua properti ini penting untuk memastikan bahwa setiap tahap (ekstraksi intent, retrieval, dan generasi) dapat diaudit secara independen.
-
-Pipeline terdiri dari lima node yang dieksekusi secara linear sebagaimana ditunjukkan pada Tabel~\ref{tbl:langgraph_nodes}.
-
-\input{tables/tabel17.tex}
-
-Interaksi antar-\textit{node} beserta aliran data melalui \textit{AgentState} ditunjukkan pada Gambar~\ref{fig:langgraph_pipeline}. Setiap panah berlabel \textit{field} \textit{AgentState} yang diteruskan dari satu \textit{node} ke \textit{node} berikutnya, sehingga ketergantungan data antar-tahap dapat dilacak secara eksplisit.
+\textit{Pipeline ingestion} bertanggung jawab memenuhi kebutuhan fungsional F-01
+(\textit{Structured Object Representation}) dengan mengubah spesifikasi OpenAPI Kubernetes
+(\textit{swagger.json}) menjadi \textit{knowledge graph} terstruktur yang tersimpan di Neo4j.
+Proses ini dilaksanakan melalui lima \textit{pass} yang dieksekusi secara berurutan
+sebagaimana ditunjukkan pada Gambar~\ref{fig:ingestion_pipeline}.
 
 \begin{figure}[H]
     \centering
     \captionsetup{justification=centering}
-    \includegraphics[width=0.7\textwidth]{{images/Agent-Interaction.png}}
-    \caption{Diagram Interaksi Lima \textit{Node LangGraph Agent Pipeline}}
-    \label{fig:langgraph_pipeline}
+    \includegraphics[width=0.50\textwidth]{images/ingestion_pipeline.png}
+    \caption{Alur \textit{Pipeline Ingestion} dari \texttt{swagger.json} ke Neo4j \textit{Knowledge Graph}}
+    \label{fig:ingestion_pipeline}
 \end{figure}
 
-Pembagian peran \textit{Thinker}--\textit{Speaker} memanfaatkan model yang sama (GPT-4o-mini) untuk kedua peran: (1) \textit{Thinker} menggunakan GPT-4o-mini dengan \texttt{temperature}=0,0 untuk menghasilkan keluaran JSON yang deterministik; (2) \textit{Speaker} juga menggunakan GPT-4o-mini sehingga pemahaman skema Kubernetes konsisten antara tahap ekstraksi \textit{intent} dan tahap generasi jawaban. Penggunaan model yang sama menjaga kohesi semantik sekaligus menyederhanakan dependensi infrastruktur.
+Urutan \textit{pass} ini bersifat deterministik dan tidak dapat dibalik.
+
+% --- 4.3.2 ---
+\subsection{Perancangan Taksonomi Relasi \textit{Knowledge Graph}}
+\label{subsec:edge-taxonomy}
+
+Berdasarkan analisis pola keterhubungan data pada Bab~\ref{chap:analisis-masalah},
+penelitian ini merancang strategi pembentukan relasi \textit{knowledge graph} yang
+menggunakan dua mekanisme komplementer sebagaimana ditunjukkan pada
+Tabel~\ref{tbl:strategi_relasi}.
+
+\input{tables/tabel-strategi-relasi.tex}
+
+Strategi pertama bersifat \textbf{deterministik}, yaitu setiap referensi \texttt{\$ref}, 
+\texttt{allOf}, dan \texttt{oneOf},
+\texttt{anyOf} dalam \texttt{swagger.json} diubah menjadi \textit{edge}.
+
+Strategi kedua bersifat \textbf{semi-deterministik}, yaitu relasi yang tidak dinyatakan secara
+eksplisit dalam skema OpenAPI tetapi relevan secara operasional di Kubernetes
+(seperti relasi antara \textit{Service} dan \textit{Pod}, atau antara \textit{RoleBinding}
+dan \textit{ServiceAccount}) dibentuk melalui aturan transformasi
+berdasarkan semantik domain Kubernetes. Aturan ini bersifat deterministik saat dieksekusi
+(hasil selalu sama untuk input yang sama), tetapi derivasi aturannya memerlukan pengetahuan
+domain yang dienkode secara eksplisit.
+
+% --- 4.3.3 ---
+\subsection{Perancangan Vektorisasi Semantik}
+\label{subsec:vektorisasi-semantik}
+
+Vektorisasi semantik dirancang untuk memenuhi kebutuhan fungsional F-05
+(\textit{Semantic Embedding}) dengan menghasilkan representasi vektor dari setiap node
+dalam \textit{knowledge graph}. Vektor tersebut disimpan langsung sebagai properti setiap node di Neo4j, dan
+sebuah indeks vektor dibangun agar pencarian kemiripan berbasis semantik dapat dieksekusi langsung dalam
+graf yang sama tanpa memerlukan \textit{vector store} terpisah.
+
+% ------------------------------------------------------------------
+\section{Perancangan Mekanisme \textit{GraphRAG}}
+\label{sec:perancangan-graphrag}
+% ------------------------------------------------------------------
+
+Kontribusi kedua penelitian ini, sebagaimana dirumuskan pada Bab~\ref{chap:pendahuluan},
+adalah mengembangkan mekanisme GraphRAG dengan kedalaman \textit{traversal} yang disesuaikan
+per tipe \textit{intent} (\textit{intent-adaptive depth traversal}).
+Alih-alih menggunakan kedalaman tetap yang seragam, sistem menetapkan kedalaman berdasarkan
+karakteristik struktural tiap jenis kueri sehingga \textit{retrieval} lebih presisi dan sesuai
+dengan kebutuhan konteks.
+Mekanisme ini juga mencakup validasi YAML berbasis \textit{knowledge graph}
+serta antarmuka pengguna berbasis \textit{web} yang memungkinkan interaksi dalam bahasa alami.
+Perancangan mekanisme GraphRAG terdiri dari empat komponen fungsional:
+\begin{enumerate}
+    \item klasifikasi \textit{intent} dan manajemen memori (F-03),
+    \item strategi \textit{retrieval} bertingkat dan konstruksi konteks (F-02, F-04),
+    \item generasi dan validasi YAML (F-07), serta
+    \item antarmuka \textit{web} interaktif (F-06).
+\end{enumerate}
+
+% --- 4.4.1 ---
+\subsection{Perancangan Klasifikasi \textit{Intent} dan Manajemen Memori}
+\label{subsec:klasifikasi-intent}
+
+Node \textit{thinker} bertanggung jawab memenuhi kebutuhan fungsional F-03
+(\textit{Intent Classification}) melalui dua fungsi utama: (1) mengklasifikasikan maksud
+dari kueri pengguna, dan
+(2) mengekstrak entitas Kubernetes yang disebutkan dalam kueri.
+\textit{Node thinker} menghasilkan keluaran berformat JSON menggunakan konfigurasi deterministik. 
+Hal ini bertujuan agar klasifikasi \textit{intent} dan ekstraksi entitas tetap konsisten setiap kali 
+kueri yang identik dieksekusi.
+
+jenis \textit{intent} dibedakan berdasarkan jenis informasi yang dibutuhkan dan kedalaman traversal yang sesuai.
+Kedalaman yang lebih besar ditetapkan untuk tipe \textit{intent} yang memerlukan konteks
+relasional lebih luas, sedangkan kedalaman yang lebih kecil ditetapkan untuk kueri yang
+bersifat spesifik.
+
+Manajemen memori percakapan dirancang menggunakan basis data relasional ringan dengan
+identifikasi sesi berbasis UUID. Pada setiap interaksi, riwayat percakapan dimuat dan
+diteruskan ke node \textit{thinker} bersama kueri baru.
+Riwayat ini memungkinkan komunikasi 2 arah antara LLM dengan pengguna, contohnya untuk memahami rujukan seperti "hal tersebut" atau "itu" berdasarkan konteks percakapan
+sebelumnya tanpa memerlukan pengulangan nama entitas secara eksplisit.
+Setelah respons dihasilkan, pasangan kueri-respons disimpan untuk digunakan pada
+interaksi berikutnya.
 
 % --- 4.4.2 ---
-\subsection{Perancangan Mekanisme \textit{Retrieval} Bertingkat}
+\subsection{Perancangan Strategi \textit{Retrieval} dan Konstruksi Konteks}
+\label{subsec:retrieval-bertingkat}
 
-Node \textit{retriever} mengimplementasikan \textit{cascading retrieval} dengan tiga tahap berurutan. Tahap berikutnya hanya dieksekusi apabila tahap sebelumnya tidak menghasilkan hasil yang memadai, sehingga meminimalkan beban komputasi sekaligus memaksimalkan presisi.
+Node \textit{retriever} mengimplementasikan \textit{cascading retrieval} dengan tiga tahap
+berurutan untuk memenuhi kebutuhan fungsional F-02 (\textit{Structured Relation Retrieval})
+dan F-04 (\textit{Context Construction \& Injection}).
 
 \begin{enumerate}
     \item \textbf{Tahap 1: \textit{Exact Name Match} (Prioritas Utama).} \\
-    Sistem mencari node di Neo4j berdasarkan kecocokan nama eksak dengan entitas yang diekstrak oleh \textit{Thinker}. Jika ditemukan, node ini menjadi \textit{seed node} untuk traversal graf. Pendekatan ini menghasilkan presisi tertinggi karena tidak bergantung pada estimasi semantik.
+    Sistem mencari \textit{node} pada Neo4j yang namanya sama persis dengan entitas hasil ekstraksi 
+    \textit{node thinker}. Jika ditemukan, \textit{node} ini akan dijadikan sebagai \textit{seed node} 
+    (simpul awal) untuk penelusuran graf. Pendekatan ini memberikan presisi tertinggi karena 
+    mengandalkan pencocokan eksak, bukan sekadar perkiraan semantik.
 
     \item \textbf{Tahap 2: \textit{Vector Similarity} (\textit{Fallback}).} \\
-    Diaktifkan \textit{hanya jika} Tahap 1 tidak menemukan kecocokan eksak. Sistem menghasilkan \textit{embedding} dari kueri pengguna dan mencari \textit{node} paling mirip menggunakan \textit{Native Vector Index} di Neo4j. \textit{Top-k} kandidat menjadi \textit{seed node} untuk traversal.
+    Tahap ini hanya dieksekusi apabila Tahap 1 tidak menemukan kecocokan. Sistem akan menghasilkan 
+    representasi vektor dari kueri pengguna, kemudian mencari \textit{node} dengan tingkat kemiripan 
+    tertinggi menggunakan indeks vektor pada Neo4j. Kandidat dengan skor kemiripan terbesar tersebut 
+    selanjutnya digunakan sebagai \textit{seed node}.
 
     \item \textbf{Tahap 3: \textit{Multi-hop Graph Traversal}.} \\
-    Dari \textit{seed node}, sistem menelusuri graf di Neo4j secara rekursif. Kedalaman maksimal traversal ditentukan oleh \textit{intent type} yang diklasifikasikan pada node \textit{thinker} sebagaimana ditunjukkan pada Tabel~\ref{tbl:intent_depth_iv}.
+    Berawal dari \textit{seed node}, sistem melakukan penelusuran graf pada Neo4j secara rekursif. 
+    Batas kedalaman penelusuran disesuaikan dengan jenis \textit{intent} dari kueri. Penentuan 
+    kedalaman ini didasarkan pada distribusi karakteristik \textit{node} di masing-masing level, 
+    sebagaimana dirangkum pada Tabel~\ref{tbl:hop_justification}.
 \end{enumerate}
 
-\input{tables/tabel18.tex}
+\input{tables/tabel22.tex}
 
-Keputusan desain kedalaman pada Tabel~\ref{tbl:intent_depth_iv} didasarkan pada analisis distribusi skema OpenAPI pada Bab~\ref{chap:analisis-masalah}. Validasi empiris atas keputusan ini—yang membuktikan bahwa tidak ada kedalaman tetap tunggal yang optimal untuk seluruh tipe \textit{intent}—disajikan pada Subbab~\ref{subsec:depth-sensitivity}.
+Tabel~\ref{tbl:hop_justification} menunjukkan bahwa karakteristik \textit{node} berubah secara
+signifikan seiring bertambahnya kedalaman: \textit{node} pada kedalaman 1--2 bersifat spesifik
+terhadap \textit{resource}, sedangkan \textit{node} pada kedalaman 4 ke atas merupakan tipe
+generik yang dibagikan oleh 19--136 \textit{resource} sehingga menurunkan presisi konteks.
+Kedalaman traversal dibatasi pada rentang 2--3 untuk menghindari injeksi tipe generik yang
+tidak informatif ke dalam konteks LLM.
 
-Setelah traversal selesai, sistem membangun \textit{reasoning path} berupa daftar string dengan format \texttt{Parent -[REL]-> Child} yang merepresentasikan jalur relasional yang dilalui. \textit{Reasoning path} ini disertakan dalam \textit{prompt} LLM dan ditampilkan kepada pengguna sebagai bukti penalaran yang dapat diverifikasi.
+Setelah traversal selesai, node \textit{retriever} membangun \textit{reasoning path} berupa
+daftar relasi dengan format \texttt{Parent -[REL]-> Child} yang merepresentasikan jalur
+relasional yang dilalui selama traversal.
+Konteks yang terbentuk dari \textit{reasoning path} beserta riwayat percakapan kemudian
+diinjeksikan ke dalam \textit{prompt template} yang diteruskan ke node \textit{speaker}
+sebagai bukti penalaran yang dapat dilihat oleh pengguna.
+
+% --- 4.4.3 ---
+\subsection{Perancangan Generasi dan Validasi YAML}
+\label{subsec:perancangan-yaml}
+
+Node \textit{speaker} bertanggung jawab memenuhi kebutuhan fungsional F-07
+(\textit{Conditional YAML Generation Constraint}) melalui dua jalur keluaran yang
+ditentukan secara kondisional berdasarkan tipe \textit{intent}.
+Apabila \textit{intent} diklasifikasikan sebagai \textit{generate\_yaml}, sistem menghasilkan
+blok kode YAML konfigurasi Kubernetes yang kemudian divalidasi melalui mekanisme
+validasi tiga lapis.
+Apabila \textit{intent} bukan \textit{generate\_yaml}, sistem menghasilkan jawaban naratif
+tanpa proses validasi YAML.
+
+Validasi YAML tiga lapis ini dirancang sebagai
+\textit{KG-grounded structural validation}.
+Berbeda dengan pendekatan \textit{dry-run} yang memerlukan klaster Kubernetes aktif,
+validasi lapis ketiga dilakukan langsung terhadap \textit{knowledge graph} yang telah
+dibangun pada tahap \textit{ingestion} sehingga verifikasi \textit{required fields}
+dapat dilakukan tanpa menggunakan infrastruktur Kubernetes langsung.
+Ketiga lapis validasi dieksekusi secara berurutan sebagaimana ditunjukkan pada
+Gambar~\ref{fig:yaml_validation}.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{justification=centering}
+    \includegraphics[width=0.85\textwidth]{images/yaml_validation.png}
+    \caption{Alur Validasi YAML Tiga Lapis Berbasis \textit{Knowledge Graph}}
+    \label{fig:yaml_validation}
+\end{figure}
+
+% --- 4.4.4 ---
+\subsection{Perancangan Antarmuka \textit{Web} Interaktif}
+\label{subsec:perancangan-antarmuka}
+
+Antarmuka \textit{web} interaktif dirancang untuk memenuhi kebutuhan fungsional F-06
+(\textit{Web Interaction Interface}) sebagai \textit{entry point} utama sistem GraphRAG.
+Gambar~\ref{fig:usecase_diagram} menggambarkan empat interaksi utama yang dapat dilakukan
+pengguna dengan sistem dalam bentuk \textit{use case diagram}.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{justification=centering}
+    \includegraphics[width=0.85\textwidth]{images/UseCase.png}
+    \caption{\textit{Use Case Diagram} Interaksi Pengguna dengan Sistem GraphRAG}
+    \label{fig:usecase_diagram}
+\end{figure}
+
+Antarmuka menyediakan tiga komponen utama.
+Pertama, \textit{chat interface} sebagai sarana masukan pertanyaan dalam bahasa alami.
+Kedua, area keluaran yang menampilkan jawaban naratif atau blok YAML konfigurasi
+beserta peringatan validasi apabila relevan.
+Ketiga, \textit{Retrieval Trace Expander} yang menyajikan jejak penalaran graf dalam empat tab:
+\begin{enumerate}
+    \item visualisasi Graphviz yang menampilkan \textit{reasoning path} secara grafis;
+    \item tabel relasi \textit{node} yang dilalui selama traversal;
+    \item referensi resmi \textit{kubernetes.io} untuk setiap entitas yang ditemukan; dan
+    \item legenda kedalaman traversal.
+\end{enumerate}
 
 % ------------------------------------------------------------------
-\section{Perancangan Validasi YAML Tiga Lapis}
+\section{Perancangan Sistem Pembanding}
+\label{sec:perancangan-baseline}
 % ------------------------------------------------------------------
 
-Validasi YAML dieksekusi secara kondisional: hanya dipicu apabila \textit{intent} pengguna diklasifikasikan sebagai \textbf{generate\_yaml}. Proses validasi terdiri dari tiga lapisan yang dieksekusi secara berurutan; lapisan berikutnya dilewati apabila lapisan sebelumnya sudah menemukan kegagalan.
+Untuk memenuhi tujuan ketiga penelitian ini (T3), ditetapkan dua sistem pembanding
+(\textit{baseline}) yang digunakan dalam evaluasi komparatif pada Bab~\ref{chap:evaluasi}.
+Penetapan sistem pembanding yang terdefinisi dengan baik merupakan prasyarat untuk
+menghasilkan perbandingan yang adil (\textit{fair comparison}): ketiga sistem menggunakan
+model LLM yang sama (GPT-4o-mini) dan dataset uji yang sama (97 \textit{fixture}),
+sehingga perbedaan kinerja dapat diatribusikan pada mekanisme \textit{retrieval},
+bukan pada kapabilitas model.
 
-\input{tables/tabel19.tex}
+Ketiga sistem yang dibandingkan membentuk rangkaian evolusi yang progresif:
+Vector RAG menyempurnakan Vanilla LLM dengan menambahkan mekanisme \textit{retrieval}
+berbasis kemiripan semantik, sedangkan GraphRAG menyempurnakan Vector RAG dengan
+menambahkan traversal graf \textit{multi-hop}, klasifikasi \textit{intent},
+dan validasi YAML berbasis \textit{knowledge graph}.
 
-Lapis 3 merupakan kontribusi penelitian ini. Alih-alih mengandalkan \textit{dry-run} ke klaster Kubernetes (yang memerlukan infrastruktur nyata), pemeriksaan \textit{required fields} dilakukan langsung terhadap \textit{Knowledge Graph} yang telah dibangun pada tahap \textit{ingestion}. Apabila salah satu lapis mendeteksi kegagalan, antarmuka menampilkan peringatan \texttt{Warning: Potential Syntax Error} sesuai spesifikasi NF-01.
+% --- 4.5.1 ---
+\subsection{Evolusi Rancangan Ketiga Sistem}
+\label{subsec:evolusi-rancangan}
 
-% ====================================================================
-% PHASE 1: Konten 4.3.5 lama (Antarmuka Web Streamlit) dipindah ke sini.
-% PHASE 4 TODO: ringkas jadi 1-2 kalimat di 4.1 dan/atau 4.2; pertimbangkan
-% pemindahan detail teknis (4 tab retrieval trace, session UUID, Graphviz)
-% ke Lampiran terpisah.
-%
-% \subsection{Perancangan Antarmuka Web Streamlit}
-%
-% Sistem disajikan melalui antarmuka web berbasis Streamlit (\texttt{main.py}) yang berfungsi sebagai \textit{entry point} utama. Antarmuka dirancang dengan tiga komponen utama:
-%
-% \begin{enumerate}
-%     \item \textbf{\textit{Chat Interface}} \\
-%     Komponen \texttt{st.chat\_input} dan \texttt{st.chat\_message} menyediakan pengalaman percakapan yang familiar. Riwayat percakapan ditampilkan secara kumulatif dalam satu sesi menggunakan \texttt{st.session\_state}.
-%
-%     \item \textbf{\textit{Retrieval Trace} Expander} \\
-%     Setiap respons dilengkapi \textit{expander} yang menampilkan jejak penalaran graf dalam empat tab: (a) \textbf{Graph Visualization}, yaitu visualisasi \textit{Graphviz DOT} yang dikodekan warna berdasarkan kedalaman \textit{node}; (b) \textbf{Edge Table}, yaitu tabel terurut seluruh relasi yang ditelusuri; (c) \textbf{Referensi}, yaitu tautan resmi \textit{kubernetes.io} untuk setiap \textit{node} yang di-\textit{retrieve}; dan (d) \textbf{Keterangan Warna}, yaitu legenda kedalaman graf.
-%
-%     \item \textbf{Manajemen Sesi} \\
-%     Setiap sesi browser mendapatkan UUID unik (\texttt{session\_id}) yang digunakan sebagai kunci untuk mengambil dan menyimpan riwayat percakapan di SQLite. Hal ini memungkinkan resolusi pronoun lintas-giliran (misalnya ``tambahkan volume ke konfigurasi tadi'').
-% \end{enumerate}
-% ====================================================================
+Gambar~\ref{fig:evolusi_sistem} menggambarkan evolusi komponen ketiga sistem secara berlapis.
+Komponen dasar yang digunakan bersama oleh ketiga sistem ditampilkan pada lapisan pertama.
+Komponen yang ditambahkan oleh Vector RAG ditampilkan pada lapisan kedua, sedangkan
+komponen tambahan yang hanya dimiliki GraphRAG ditampilkan pada lapisan ketiga.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{justification=centering}
+    \includegraphics[width=0.80\textwidth]{images/Evolusi-Sistem.png}
+    \caption{Evolusi Rancangan: Vanilla LLM $\rightarrow$ Vector RAG $\rightarrow$ GraphRAG}
+    \label{fig:evolusi_sistem}
+\end{figure}
+
+% --- 4.5.2 ---
+\subsection{Rancangan Vanilla LLM}
+\label{subsec:rancangan-vanilla}
+
+Vanilla LLM menggunakan GPT-4o-mini secara langsung tanpa mekanisme \textit{retrieval}
+apapun. Pertanyaan pengguna diteruskan langsung ke model tanpa konteks tambahan sehingga
+jawaban bergantung sepenuhnya pada pengetahuan parametrik model.
+Alur pemrosesan bersifat langsung: kueri pengguna $\rightarrow$ GPT-4o-mini
+$\rightarrow$ jawaban.
+Sebagai kondisi dasar tanpa proses augmentasi, sistem ini digunakan sebagai acuan batas bawah kinerja untuk evaluasi komparatif antara ketiga sistem.
+
+% --- 4.5.3 ---
+\subsection{Rancangan Vector RAG}
+\label{subsec:rancangan-vector-rag}
+
+Vector RAG menggunakan \textit{retrieval} berbasis kemiripan \textit{embedding} atas
+indeks vektor Neo4j. Kueri pengguna di-\textit{embed} menggunakan model yang sama dengan
+GraphRAG, kemudian digunakan untuk mencari \textit{node} paling mirip (top-$k$=5)
+dengan ekspansi satu lompatan ke \textit{node} tetangga.
+Konteks hasil \textit{retrieval} diteruskan ke GPT-4o-mini sebagai \textit{speaker}.
+Alur pemrosesan adalah: kueri pengguna $\rightarrow$ \textit{embedding}
+$\rightarrow$ pencarian vektor (top-$k$=5) $\rightarrow$ ekspansi 1 lompatan
+$\rightarrow$ konstruksi konteks $\rightarrow$ GPT-4o-mini $\rightarrow$ jawaban.
+Sistem ini merepresentasikan pendekatan RAG konvensional tanpa
+\textit{intent-adaptive multi-hop traversal}.
+
+% --- 4.5.4 ---
+\subsection{Rangkuman Perbandingan Komponen Teknis}
+\label{subsec:perbandingan-komponen}
+
+Tabel~\ref{tbl:perbandingan_sistem} merangkum perbedaan komponen teknis ketiga sistem
+yang dibandingkan. Perbedaan komponen ini menjadi dasar interpretasi hasil evaluasi
+pada Bab~\ref{chap:evaluasi}: peningkatan kinerja yang konsisten dari Vanilla LLM ke
+Vector RAG dan dari Vector RAG ke GraphRAG mengindikasikan kontribusi masing-masing
+komponen tambahan terhadap aspek kualitas yang diukur.
+
+\input{tables/tabel-perbandingan-sistem.tex}

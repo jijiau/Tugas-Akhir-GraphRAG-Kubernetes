@@ -1,0 +1,22 @@
+\renewcommand{\arraystretch}{1.3}
+\captionsetup[table]{justification=raggedright,singlelinecheck=false}
+\begin{table}[H]
+\caption{Strategi Pembentukan Relasi dalam \textit{Knowledge Graph} Kubernetes}
+\label{tbl:strategi_relasi}
+\centering
+\begin{tabular}{|p{0.20\textwidth}|p{0.28\textwidth}|p{0.22\textwidth}|p{0.18\textwidth}|}
+\hline
+\textbf{Strategi} & \textbf{Sumber Derivasi} & \textbf{Contoh \textit{Edge}} & \textbf{Sifat} \\
+\hline
+Deterministik &
+Referensi eksplisit \texttt{\$ref}, \texttt{allOf}, \texttt{oneOf}, \texttt{anyOf} dalam skema OpenAPI &
+\textit{HAS\_PROPERTY}, \textit{EXTENDS}, \textit{ONE\_OF}, \textit{ANY\_OF} &
+Konsisten 100\% antar-eksekusi \\
+\hline
+Semi-deterministik (berbasis aturan domain) &
+Aturan transformasi berbasis semantik Kubernetes: pencocokan \textit{kind} dan pola jalur \textit{field} &
+\textit{SELECTS\_POD}, \textit{BINDS\_ROLE}, \textit{SCALES\_RESOURCE}, \textit{MOUNTS\_VOLUME} &
+Deterministik saat eksekusi. \\
+\hline
+\end{tabular}
+\end{table}

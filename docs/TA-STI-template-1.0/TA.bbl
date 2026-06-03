@@ -19,6 +19,37 @@
 
 \refsection{0}
   \datalist[entry]{cms/global//global/global}
+    \entry{abusalih2021domain}{article}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=a23074a303b7666adb4e31d30cf96426}{%
+           family={Abu-Salih},
+           familyi={A\bibinithyphendelim S\bibinitperiod},
+           given={Bilal},
+           giveni={B\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{a23074a303b7666adb4e31d30cf96426}
+      \strng{fullhash}{a23074a303b7666adb4e31d30cf96426}
+      \strng{bibnamehash}{a23074a303b7666adb4e31d30cf96426}
+      \strng{authorbibnamehash}{a23074a303b7666adb4e31d30cf96426}
+      \strng{authornamehash}{a23074a303b7666adb4e31d30cf96426}
+      \strng{authorfullhash}{a23074a303b7666adb4e31d30cf96426}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{author}
+      \field{journaltitle}{Journal of Network and Computer Applications}
+      \field{title}{Domain-specific knowledge graphs: {A} survey}
+      \field{volume}{185}
+      \field{year}{2021}
+      \field{pages}{103076}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.1016/j.jnca.2021.103076
+      \endverb
+    \endentry
     \entry{moreno2025rag}{article}{}
       \name{author}{1}{}{%
         {{un=0,uniquepart=base,hash=f87dd0314321aa07ebffb79d4938efb6}{%
@@ -529,59 +560,91 @@
       \field{pages}{509}
       \range{pages}{1}
     \endentry
-    \entry{knollmeyer2025document}{article}{}
-      \name{author}{3}{}{%
-        {{un=0,uniquepart=base,hash=11519144b6750365b474f030bf7b4759}{%
-           family={Knollmeyer},
-           familyi={K\bibinitperiod},
-           given={Simon},
-           giveni={S\bibinitperiod},
+    \entry{ji_hallucination_2023}{article}{}
+      \name{author}{10}{}{%
+        {{un=0,uniquepart=base,hash=24b318d147ffe07cf3d183806694085a}{%
+           family={Ji},
+           familyi={J\bibinitperiod},
+           given={Ziwei},
+           giveni={Z\bibinitperiod},
            givenun=0}}%
-        {{un=0,uniquepart=base,hash=1342a12a836e83b982432f56afcab6da}{%
-           family={Caymazer},
-           familyi={C\bibinitperiod},
-           given={Oğuz},
-           giveni={O\bibinitperiod},
+        {{un=0,uniquepart=base,hash=30e209c0765ff028b6fcf8cab91168d6}{%
+           family={Lee},
+           familyi={L\bibinitperiod},
+           given={Nayeon},
+           giveni={N\bibinitperiod},
            givenun=0}}%
-        {{un=0,uniquepart=base,hash=a0ecc1c0d99247b2e843156c627d536a}{%
-           family={Grossmann},
-           familyi={G\bibinitperiod},
-           given={Daniel},
+        {{un=0,uniquepart=base,hash=597ff597dc47ab99a423ad5244f36682}{%
+           family={Frieske},
+           familyi={F\bibinitperiod},
+           given={Rita},
+           giveni={R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=c5c5b0c867563b0b96b0baac7fcac39c}{%
+           family={Yu},
+           familyi={Y\bibinitperiod},
+           given={Tiezheng},
+           giveni={T\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=0d5b93df1983207786b72b9e0149f7c7}{%
+           family={Su},
+           familyi={S\bibinitperiod},
+           given={Dan},
            giveni={D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=86acdbbb888fb1622ad5366d9d67dc8f}{%
+           family={Xu},
+           familyi={X\bibinitperiod},
+           given={Yan},
+           giveni={Y\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=cabf98fe93804124c62b0da032c7d50b}{%
+           family={Ishii},
+           familyi={I\bibinitperiod},
+           given={Etsuko},
+           giveni={E\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=b2d5be7d6640cffc93a230ad9721393e}{%
+           family={Bang},
+           familyi={B\bibinitperiod},
+           given={Yejin},
+           giveni={Y\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=c42ccecbd088ddce88e391c844d4bb7a}{%
+           family={Madotto},
+           familyi={M\bibinitperiod},
+           given={Andrea},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=ea1e0efe4f3dcaf0a50c1119d83f7ca8}{%
+           family={Fung},
+           familyi={F\bibinitperiod},
+           given={Pascale},
+           giveni={P\bibinitperiod},
            givenun=0}}%
       }
       \list{publisher}{1}{%
-        {MDPI}%
+        {ACM New York, NY}%
       }
-      \strng{namehash}{66dbe07898edee32e5c9e765176a950d}
-      \strng{fullhash}{66dbe07898edee32e5c9e765176a950d}
-      \strng{bibnamehash}{66dbe07898edee32e5c9e765176a950d}
-      \strng{authorbibnamehash}{66dbe07898edee32e5c9e765176a950d}
-      \strng{authornamehash}{66dbe07898edee32e5c9e765176a950d}
-      \strng{authorfullhash}{66dbe07898edee32e5c9e765176a950d}
-      \field{sortinit}{K}
-      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \strng{namehash}{7f1de58d3d36035f2dcbf85d331900f1}
+      \strng{fullhash}{10ef4394bec37f952600a5bbcdf4c91e}
+      \strng{bibnamehash}{10ef4394bec37f952600a5bbcdf4c91e}
+      \strng{authorbibnamehash}{10ef4394bec37f952600a5bbcdf4c91e}
+      \strng{authornamehash}{7f1de58d3d36035f2dcbf85d331900f1}
+      \strng{authorfullhash}{10ef4394bec37f952600a5bbcdf4c91e}
+      \field{sortinit}{J}
+      \field{sortinithash}{b2f54a9081ace9966a7cb9413811edb4}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{author}
-      \field{journaltitle}{Electronics}
-      \field{number}{11}
-      \field{title}{Document GraphRAG: Knowledge Graph Enhanced Retrieval Augmented Generation for Document Question Answering Within the Manufacturing Domain}
-      \field{volume}{14}
-      \field{year}{2025}
-      \field{dateera}{ce}
-      \field{pages}{2102}
-      \range{pages}{1}
-      \verb{doi}
-      \verb 10.3390/electronics14112102
-      \endverb
-      \verb{urlraw}
-      \verb https://doi.org/10.3390/electronics14112102
-      \endverb
-      \verb{url}
-      \verb https://doi.org/10.3390/electronics14112102
-      \endverb
+      \field{journaltitle}{ACM Computing Surveys}
+      \field{number}{12}
+      \field{title}{Survey of Hallucination in Natural Language Generation}
+      \field{volume}{55}
+      \field{year}{2023}
+      \field{pages}{1\bibrangedash 38}
+      \range{pages}{38}
     \endentry
     \entry{kotstein_restberta_2024}{article}{}
       \name{author}{2}{}{%
@@ -906,39 +969,53 @@
       \verb 10.1109/TKDE.2024.3352100
       \endverb
     \endentry
-    \entry{rahman_k8s_security_2023}{article}{}
-      \true{moreauthor}
-      \true{morelabelname}
-      \name{author}{1}{}{%
-        {{un=0,uniquepart=base,hash=81072df588ef096e98854e07b81ba5e2}{%
+    \entry{rahman2023misconfigurations}{article}{}
+      \name{author}{4}{}{%
+        {{un=0,uniquepart=base,hash=1c177278bad381ca1bc3e21468dce78d}{%
            family={Rahman},
            familyi={R\bibinitperiod},
-           given={A.},
+           given={Akond},
            giveni={A\bibinitperiod},
            givenun=0}}%
+        {{un=0,uniquepart=base,hash=98579da8142aed375a293227a14aff50}{%
+           family={Partho},
+           familyi={P\bibinitperiod},
+           given={Asif},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=cbefe20868308f408809617b079e7e13}{%
+           family={Morrison},
+           familyi={M\bibinitperiod},
+           given={Patrick},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=cd83754669234897543ccba78955850c}{%
+           family={Williams},
+           familyi={W\bibinitperiod},
+           given={Laurie},
+           giveni={L\bibinitperiod},
+           givenun=0}}%
       }
-      \list{publisher}{1}{%
-        {Tech Publisher}%
-      }
-      \strng{namehash}{78e5d1352c0227709419955d02018de2}
-      \strng{fullhash}{78e5d1352c0227709419955d02018de2}
-      \strng{bibnamehash}{78e5d1352c0227709419955d02018de2}
-      \strng{authorbibnamehash}{78e5d1352c0227709419955d02018de2}
-      \strng{authornamehash}{78e5d1352c0227709419955d02018de2}
-      \strng{authorfullhash}{78e5d1352c0227709419955d02018de2}
+      \strng{namehash}{2713534ac5612d5d355ab4ba6be014ba}
+      \strng{fullhash}{0f6fa952d3e7d24d920fab4db9be4cdf}
+      \strng{bibnamehash}{0f6fa952d3e7d24d920fab4db9be4cdf}
+      \strng{authorbibnamehash}{0f6fa952d3e7d24d920fab4db9be4cdf}
+      \strng{authornamehash}{2713534ac5612d5d355ab4ba6be014ba}
+      \strng{authorfullhash}{0f6fa952d3e7d24d920fab4db9be4cdf}
       \field{sortinit}{R}
       \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{author}
-      \field{journaltitle}{Journal of Cloud Computing and Security}
-      \field{number}{4}
-      \field{title}{Empirical Analysis of Security Misconfigurations in Open-Source Kubernetes Manifests}
-      \field{volume}{12}
+      \field{journaltitle}{ACM Transactions on Software Engineering and Methodology}
+      \field{number}{5}
+      \field{title}{Security Misconfigurations in Open Source {Kubernetes} Manifests: An Empirical Study}
+      \field{volume}{32}
       \field{year}{2023}
-      \field{pages}{112\bibrangedash 128}
-      \range{pages}{17}
+      \verb{doi}
+      \verb 10.1145/3579639
+      \endverb
     \endentry
     \entry{soldani_pains_2018}{article}{}
       \name{author}{3}{}{%

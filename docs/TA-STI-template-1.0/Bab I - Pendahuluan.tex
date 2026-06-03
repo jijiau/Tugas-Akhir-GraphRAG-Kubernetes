@@ -8,7 +8,7 @@ Transformasi industri teknologi informasi menuju arsitektur \textit{cloud-native
 
 Berdasarkan laporan survei \textit{Cloud Native Computing Foundation} (CNCF) tahun 2023, Kubernetes mendominasi pangsa pasar global karena ekosistemnya yang matang, dukungan komunitas yang luas, serta fleksibilitas dalam mengelola infrastruktur berskala besar secara deklaratif \parencite{cncf_2023_survey}. Pada tahun 2022, sekitar 58\% pengguna telah menjalankan Kubernetes di lingkungan produksi dan 23\% lainnya masih dalam tahap evaluasi (total 81\%). Pada tahun 2023, angka tersebut meningkat menjadi 66\% pengguna di produksi dengan 18\% dalam evaluasi (total 84\%). Peningkatan signifikan ini menunjukkan bahwa Kubernetes semakin menjadi fondasi utama dalam pengelolaan layanan \textit{cloud-native} modern.
 
-Meskipun Kubernetes mendominasi lanskap orkestrasi kontainer, platform ini menghadirkan tantangan operasional yang signifikan berupa kompleksitas konfigurasi berbasis berkas YAML. Paradigma deklaratif Kubernetes menuntut pengembang untuk menulis ratusan baris kode yang verbos dan hierarkis demi mendefinisikan \textit{desired state} dari sebuah aplikasi yang mencakup berbagai spesifikasi parameter dari Kubernetes. Kompleksitas ini diperparah oleh interdependensi antar-objek yang sangat ketat namun sering kali tidak terlihat secara eksplisit (\textit{implicit dependencies}) yang mengakibatkan kesalahan kecil seperti ketidakcocokan \textit{label selector} dapat memicu kegagalan sistem berantai. Akibat beban kognitif yang tinggi ini, kerumitan YAML tidak hanya menjadi hambatan skalabilitas utama bagi 65\% penggunanya, tetapi juga menjadi sumber utama miskonfigurasi operasional dan keamanan; tercatat sekitar 80\% insiden operasional berakar pada kompleksitas ini, dan 18\% berkas konfigurasi \textit{open-source} terbukti mengandung kerentanan keamanan yang serius \cite{rahman_k8s_security_2023}.
+Meskipun Kubernetes mendominasi lanskap orkestrasi kontainer, platform ini menghadirkan tantangan operasional yang signifikan berupa kompleksitas konfigurasi berbasis berkas YAML. Paradigma deklaratif Kubernetes menuntut pengembang untuk menulis ratusan baris kode yang verbos dan hierarkis demi mendefinisikan \textit{desired state} dari sebuah aplikasi yang mencakup berbagai spesifikasi parameter dari Kubernetes. Kompleksitas ini diperparah oleh interdependensi antar-objek yang sangat ketat namun sering kali tidak terlihat secara eksplisit (\textit{implicit dependencies}) yang mengakibatkan kesalahan kecil seperti ketidakcocokan \textit{label selector} dapat memicu kegagalan sistem berantai. Akibat beban kognitif yang tinggi ini, kerumitan YAML tidak hanya menjadi hambatan skalabilitas utama bagi 65\% penggunanya, tetapi juga menjadi sumber utama miskonfigurasi operasional dan keamanan; tercatat sekitar 80\% insiden operasional berakar pada kompleksitas ini, dan 18\% berkas konfigurasi \textit{open-source} terbukti mengandung kerentanan keamanan yang serius \parencite{rahman2023misconfigurations}.
 
 Situasi tersebut berdampak langsung pada pemanfaatan \textit{Large Language Models} (LLM) untuk menghasilkan kode maupun konfigurasi teknis Kubernetes. Walaupun model seperti GPT-4 menawarkan kemudahan dalam memahami dokumentasi API, kemampuan tersebut tidak selalu sejalan dengan ketepatan semantik. Studi evaluatif oleh \textcite{liu2024deepanalysis} menunjukkan bahwa LLM dapat menghasilkan kode yang secara sintaksis tampak benar, tetapi keliru secara semantis. Dalam lingkungan \textit{production-grade}, kesalahan semantik semacam ini tidak hanya bersifat minor, tetapi berpotensi memicu hilangnya layanan, gangguan orkestrasi, hingga \textit{downtime} berskala besar.
 
@@ -18,7 +18,9 @@ Sebagai solusi, \textcite{wan2025empowering} mengusulkan penggabungan representa
 
 Dengan demikian, pendekatan Graph-RAG menawarkan fondasi penalaran teknis yang lebih dapat dipertanggungjawabkan dan mampu menurunkan risiko halusinasi semantik berbasis domain, khususnya pada sistem \textit{cloud-native} yang sensitif terhadap kesalahan konfigurasi. Berdasarkan urgensi tersebut, penelitian ini bertujuan untuk membangun sistem \textit{Retrieval-Augmented Generation} (RAG) berbasis \textit{Knowledge Graph} yang dikhususkan untuk dokumentasi Kubernetes. Pendekatan ini diharapkan mampu meningkatkan akurasi \textit{retrieval} terhadap pertanyaan yang membutuhkan penalaran struktural dengan mengekspresikan relasi ontologis antar objek konfigurasi Kubernetes. Selain menghasilkan jawaban teknis berupa penjelasan dan konfigurasi YAML yang valid, sistem juga dirancang untuk memberikan jejak penalaran graf sebagai mekanisme pendeteksi halusinasi. Hal ini memungkinkan setiap keluaran tidak hanya relevan secara tekstual, tetapi juga dapat diverifikasi kesesuaiannya terhadap skema objek Kubernetes.
 
-Penelitian ini mengajukan tiga kontribusi teknis. \textbf{Pertama}, \textit{pipeline} ekstraksi \textit{knowledge graph} yang bersifat deterministik berbasis skema OpenAPI (\textit{schema-derived deterministic KG construction}). Graf dibangun langsung dari \texttt{swagger.json} melalui aturan transformasi yang eksplisit: setiap tipe pada blok \texttt{definitions} dipetakan menjadi \textit{node}, dan setiap referensi antar-tipe (\texttt{\$ref}) dipetakan menjadi \textit{edge}. Karena seluruh aturan transformasi bersifat tetap, hasil ekstraksi konsisten antar-eksekusi, berbeda dengan pendekatan ekstraksi berbasis LLM yang menghasilkan struktur graf bervariasi karena bersifat stokastik \parencite{pan2024unifying, wan2025empowering}. \textbf{Kedua}, mekanisme \textit{traversal} dengan kedalaman yang disesuaikan per tipe \textit{intent} (\textit{intent-adaptive depth traversal}): alih-alih menggunakan kedalaman tetap yang seragam, sistem menetapkan kedalaman berdasarkan karakteristik struktural tiap jenis kueri, yang terbukti secara empiris menghasilkan \textit{retrieval quality} lebih baik dibandingkan kedalaman tetap. \textbf{Ketiga}, validasi struktural YAML tiga lapis berbasis \textit{knowledge graph} (\textit{KG-grounded structural validation}) yang memverifikasi \textit{required fields} langsung dari representasi graf. Mekanisme ini berfungsi sebagai alternatif validasi sintaksis terhadap skema OpenAPI tanpa memerlukan \textit{dry-run} pada kluster Kubernetes aktif.
+Namun, penerapan pendekatan GraphRAG pada domain Kubernetes masih menyisakan tiga celah teknis yang belum terjawab. Pertama, mayoritas pendekatan ekstraksi \textit{knowledge graph} pada literatur GraphRAG memanfaatkan LLM sehingga graf hasil ekstraksi bervariasi antar-eksekusi dan sulit dijamin konsistensinya. Kedua, mekanisme \textit{traversal} pada GraphRAG yang ada umumnya menggunakan kedalaman tetap, padahal kebutuhan konteks berbeda antar jenis kueri sehingga kedalaman seragam berisiko menurunkan presisi maupun kelengkapan. Ketiga, belum tersedia mekanisme validasi struktural YAML yang memanfaatkan representasi graf sebagai alternatif terhadap \textit{dry-run} pada kluster Kubernetes aktif.
+
+Berdasarkan ketiga celah tersebut, penelitian ini mengajukan tiga kontribusi teknis. \textbf{Pertama}, \textit{pipeline} ekstraksi \textit{knowledge graph} yang bersifat deterministik berbasis skema OpenAPI (\textit{schema-derived deterministic KG construction}). Graf dibangun langsung dari \texttt{swagger.json} melalui aturan transformasi yang eksplisit sehingga hasil ekstraksi konsisten antar-eksekusi, berbeda dengan pendekatan ekstraksi berbasis LLM yang menghasilkan struktur graf bervariasi karena bersifat stokastik \parencite{pan2024unifying, wan2025empowering}. \textbf{Kedua}, mekanisme \textit{traversal} dengan kedalaman yang disesuaikan per tipe \textit{intent} (\textit{intent-adaptive depth traversal}): alih-alih menggunakan kedalaman tetap yang seragam sebagaimana pada GraphRAG yang ada \parencite{wan2025empowering}, sistem menetapkan kedalaman berdasarkan karakteristik struktural tiap jenis pertanyaan pengguna. \textbf{Ketiga}, validasi struktural YAML tiga lapis berbasis \textit{knowledge graph} (\textit{KG-grounded structural validation}) yang berfungsi sebagai alternatif statis terhadap mekanisme \textit{dry-run} pada kluster Kubernetes aktif.
 
 % --- Rumusan Masalah ---
 \section{Rumusan Masalah}
@@ -26,39 +28,39 @@ Penelitian ini bertujuan untuk menjawab pertanyaan-pertanyaan berikut,
 \begin{enumerate}
     \item Bagaimana membangun \textit{knowledge graph} dari spesifikasi Kubernetes guna merepresentasikan struktur dan relasi antar-objek konfigurasi secara komprehensif?
     
-    \item Bagaimana merancang mekanisme GraphRAG yang memanfaatkan representasi struktural dalam \textit{knowledge graph} untuk meningkatkan kualitas \textit{retrieval} pada konfigurasi Kubernetes?
-    
-    \item Bagaimana merancang mekanisme validasi struktural YAML berbasis \textit{knowledge graph} yang mampu memverifikasi \textit{required fields} secara langsung dari representasi graf tanpa memerlukan \textit{dry-run} pada kluster Kubernetes aktif?
+    \item Bagaimana merancang mekanisme GraphRAG yang memanfaatkan representasi struktural dalam \textit{knowledge graph} untuk meningkatkan kualitas \textit{retrieval} sekaligus memvalidasi struktur YAML berbasis \textit{knowledge graph} pada konfigurasi Kubernetes?
+
+    \item Bagaimana perbandingan kinerja antara sistem GraphRAG, Vector RAG, dan Vanilla LLM dalam melakukan \textit{retrieval} informasi?
 \end{enumerate}
 
 % --- Tujuan ---
 \section{Tujuan}
-Berdasarkan rumusan masalah yang telah dijelaskan pada Bab I.2, tujuan dalam penulisan penelitian ini adalah sebagai berikut,
+Tujuan dari penelitian ini adalah sebagai berikut:
 \begin{enumerate}
     \item Membangun \textit{knowledge graph} dari spesifikasi OpenAPI Kubernetes (swagger.json) melalui \textit{pipeline} ekstraksi guna memetakan objek Kubernetes beserta relasi hierarkis dan referensial antar-objek Kubernetes.
     
-    \item Mengembangkan mekanisme GraphRAG dengan menelusuri jalur relasional (\textit{graph traversal}) berdasarkan kueri pengguna, kemudian menginjeksikan \textit{reasoning path} tersebut ke dalam \textit{Large Language Model} (LLM) untuk menghasilkan jawaban konsisten sesuai logika domain Kubernetes.
-    
-    \item Mengimplementasikan mekanisme validasi struktural YAML tiga lapis berbasis \textit{knowledge graph} yang memverifikasi \textit{required fields} langsung dari representasi graf, menyediakan alternatif validasi sintaksis terhadap skema OpenAPI tanpa memerlukan \textit{dry-run} pada kluster Kubernetes aktif.
+    \item Mengembangkan sistem GraphRAG yang menelusuri jalur relasional (\textit{intent-adaptive depth traversal}) berdasarkan kueri pengguna untuk menghasilkan jawaban yang konsisten dengan logika domain Kubernetes, dilengkapi mekanisme validasi struktural YAML tiga lapis berbasis \textit{knowledge graph} yang memverifikasi \textit{required fields} langsung dari representasi graf.
+
+    \item Membandingkan kinerja sistem GraphRAG dengan pendekatan Vector RAG dan Vanilla LLM untuk memetakan area keunggulan \textit{knowledge graph} sebagai basis pencarian (\textit{retrieval}).
 \end{enumerate}
 
 % --- Batasan Masalah ---
 \section{Batasan Masalah}
-Agar penelitian ini tetap fokus dan \textit{feasible} dalam lingkup Tugas Akhir, batasan-batasan berikut akan diterapkan,
+Untuk menjaga fokus dan kelayakan penelitian dalam lingkup Tugas Akhir, batasan masalah berikut ditetapkan:
 \begin{enumerate}
-    \item Data penelitian bersumber secara eksklusif dari spesifikasi resmi Kubernetes OpenAPI (swagger.json) versi v1.30 tanpa melakukan \textit{web scraping} dokumentasi HTML. Ekstraksi data dibatasi murni pada blok \textit{definitions} dengan mengeliminasi blok operasional protokol API (seperti \textit{paths}, \textit{parameters}, dan \textit{responses}) guna mencegah \textit{context noise} pada LLM.
+    \item Data penelitian bersumber secara eksklusif dari spesifikasi resmi Kubernetes OpenAPI (swagger.json) versi v1.30 tanpa melakukan \textit{web scraping} dokumentasi HTML. Ekstraksi data dibatasi murni pada blok \textit{definitions} dengan mengecualikan blok operasional protokol API (seperti \textit{paths}, \textit{parameters}, dan \textit{responses}) guna mencegah \textit{context noise} pada LLM.
 
     \item \textit{Knowledge graph} yang dibangun hanya merepresentasikan struktur skema (\textit{schema structure}) dan tidak mencakup perilaku operasional (\textit{runtime behavior}) maupun logika validasi dengan fokus utama penelitian untuk menguji validitas struktur sintaksis YAML.
 
-    \item Luaran penelitian berupa manifes Kubernetes YAML murni (\textit{plain YAML}) berdasarkan \textit{OpenAPI Specification}, dilengkapi jejak penalaran graf (\textit{graph reasoning path}) guna mendeteksi halusinasi LLM.
+    \item Luaran penelitian berupa jawaban teknis dalam dua bentuk, yaitu penjelasan naratif konsep Kubernetes dan manifes YAML murni (\textit{plain YAML}) berdasarkan \textit{OpenAPI Specification}. Setiap luaran dilengkapi jejak penalaran graf (\textit{graph reasoning path}) guna mendeteksi halusinasi LLM.
 
-    \item Luaran file YAML tidak diuji langsung pada klaster Kubernetes nyata (\textit{actual cluster}). Pengujian sistem murni berfokus pada validitas sintaksis menggunakan pustaka \textit{pyyaml} serta evaluasi kinerja berdasarkan dataset uji.
+    \item Luaran YAML tidak diuji langsung pada klaster Kubernetes nyata (\textit{actual cluster}). Validasi dilakukan secara statis menggunakan pustaka \textit{PyYAML} untuk memeriksa kebenaran sintaksis dan pustaka \textit{kubernetes-validate} untuk memeriksa kesesuaian terhadap skema Kubernetes, dilengkapi evaluasi kinerja berdasarkan dataset uji.
 
-    \item Model LLM yang digunakan berasal dari \textit{pre-trained models} yang diakses melalui API, yaitu \textbf{GPT-4o-mini} sebagai \textit{Thinker} dan \textbf{GPT-4o-mini} sebagai \textit{Speaker}, tanpa proses \textit{fine-tuning}.
+    \item Model LLM yang digunakan berasal dari \textit{pre-trained models} yang diakses melalui API, yaitu \textbf{GPT-4o-mini} untuk peran \textit{Thinker} maupun \textit{Speaker}, tanpa proses \textit{fine-tuning}.
 
-    \item Kedalaman \textit{graph traversal} ditentukan secara adaptif berdasarkan tipe \textit{intent} kueri: kedalaman 2 untuk \textit{intent} \textit{explain} dan \textit{follow-up} (pertanyaan konseptual yang cukup diselesaikan pada lapisan spesifikasi langsung), serta kedalaman 3 untuk \textit{intent} lainnya (\textit{generate\_yaml}, \textit{trace\_relationship}, \textit{planning}). Batas atas kedalaman 3 ditetapkan berdasarkan analisis distribusi kedalaman skema OpenAPI Kubernetes: kedalaman 1--2 menghasilkan \textit{node} spesifik yang hanya dibagikan oleh 2--3 \textit{resource}; kedalaman 3 menjangkau \textit{PodSpec}; sedangkan kedalaman 4 ke atas didominasi tipe utilitas generik (\textit{Quantity}, \textit{IntOrString}, \textit{LocalObjectReference}) yang dibagikan oleh 19--136 \textit{resource} sehingga menurunkan presisi konteks.
+    \item Kedalaman \textit{graph traversal} ditentukan secara adaptif berdasarkan tipe \textit{intent} kueri, yaitu kedalaman 2 untuk \textit{intent} \textit{explain} dan \textit{follow-up}, serta kedalaman 3 untuk \textit{intent} lainnya (\textit{generate\_yaml}, \textit{trace\_relationship}, \textit{planning}). Batas atas kedalaman 3 dipilih sebagai titik optimal antara kelengkapan dan presisi konteks karena traversal yang lebih dalam mulai didominasi tipe utilitas generik yang menurunkan presisi. Justifikasi distribusi kedalaman yang mendasari keputusan ini diuraikan lebih lanjut pada Bab~\ref{chap:perancangan}.
 
-    \item Proses pengolahan dan pra-pemrosesan data dibatasi pada lingkungan \textbf{Google Colaboratory} dan \textbf{Jupyter Notebook}.
+    \item Seluruh proses pengembangan, pengolahan data, dan eksperimen dilakukan pada lingkungan \textbf{Visual Studio Code}.
 
     \item Kinerja komputasi dan hasil eksperimen didasarkan pada perangkat keras spesifik (PC dengan CPU AMD Ryzen 5, GPU AMD Radeon RX 6750XT, RAM 16 GB) dan mungkin bervariasi pada konfigurasi lain.
 \end{enumerate}
@@ -93,4 +95,31 @@ Pelaksanaan Tugas Akhir ini mengadopsi kerangka kerja \textit{Cross-Industry Sta
 
     \item \textbf{Penyebaran (\textit{Deployment})} \\
     Fase ini berkaitan dengan penyajian hasil implementasi dalam bentuk prototipe dan dokumentasi. Pada penelitian ini, penyebaran diwujudkan dalam bentuk antarmuka web interaktif berbasis Streamlit yang menampilkan jawaban, konfigurasi YAML, serta \textit{reasoning path} sebagai bukti penalaran graf. Selain itu, dokumentasi lengkap disusun sebagai bentuk penyebaran akademik yang memuat rancangan sistem, hasil evaluasi, serta rekomendasi penelitian selanjutnya.
+\end{enumerate}
+
+% --- Sistematika Penulisan ---
+\section{Sistematika Penulisan}
+Dokumen Tugas Akhir ini disusun dalam tujuh bab dengan sistematika sebagai berikut.
+
+\begin{enumerate}
+    \item \textbf{Bab I Pendahuluan} \\
+    Bab ini memaparkan latar belakang permasalahan, rumusan masalah, tujuan penelitian, batasan masalah, metodologi pengerjaan, dan sistematika penulisan.
+
+    \item \textbf{Bab II Studi Literatur} \\
+    Bab ini menguraikan dasar teori yang mendasari penelitian, meliputi arsitektur Kubernetes dan kompleksitasnya, \textit{Large Language Models}, pendekatan \textit{Retrieval-Augmented Generation}, \textit{knowledge graph}, serta kerangka evaluasi dan seluruh definisi metrik yang digunakan, dan kajian penelitian terkait.
+
+    \item \textbf{Bab III Analisis Masalah} \\
+    Bab ini menyajikan analisis terhadap permasalahan yang dihadapi berdasarkan kebutuhan bisnis (B01--B03), eksplorasi data spesifikasi OpenAPI Kubernetes, analisis kebutuhan fungsional dan non-fungsional sistem, pemetaan kebutuhan bisnis terhadap dimensi evaluasi, serta justifikasi pemilihan pendekatan GraphRAG sebagai solusi.
+
+    \item \textbf{Bab IV Perancangan} \\
+    Bab ini merinci rancangan arsitektur dan komponen sistem GraphRAG, mencakup \textit{pipeline} ekstraksi \textit{knowledge graph} deterministik beserta taksonomi \textit{edge} (T1); mekanisme GraphRAG dengan \textit{intent-adaptive depth traversal} yang dilengkapi validasi struktural YAML tiga lapis berbasis \textit{knowledge graph} (T2); serta rancangan sistem pembanding Vector RAG dan Vanilla LLM sebagai dasar perbandingan (T3).
+
+    \item \textbf{Bab V Implementasi} \\
+    Bab ini menguraikan detail implementasi teknis setiap komponen sistem, mencakup implementasi \textit{pipeline} ekstraksi \textit{knowledge graph} (T1), mekanisme GraphRAG dan validasi YAML (T2), serta implementasi sistem pembanding (T3).
+
+    \item \textbf{Bab VI Evaluasi} \\
+    Bab ini menyajikan metodologi evaluasi dan hasil perbandingan kinerja per-faktor antara sistem GraphRAG, Vector RAG, dan Vanilla LLM terhadap skenario uji. Pembahasan mencakup perbandingan pada dimensi kualitas jawaban, kualitas \textit{retrieval}, dan kualitas penalaran, \textit{ablation study}, analisis sensitivitas kedalaman, uji signifikansi statistik, serta analisis kondisi keunggulan sistem.
+
+    \item \textbf{Bab VII Penutup} \\
+    Bab ini menyimpulkan capaian penelitian terhadap ketiga tujuan (T1, T2, dan T3) berdasarkan temuan empiris pada Bab VI, memaparkan keterbatasan penelitian, serta menyajikan saran pengembangan lanjutan.
 \end{enumerate}

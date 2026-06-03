@@ -34,10 +34,14 @@
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
 \contentsline {figure}{\numberline {I.1}{\ignorespaces Tahapan model referensi CRISP-DM \blx@tocontentsinit {0}\parencite {niaksu2015}}}{6}{figure.caption.14}%
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \addvspace {10\p@ }
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
@@ -73,7 +77,14 @@
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
-\contentsline {figure}{\numberline {II.2}{\ignorespaces Arsitektur \textit {Knowledge Graph} \blx@tocontentsinit {0}\parencite {yu2021visualkg}}}{18}{figure.caption.17}%
+\contentsline {figure}{\numberline {II.2}{\ignorespaces Arsitektur \textit {Knowledge Graph} \blx@tocontentsinit {0}\parencite {yu2021visualkg}}}{16}{figure.caption.16}%
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\contentsline {figure}{\numberline {II.3}{\ignorespaces Taksonomi pada pembangunan \textit {Knowledge Graph} \blx@tocontentsinit {0}\parencite {abusalih2021domain}}}{17}{figure.caption.17}%
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
@@ -90,51 +101,6 @@
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\contentsline {figure}{\numberline {II.3}{\ignorespaces Model arsitektur integrasi KG dalam RAG \blx@tocontentsinit {0}\parencite {knollmeyer2025document}}}{26}{figure.caption.18}%
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\addvspace {10\p@ }
-\contentsline {figure}{\numberline {III.1}{\ignorespaces Proporsi objek Kubernetes \textit {root} vs komponen pendukung dalam spesifikasi OpenAPI Kubernetes}}{30}{figure.caption.19}%
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
@@ -180,18 +146,84 @@
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {IV.1}{\ignorespaces Rancangan solusi berdasarkan metodologi CRISP--DM}}{50}{figure.caption.25}%
-\contentsline {figure}{\numberline {IV.2}{\ignorespaces \textit {Architecture Diagram} Solusi \textit {GraphRAG} untuk Mitigasi Halusinasi pada Sistem RAG--LLM}}{55}{figure.caption.26}%
-\contentsline {figure}{\numberline {IV.3}{\ignorespaces Diagram Urutan (\textit {Sequence Diagram}) Alur Kerja Sistem GraphRAG}}{56}{figure.caption.27}%
-\contentsline {figure}{\numberline {IV.4}{\ignorespaces Diagram Interaksi Lima \textit {Node LangGraph Agent Pipeline}}}{60}{figure.caption.30}%
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\contentsline {figure}{\numberline {III.1}{\ignorespaces Proporsi objek Kubernetes \textit {root} vs komponen pendukung dalam spesifikasi OpenAPI Kubernetes}}{31}{figure.caption.18}%
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {V.1}{\ignorespaces Analisis pemilihan batas karakter \textit {graph context}. Panel~(a) menunjukkan distribusi bimodal panjang konteks pada 97 \textit {fixture}: 79 kueri (81,4\%) menghasilkan 11.606 karakter dan 18 kueri (18,6\%) menghasilkan 17.849 karakter, dengan garis hijau menandai batas yang dipilih (12.000 karakter). Panel~(b) menunjukkan skor evaluasi empiris (\textit {Total} tertimbang, AnsQ, RetQ, ReaQ) sebagai fungsi nilai batas untuk lima kandidat yang diuji. Batas 12.000 karakter mencapai \textit {Total} tertinggi (0,6989) dan ditetapkan sebagai nilai operasional.}}{69}{figure.caption.35}%
+\contentsline {figure}{\numberline {IV.1}{\ignorespaces Rancangan solusi berdasarkan metodologi CRISP--DM}}{48}{figure.caption.21}%
+\contentsline {figure}{\numberline {IV.2}{\ignorespaces \textit {Architecture Diagram} Sistem \textit {GraphRAG} Kubernetes}}{52}{figure.caption.22}%
+\contentsline {figure}{\numberline {IV.3}{\ignorespaces Diagram Urutan (\textit {Sequence Diagram}) Alur Kerja Sistem GraphRAG}}{53}{figure.caption.23}%
+\contentsline {figure}{\numberline {IV.4}{\ignorespaces Alur \textit {Pipeline Ingestion} dari \texttt {swagger.json} ke Neo4j \textit {Knowledge Graph}}}{54}{figure.caption.24}%
+\contentsline {figure}{\numberline {IV.5}{\ignorespaces Alur Validasi YAML Tiga Lapis Berbasis \textit {Knowledge Graph}}}{59}{figure.caption.27}%
+\contentsline {figure}{\numberline {IV.6}{\ignorespaces \textit {Use Case Diagram} Interaksi Pengguna dengan Sistem GraphRAG}}{60}{figure.caption.28}%
+\contentsline {figure}{\numberline {IV.7}{\ignorespaces Evolusi Rancangan: Vanilla LLM $\rightarrow $ Vector RAG $\rightarrow $ GraphRAG}}{61}{figure.caption.29}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {VI.1}{\ignorespaces RetQ per tipe \textit {fixture} pada kedalaman traversal $d=1$ hingga $d=5$. Titik bertanda hitam menunjukkan kedalaman yang digunakan oleh sistem adaptif; garis putus-putus ($d=2$) dan titik-titik ($d=3$) menandai batas dua kelompok \textit {intent}.}}{84}{figure.caption.42}%
-\contentsline {figure}{\numberline {VI.2}{\ignorespaces Precision@k, Recall@k, dan NDCG@k agregat pada kedalaman $d=1$ hingga $d=5$.}}{85}{figure.caption.43}%
-\contentsline {figure}{\numberline {VI.3}{\ignorespaces Rata-rata \textit {RetQ-gain} (GraphRAG $-$ \textit {Vector RAG}) per tipe \textit {fixture} ($n=97$). Semua tipe menunjukkan gain positif; variasi mencerminkan tingkat ketergantungan kueri terhadap traversal relasi antar-\textit {resource}.}}{87}{figure.caption.46}%
-\contentsline {figure}{\numberline {VI.4}{\ignorespaces \textit {Scatter plot} jumlah hop yang dilalui vs.\ \textit {RetQ-gain} per \textit {fixture}.}}{88}{figure.caption.48}%
-\contentsline {figure}{\numberline {VI.5}{\ignorespaces \textit {Scatter plot} derajat node primer vs.\ \textit {RetQ-gain}. Garis menunjukkan rata-rata gain per nilai derajat.}}{88}{figure.caption.49}%
+\contentsline {figure}{\numberline {V.1}{\ignorespaces Diagram Interaksi Lima \textit {Node LangGraph Agent Pipeline}}}{71}{figure.caption.35}%
+\contentsline {figure}{\numberline {V.2}{\ignorespaces Analisis pemilihan batas karakter \textit {graph context}. Panel~(a) menunjukkan distribusi bimodal panjang konteks pada 97 \textit {fixture}: 79 kueri (81,4\%) menghasilkan 11.606 karakter dan 18 kueri (18,6\%) menghasilkan 17.849 karakter, dengan garis hijau menandai batas yang dipilih (12.000 karakter). Panel~(b) menunjukkan skor evaluasi empiris (\textit {Total} tertimbang, AnsQ, RetQ, ReaQ) sebagai fungsi nilai batas untuk lima kandidat yang diuji. Batas 12.000 karakter mencapai \textit {Total} tertinggi (0,6989) dan ditetapkan sebagai nilai operasional.}}{73}{figure.caption.36}%
+\contentsline {figure}{\numberline {V.3}{\ignorespaces Pengaruh kedalaman traversal terhadap RetQ per kategori \textit {fixture}. Titik bertanda hitam menunjukkan kedalaman yang digunakan oleh sistem \textit {adaptive}. Garis putus-putus vertikal menandai kedalaman 2 (\textit {explain}/\textit {followup}) dan kedalaman 3 (kategori lainnya).}}{75}{figure.caption.38}%
+\contentsline {figure}{\numberline {V.4}{\ignorespaces \textit {Precision@k}, \textit {Recall@k}, dan NDCG@k sebagai fungsi kedalaman traversal (agregat seluruh kategori \textit {fixture}). Nilai optimal terpusat pada kedalaman 2--3, setelah itu skor stabil atau menurun akibat masuknya \textit {node} generik pada kedalaman 4 ke atas.}}{75}{figure.caption.39}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {VI.1}{\ignorespaces RetQ per tipe \textit {fixture} pada kedalaman traversal $d=1$ hingga $d=5$. Titik bertanda hitam menunjukkan kedalaman yang digunakan oleh sistem adaptif; garis putus-putus ($d=2$) dan titik-titik ($d=3$) menandai batas dua kelompok \textit {intent}.}}{90}{figure.caption.47}%
+\contentsline {figure}{\numberline {VI.2}{\ignorespaces Precision@k, Recall@k, dan NDCG@k agregat pada kedalaman $d=1$ hingga $d=5$.}}{91}{figure.caption.48}%
+\contentsline {figure}{\numberline {VI.3}{\ignorespaces Rata-rata \textit {RetQ-gain} (GraphRAG $-$ \textit {Vector RAG}) per tipe \textit {fixture} ($n=97$). Semua tipe menunjukkan gain positif; variasi mencerminkan tingkat ketergantungan kueri terhadap traversal relasi antar-\textit {resource}.}}{93}{figure.caption.51}%
+\contentsline {figure}{\numberline {VI.4}{\ignorespaces \textit {Scatter plot} jumlah hop yang dilalui vs.\ \textit {RetQ-gain} per \textit {fixture}.}}{94}{figure.caption.53}%
+\contentsline {figure}{\numberline {VI.5}{\ignorespaces \textit {Scatter plot} derajat node primer vs.\ \textit {RetQ-gain}. Garis menunjukkan rata-rata gain per nilai derajat.}}{94}{figure.caption.54}%
 \addvspace {10\p@ }
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
@@ -245,6 +277,9 @@
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }

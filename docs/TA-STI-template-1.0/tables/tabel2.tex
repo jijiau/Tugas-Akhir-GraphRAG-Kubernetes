@@ -4,13 +4,13 @@
 \caption{Kebutuhan Non-Fungsional Sistem}
 \label{tbl:nonfungsional} \\
 \hline
-\textbf{Kode} & \textbf{Parameter} & \textbf{Deskripsi Spesifikasi} \\ 
+\multicolumn{1}{|p{0.1\textwidth}|}{\centering\textbf{Kode}} & \multicolumn{1}{p{0.30\textwidth}|}{\centering\textbf{Parameter}} & \multicolumn{1}{p{0.50\textwidth}|}{\centering\textbf{Deskripsi Spesifikasi}} \\
 \hline
 \endfirsthead
 
 \multicolumn{3}{l}{Tabel \ref{tbl:nonfungsional} Kebutuhan Non-Fungsional Sistem (lanjutan)} \\
 \hline
-\textbf{Kode} & \textbf{Parameter} & \textbf{Deskripsi Spesifikasi} \\ 
+\multicolumn{1}{|p{0.1\textwidth}|}{\centering\textbf{Kode}} & \multicolumn{1}{p{0.30\textwidth}|}{\centering\textbf{Parameter}} & \multicolumn{1}{p{0.50\textwidth}|}{\centering\textbf{Deskripsi Spesifikasi}} \\
 \hline
 \endhead
 
@@ -28,10 +28,10 @@ Sistem harus mencegah keluaran halusinasi melalui mekanisme \textit{error handli
 NF-02 (\textit{Performance}) & \textit{Retrieval--Generation Latency} & Waktu total yang dibutuhkan untuk memproses satu permintaan pengguna (\textit{end-to-end latency}) tidak boleh melebihi \textbf{60 detik} pada lingkungan pengujian standar. \\
 \hline
 
-NF-03 (\textit{Usability}) & \textit{Web UI Usability Standard} & Antarmuka web interaktif berbasis Streamlit harus menyediakan pengalaman penggunaan yang konsisten, mudah dipahami, dan informatif melalui komponen \textit{chat input}, panel jawaban, serta visualisasi jejak penalaran graf. \\
+NF-03 (\textit{Usability}) & \textit{Web UI Usability Standard} & Antarmuka web interaktif sistem harus menyediakan pengalaman penggunaan yang konsisten, mudah dipahami, dan informatif, mencakup mekanisme input pertanyaan, panel tampilan jawaban, serta visualisasi jejak penalaran. \\
 \hline
 
-NF-04 (\textit{Portability}) & \textit{Resource Constraints} & 
-Seluruh komponen sistem harus dapat dijalankan pada lingkungan lokal (\textit{Local Environment}) dengan spesifikasi perangkat keras terbatas (minimal RAM 8GB), tanpa ketergantungan pada infrastruktur \textit{cloud} terdistribusi. \\ \hline
+NF-04 (\textit{Accessibility}) & \textit{Public Accessibility} &
+Sistem harus dapat diakses oleh pengguna umum melalui antarmuka web yang tersedia secara daring, tanpa memerlukan instalasi perangkat lunak tambahan di sisi pengguna. \\ \hline
 
 \end{longtable}

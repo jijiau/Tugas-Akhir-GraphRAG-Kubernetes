@@ -1,0 +1,42 @@
+\cleardoublepage
+\chapter{PANDUAN DAN HASIL WAWANCARA PRAKTISI}
+\label{lampiran:wawancara}
+
+Lampiran ini menyajikan panduan dan ringkasan hasil wawancara semi-terstruktur dengan tiga praktisi Kubernetes (N1--N3) yang digunakan untuk memvalidasi permasalahan pada Subbab~\ref{subsec:validasi-wawancara} sekaligus memvalidasi realisme dataset uji pada Bab~\ref{chap:evaluasi}. Identitas narasumber dianonimkan; profil ringkasnya disajikan pada Tabel~\ref{tbl:expert_profile}.
+
+\section{Panduan Wawancara}
+
+Wawancara disusun dalam beberapa segmen dengan tujuan menggali konteks narasumber dan tipe permasalahan nyata yang dihadapi saat memakai asisten LLM untuk pekerjaan Kubernetes.
+
+\begin{enumerate}
+    \item \textbf{Segmen Konteks Narasumber.}
+    \begin{enumerate}[a.]
+        \item Bagaimana peran Anda saat ini dan bagaimana Kubernetes masuk ke pekerjaan harian Anda?
+        \item Seberapa sering Anda mengajukan pertanyaan terkait Kubernetes ke asisten LLM?
+    \end{enumerate}
+    \item \textbf{Segmen Tipe Pertanyaan Nyata.}
+    \begin{enumerate}[a.]
+        \item Dalam satu minggu terakhir, pertanyaan apa saja yang Anda ajukan? (3--5 contoh konkret)
+        \item Konteks tambahan apa yang biasanya Anda lampirkan (misalnya \textit{log}, YAML, pesan kesalahan)?
+        \item Adakah pertanyaan yang Anda ketahui sering gagal dijawab LLM sehingga tidak Anda ajukan? Apa yang membuat Anda skeptis?
+    \end{enumerate}
+    \item \textbf{Segmen Hambatan dan Harapan.}
+    \begin{enumerate}[a.]
+        \item Hal apa yang paling membuat frustrasi saat bertanya Kubernetes ke LLM?
+        \item Jika ada \textit{chatbot} Kubernetes ideal, pertanyaan seperti apa yang harus dapat dijawabnya dengan baik dan belum ada solusinya saat ini?
+    \end{enumerate}
+\end{enumerate}
+
+\section{Ringkasan Hasil Wawancara}
+
+\subsection{Konteks dan Frekuensi Penggunaan}
+Ketiga narasumber menggunakan Kubernetes secara aktif dalam pekerjaan harian dengan peran \textit{DevOps Engineer}, \textit{Cloud Engineer}, dan \textit{Site Reliability Engineer}. Asisten LLM digunakan secara rutin sebagai alat bantu, dengan intensitas bervariasi dari penggunaan harian hingga sekitar 15--20 kueri per hari untuk keperluan diskusi pendekatan, pencarian penjelasan, serta perencanaan.
+
+\subsection{Tipe Pertanyaan dan Konteks yang Dilampirkan}
+Pertanyaan yang diajukan mencakup penjelasan perilaku objek Kubernetes, penyetelan \textit{HorizontalPodAutoscaler}, definisi \textit{resource}, penelusuran koneksi antar-\textit{Pod}, pendataan \textit{service}, serta penelusuran pemakaian \textit{environment variable}. Konteks yang umum dilampirkan meliputi berkas manifes YAML (dengan kredensial sensitif yang telah disaring), deskripsi peran dan kondisi, pesan kesalahan, serta variabel dan token konfigurasi.
+
+\subsection{Keterbatasan LLM yang Dirasakan}
+Narasumber secara konsisten menyoroti halusinasi sebagai masalah utama, yaitu jawaban yang gagal dijalankan, berbeda antar-model, merujuk versi \textit{service} yang tidak lagi kompatibel, serta membuat asumsi yang tidak sesuai keinginan pengguna. Pada skenario generatif, hasil penyusunan konfigurasi YAML dirasakan tidak konsisten antara penyusunan dalam satu \textit{prompt} dan penyusunan bertahap. Berkas konfigurasi yang panjang juga menyulitkan karena penjelasan kerap tidak tuntas.
+
+\subsection{Harapan terhadap Sistem Ideal}
+Harapan narasumber mencakup asisten yang aman dan tidak berasumsi keliru, penelusuran \textit{bottleneck} berbasis pemantauan, serta dukungan menyeluruh dari perencanaan, penyusunan manifes, hingga pengujian. Sebagian harapan ini menuntut akses terhadap status operasional klaster (\textit{runtime}) sehingga berada di luar cakupan penelitian yang berfokus pada representasi skema statis OpenAPI.

@@ -1,0 +1,5 @@
+\begin{lstlisting}[language=SQL, caption={Cypher \textit{query} untuk verifikasi \textit{required fields} pada Lapis 3 Validasi YAML}, label={lst:required-fields-query}]
+MATCH (d:Definition {name: $kind})
+      -[r:HAS_PROPERTY {is_required: true}]->(p)
+RETURN p.name AS field_name
+\end{lstlisting}

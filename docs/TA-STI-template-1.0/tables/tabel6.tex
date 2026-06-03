@@ -32,17 +32,17 @@
 \textit{Data Selection \& Cleaning} &
 Identifikasi objek target dari spesifikasi OpenAPI Kubernetes, seleksi blok \textit{definitions}, dan pembersihan tipe generik yang tidak relevan untuk pembuatan YAML. &
 F-01 (\textit{Structured Object Representation}),
-F-05 (\textit{Attribute Enrichment}) \\ \hline
-
-\textit{Semantic Vectorization} &
-Ekstraksi deskripsi objek menjadi \textit{embedding} numerik untuk pencarian semantik. &
-F-05 (\textit{Attribute Enrichment}) \\ \hline
+F-05 (\textit{Semantic Embedding}) \\ \hline
 
 Konstruksi Topologi Graf &
 Transformasi struktur JSON menjadi node–edge dengan relasi referensial dan hierarkis. &
 F-01 (\textit{Structured Object Representation}),
 F-02 (\textit{Structured Relation Retrieval}),
-F-05 (\textit{Attribute Enrichment}) \\ \hline
+F-05 (\textit{Semantic Embedding}) \\ \hline
+
+\textit{Semantic Vectorization} &
+Ekstraksi deskripsi objek menjadi \textit{embedding} numerik untuk pencarian semantik. &
+F-05 (\textit{Semantic Embedding}) \\ \hline
 
 Neo4j \textit{Data Loading} &
 Memuat hasil konstruksi graf ke basis data Neo4j agar dapat ditelusuri kembali saat retrieval. &
@@ -53,7 +53,7 @@ F-01 (\textit{Structured Object Representation}) \\ \hline
 \multicolumn{3}{|c|}{\textbf{Modelling}} \\ \hline
 
 \textit{Intent Classification Modeling} &
-Mengklasifikasikan pertanyaan pengguna ke dalam lima tipe \textit{intent}: \textbf{explain} dan \textbf{generate\_yaml} (tipe utama), serta \textbf{trace\_relationship}, \textbf{followup}, dan \textbf{planning} (mode pendukung). Setiap tipe menentukan kedalaman penelusuran graf yang digunakan. &
+Klasifikasi pertanyaan pengguna ke dalam tipe \textit{intent} untuk menentukan strategi dan kedalaman penelusuran graf. &
 F-03 (\textit{Intent Classification}) \\ \hline
 
 \textit{Retrieval Strategy Design} &
@@ -62,33 +62,33 @@ F-02 (\textit{Structured Relation Retrieval}),
 F-04 (\textit{Context Construction \& Injection}) \\ \hline
 
 \textit{Prompt Engineering} &
-Perancangan template prompt untuk dua peran LLM: \textit{Thinker} (ekstraksi intent) dan \textit{Speaker} (generasi respons), serta injeksi konteks dan pengaturan format keluaran. &
+Perancangan template \textit{prompt} untuk dua peran LLM serta injeksi konteks dan pengaturan format keluaran. &
 F-04 (\textit{Context Construction \& Injection}),
 F-07 (\textit{Conditional YAML Generation Constraint}) \\ \hline
 
 \textit{Validation Logic} &
-Integrasi prosedur validasi YAML tiga lapis sebagai mekanisme \textit{fail-safe}: sintaksis (\textit{yaml.safe\_load}), skema (\textit{kubernetes-validate}), dan ketersediaan \textit{required fields} via Neo4j. &
+Integrasi prosedur validasi YAML bertingkat sebagai mekanisme \textit{fail-safe} yang memastikan keluaran memenuhi standar sintaksis, skema, dan kelengkapan \textit{field}. &
 F-07 (\textit{Conditional YAML Generation Constraint}) \\ \hline
 
 \textit{Conversation Memory Management} &
-Penyimpanan dan pengambilan riwayat percakapan menggunakan SQLite melalui node \textit{memory} (load riwayat di awal giliran) dan \textit{saver} (simpan respons di akhir giliran) dalam \textit{pipeline} LangGraph, guna mendukung intent \textbf{followup} yang membutuhkan konteks dari giliran sebelumnya. &
+Penyimpanan dan pengambilan riwayat percakapan dalam \textit{pipeline} LangGraph untuk mendukung konteks \textit{multi-turn}. &
 F-03 (\textit{Intent Classification}),
 F-04 (\textit{Context Construction \& Injection}) \\ \hline
 
 
 % =================== INPUT ======================
-\multicolumn{3}{|c|}{\textbf{Input}} \\ \hline
+\multicolumn{3}{|c|}{\textbf{Input Processing}} \\ \hline
 
 Pertanyaan Pengguna &
-Input teks berupa permintaan teknis dalam bahasa alami yang diklasifikasikan ke salah satu tipe \textit{intent}: \textbf{explain}, \textbf{generate\_yaml}, \textbf{trace\_relationship}, \textbf{followup}, atau \textbf{planning}. &
+Input teks berupa permintaan teknis Kubernetes dalam bahasa alami yang diajukan pengguna melalui antarmuka percakapan. &
 F-03 (\textit{Intent Classification}) \\ \hline
 
 
 % =================== OUTPUT ======================
-\multicolumn{3}{|c|}{\textbf{Output}} \\ \hline
+\multicolumn{3}{|c|}{\textbf{Output Generation}} \\ \hline
 
 Konten Jawaban &
-Keluaran berupa narasi penjelas (untuk \textit{intent} \textbf{explain}, \textbf{trace\_relationship}, \textbf{followup}, dan \textbf{planning}) atau blok YAML konfigurasi Kubernetes (untuk \textit{intent} \textbf{generate\_yaml}). &
+Keluaran sistem berupa narasi penjelas atau blok YAML konfigurasi Kubernetes sesuai permintaan pengguna. &
 F-07 (\textit{Conditional YAML Generation Constraint}) \\ \hline
 
 \textit{Graph Traceability} &
@@ -100,15 +100,15 @@ F-02 (\textit{Structured Relation Retrieval}) \\ \hline
 \multicolumn{3}{|c|}{\textbf{Evaluation}} \\ \hline
 
 \textit{Answer Quality} (AnsQ) &
-Evaluasi kualitas jawaban mencakup \textit{Syntactic Validity}, \textit{Schema Compliance}, \textit{Answer Relevance}, dan \textit{Faithfulness}. &
+Evaluasi kualitas jawaban (\textit{Answer Quality}); definisi metrik lengkap pada Subbab~\ref{sec:metrik-evaluasi}. &
 -- (Metrik domain, bukan requirement fungsional) \\ \hline
 
 \textit{Retrieval Quality} (RetQ) &
-Evaluasi kualitas \textit{retrieval} mencakup \textit{Precision@k}, \textit{Recall@k}, \textit{NDCG@k}, \textit{Graph Coverage}, dan \textit{Edge Coverage}. &
+Evaluasi kualitas \textit{retrieval} (\textit{Retrieval Quality}); definisi metrik lengkap pada Subbab~\ref{sec:metrik-evaluasi}. &
 -- (Metrik domain, bukan requirement fungsional) \\ \hline
 
 \textit{Reasoning Quality} (ReaQ) &
-Evaluasi kualitas penalaran mencakup \textit{Hop Accuracy}, \textit{Multi-Hop Success}, \textit{Scope Accuracy}, \textit{Grounding Score}, dan \textit{Hallucination Rate}. &
+Evaluasi kualitas penalaran (\textit{Reasoning Quality}); definisi metrik lengkap pada Subbab~\ref{sec:metrik-evaluasi}. &
 -- (Metrik domain, bukan requirement fungsional) \\ \hline
 
 

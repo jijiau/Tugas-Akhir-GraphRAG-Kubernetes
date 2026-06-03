@@ -4,15 +4,15 @@
 \begin{longtable}{|p{3cm}|p{5cm}|p{5cm}|}
 \caption{\textit{Technical Gap Analysis} pada Domain Kubernetes}
 \label{tbl:comparison_existing_graphRAG} \\ \hline
-\textbf{Aspek Evaluasi} &
-\textbf{Kondisi Saat Ini (\textit{Existing Approaches})} &
-\textbf{Kesenjangan di Domain Kubernetes} \\ \hline
+\multicolumn{1}{|p{3cm}|}{\centering\textbf{Aspek Kesenjangan Teknis}} &
+\multicolumn{1}{p{5cm}|}{\centering\textbf{Kondisi Saat Ini (\textit{Existing Approaches})}} &
+\multicolumn{1}{p{5cm}|}{\centering\textbf{Kesenjangan di Domain Kubernetes}} \\ \hline
 \endfirsthead
 
 \multicolumn{3}{l}{Tabel \ref{tbl:comparison_existing_graphRAG} \textit{Technical Gap Analysis} pada Domain Kubernetes (lanjutan)} \\ \hline
-\textbf{Aspek Evaluasi} &
-\textbf{Kondisi Saat Ini (\textit{Existing Approaches})} &
-\textbf{Kesenjangan di Domain Kubernetes} \\ \hline
+\multicolumn{1}{|p{3cm}|}{\centering\textbf{Aspek Kesenjangan Teknis}} &
+\multicolumn{1}{p{5cm}|}{\centering\textbf{Kondisi Saat Ini (\textit{Existing Approaches})}} &
+\multicolumn{1}{p{5cm}|}{\centering\textbf{Kesenjangan di Domain Kubernetes}} \\ \hline
 \endhead
 
 \hline
@@ -24,22 +24,22 @@
 
 T01 - Representasi Struktur Data &
 Menggunakan pemecahan teks secara \textit{linear chunking} ataupun konstruksi \textit{knowledge graph} berbasis ekstraksi entitas generik dari teks, tanpa mendefinisikan taksonomi jenis relasi yang spesifik terhadap semantik domain target \parencite{cao2025neusymrag, civiot2025graphrag, hsgrag2025acm}. &
-Terjadi \textit{loss of deep context} dan ambiguitas semantik relasi. Sistem gagal memahami kedalaman hierarki bersarang (misalnya properti \texttt{limits} sebagai turunan dari Deployment) sekaligus tidak dapat membedakan jenis relasi antar-objek Kubernetes---kepemilikan, ketergantungan konfigurasi, akses jaringan, dan kebijakan RBAC memiliki perilaku \textit{traversal} yang berbeda \parencite{kotstein_restberta_2024}. \\ \hline
+Terjadi kehilangan konteks mendalam (\textit{loss of deep context}) dan ambiguitas semantik relasi. Sistem gagal memahami kedalaman hierarki bersarang (misalnya properti \texttt{limits} sebagai turunan dari \textit{Deployment}) sekaligus tidak dapat membedakan jenis relasi antar-objek Kubernetes. \\ \hline
 
 T02 - Mekanisme Validasi &
 Validasi bergantung pada model LLM atau aturan manual berbasis \textit{hard constraints} yang harus ditulis satu per satu \parencite{wan2025empowering}. &
 Risiko terjadinya \textit{syntactic hallucination} tinggi (LLM mengarang \textit{field}), atau beban pemeliharaan menjadi besar saat aturan manual harus diperbarui \parencite{rag_survey}. \\ \hline
 
-T03 - Ambiguitas Entitas & 
-Mengandalkan frekuensi kemunculan kata kunci (\textit{keyword frequency}) atau kedekatan vektor semata. &
-Terdapat ambiguitas pada pola \textit{loose coupling} karena \textit{keywords} (misal: \textit{labels}, \textit{ports}) muncul berulang di banyak objek berbeda. Hal ini menyebabkan tercampurnya konteks antar-objek (\textit{contextual mixing}). \\ \hline
+T03 - Ambiguitas Entitas &
+Mengandalkan frekuensi kemunculan kata kunci (\textit{keyword frequency}) atau kedekatan vektor semata \parencite{rag_survey}. &
+Terdapat ambiguitas pada pola \textit{loose coupling} karena \textit{keywords} (misal: \textit{labels}, \textit{ports}) muncul berulang di banyak objek berbeda. Hal ini menyebabkan tercampurnya konteks antar-objek (\textit{contextual mixing}) \parencite{kotstein_restberta_2024}. \\ \hline
 
 T04 - Pemeliharaan Pengetahuan &
 Membutuhkan \textit{fine-tuning} ulang model atau pembaruan aturan manual ketika terjadi perubahan versi API \parencite{rag_survey}. Penelitian GraphRAG terkini pada domain teknis serupa pun masih menghadapi keterbatasan yang sama berupa \textit{knowledge graph} yang bersifat statis tanpa mekanisme pembaruan dinamis \parencite{civiot2025graphrag, hsgrag2025acm}. &
-Tidak efisien, mudah menjadi \textit{obsolete}, dan sensitif terhadap perubahan versi Kubernetes yang dirilis secara berkala ($\pm$4 bulan). \\ \hline
+Tidak efisien, mudah menjadi \textit{obsolete}, dan sensitif terhadap perubahan versi Kubernetes yang dirilis secara berkala. \\ \hline
 
 T05 - Akurasi Jawaban &
-Sistem cenderung menghasilkan jawaban naratif umum dan tidak memberikan jaminan presisi sintaksis konfigurasi YAML. &
-Tidak mampu menghasilkan artefak konfigurasi yang sesuai karena sering ditemukan kesalahan format atau struktur. \\ \hline
+Sistem cenderung menghasilkan jawaban naratif dan tidak memberikan jaminan presisi sintaksis konfigurasi YAML \parencite{liu2024deepanalysis}. &
+Tidak mampu menghasilkan artefak konfigurasi yang sesuai karena sering ditemukan kesalahan format atau struktur \parencite{rahman2023misconfigurations}. \\ \hline
 
 \end{longtable}

@@ -315,6 +315,15 @@ Gambar~\ref{fig:boundary-degree-vs-gain} menampilkan hubungan antara derajat nod
 
 Tidak ada faktor tunggal yang secara dominan menjelaskan variasi \textit{RetQ-gain}. Keunggulan GraphRAG ditentukan oleh interaksi antara karakteristik kueri (tipe, kompleksitas relasional) dan karakteristik data (konektivitas \textit{resource} dalam graf).
 
+\subsection{Analisis Kompleksitas Pertanyaan dan Batasan Kemampuan Sistem}
+\label{subsubsec:bc-query-complexity}
+
+Batasan kedalaman traversal memiliki implikasi langsung terhadap jenis pertanyaan yang dapat dijawab secara optimal. Tabel~\ref{tbl:query_complexity} mengklasifikasikan pertanyaan pengguna ke dalam empat tingkat berdasarkan kedalaman informasi yang dibutuhkan dan cakupan pengetahuan graf.
+
+\input{tables/tabel24.tex}
+
+Ketika pertanyaan melampaui batas Tier~1, sistem tidak mengembalikan pesan kesalahan, melainkan mengisi kesenjangan konteks menggunakan pengetahuan parametrik LLM (\textit{silent degradation}). Kondisi ini menjadi salah satu faktor yang menjelaskan perbedaan nilai \textit{Retrieval Quality} dan \textit{Answer Quality} pada hasil evaluasi yang dianalisis selanjutnya.
+
 \subsection{Definisi Kondisi Batas}
 \label{subsubsec:bc-definition}
 

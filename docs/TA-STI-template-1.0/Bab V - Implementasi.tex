@@ -15,7 +15,9 @@ Implementasi sistem \textit{GraphRAG} Kubernetes dilaksanakan menggunakan bahasa
 
 Sistem memanfaatkan \textbf{OpenAI GPT-4o-mini} untuk kedua peran LLM. \textit{Thinker} menggunakan GPT-4o-mini untuk mengekstraksi \textit{intent} kueri ke dalam format JSON terstruktur berkat kemampuan pemahaman konteks yang tinggi dan dukungan \textit{structured output}. \textit{Speaker} juga menggunakan GPT-4o-mini untuk menghasilkan respons naratif; penggunaan model yang sama dipilih guna memastikan konsistensi pemahaman skema Kubernetes antara tahap ekstraksi \textit{intent} dan tahap generasi jawaban.
 
-Untuk penyimpanan percakapan, sistem menggunakan \textbf{SQLite} lokal yang diakses melalui kelas \textit{ZepMemoryStore} di \texttt{src/memory/zep\_store.py}. Keputusan ini diambil karena Zep Cloud versi 1 memanggil LLM internal untuk ekstraksi entitas yang menambah latensi dan biaya token tanpa nilai tambah bagi penelitian ini. SQLite memberikan persistensi yang memadai tanpa ketergantungan infrastruktur tambahan.
+Untuk penyimpanan percakapan, sistem menggunakan \textbf{SQLite} lokal yang diakses melalui kelas \textit{SQLiteMemoryStore} di \texttt{src/memory/zep\_store.py}. Keputusan ini diambil karena Zep Cloud versi 1 memanggil LLM internal untuk ekstraksi entitas yang menambah latensi dan biaya token tanpa nilai tambah bagi penelitian ini. SQLite memberikan persistensi yang memadai tanpa ketergantungan infrastruktur tambahan.
+
+Antarmuka pengguna diimplementasikan menggunakan \textit{Streamlit} pada berkas \texttt{main.py} sebagaimana dirancang pada Bab~\ref{chap:perancangan}. Setiap sesi \textit{browser} mendapatkan UUID unik yang disimpan di \texttt{st.session\_state} dan digunakan sebagai kunci untuk mengambil dan menyimpan riwayat percakapan dari SQLite. Komponen \textit{Retrieval Trace} menampilkan \textit{reasoning path} yang dihasilkan oleh \textit{retriever} dalam empat tab: visualisasi graf \textit{Graphviz} yang dikodekan warna berdasarkan kedalaman \textit{node}, tabel relasi, tautan referensi resmi \textit{kubernetes.io}, dan legenda kedalaman. Respons YAML dirender menggunakan \texttt{st.code()} untuk mengaktifkan tombol salin bawaan Streamlit.
 
 % ─────────────────────────────────────────────────────────────────────
 \section{Implementasi \textit{Pipeline} Ekstraksi dan \textit{Knowledge Graph}}
@@ -34,6 +36,10 @@ Vektor \textit{embedding} dihasilkan menggunakan model \textit{text-embedding-3-
 
 Proses seleksi node dilakukan dengan mengecualikan 14 tipe definisi generik, antara lain \textit{ObjectMeta} dan \textit{ManagedFieldsEntry}, yang tidak merepresentasikan sumber daya Kubernetes primer. Seleksi ini menghasilkan 725 node yang secara langsung berkaitan dengan spesifikasi \textit{workload} dan konfigurasi Kubernetes.
 
+Relasi yang terbentuk dalam \textit{knowledge graph} mencakup 18 jenis \textit{edge} yang merupakan hasil penerapan dua strategi pembentukan relasi sebagaimana dirancang pada Subbab~\ref{subsec:edge-taxonomy}. Distribusi seluruh jenis \textit{edge} beserta kategori dan contoh relasinya ditunjukkan pada Tabel~\ref{tbl:edge_taxonomy_full}.
+
+\input{tables/tabel21.tex}
+
 % ─────────────────────────────────────────────────────────────────────
 \section{Implementasi Mekanisme \textit{GraphRAG}}
 % ─────────────────────────────────────────────────────────────────────
@@ -41,7 +47,19 @@ Proses seleksi node dilakukan dengan mengecualikan 14 tipe definisi generik, ant
 % --- 5.3.1 ---
 \subsection{Implementasi \textit{Pipeline} LangGraph}
 
-Pipeline chatbot diimplementasikan sebagai \textit{directed acyclic graph} (DAG) menggunakan LangGraph pada berkas \texttt{src/chatbot/graph\_agent.py}. \textit{State} yang dipertukarkan antar-node didefinisikan sebagai \textit{TypedDict} dengan nama \texttt{AgentState} yang memuat sembilan \textit{field}: \texttt{messages}, \texttt{question}, \texttt{session\_id}, \texttt{chat\_history}, \texttt{extracted\_intent}, \texttt{graph\_context}, \texttt{reasoning\_path}, \texttt{intent\_type}, dan \texttt{error}. Lima node yang dieksekusi secara linear sebagaimana dirancang pada Tabel~\ref{tbl:langgraph_nodes} diimplementasikan masing-masing sebagai fungsi Python yang menerima dan mengembalikan \texttt{AgentState}.
+Pipeline chatbot diimplementasikan sebagai \textit{directed acyclic graph} (DAG) menggunakan LangGraph pada berkas \texttt{src/chatbot/graph\_agent.py}. \textit{State} yang dipertukarkan antar-node didefinisikan sebagai \textit{TypedDict} dengan nama \texttt{AgentState} yang memuat sembilan \textit{field}: \texttt{messages}, \texttt{question}, \texttt{session\_id}, \texttt{chat\_history}, \texttt{extracted\_intent}, \texttt{graph\_context}, \texttt{reasoning\_path}, \texttt{intent\_type}, dan \texttt{error}. Lima node yang dieksekusi secara linear sebagaimana ditunjukkan pada Tabel~\ref{tbl:langgraph_nodes} diimplementasikan masing-masing sebagai fungsi Python yang menerima dan mengembalikan \texttt{AgentState}.
+
+\input{tables/tabel17.tex}
+
+Interaksi antar-\textit{node} beserta aliran data melalui \textit{AgentState} ditunjukkan pada Gambar~\ref{fig:langgraph_pipeline}. Setiap panah berlabel \textit{field} \textit{AgentState} yang diteruskan dari satu \textit{node} ke \textit{node} berikutnya sehingga dependensi data antar-tahap dapat dilacak secara eksplisit.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{justification=centering}
+    \includegraphics[width=0.7\textwidth]{{images/Agent-Interaction.png}}
+    \caption{Diagram Interaksi Lima \textit{Node LangGraph Agent Pipeline}}
+    \label{fig:langgraph_pipeline}
+\end{figure}
 
 Arsitektur \textit{dual-LLM} diimplementasikan dengan konfigurasi \textit{temperature} yang berbeda untuk setiap model. Node \textit{thinker} menggunakan GPT-4o-mini dengan \texttt{temper-} \texttt{ature}=0,0 untuk menghasilkan keluaran JSON yang deterministik tanpa variasi \textit{sampling}; kesetaraan ini krusial karena keluaran JSON yang tidak konsisten akan menyebabkan kegagalan \textit{parsing} pada node \textit{retriever}. Node \textit{speaker} menggunakan GPT-4o-mini dengan \texttt{temperature}=0,1, dipilih sebagai titik keseimbangan antara \textit{faithfulness} terhadap konteks graf dan kepatuhan terhadap skema Kubernetes yang dihasilkan.
 
@@ -63,46 +81,70 @@ Tahap kedua adalah evaluasi empiris pada lima nilai batas yang berbeda---10.000,
 
 Mekanisme \textit{retrieval} diimplementasikan dalam kelas \textit{Stateful\-K8s\-Retriever} pada berkas \texttt{src/chatbot/custom\_retriever.py}. \textit{Method} utama \texttt{retrieve\_context()} menerima parameter \texttt{intent\_data} (hasil ekstraksi Thinker), \texttt{intent\_type} (string jenis \textit{intent}), dan \texttt{max\_depth} (opsional) untuk menghasilkan pasangan \texttt{(graph \_context\_json, reasoning\_path)}.
 
-Pemetaan kedalaman berbasis \textit{intent} sebagaimana dirancang pada Tabel~\ref{tbl:intent_depth_iv} diimplementasikan sebagai kamus \texttt{\_DEPTH\_BY\_INTENT} di tingkat modul. Prioritas resolusi kedalaman adalah: (1) argumen \texttt{max\_depth} yang diberikan secara eksplisit, (2) nilai dari \texttt{\_DEPTH\_BY\_INTENT} berdasarkan \texttt{intent\_type}, dan (3) nilai \textit{default} tiga lompatan.
+Pemetaan kedalaman berbasis \textit{intent} diimplementasikan sebagai kamus \texttt{\_DEPTH\_BY\_INTENT} di tingkat modul sebagaimana ditunjukkan pada Listing~\ref{lst:depth-by-intent}. Prioritas resolusi kedalaman adalah: (1) argumen \texttt{max\_depth} yang diberikan secara eksplisit, (2) nilai dari \texttt{\_DEPTH\_BY\_INTENT} berdasarkan \texttt{intent\_type}, dan (3) nilai \textit{default} tiga lompatan. Pemetaan nilai kedalaman untuk setiap tipe \textit{intent} beserta alasan penetapannya ditunjukkan pada Tabel~\ref{tbl:intent_depth_iv}.
+
+\input{tables/tabel18.tex}
+
+\input{listings/depth-by-intent.tex}
+
+Pemilihan nilai kedalaman per tipe \textit{intent} divalidasi secara empiris dengan mengevaluasi seluruh 97 \textit{fixture} pada lima konfigurasi kedalaman tetap ($d \in \{1, 2, 3, 4, 5\}$) dan membandingkan hasilnya terhadap sistem \textit{adaptive}. Gambar~\ref{fig:depth_sensitivity_retq} menunjukkan pengaruh kedalaman traversal terhadap skor RetQ untuk setiap kategori \textit{fixture}, sedangkan Gambar~\ref{fig:depth_sensitivity_submetrics} menunjukkan tren \textit{Precision@k}, \textit{Recall@k}, dan NDCG@k secara agregat.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{justification=centering}
+    \includegraphics[width=1.00\textwidth]{images/depth_sensitivity_retq.png}
+    \caption{Pengaruh kedalaman traversal terhadap RetQ per kategori \textit{fixture}. Titik bertanda hitam menunjukkan kedalaman yang digunakan oleh sistem \textit{adaptive}. Garis putus-putus vertikal menandai kedalaman 2 (\textit{explain}/\textit{followup}) dan kedalaman 3 (kategori lainnya).}
+    \label{fig:depth_sensitivity_retq}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{justification=centering}
+    \includegraphics[width=1.00\textwidth]{images/depth_sensitivity_submetrics.png}
+    \caption{\textit{Precision@k}, \textit{Recall@k}, dan NDCG@k sebagai fungsi kedalaman traversal (agregat seluruh kategori \textit{fixture}). Nilai optimal terpusat pada kedalaman 2--3, setelah itu skor stabil atau menurun akibat masuknya \textit{node} generik pada kedalaman 4 ke atas.}
+    \label{fig:depth_sensitivity_submetrics}
+\end{figure}
 
 Pada Fase 1, sistem mengeksekusi \texttt{EXACT\_MATCH\_QUERY} ke Neo4j menggunakan nama sumber daya yang diekstraksi oleh Thinker. Apabila ditemukan, node yang cocok digunakan sebagai \textit{seed node} untuk traversal via \texttt{SCHEMA\_DEPS\_QUERY}. Pada Fase 2—yang hanya diaktifkan jika Fase 1 tidak menghasilkan kecocokan—sistem menghasilkan \textit{embedding} dari kueri menggunakan \textit{text-embedding-3-small} dan mengeksekusi \texttt{HYBRID\_VECTOR\_GRAPH\_QUERY}, yaitu query Cypher tunggal yang menggabungkan \textit{vector similarity search} dengan ekspansi graf di Neo4j. String yang di-\textit{embed} merupakan konkatenasi dari \textit{primary\_resource}, seluruh elemen \textit{related\_concepts}, dan kata kunci ``Kubernetes'', sehingga kemiripan semantik yang dicari mencakup konteks multi-sumber daya secara implisit. Apabila Fase 2 juga tidak menghasilkan kecocokan, \textit{method} mengembalikan pesan \textit{fallback} tanpa melanjutkan traversal.
 
-Untuk \textit{intent} yang melibatkan lebih dari satu sumber daya—yaitu \textit{planning}, \textit{trace\_relationship}, dan \textit{generate\_yaml}—implementasi menambahkan \textit{loop} tambahan yang mengambil konteks dari hingga dua \textit{related\_concepts} yang diekstraksi Thinker dan menggabungkan hasilnya—baik \textit{graph\_context} maupun \textit{reasoning\_path}—dengan hasil dari \textit{primary\_resource}. Penanganan ini diperlukan karena pertanyaan relasional dan generasi YAML multi-komponen membutuhkan konteks skema dari seluruh entitas yang disebutkan, bukan hanya entitas utama. Deduplikasi diterapkan pada \textit{reasoning\_path} agar langkah traversal yang identik antarsumber daya tidak dicatat lebih dari satu kali.
+Untuk \textit{intent} yang melibatkan lebih dari satu sumber daya, yaitu \textit{planning}, \textit{trace\_relationship}, dan \textit{generate\_yaml}, implementasi menambahkan \textit{loop} tambahan yang mengambil konteks dari hingga dua \textit{related\_concepts} yang diekstraksi Thinker dan menggabungkan hasilnya, baik \textit{graph\_context} maupun \textit{reasoning\_path}, dengan hasil dari \textit{primary\_resource}. Penanganan ini diperlukan karena pertanyaan relasional dan generasi YAML multi-komponen membutuhkan konteks skema dari seluruh entitas yang disebutkan, bukan hanya entitas utama. Deduplikasi diterapkan pada \textit{reasoning\_path} agar langkah traversal yang identik antarsumber daya tidak dicatat lebih dari satu kali.
 
-\textit{Reasoning path} dibangun oleh \textit{method} \texttt{\_build\_reasoning\_path()} melalui eksekusi \texttt{PATH\_EDGES\_QUERY} yang menghasilkan daftar \textit{string} berformat \texttt{"Parent -{[}REL{]}-> Child"}, merepresentasikan jalur traversal yang sesungguhnya dari graf—bukan pintasan langsung dari \textit{root} ke \textit{leaf}. Alur keseluruhan mekanisme ini ditunjukkan pada Gambar~\ref{fig:cascading-retrieval}.
+\textit{Reasoning path} dibangun oleh \textit{method} \texttt{\_build\_reasoning\_path()} melalui eksekusi \texttt{PATH\_EDGES\_QUERY} yang menghasilkan daftar \textit{string} berformat \texttt{"Parent -{[}REL{]}-> Child"}, merepresentasikan jalur traversal yang sesungguhnya dari graf, bukan pintasan langsung dari \textit{root} ke \textit{leaf}. Alur keseluruhan mekanisme \textit{cascading retrieval} ini diilustrasikan pada Gambar~\ref{fig:cascading-retrieval}.
 
-% \begin{figure}[ht]
-%     \centering
-%     \includegraphics[width=0.85\textwidth]{images/flowchart-cascading-retrieval.png}
-%     \caption{Alur mekanisme \textit{cascading retrieval} pada \textit{StatefulK8sRetriever}}
-%     \label{fig:cascading-retrieval}
-% \end{figure}
+\begin{figure}[H]
+    \centering
+    \captionsetup{justification=centering}
+    \includegraphics[width=0.85\textwidth]{images/flowchart-cascading-retrieval.png}
+    \caption{Alur mekanisme \textit{cascading retrieval} pada \textit{StatefulK8sRetriever}}
+    \label{fig:cascading-retrieval}
+\end{figure}
 
-% ─────────────────────────────────────────────────────────────────────
-\section{Implementasi Validasi YAML Tiga Lapis}
-% ─────────────────────────────────────────────────────────────────────
+% --- 5.3.3 ---
+\subsection{Implementasi Validasi YAML Tiga Lapis}
+\label{subsec:implementasi-yaml}
 
 Validasi YAML diimplementasikan dalam kelas \textit{YAMLValidator} pada berkas \texttt{src/validation/yaml\_validator.py} dan hanya diaktifkan secara kondisional ketika \texttt{intent\_type} yang diklasifikasikan oleh node \textit{thinker} adalah \textit{generate\_yaml}, sehingga menghindari \textit{overhead} komputasi untuk pertanyaan penjelasan atau relasi.
 
-Tiga lapisan validasi sebagaimana dirancang pada Tabel~\ref{tbl:yaml_validation_iv} diimplementasikan secara berurutan; lapisan berikutnya hanya dieksekusi apabila lapisan sebelumnya berhasil. Lapis pertama memanggil \texttt{yaml.safe\_load()} dari pustaka PyYAML. Lapis kedua menggunakan \texttt{kubernetes-validate} dengan parameter versi Kubernetes 1.29 sebagai referensi skema. Lapis ketiga mengeksekusi \texttt{REQUIRED\_FIELDS\_QUERY} ke Neo4j untuk memverifikasi keberadaan \textit{field} wajib berdasarkan \textit{knowledge graph} yang telah dibangun pada tahap \textit{ingestion}.
+Tiga lapisan validasi sebagaimana dirancang pada Tabel~\ref{tbl:yaml_validation_iv} diimplementasikan secara berurutan; lapisan berikutnya hanya dieksekusi apabila lapisan sebelumnya berhasil. Lapis pertama memanggil \texttt{yaml.safe\_load()} dari pustaka PyYAML. Lapis kedua menggunakan \texttt{kubernetes-validate} dengan parameter versi Kubernetes 1.29 sebagai referensi skema. Lapis ketiga mengeksekusi \texttt{REQUIRED\_FIELDS\_QUERY} ke Neo4j untuk memverifikasi keberadaan \textit{field} wajib berdasarkan \textit{knowledge graph} yang telah dibangun pada tahap \textit{ingestion}, sebagaimana ditunjukkan pada Listing~\ref{lst:required-fields-query}.
 
-Keluaran validasi berupa objek \textit{YAMLValidation\-Result} dengan empat \textit{field}: \texttt{valid} (\textit{Boolean}), \texttt{syntax\_errors} (daftar kesalahan sintaksis PyYAML), \texttt{schema\_errors} (daftar pelanggaran skema Kubernetes), dan \texttt{missing\_fields} (daftar \textit{field} wajib yang tidak ditemukan dalam YAML yang digenerate). Ketika salah satu lapisan mendeteksi kegagalan, antarmuka menampilkan peringatan \texttt{Warning: Potential Syntax Error} kepada pengguna.
+\input{listings/required-fields-query.tex}
 
-% ====================================================================
-% PHASE 1: Konten 5.6 lama (Implementasi Antarmuka Pengguna) dipindah ke sini.
-% PHASE 4 TODO: ringkas jadi 1-2 kalimat di 5.1 (Lingkungan Implementasi);
-% pertimbangkan pemindahan detail teknis (4 tab retrieval trace, session UUID,
-% Graphviz rendering) ke Lampiran terpisah.
-%
-% \section{Implementasi Antarmuka Pengguna}
-%
-% Antarmuka pengguna diimplementasikan menggunakan Streamlit pada berkas \texttt{main.py}
-% sebagai \textit{single-page web application}. Setiap sesi \textit{browser} mendapatkan
-% UUID unik yang disimpan di \texttt{st.session\_state} dan digunakan sebagai kunci untuk
-% mengambil dan menyimpan riwayat percakapan dari SQLite. Komponen \textit{Retrieval Trace}
-% menampilkan \textit{reasoning path} yang dihasilkan oleh \textit{retriever} dalam empat tab:
-% visualisasi graf \textit{Graphviz} yang dikodekan warna berdasarkan kedalaman \textit{node},
-% tabel relasi, tautan referensi resmi \textit{kubernetes.io}, dan legenda kedalaman.
-% Respons YAML dirender menggunakan \texttt{st.code()} untuk mengaktifkan tombol
-% \textit{copy} bawaan Streamlit.
-% ====================================================================
+Keluaran validasi berupa objek \textit{YAMLValidationResult} dengan empat \textit{field}: \texttt{valid} (\textit{Boolean}), \texttt{syntax\_errors} (daftar kesalahan sintaksis PyYAML), \texttt{schema\_errors} (daftar pelanggaran skema Kubernetes), dan \texttt{missing\_fields} (daftar \textit{field} wajib yang tidak ditemukan dalam YAML yang digenerate). Ketika salah satu lapisan mendeteksi kegagalan, antarmuka menampilkan peringatan \texttt{Warning: Potential Syntax Error} kepada pengguna.
+
+% ─────────────────────────────────────────────────────────────────────
+\section{Implementasi Sistem Pembanding: Vector RAG dan Vanilla LLM}
+\label{sec:implementasi-baseline}
+% ─────────────────────────────────────────────────────────────────────
+
+Kedua sistem pembanding yang dirancang pada Subbab~\ref{sec:perancangan-baseline} diimplementasikan dalam berkas \texttt{scripts/evaluate.py} sebagai mode eksekusi yang dapat dipilih melalui argumen \texttt{-{}-mode}.
+
+\begin{enumerate}
+    \item \textbf{Vanilla LLM} (\texttt{-{}-mode llm}) \\
+    Implementasi Vanilla LLM memanggil GPT-4o-mini secara langsung menggunakan \texttt{HumanMessage} yang berisi pertanyaan pengguna tanpa konteks tambahan. Sistem tidak melakukan \textit{retrieval} apapun, sehingga jawaban bergantung sepenuhnya pada pengetahuan parametrik model.
+
+    \item \textbf{Vector RAG} (\texttt{-{}-mode vector}) \\
+    Implementasi Vector RAG menggunakan \texttt{VectorIndexManager} untuk menghasilkan \textit{embedding} kueri dengan \textit{text-embedding-3-small}, kemudian mengeksekusi \texttt{SIMPLE\_GRAPH\_EXPAND\_QUERY} ke Neo4j untuk mengambil top-$k$=5 \textit{node} terdekat beserta satu lompatan ekspansi ke \textit{node} tetangga. Konteks yang dihasilkan diteruskan ke \textit{speaker} GPT-4o-mini. Sistem ini tidak menggunakan \textit{intent-adaptive depth traversal} maupun validasi YAML.
+\end{enumerate}
+
+Hasil evaluasi komparatif ketiga sistem disajikan pada Bab~\ref{chap:evaluasi}.
+

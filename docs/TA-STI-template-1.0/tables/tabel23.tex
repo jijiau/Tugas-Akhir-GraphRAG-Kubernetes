@@ -6,13 +6,13 @@
 \centering
 \begin{tabular}{| p{0.18\textwidth} | p{0.22\textwidth} | p{0.15\textwidth} | p{0.30\textwidth} |}
 \hline
-\textbf{Kebutuhan Bisnis} & \textbf{Pertanyaan Evaluasi} & \textbf{Dimensi} & \textbf{Metrik Utama} \\
+\multicolumn{1}{|p{0.18\textwidth}|}{\centering\textbf{Kebutuhan Bisnis}} & \multicolumn{1}{p{0.22\textwidth}|}{\centering\textbf{Pertanyaan Evaluasi}} & \multicolumn{1}{p{0.15\textwidth}|}{\centering\textbf{Dimensi}} & \multicolumn{1}{p{0.30\textwidth}|}{\centering\textbf{Metrik Utama}} \\
 \hline
-B01 -- Inefisiensi Waktu & Apakah \textit{retrieval} efisien dan tepat sasaran? & RetQ (35\%) & F1@k, NDCG@k, Graph Coverage \\
+B01 -- Inefisiensi Waktu & Apakah hasil \textit{retrieval} memiliki nilai dengan presisi tinggi dan mencakup seluruh relasi yang dibutuhkan dalam satu kueri sehingga meminimalisir waktu penulusuran relasi secara manual? & RetQ & F1@k, NDCG@k, \textit{Path Coverage} \\
 \hline
-B02 -- Kesenjangan Pengetahuan & Apakah penalaran berbasis graf menghasilkan konteks yang benar? & ReaQ (25\%) & Hop-Accuracy, Multi-Hop Success Rate, Hallucination Rate \\
+B02 -- Kesenjangan Pengetahuan & Apakah jawaban yang dihasilkan dapat ditelusuri ke konteks graf yang relevan, bukan berasal dari pengetahuan parametrik model? & ReaQ & \textit{Hop Accuracy}, \textit{Grounding Score}, RGA \\
 \hline
-B03 -- Risiko Konfigurasi & Apakah keluaran YAML valid dan relevan terhadap kueri? & AnsQ (40\%) & Syntactic Validity, Schema Compliance, Answer Relevance, Faithfulness \\
+B03 -- Risiko Konfigurasi & Apakah keluaran YAML valid dan relevan terhadap kueri? & AnsQ & \textit{Syntactic Validity}, \textit{Schema Compliance}, \textit{Answer Relevance}, \textit{Faithfulness} \\
 \hline
 \end{tabular}
 \end{table}
