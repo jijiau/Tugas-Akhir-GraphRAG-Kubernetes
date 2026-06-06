@@ -1,32 +1,30 @@
-\renewcommand{\arraystretch}{1.3}
+﻿\renewcommand{\arraystretch}{1.3}
 \captionsetup[table]{justification=raggedright,singlelinecheck=false}
 \begin{table}[H]
 \caption{Dependensi Utama Implementasi Sistem GraphRAG Kubernetes}
 \label{tbl:tech_stack}
 \centering
-\begin{tabular}{| p{0.25\textwidth} | p{0.20\textwidth} | p{0.42\textwidth} |}
+\begin{tabular}{| p{0.25\textwidth} | p{0.15\textwidth} | p{0.47\textwidth} |}
 \hline
-\textbf{Komponen} & \textbf{Versi Minimum} & \textbf{Fungsi dalam Sistem} \\
+\textbf{Komponen} & \textbf{Versi} & \textbf{Fungsi dalam Sistem} \\
 \hline
-LangGraph & 0.0.20 & Orkestrasi \textit{state machine} pipeline agent (5 node) \\
+LangGraph & 1.0.9 & Orkestrasi lima \textit{AI agent} berbasis \textit{state machine} (lihat Tabel~\ref{tbl:langgraph_nodes}) \\
 \hline
-LangChain & 0.1.0 & Abstraksi integrasi LLM dan \textit{prompt template} \\
+LangChain-Core & 1.2.15 & Penyimpanan riwayat percakapan dalam sesi yang sama melalui format pesan \textit{BaseMessage}/\textit{AIMessage} \\
 \hline
-Neo4j Python Driver & 5.17.0 & Koneksi dan eksekusi query Cypher ke \textit{knowledge graph} \\
+LangChain-OpenAI & 1.1.10 & \textit{ChatOpenAI} untuk node \textit{Thinker} (temp=0,0) dan \textit{Speaker} (temp=0,1); \textit{OpenAIEmbeddings} untuk evaluasi \\
 \hline
-LangChain-OpenAI & 0.0.5 & Integrasi GPT-4o-mini untuk node \textit{Thinker} \\
+Neo4j Python Driver & 6.1.0 & Koneksi dan eksekusi \textit{query} Cypher ke \textit{knowledge graph} \\
 \hline
-LangChain-Groq & 0.0.1 & Integrasi Groq \textit{llama-3.1-8b-instant} untuk node \textit{Speaker} \\
+OpenAI SDK & 2.21.0 & Pembuatan \textit{embedding} \textit{text-embedding-3-small} \\
 \hline
-OpenAI SDK & --- & Generasi \textit{embedding} \textit{text-embedding-3-small} (1.536 dimensi) \\
+Streamlit & 1.54.0 & Antarmuka \textit{web} percakapan berbasis \textit{browser} \\
 \hline
-Streamlit & 1.30.0 & Antarmuka web percakapan berbasis \textit{browser} \\
+PyYAML & 6.0.3 & Validasi sintaksis YAML \\
 \hline
-PyYAML & 6.0 & Validasi sintaksis YAML (Lapis 1) \\
+kubernetes-validate & 1.35.0 & Validasi terhadap skema Kubernetes v1.29 \\
 \hline
-kubernetes-validate & 0.15.0 & Validasi kepatuhan skema Kubernetes v1.29 (Lapis 2) \\
-\hline
-SQLite & \textit{stdlib} & Penyimpanan riwayat percakapan antar-sesi \\
+SQLite & \textit{stdlib} & Penyimpanan riwayat percakapan antarsesi \\
 \hline
 \end{tabular}
 \end{table}

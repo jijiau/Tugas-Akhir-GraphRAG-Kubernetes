@@ -1,38 +1,40 @@
 \renewcommand{\arraystretch}{1.3}
 \captionsetup[table]{justification=raggedright,singlelinecheck=false}
 \begin{table}[H]
-\caption{Skor Evaluasi per Dimensi dan Sub-Metrik (97 \textit{Fixture})}
+\caption{Skor Evaluasi Sistem GraphRAG per Dimensi dan Sub-Metrik (97 \textit{Fixture})}
 \label{tbl:dimension_scores}
 \centering
-\begin{tabular}{| p{0.18\textwidth} | c | p{0.30\textwidth} | c |}
+\begin{tabular}{| p{0.20\textwidth} | c | p{0.32\textwidth} | c |}
 \hline
-\textbf{Dimensi (Bobot)} & \textbf{Skor} & \textbf{Sub-Metrik} & \textbf{Nilai} \\
+\textbf{Dimensi} & \textbf{Skor} & \textbf{Sub-Metrik} & \textbf{Nilai} \\
 \hline
-\multirow{4}{*}{\textbf{AnsQ} (40\%)} & \multirow{4}{*}{0,57} & \textit{Syntactic Validity} & 0,9474 \\
+\multirow{4}{*}{\textbf{AnsQ}} & \multirow{4}{*}{\textbf{0,5771}} & \textit{Syntactic Validity} (YAML) & 0,8947 \\
 \cline{3-4}
- &  & \textit{Schema Compliance} & 0,7895 \\
+ &  & \textit{Schema Compliance} (YAML) & 0,7895 \\
 \cline{3-4}
- &  & \textit{Answer Relevance} & 0,6682 \\
+ &  & \textit{Answer Relevance} & 0,6747 \\
 \cline{3-4}
- &  & \textit{Faithfulness} & 0,4289 \\
+ &  & \textit{Faithfulness} & 0,4356 \\
 \hline
-\multirow{4}{*}{\textbf{RetQ} (35\%)} & \multirow{4}{*}{0,69} & \textit{Graph Coverage} & 0,8599 \\
+\multirow{3}{*}{\textbf{RetQ}} & \multirow{3}{*}{\textbf{0,7259}} & \textit{F1@k} (komponen komposit) & 0,5770 \\
 \cline{3-4}
- &  & \textit{Recall@k} & 0,5907 \\
+ &  & NDCG@k (komponen komposit) & 0,7492 \\
 \cline{3-4}
- &  & \textit{NDCG@k} & 0,7503 \\
-\cline{3-4}
- &  & \textit{Precision@k} & 0,6705 \\
+ &  & \textit{Path Coverage} (komponen komposit) & 0,8515 \\
 \hline
-\multirow{4}{*}{\textbf{ReaQ} (25\%)} & \multirow{4}{*}{0,90} & \textit{Multi-Hop Success} & 1,0000 \\
+\multirow{2}{*}{\textbf{ReaQ}} & \multirow{2}{*}{\textbf{0,5554}} & \textit{Hop Accuracy} (komponen komposit) & 0,3505 \\
 \cline{3-4}
- &  & \textit{Hop Accuracy} & 0,8969 \\
-\cline{3-4}
- &  & \textit{Grounding Score} & 0,7678 \\
-\cline{3-4}
- &  & \textit{Hallucination Rate} & 0,2322 \\
+ &  & \textit{Grounding Score} (komponen komposit) & 0,7602 \\
 \hline
-\multicolumn{2}{|c|}{\textbf{Total Skor Komposit}} & \multicolumn{2}{c|}{\textbf{0,6943}} \\
+\multirow{2}{*}{\textbf{Diagnostik RetQ}} & --- & \textit{Precision@k} & 0,6827 \\
+\cline{3-4}
+ &  & \textit{Recall@k} & 0,5914 \\
+\hline
+\textbf{Diagnostik ReaQ} & --- & \textit{Hallucination Rate} & 0,2398 \\
+\hline
+\multirow{2}{*}{\textbf{Domain}} & --- & RGA (\textit{Retrieval-Grounded Answer}) & 0,4536 \\
+\cline{3-4}
+ &  & \textit{Syntactic Validity} YAML & 0,8947 \\
 \hline
 \end{tabular}
 \end{table}

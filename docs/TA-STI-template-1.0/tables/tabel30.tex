@@ -1,30 +1,30 @@
 \renewcommand{\arraystretch}{1.3}
 \captionsetup[table]{justification=raggedright,singlelinecheck=false}
 \begin{table}[H]
-\caption{Skor Evaluasi per Kategori \textit{Fixture}}
+\caption{Skor Evaluasi Sistem GraphRAG per Kategori \textit{Fixture}}
 \label{tbl:category_scores}
 \centering
-\begin{tabular}{| p{0.20\textwidth} | c | c | c | c | c |}
+\begin{tabular}{| p{0.20\textwidth} | c | c | c | c | c | c |}
 \hline
-\textbf{Kategori} & \textbf{\textit{n}} & \textbf{AnsQ} & \textbf{RetQ} & \textbf{ReaQ} & \textbf{Total} \\
+\textbf{Kategori} & \textbf{\textit{n}} & \textbf{AnsQ} & \textbf{RetQ} & \textbf{ReaQ} & \textbf{PathCov} & \textbf{HopAcc} \\
 \hline
-\textit{yaml\_gen} & 15 & 0,81 & 0,89 & 0,87 & \textbf{0,85} \\
+\textit{yaml\_gen}       & 15 & 0,84 & \textbf{0,92} & 0,62 & \textbf{1,00} & 0,67 \\
 \hline
-\textit{relationship} & 18 & 0,69 & 0,73 & 0,98 & 0,77 \\
+\textit{followup}        & 12 & 0,52 & 0,89 & 0,61 & 0,89 & 0,58 \\
 \hline
-\textit{conceptual} & 15 & 0,64 & 0,73 & 0,93 & 0,74 \\
+\textit{command}         &  3 & 0,49 & 0,88 & 0,46 & 1,00 & 0,33 \\
 \hline
-\textit{planning} & 5 & 0,45 & 0,80 & 0,90 & 0,69 \\
+\textit{relationship}    & 18 & \textbf{0,68} & 0,80 & 0,57 & 0,90 & 0,17 \\
 \hline
-\textit{command} & 3 & 0,33 & 0,75 & 0,87 & 0,61 \\
+\textit{conceptual}      & 15 & 0,66 & 0,75 & \textbf{0,66} & 0,89 & 0,47 \\
 \hline
-\textit{followup} & 12 & 0,53 & 0,92 & 0,91 & 0,76 \\
+\textit{planning}        &  5 & 0,46 & 0,82 & 0,32 & 0,97 & 0,00 \\
 \hline
-\textit{troubleshooting} & 5 & 0,41 & 0,67 & 0,89 & 0,62 \\
+\textit{troubleshooting} &  5 & 0,40 & 0,82 & 0,28 & 0,99 & 0,00 \\
 \hline
-\textit{realworld} & 24 & 0,41 & 0,35 & 0,84 & \textbf{0,50} \\
+\textit{realworld}       & 24 & 0,39 & 0,39 & 0,53 & 0,61 & 0,25 \\
 \hline
-\textbf{Keseluruhan} & \textbf{97} & \textbf{0,57} & \textbf{0,69} & \textbf{0,90} & \textbf{0,69} \\
+\textbf{Keseluruhan}     & \textbf{97} & \textbf{0,58} & \textbf{0,73} & \textbf{0,56} & \textbf{0,85} & \textbf{0,35} \\
 \hline
 \end{tabular}
 \end{table}

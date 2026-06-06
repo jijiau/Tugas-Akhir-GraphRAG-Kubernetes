@@ -1,0 +1,36 @@
+flowchart TB
+    Q([Kueri pengguna])
+
+    subgraph VL[Vanilla LLM]
+        direction TB
+        V1[GPT-4o-mini<br/>get_speaker_llm]
+    end
+    Q --> V1
+    V1 --> AV([Jawaban])
+
+    subgraph VR[Vector RAG]
+        direction TB
+        R1[Embedding kueri<br/>text-embedding-3-small]
+        R2[Vector search Neo4j<br/>top-k = 5]
+        R3[Ekspansi 1 lompatan<br/>3 jenis edge]
+        R4[Konstruksi konteks<br/>snippet + prompt]
+        R5[Speaker GPT-4o-mini]
+        R1 --> R2 --> R3 --> R4 --> R5
+    end
+
+    subgraph GR[GraphRAG]
+        direction TB
+        G1[Thinker<br/>klasifikasi intent]
+        G2[Retriever<br/>exact match + vektor + multi-hop 2-3]
+        G3[Speaker + validasi YAML]
+        G1 --> G2 --> G3
+    end
+
+    Q --> R1
+    Q --> G1
+
+    R5 --> AR([Jawaban])
+    G3 --> AG([Jawaban])
+
+    classDef sys fill:#eef,stroke:#557,stroke-width:1px;
+    class V1,R1,R2,R3,R4,R5,G1,G2,G3 sys;

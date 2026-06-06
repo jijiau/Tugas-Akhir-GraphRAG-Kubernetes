@@ -1,0 +1,22 @@
+\renewcommand{\arraystretch}{1.3}
+\captionsetup[table]{justification=raggedright,singlelinecheck=false}
+\begin{table}[H]
+\caption{Definisi Tipe \textit{Intent} beserta Contoh Pertanyaan}
+\label{tbl:intent_definisi}
+\centering
+\begin{tabular}{|p{0.18\textwidth}|p{0.35\textwidth}|p{0.37\textwidth}|}
+\hline
+\textbf{\textit{Intent Type}} & \textbf{Definisi} & \textbf{Contoh Pertanyaan} \\
+\hline
+\textit{explain} & Menanyakan definisi, cara kerja, atau tujuan suatu \textit{resource} Kubernetes. & "Apa fungsi \textit{ConfigMap} dan bagaimana cara kerjanya?" \\
+\hline
+\textit{generate\_yaml} & Meminta pembuatan atau konfigurasi manifes YAML untuk \textit{resource} Kubernetes. & "Buatkan YAML \textit{ClusterRole} untuk akses \textit{read-only} ke \textit{Pod}." \\
+\hline
+\textit{trace\_ relationship} & Menanyakan hubungan atau interaksi antara dua \textit{resource} atau lebih. & "Mengapa \textit{field} \texttt{port} pada \textit{Container} bisa menerima nilai \textit{integer} maupun \textit{string}?" \\
+\hline
+\textit{followup} & Meminta modifikasi atau kelanjutan dari jawaban atau konfigurasi pada giliran sebelumnya. & "Tambahkan \textit{environment variable} \texttt{DB\_HOST} yang nilainya diambil dari \textit{ConfigMap} \texttt{app-config}." \\
+\hline
+\textit{planning} & Meminta perancangan arsitektur sistem multi-komponen Kubernetes. & "Rancang \textit{setup} agar aplikasi dapat \textit{auto-scale} dan tetap tersedia saat diperbarui." \\
+\hline
+\end{tabular}
+\end{table}

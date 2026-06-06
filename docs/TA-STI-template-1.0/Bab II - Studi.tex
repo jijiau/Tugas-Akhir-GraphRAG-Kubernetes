@@ -1,4 +1,4 @@
-\cleardoublepage % memastikan bab baru dimulai di halaman ganjil (kanan)
+﻿\cleardoublepage % memastikan bab baru dimulai di halaman ganjil (kanan)
 
 \chapter{STUDI LITERATUR}
 \label{chap:studi-literatur}
@@ -7,7 +7,7 @@
 
 Aplikasi \textit{cloud-native} adalah perangkat lunak yang dirancang sejak awal untuk berjalan di lingkungan \textit{cloud} dengan memanfaatkan skalabilitas, resiliensi, dan elastisitas infrastruktur modern \parencite{soldani_pains_2018}. Pergeseran paradigma dari arsitektur monolitik menuju layanan mikro (\textit{microservices}) kini telah menjadi fondasi utama dalam pengembangan aplikasi \textit{cloud-native} modern. Berbeda dengan pendekatan arsitektur tradisional, gaya arsitektur layanan mikro mendistribusikan logika bisnis secara masif ke dalam puluhan hingga ratusan layanan kecil independen. Distribusi fungsionalitas ini memunculkan kebutuhan akan mekanisme \textit{deployment} independen. Sebagai solusi, layanan mikro secara alami terintegrasi dengan platform berbasis kontainer karena setiap layanan dapat dikemas dan didistribusikan di dalam kontainernya masing-masing \parencite{soldani_pains_2018}. Walaupun memberikan keuntungan operasional yang signifikan berupa portabilitas lintas \textit{cloud}, skalabilitas tingkat tinggi, dan kebebasan pemilihan teknologi bagi pengembang, ekosistem kontainer ini juga menghadirkan tantangan kompleksitas \parencite{soldani_pains_2018}.
 
-Dalam lingkungan terdistribusi ini, setiap layanan berkomunikasi melalui antarmuka API yang bertindak sebagai kontrak standar komunikasi antar-layanan \parencite{soldani_pains_2018}. Kesalahan interpretasi terhadap arsitektur dan kontrak API ini sering kali berujung pada kegagalan operasional; kegagalan satu layanan dapat memicu rentetan kegagalan layanan lain yang bergantung padanya (\textit{cascading failures}) \parencite{soldani_pains_2018}. Akibatnya, dokumentasi API dan manifes konfigurasi orkestrasi menjadi semakin kompleks, yang menjadi tantangan utama pengembang \textit{cloud-native}.
+Dalam lingkungan terdistribusi ini, setiap layanan berkomunikasi melalui antarmuka API yang bertindak sebagai kontrak standar komunikasi antarlayanan \parencite{soldani_pains_2018}. Kesalahan interpretasi terhadap arsitektur dan kontrak API ini sering kali berujung pada kegagalan operasional; kegagalan satu layanan dapat memicu rentetan kegagalan layanan lain yang bergantung padanya (\textit{cascading failures}) \parencite{soldani_pains_2018}. Akibatnya, dokumentasi API dan manifes konfigurasi orkestrasi menjadi semakin kompleks, yang menjadi tantangan utama pengembang \textit{cloud-native}.
 
 \section{Kubernetes: Platform Orkestrasi Kontainer untuk Aplikasi \textit{Cloud-Native}}
 
@@ -60,7 +60,7 @@ Dalam \textit{resource model} Kubernetes, terdapat beberapa objek inti pembangun
     \item \textbf{\textit{HorizontalPodAutoscaler}}: Pengatur skala otomatis berdasarkan metrik penggunaan
 \end{enumerate}
 
-Antar-objek ini saling terikat melalui berbagai jenis relasi semantik yang mencakup relasi kepemilikan (\textit{ownership}), ketergantungan fungsional (\textit{dependencies}), dan relasi konfigurasi.
+Antarobjek ini saling terikat melalui berbagai jenis relasi semantik yang mencakup relasi kepemilikan (\textit{ownership}), ketergantungan fungsional (\textit{dependencies}), dan relasi konfigurasi.
 \subsection{Manifes YAML dan \textit{Infrastructure as Code}}
 
 Pengembang berinteraksi dengan model sumber daya Kubernetes melalui pendekatan \textit{Infrastructure as Code} (IaC) \parencite{k8s_docs_concepts}. Pendekatan ini mewajibkan pengguna untuk mendeklarasikan wujud infrastruktur yang diinginkan (\textit{desired state}) ke dalam bentuk dokumen teks berformat YAML. Setiap manifes YAML standar wajib memiliki empat atribut struktural utama agar dapat diterima oleh API Kubernetes:
@@ -138,7 +138,7 @@ Arsitektur \textit{Retrieval-Augmented Generation} (RAG) merupakan pendekatan hi
     \end{enumerate}
 \end{enumerate}
 
-Meskipun efektif untuk skenario umum, RAG tradisional yang berbasis \textit{vector similarity} memiliki keterbatasan mendasar: dokumen dipecah menjadi potongan teks (\textit{chunks}) independen sehingga relasi struktural dan hierarki antar-entitas sering kali hilang dalam proses \textit{chunking} \parencite{rag_survey}.
+Meskipun efektif untuk skenario umum, RAG tradisional yang berbasis \textit{vector similarity} memiliki keterbatasan mendasar: dokumen dipecah menjadi potongan teks (\textit{chunks}) independen sehingga relasi struktural dan hierarki antarentitas sering kali hilang dalam proses \textit{chunking} \parencite{rag_survey}.
 
 \subsection{Relevansi RAG terhadap Dokumentasi Kubernetes API}
 
@@ -147,20 +147,20 @@ Dokumentasi Web API, termasuk Kubernetes, memiliki karakteristik unik berupa kom
 Dalam konteks Kubernetes, komponen API seperti \textit{Pod}, \textit{Service}, dan \textit{Deployment} direpresentasikan melalui skema bertingkat yang bersifat kompleks dan memiliki ketergantungan semantik. Oleh karena itu, implementasi RAG pada domain ini membutuhkan,
 \begin{enumerate}
     \item \textbf{\textit{Schema-aware semantic chunking}}\\
-    Teknik ini memastikan bahwa pemotongan dokumen (\textit{chunking}) dilakukan mengikuti struktur skema objek API. Setiap potongan teks harus mewakili satu entitas atau blok atribut yang utuh sehingga relasi antar-\textit{field} tidak terpisah atau kehilangan konteks. Dengan demikian, representasi vektor yang dihasilkan tetap mempertahankan hierarki objek.
+    Teknik ini memastikan bahwa pemotongan dokumen (\textit{chunking}) dilakukan mengikuti struktur skema objek API. Setiap potongan teks harus mewakili satu entitas atau blok atribut yang utuh sehingga relasi antar\textit{field} tidak terpisah atau kehilangan konteks. Dengan demikian, representasi vektor yang dihasilkan tetap mempertahankan hierarki objek.
 
     \item \textbf{\textit{Path-based serialization}}\\
     Teknik ini menyimpan setiap elemen API beserta jalur lengkapnya dalam struktur objek sehingga posisi semantiknya tetap terpelihara.
 
     \item \textbf{\textit{Hybrid index retrieval}}\\
-    Pendekatan ini mengombinasikan pencarian berbasis kesamaan semantik teks dengan pembobotan struktur sintaksis dari objek API. Selain memanfaatkan \textit{embedding} untuk menemukan kemiripan makna antar-teks, sistem juga memberikan bobot lebih tinggi pada elemen struktural kunci (misalnya \textit{field} wajib atau relasi antar-objek). Hasilnya, mekanisme \textit{retrieval} menghasilkan konteks yang tidak hanya relevan secara linguistik, tetapi juga benar secara hierarki dan fungsi API.
+    Pendekatan ini mengombinasikan pencarian berbasis kesamaan semantik teks dengan pembobotan struktur sintaksis dari objek API. Selain memanfaatkan \textit{embedding} untuk menemukan kemiripan makna antarteks, sistem juga memberikan bobot lebih tinggi pada elemen struktural kunci (misalnya \textit{field} wajib atau relasi antarobjek). Hasilnya, mekanisme \textit{retrieval} menghasilkan konteks yang tidak hanya relevan secara linguistik, tetapi juga benar secara hierarki dan fungsi API.
 \end{enumerate}
 
 Dengan demikian, penerapan RAG pada dokumentasi Kubernetes tidak hanya berfungsi sebagai mesin pencarian semantik, tetapi juga menjadi pendekatan mitigasi \textit{hallucination}.
 
 \section{\textit{Knowledge Graph} dan GraphRAG}
 \subsection{Definisi dan Struktur}
-\textit{Knowledge Graph} (KG) merupakan representasi pengetahuan dalam bentuk graf yang tersusun dari entitas (\textit{node}) dan relasi (\textit{edge}) yang memiliki makna semantik \parencite{hofer2024construction}. Basis data konvensional umumnya mengandalkan skema yang statis. Sebaliknya, KG bersifat \textit{schema-flexible}, sehingga lebih mudah untuk mengintegrasikan berbagai jenis data, baik yang terstruktur, semi-terstruktur, maupun tidak terstruktur, seperti yang ditunjukkan pada Gambar \ref{fig:arc-kg}. Struktur KG umumnya dinyatakan melalui \textit{triples} berbentuk (subjek–predikat–objek).
+\textit{Knowledge Graph} (KG) merupakan representasi pengetahuan dalam bentuk graf yang tersusun dari entitas (\textit{node}) dan relasi (\textit{edge}) yang memiliki makna semantik \parencite{hofer2024construction}. Basis data konvensional umumnya mengandalkan skema yang statis. Sebaliknya, KG bersifat \textit{schema-flexible} sehingga lebih mudah untuk mengintegrasikan berbagai jenis data, baik yang terstruktur, semi-terstruktur, maupun tidak terstruktur, seperti yang ditunjukkan pada Gambar \ref{fig:arc-kg}. Struktur KG umumnya dinyatakan melalui \textit{triples} berbentuk (subjek–predikat–objek).
 
 \begin{figure}[h]
     \centering
@@ -180,7 +180,7 @@ Dengan demikian, penerapan RAG pada dokumentasi Kubernetes tidak hanya berfungsi
     \label{fig:tax-kg}
 \end{figure}
 
-Posisi penelitian ini dalam taksonomi tersebut terletak pada kombinasi \textit{schema-based} dengan metode \textit{rule/knowledge-based}: sumber pengetahuan berupa spesifikasi OpenAPI Kubernetes yang bersifat formal dan terstruktur, sementara konstruksi KG dilakukan melalui aturan transformasi deterministik yang dirancang secara eksplisit berdasarkan semantik domain. Berbeda dengan pendekatan \textit{schema-free} berbasis LLM yang bersifat stokastik dan menghasilkan struktur graf yang bervariasi antar-eksekusi \parencite{pan2024unifying}, pendekatan \textit{rule-based} menghasilkan representasi yang konsisten dan dapat direproduksi selama sumber skemanya tidak berubah.
+Posisi penelitian ini dalam taksonomi tersebut terletak pada kombinasi \textit{schema-based} dengan metode \textit{rule/knowledge-based}: sumber pengetahuan berupa spesifikasi OpenAPI Kubernetes yang bersifat formal dan terstruktur, sementara konstruksi KG dilakukan melalui aturan transformasi deterministik yang dirancang secara eksplisit berdasarkan semantik domain. Berbeda dengan pendekatan \textit{schema-free} berbasis LLM yang bersifat stokastik dan menghasilkan struktur graf yang bervariasi antareksekusi \parencite{pan2024unifying}, pendekatan \textit{rule-based} menghasilkan representasi yang konsisten dan dapat direproduksi selama sumber skemanya tidak berubah.
 
 Sifat deterministik KG berbasis skema ini membuka peluang penggunaan ganda: selain sebagai basis \textit{retrieval}, graf yang sama dapat dimanfaatkan sebagai validator struktural. \textcite{rahman2023misconfigurations} menemukan bahwa sekitar 80\% miskonfigurasi Kubernetes bersifat struktural sehingga dapat dideteksi melalui analisis statis (\textit{static analysis}) tanpa menjalankan kluster aktif. Temuan ini memvalidasi prinsip pendekatan validasi berbasis skema: jika spesifikasi \textit{required fields} setiap objek Kubernetes sudah terenkode dalam representasi graf, pemeriksaan kelengkapan atribut wajib dapat dilakukan langsung terhadap graf tersebut, tanpa memerlukan mekanisme \textit{dry-run} yang bergantung pada infrastruktur nyata.
 
@@ -189,20 +189,21 @@ Sifat deterministik KG berbasis skema ini membuka peluang penggunaan ganda: sela
 
 \textit{Large Language Models} (LLM) dan \textit{Knowledge Graphs} (KG) merupakan dua paradigma representasi pengetahuan yang saling melengkapi. LLM unggul dalam pemrosesan bahasa alami serta generalisasi lintas tugas tetapi rentan terhadap halusinasi fakta. Sebaliknya, KG menawarkan representasi pengetahuan faktual dalam bentuk struktur graf eksplisit yang kuat untuk penalaran simbolik namun kurang mampu menangani pemahaman bahasa alami yang kompleks \parencite{pan2024unifying}.
 
-Untuk mengatasi kelemahan LLM tersebut, pendekatan \textit{Retrieval-Augmented Generation} (RAG) konvensional sering digunakan. Namun, RAG tradisional bekerja dengan cara memecah dokumen menjadi potongan teks (\textit{chunks}) independen sehingga sering kali menghilangkan informasi struktural dan relasi esensial antar-entitas \parencite{ma_llm_kg_2025}. Sebagai solusi komprehensif atas keterbatasan tersebut, muncullah konsep \textit{Graph Retrieval-Augmented Generation} (GraphRAG).
+Untuk mengatasi kelemahan LLM tersebut, pendekatan \textit{Retrieval-Augmented Generation} (RAG) konvensional sering digunakan. Namun, RAG tradisional bekerja dengan cara memecah dokumen menjadi potongan teks (\textit{chunks}) independen sehingga sering kali menghilangkan informasi struktural dan relasi esensial antarentitas \parencite{ma_llm_kg_2025}. Sebagai solusi komprehensif atas keterbatasan tersebut, muncullah konsep \textit{Graph Retrieval-Augmented Generation} (GraphRAG).
 
 Berbeda dengan pencarian semantik biasa berbasis vektor teks, GraphRAG memanfaatkan mekanisme penelusuran graf (\textit{graph traversal}) untuk mengambil konteks terstruktur secara utuh sebelum diberikan ke LLM \parencite{han_graphrag_2024}. Mekanisme ini secara langsung mengekstraksi pengetahuan relevan dari data graf dengan merangkai subgraf atau jalur relasional berdasarkan kueri pengguna \parencite{ma_llm_kg_2025}.
 
 Secara formal, integrasi generatif ini dimodelkan sebagai fungsi yang bersyarat terhadap pengetahuan graf:
 \begin{equation}
 p_{\theta}(y \mid x, \mathcal{K}) = \sum_{z \in \mathcal{Z}(x, \mathcal{K})} p_{\theta}(y \mid x, z)\, p(z \mid x, \mathcal{K}),
+\eqcaption{Model kondisional GraphRAG berbasis \textit{knowledge graph}}
 \label{eq:rag-conditional}
 \end{equation}
 dengan $\mathcal{K} = \{(h, r, t) \subseteq \mathcal{E} \times \mathcal{R} \times \mathcal{E}\}$ merepresentasikan KG sebagai himpunan \textit{triples}, dan $\mathcal{Z}(x, \mathcal{K})$ merupakan himpunan subgraf atau fakta terstruktur yang ditarik dari graf berdasarkan kueri $x$. Dalam skema ini, KG bertindak sebagai ruang pengetahuan non-parametrik penyedia panduan penalaran (\textit{reasoning guidelines}), sedangkan LLM bertindak sebagai generator parametrik \parencite{ma_llm_kg_2025}.
 
 Pendekatan GraphRAG ini menjadi sangat krusial dalam domain berskala kompleks seperti manajemen konfigurasi Kubernetes. Dengan memetakan hierarki objek dan referensi silang ke dalam graf, algoritma \textit{traversal} dapat merangkai jejak penalaran (\textit{reasoning path}) yang kohesif. Namun demikian, kedalaman \textit{traversal} menjadi faktor kritis yang memengaruhi kualitas konteks. Jika penelusuran yang dilakukan terlalu dalam, maka akan memicu \textit{information overload} karena graf yang berkembang secara eksponensial memungkinkan masuknya informasi yang tidak relevan \parencite{han_graphrag_2024}, sedangkan penelusuran yang terlalu dangkal menyebabkan \textit{under-retrieval} sehingga konteks relasional yang dibutuhkan untuk penalaran \textit{multi-hop} tidak terjangkau saat proses penelusuran graf.
 
-Solusi atas dilema kedalaman ini adalah mekanisme \textit{intent-adaptive retrieval}, yaitu strategi yang menyesuaikan kedalaman atau strategi \textit{traversal} berdasarkan klasifikasi maksud (\textit{intent}) dari kueri pengguna. Literatur NLP dan IR menunjukkan bahwa mengklasifikasi tipe kueri sebelum \textit{retrieval} meningkatkan presisi konteks secara signifikan \parencite{zhao_rag_survey_2024}: kueri definitif (\textit{explain}) memerlukan konteks yang lebih dangkal dan terfokus, sedangkan kueri generatif atau relasional (\textit{generate\_yaml}, \textit{trace\_relationship}) memerlukan penelusuran yang lebih dalam untuk menangkap dependensi multi-tingkat antar-objek. Dengan demikian, klasifikasi \textit{intent} bukan sekadar pra-pemrosesan kueri, melainkan mekanisme kendali yang menentukan batas eksplorasi kontekstual dalam ruang graf.
+Solusi atas dilema kedalaman ini adalah mekanisme \textit{intent-adaptive retrieval}, yaitu strategi yang menyesuaikan kedalaman atau strategi \textit{traversal} berdasarkan klasifikasi maksud (\textit{intent}) dari kueri pengguna. Literatur NLP dan IR menunjukkan bahwa mengklasifikasi tipe kueri sebelum \textit{retrieval} meningkatkan presisi konteks secara signifikan \parencite{zhao_rag_survey_2024}: kueri definitif (\textit{explain}) memerlukan konteks yang lebih dangkal dan terfokus, sedangkan kueri generatif atau relasional (\textit{generate\_yaml}, \textit{trace\_relationship}) memerlukan penelusuran yang lebih dalam untuk menangkap dependensi multi-tingkat antarobjek. Dengan demikian, klasifikasi \textit{intent} bukan sekadar pra-pemrosesan kueri, melainkan mekanisme kendali yang menentukan batas eksplorasi kontekstual dalam ruang graf.
 
 \section{Metrik Evaluasi Sistem Informasi Retrieval}
 \label{sec:metrik-evaluasi}
@@ -218,6 +219,7 @@ Evaluasi kualitas jawaban sistem RAG mencakup metrik kesesuaian isi jawaban maup
     Mengukur sejauh mana jawaban yang dihasilkan oleh LLM bersumber dari konteks yang diambil, bukan dari pengetahuan parametrisnya sendiri \parencite{es_ragas_2023}. Metrik ini secara langsung mengukur risiko halusinasi: jawaban yang tinggi \textit{faithfulness}-nya berarti setiap klaim dapat ditelusuri ke konteks yang disediakan. Dalam penelitian ini, formulasi RAGAS diadaptasi ke level node graf, sehingga \textit{faithfulness} dihitung sebagai proporsi node kunci pada \textit{ground truth} yang disebutkan secara eksplisit dalam jawaban:
     \begin{equation}
     \text{Faithfulness} = \frac{|\,N_{\text{kunci}} \cap N_{\text{jawaban}}\,|}{|\,N_{\text{kunci}}\,|},
+    \eqcaption{Metrik \textit{Faithfulness}: proporsi node kunci dalam jawaban}
     \label{eq:faithfulness}
     \end{equation}
     dengan $N_{\text{kunci}}$ adalah himpunan node kunci pada \textit{ground truth} dan $N_{\text{jawaban}}$ adalah himpunan node yang disebutkan dalam jawaban.
@@ -226,6 +228,7 @@ Evaluasi kualitas jawaban sistem RAG mencakup metrik kesesuaian isi jawaban maup
     Mengukur kesesuaian semantik antara jawaban yang dihasilkan dan jawaban acuan (\textit{ground truth}) \parencite{es_ragas_2023}. Implementasinya berbasis kemiripan kosinus antara representasi vektor \textit{embedding} jawaban sistem $\mathbf{e}_a$ dan \textit{embedding} jawaban acuan $\mathbf{e}_g$:
     \begin{equation}
     \text{Answer Relevance} = \cos(\mathbf{e}_a, \mathbf{e}_g) = \frac{\mathbf{e}_a \cdot \mathbf{e}_g}{\lVert \mathbf{e}_a \rVert \, \lVert \mathbf{e}_g \rVert}.
+    \eqcaption{Metrik \textit{Answer Relevance} berbasis kemiripan kosinus \textit{embedding}}
     \label{eq:answer-relevance}
     \end{equation}
 
@@ -233,13 +236,15 @@ Evaluasi kualitas jawaban sistem RAG mencakup metrik kesesuaian isi jawaban maup
     Mengukur proporsi keluaran YAML yang dapat diurai tanpa galat menggunakan \textit{parser} standar seperti \texttt{pyyaml}. Metrik ini bersifat biner pada level \textit{fixture}, yaitu bernilai $1$ jika dokumen YAML valid dan $0$ jika tidak \parencite{moreno2025rag}:
     \begin{equation}
     \text{Syntactic Validity} = \frac{|\,\text{YAML lolos } parsing\,|}{|\,\text{total } fixture\ \textit{yaml\_gen}\,|}.
+    \eqcaption{Metrik \textit{Syntactic Validity} keluaran YAML}
     \label{eq:syntactic-validity}
     \end{equation}
 
     \item \textbf{\textit{Schema Compliance}}\\
-    Mengukur kesesuaian YAML terhadap spesifikasi skema yang berlaku, dalam konteks ini spesifikasi OpenAPI Kubernetes v1.29 \parencite{kubernetes_docs}. Sebagaimana \textit{syntactic validity}, metrik ini bersifat biner pada level \textit{fixture}:
+    Mengukur kesesuaian YAML terhadap spesifikasi skema yang berlaku, dalam konteks ini spesifikasi OpenAPI Kubernetes v1.30 \parencite{kubernetes_docs}. Sebagaimana \textit{syntactic validity}, metrik ini bersifat biner pada level \textit{fixture}:
     \begin{equation}
     \text{Schema Compliance} = \frac{|\,\text{YAML lolos validasi skema}\,|}{|\,\text{total } fixture\ \textit{yaml\_gen}\,|}.
+    \eqcaption{Metrik \textit{Schema Compliance} terhadap spesifikasi OpenAPI Kubernetes}
     \label{eq:schema-compliance}
     \end{equation}
     Metrik ketiga dan keempat ini hanya relevan untuk \textit{fixture} bertipe \textit{yaml\_gen}.
@@ -255,6 +260,7 @@ Evaluasi komponen \textit{retrieval} menggunakan metrik standar IR yang mengukur
     \begin{equation}
     \text{Precision@k} = \frac{|\,N_{\text{retrieved}} \cap N_{\text{relevant}}\,|}{|\,N_{\text{retrieved}}\,|}, \qquad
     \text{Recall@k} = \frac{|\,N_{\text{retrieved}} \cap N_{\text{relevant}}\,|}{|\,N_{\text{relevant}}\,|}.
+    \eqcaption{Metrik \textit{Precision@k} dan \textit{Recall@k} pada \textit{retrieval}}
     \label{eq:precision-recall}
     \end{equation}
 
@@ -262,6 +268,7 @@ Evaluasi komponen \textit{retrieval} menggunakan metrik standar IR yang mengukur
     Merupakan rata-rata harmonik antara \textit{Precision@k} dan \textit{Recall@k}, memberikan gambaran seimbang tentang \textit{trade-off} antara ketepatan dan kelengkapan \parencite{zhao_rag_survey_2024}:
     \begin{equation}
     \text{F1@k} = 2 \times \frac{\text{Precision@k} \times \text{Recall@k}}{\text{Precision@k} + \text{Recall@k}}.
+    \eqcaption{Metrik \textit{F1-Score@k}: rata-rata harmonik presisi dan kelengkapan}
     \label{eq:f1}
     \end{equation}
 
@@ -270,6 +277,7 @@ Evaluasi komponen \textit{retrieval} menggunakan metrik standar IR yang mengukur
     \begin{equation}
     \text{NDCG@k} = \frac{\text{DCG@k}}{\text{IDCG@k}}, \qquad
     \text{DCG@k} = \sum_{i=1}^{k} \frac{rel_i}{\log_2(i + 1)},
+    \eqcaption{Metrik \textit{NDCG@k}: peringkat hasil \textit{retrieval} bernormalisasi}
     \label{eq:ndcg}
     \end{equation}
     dengan $rel_i$ bernilai $1$ jika node pada posisi ke-$i$ relevan dan $0$ jika tidak. Metrik ini penting dalam konteks RAG karena node relevan yang terpotong akibat batasan token LLM tidak memberikan manfaat apapun.
@@ -284,6 +292,7 @@ Evaluasi dimensi penalaran mengukur sejauh mana jawaban sistem dapat diverifikas
     Mengukur proporsi istilah teknis Kubernetes dalam jawaban yang dapat ditelusuri secara langsung ke konteks yang diambil, bukan berasal dari pengetahuan bawaan model \parencite{es_ragas_2023}. Nilai tinggi menunjukkan bahwa jawaban berbasis konteks graf, bukan halusinasi:
     \begin{equation}
     \text{Grounding Score} = \frac{|\,T_{\text{grounded}}\,|}{|\,T_{\text{jawaban}}\,|},
+    \eqcaption{Metrik \textit{Grounding Score}: proporsi istilah Kubernetes berbasis konteks}
     \label{eq:grounding}
     \end{equation}
     dengan $T_{\text{jawaban}}$ adalah himpunan istilah Kubernetes dalam jawaban dan $T_{\text{grounded}}$ adalah himpunan istilah yang dapat ditelusuri ke konteks yang di-\textit{retrieve}.
@@ -302,14 +311,16 @@ Metrik standar IR tidak memadai untuk mengevaluasi \textit{GraphRAG} karena meng
     Mengukur ketepatan kedalaman penelusuran (\textit{traversal}) yang dilakukan sistem terhadap kedalaman yang dibutuhkan menurut \textit{ground truth}. Metrik ini memvalidasi apakah mekanisme \textit{intent-adaptive depth} berhasil memetakan tipe kueri ke kedalaman yang tepat:
     \begin{equation}
     \text{Hop Accuracy} = \frac{|\,\{f \mid d_{\text{pred}}(f) = d_{\text{gt}}(f)\}\,|}{|\,F\,|},
+    \eqcaption{Metrik \textit{Hop Accuracy}: ketepatan kedalaman \textit{traversal} berbasis \textit{intent}}
     \label{eq:hop-accuracy}
     \end{equation}
-    dengan $F$ adalah himpunan seluruh \textit{fixture}, $d_{\text{pred}}(f)$ adalah kedalaman penelusuran yang dieksekusi sistem untuk \textit{fixture} $f$, dan $d_{\text{gt}}(f)$ adalah kedalaman yang dibutuhkan menurut anotasi \textit{ground truth}.
+    dengan $F$ adalah himpunan seluruh \textit{fixture}, $d_{\text{pred}}(f)$ adalah kedalaman penelusuran yang dieksekusi sistem untuk \textit{fixture} $f$ (operasionalisasi: jumlah langkah dalam \texttt{reasoning\_path} yang dikembalikan), dan $d_{\text{gt}}(f)$ adalah kedalaman yang dibutuhkan menurut anotasi \textit{ground truth} (operasionalisasi: jumlah \textit{edge} dalam \texttt{expected\_path} pada \textit{fixture}). Mekanisme \textit{intent-adaptive depth} (T2) diverifikasi jika $d_{\text{pred}}(f) = d_{\text{gt}}(f)$ untuk sebagian besar \textit{fixture}.
 
     \item \textbf{\textit{Path Coverage}}\\
     Mengukur kelengkapan konteks relasional yang diambil dengan mempertimbangkan baik node maupun \textit{edge} yang menghubungkannya. Formulasi berbasis \textit{edge} ini lebih diskriminatif daripada cakupan berbasis node semata, karena sebuah node dapat diambil tanpa relasi penghubung yang tepat:
     \begin{equation}
     \text{Path Coverage} = \frac{|\,E_{\text{retrieved}} \cap E_{\text{relevant}}\,|}{|\,E_{\text{relevant}}\,|},
+    \eqcaption{Metrik \textit{Path Coverage}: kelengkapan konteks relasional berbasis \textit{edge}}
     \label{eq:path-coverage}
     \end{equation}
     dengan $E_{\text{retrieved}}$ adalah himpunan \textit{edge} pada subgraf hasil penelusuran dan $E_{\text{relevant}}$ adalah himpunan \textit{edge} relevan menurut \textit{ground truth}.
@@ -318,6 +329,7 @@ Metrik standar IR tidak memadai untuk mengevaluasi \textit{GraphRAG} karena meng
     Mengukur proporsi jawaban yang benar \textit{dan} didukung oleh konteks yang berhasil diambil. Metrik ini diadaptasi dari \textit{Answer Recall metric} (AR-metric) \parencite{han_graphrag_2024}: sebuah jawaban yang benar tetapi tidak didukung oleh konteks graf yang relevan diklasifikasikan sebagai tebakan parametrik, bukan bukti keunggulan sistem:
     \begin{equation}
     \text{RGA} = \frac{|\,\{f \mid \text{correct}(f) = 1 \wedge \text{grounded}(f) = 1\}\,|}{|\,F\,|},
+    \eqcaption{Metrik \textit{Retrieval-Grounded Answer} (RGA): jawaban benar berbasis \textit{retrieval}}
     \label{eq:rga}
     \end{equation}
     dengan $\text{correct}(f) = 1$ jika jawaban sistem untuk \textit{fixture} $f$ dinilai benar berdasarkan \textit{faithfulness} dan \textit{answer relevance}, dan $\text{grounded}(f) = 1$ jika \textit{path coverage} sistem untuk \textit{fixture} tersebut melebihi ambang batas minimal yang ditetapkan ($\geq 0{,}5$).
@@ -332,7 +344,7 @@ Bagian ini merangkum tiga penelitian terdahulu yang paling relevan terhadap pend
 
 \subsection{GraphRAG untuk Platform IoT Domain-Spesifik}
 
-\textcite{civiot2025graphrag} mengembangkan mesin dialog tanya jawab berbasis GraphRAG untuk membantu pengguna mengambil informasi secara presisi dari \textit{Civil IoT Taiwan Data Service Platform}. Penelitian ini membangun \textit{Knowledge Graph} secara semi-otomatis menggunakan GPT-4.1 untuk mengekstraksi entitas dan relasi dari dokumen platform, kemudian menggunakan model Llama-3-TAIDE-LX-8B untuk menerjemahkan pertanyaan bahasa alami pengguna ke jalur kueri graf. Sistem berhasil melampaui nilai F1 sebesar 0,7 pada kueri multi-entitas dan terbukti efektif menghindari halusinasi pada kasus data yang tidak tersedia.
+\textcite{civiot2025graphrag} mengembangkan mesin dialog tanya jawab berbasis GraphRAG untuk membantu pengguna mengambil informasi secara presisi dari \textit{Civil IoT Taiwan Data Service Platform}. Penelitian ini membangun \textit{Knowledge Graph} secara semi-otomatis menggunakan GPT-4.1 untuk mengekstraksi entitas dan relasi dari dokumen platform, kemudian menggunakan model Llama-3-TAIDE-LX-8B untuk menerjemahkan pertanyaan bahasa alami pengguna ke jalur kueri graf. Sistem berhasil melampaui nilai F1 sebesar 0,7 pada kueri multi-entitas dan menunjukkan efektivitas dalam menghindari halusinasi pada kasus data yang tidak tersedia.
 
 Keterbatasan utamanya adalah \textit{Knowledge Graph} yang bersifat statis tanpa mekanisme pembaruan dinamis, serta biaya adaptasi yang tinggi untuk platform lain. Perbedaan kunci dengan penelitian ini terletak pada sumber data dan topologi graf: penelitian \textcite{civiot2025graphrag} membangun graf dari narasi dokumen tidak terstruktur dengan entitas IoT yang beragam, sedangkan penelitian ini membangun graf dari skema OpenAPI Kubernetes yang bersifat deterministik dengan taksonomi relasi yang didefinisikan secara eksplisit.
 
@@ -344,10 +356,10 @@ Keterbatasan utamanya adalah latensi tinggi akibat proses pencarian hibrida yang
 
 \subsection{HSG-RAG: Konstruksi Basis Pengetahuan Hierarkis untuk Domain Teknis}
 
-\textcite{hsgrag2025acm} mengembangkan HSG-RAG (\textit{Hierarchical Semantic Graph Retrieval Augmented Generation}), sebuah metode konstruksi dan pencarian basis pengetahuan bertingkat untuk mendukung pengembangan sistem \textit{embedded}. Graf dibangun dari korpus dokumen teknis SDK dan \textit{datasheet} tiga platform perangkat keras (ESP32S3, STM32F103, JL701) menggunakan LLM, mencakup dua lapisan relasi: jarak dekat antar-paragraf dan jarak jauh berbasis kemiripan semantik. Strategi pencarian \textit{top-down} memecah kueri pengguna menjadi sub-kueri yang ditelusuri secara bertahap di dalam graf, menghasilkan jawaban yang lebih spesifik, ringkas, dan lengkap dibandingkan VanillaRAG maupun GraphRAG konvensional.
+\textcite{hsgrag2025acm} mengembangkan HSG-RAG (\textit{Hierarchical Semantic Graph Retrieval Augmented Generation}), sebuah metode konstruksi dan pencarian basis pengetahuan bertingkat untuk mendukung pengembangan sistem \textit{embedded}. Graf dibangun dari korpus dokumen teknis SDK dan \textit{datasheet} tiga platform perangkat keras (ESP32S3, STM32F103, JL701) menggunakan LLM, mencakup dua lapisan relasi: jarak dekat antarparagraf dan jarak jauh berbasis kemiripan semantik. Strategi pencarian \textit{top-down} memecah kueri pengguna menjadi sub-kueri yang ditelusuri secara bertahap di dalam graf, menghasilkan jawaban yang lebih spesifik, ringkas, dan lengkap dibandingkan VanillaRAG maupun GraphRAG konvensional.
 
-Keterbatasan utamanya adalah belum adanya mekanisme verifikasi otomatis kebenaran kode yang dihasilkan, serta cakupan evaluasi yang masih terbatas pada beberapa platform perangkat keras. Penelitian ini mengadopsi konsep dekomposisi kueri dan penelusuran bertingkat yang serupa, namun menerapkannya pada skema Kubernetes yang memiliki hierarki objek lebih terstruktur dan jenis relasi antar-\textit{resource} yang terdefinisi secara formal dalam spesifikasi OpenAPI.
+Keterbatasan utamanya adalah belum adanya mekanisme verifikasi otomatis kebenaran kode yang dihasilkan, serta cakupan evaluasi yang masih terbatas pada beberapa platform perangkat keras. Penelitian ini mengadopsi konsep dekomposisi kueri dan penelusuran bertingkat yang serupa, namun menerapkannya pada skema Kubernetes yang memiliki hierarki objek lebih terstruktur dan jenis relasi antar\textit{resource} yang terdefinisi secara formal dalam spesifikasi OpenAPI.
 
 Ketiga penelitian terdahulu secara konsisten memvalidasi efektivitas pendekatan GraphRAG dalam domain teknis spesifik, sekaligus mengidentifikasi dua pola keterbatasan yang berulang: (1) KG bersifat statis tanpa mekanisme pembaruan dinamis, dan (2) taksonomi relasi yang belum disesuaikan dengan karakteristik skema target secara mendalam. Penelitian ini merespons kedua pola keterbatasan tersebut secara domain-spesifik untuk Kubernetes.
 
-Berdasarkan kajian literatur yang telah dipaparkan, teridentifikasi dua kesenjangan utama yang menjadi landasan penelitian ini. Pertama, pendekatan RAG berbasis vektor konvensional terbukti tidak memadai untuk domain Kubernetes karena gagal menangkap relasi hierarkis dan referensial yang menentukan validitas konfigurasi \parencite{wan2025empowering}. Kedua, meskipun integrasi \textit{Knowledge Graph} dalam RAG telah menunjukkan peningkatan signifikan pada domain umum, belum ada rancangan taksonomi relasi dan mekanisme \textit{traversal} yang secara spesifik disesuaikan untuk skema OpenAPI Kubernetes. Bab selanjutnya menganalisis karakteristik data, kebutuhan sistem, dan alternatif pendekatan solusi untuk menjawab kedua kesenjangan tersebut.
+Berdasarkan kajian literatur yang telah dipaparkan, teridentifikasi dua kesenjangan utama yang menjadi landasan penelitian ini. Pertama, pendekatan RAG berbasis vektor konvensional menunjukkan keterbatasan signifikan untuk domain Kubernetes karena gagal menangkap relasi hierarkis dan referensial yang menentukan validitas konfigurasi \parencite{wan2025empowering}. Kedua, meskipun integrasi \textit{Knowledge Graph} dalam RAG telah menunjukkan peningkatan signifikan pada domain umum, belum ada rancangan taksonomi relasi dan mekanisme \textit{traversal} yang secara spesifik disesuaikan untuk skema OpenAPI Kubernetes. Bab selanjutnya menganalisis karakteristik data, kebutuhan sistem, dan alternatif pendekatan solusi untuk menjawab kedua kesenjangan tersebut.

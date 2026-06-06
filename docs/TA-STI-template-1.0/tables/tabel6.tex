@@ -1,7 +1,7 @@
 \renewcommand{\arraystretch}{1.35}
 \captionsetup[longtable]{justification=raggedright,singlelinecheck=false}
 
-\begin{longtable}{|p{3.8cm}|p{5cm}|p{4cm}|}
+\begin{longtable}{ p{3.8cm} p{5cm} p{4cm} }
 \caption{Pemetaan Tahap Metodologi}
 \label{tbl:mapping_methodology_requirements} \\
 \hline
@@ -27,7 +27,7 @@
 \endlastfoot
 
 % =================== DATA PREPARATION ======================
-\multicolumn{3}{|c|}{\textbf{Data Preparation}} \\ \hline
+\multicolumn{3}{c}{\textbf{Data Preparation}} \\ \hline
 
 \textit{Data Selection \& Cleaning} &
 Identifikasi objek target dari spesifikasi OpenAPI Kubernetes, seleksi blok \textit{definitions}, dan pembersihan tipe generik yang tidak relevan untuk pembuatan YAML. &
@@ -50,7 +50,7 @@ F-01 (\textit{Structured Object Representation}) \\ \hline
 
 
 % =================== MODELLING ======================
-\multicolumn{3}{|c|}{\textbf{Modelling}} \\ \hline
+\multicolumn{3}{c}{\textbf{Modelling}} \\ \hline
 
 \textit{Intent Classification Modeling} &
 Klasifikasi pertanyaan pengguna ke dalam tipe \textit{intent} untuk menentukan strategi dan kedalaman penelusuran graf. &
@@ -77,7 +77,7 @@ F-04 (\textit{Context Construction \& Injection}) \\ \hline
 
 
 % =================== INPUT ======================
-\multicolumn{3}{|c|}{\textbf{Input Processing}} \\ \hline
+\multicolumn{3}{c}{\textbf{Input Processing}} \\ \hline
 
 Pertanyaan Pengguna &
 Input teks berupa permintaan teknis Kubernetes dalam bahasa alami yang diajukan pengguna melalui antarmuka percakapan. &
@@ -85,7 +85,7 @@ F-03 (\textit{Intent Classification}) \\ \hline
 
 
 % =================== OUTPUT ======================
-\multicolumn{3}{|c|}{\textbf{Output Generation}} \\ \hline
+\multicolumn{3}{c}{\textbf{Output Generation}} \\ \hline
 
 Konten Jawaban &
 Keluaran sistem berupa narasi penjelas atau blok YAML konfigurasi Kubernetes sesuai permintaan pengguna. &
@@ -97,7 +97,7 @@ F-02 (\textit{Structured Relation Retrieval}) \\ \hline
 
 
 % =================== EVALUATION ======================
-\multicolumn{3}{|c|}{\textbf{Evaluation}} \\ \hline
+\multicolumn{3}{c}{\textbf{Evaluation}} \\ \hline
 
 \textit{Answer Quality} (AnsQ) &
 Evaluasi kualitas jawaban (\textit{Answer Quality}); definisi metrik lengkap pada Subbab~\ref{sec:metrik-evaluasi}. &
@@ -113,7 +113,7 @@ Evaluasi kualitas penalaran (\textit{Reasoning Quality}); definisi metrik lengka
 
 
 % =================== DEPLOYMENT ======================
-\multicolumn{3}{|c|}{\textbf{Deployment}} \\ \hline
+\multicolumn{3}{c}{\textbf{Deployment}} \\ \hline
 
 Antarmuka Web Interaktif (Streamlit) &
 Penyajian sistem melalui antarmuka web berbasis Streamlit (\texttt{main.py}) yang menampilkan \textit{chat interface}, jawaban LLM, blok YAML (jika relevan), serta visualisasi \textit{Retrieval Trace} berbasis Graphviz. &

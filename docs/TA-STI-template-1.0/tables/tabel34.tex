@@ -1,0 +1,30 @@
+\renewcommand{\arraystretch}{1.3}
+\captionsetup[table]{justification=raggedright,singlelinecheck=false}
+\begin{table}[H]
+\caption{Rata-rata \textit{RetQ-gain} (GraphRAG $-$ Vector RAG) per Tipe \textit{Fixture}}
+\label{tbl:retq-gain-by-type}
+\centering
+\begin{tabular}{| p{0.22\textwidth} | c | c | p{0.32\textwidth} |}
+\hline
+\textbf{Tipe} & \textbf{$n$} & \textbf{Rata-rata \textit{RetQ-gain}} & \textbf{Karakteristik Kueri} \\
+\hline
+\textit{command}         & 3  & $+0{,}671$ & Konfigurasi operasional lini perintah \\
+\hline
+\textit{planning}        & 5  & $+0{,}605$ & Perancangan multi-komponen bertingkat \\
+\hline
+\textit{followup}        & 12 & $+0{,}574$ & Tindak lanjut relasi antar-\textit{resource} \\
+\hline
+\textit{troubleshooting} & 5  & $+0{,}551$ & Diagnosis lintas \textit{resource} \\
+\hline
+\textit{yaml\_gen}       & 15 & $+0{,}337$ & Generasi manifes terstruktur \\
+\hline
+\textit{relationship}    & 18 & $+0{,}264$ & Pemetaan hubungan eksplisit \\
+\hline
+\textit{conceptual}      & 15 & $+0{,}168$ & Penjelasan konsep tunggal \\
+\hline
+\textit{realworld}       & 24 & $+0{,}089$ & Skenario dunia nyata (konteks luas) \\
+\hline
+\textbf{Keseluruhan}     & \textbf{97} & $+0{,}300$ & --- \\
+\hline
+\end{tabular}
+\end{table}

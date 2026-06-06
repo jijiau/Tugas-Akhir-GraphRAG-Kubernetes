@@ -1,14 +1,3 @@
-"""
-Swagger Graph Builder — Pipeline Ingestion 5-Fase
-
-Fase:
-    Pass 1   — Buat node Definition (nama, kind, scope, deskripsi)
-    Pass 1.5 — Generate embedding vektor 1536-dim (text-embedding-3-small)
-    Pass 2   — Buat edge HAS_PROPERTY struktural (resolusi $ref)
-    Pass 2.5 — Buat edge EXTENDS / ONE_OF / ANY_OF (pewarisan tipe)
-    Pass 3   — Buat 18 jenis edge semantik (CONTAINS_POD_TEMPLATE, USES_SECRET, dll.)
-"""
-
 import json
 from typing import Dict, Any
 from src.graph.neo4j_client import Neo4jClient
@@ -17,7 +6,6 @@ from src.graph.vector_index import VectorIndexManager
 
 PRIMITIVE_TYPES = {"string", "integer", "number", "boolean", "array", "object"}
 
-# Tipe metadata generik yang dikecualikan karena tidak relevan untuk pembuatan YAML
 IGNORE_LIST = {
     "io.k8s.apimachinery.pkg.apis.meta.v1.ManagedFieldsEntry",
     "io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta",
@@ -183,8 +171,6 @@ class SwaggerGraphBuilder:
                                 "is_map": is_map, "is_required": is_required
                             })
                         else:
-                            # Cross-reference: target tidak ada di definitions tetapi
-                            # valid sebagai tipe Kubernetes — buat placeholder node.
                             self.db.execute_query("""
                                 MERGE (target:Definition {id: $target_id})
                                 ON CREATE SET

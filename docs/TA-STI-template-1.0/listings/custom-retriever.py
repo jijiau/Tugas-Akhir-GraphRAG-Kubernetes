@@ -1,4 +1,3 @@
-# src/chatbot/custom_retriever.py
 import json
 import logging
 from src.graph.neo4j_client import Neo4jClient
@@ -12,20 +11,6 @@ from src.graph.queries import (
 
 logger = logging.getLogger(__name__)
 
-# ── Intent-aware depth mapping ────────────────────────────────────────────────
-# Batas kedalaman diturunkan dari properti struktural graf skema K8s,
-# bukan dari dataset evaluasi:
-#
-#   "explain" / "followup" → depth 2
-#     Node di depth 1–2 bersifat resource-specific (dirujuk oleh 2–3 resource).
-#     Depth 3+ memasukkan tipe generik bersama (PodSpec dipakai oleh 23+ resource)
-#     yang menambah noise untuk pertanyaan definisi.
-#
-#   "generate_yaml" / "trace_relationship" / "planning" → depth 3
-#     YAML generation butuh depth 3 untuk menjangkau field container-level
-#     (image, ports, env). Depth 4+ didominasi utility types (Quantity, IntOrString)
-#     yang dipakai oleh 19–136 resource — tidak informatif untuk membedakan relasi.
-#
 _DEPTH_BY_INTENT = {
     "explain":            2,
     "followup":           2,
@@ -35,8 +20,6 @@ _DEPTH_BY_INTENT = {
 }
 _DEFAULT_DEPTH = 3
 
-# trace_relationship dikeluarkan dari multi-entity karena penambahan entity kedua
-# menyebabkan precision penalty di RetQ (lebih banyak node dari yang relevan).
 _MULTI_ENTITY_INTENTS = {"planning", "generate_yaml"}
 
 
@@ -52,24 +35,6 @@ class StatefulK8sRetriever:
         max_depth: int | None = None,
         ablation_mode: str | None = None,
     ) -> tuple[str, list[str]]:
-        """
-        Two-phase retrieval with intent-aware depth control:
-          Phase 1 — Exact name match (precision-first).
-          Phase 2 — Vector similarity fallback (recall).
-
-        Depth resolution priority:
-          1. ablation_mode override ('depth_2' / 'depth_3')
-          2. Explicit max_depth argument
-          3. _DEPTH_BY_INTENT mapping
-          4. _DEFAULT_DEPTH fallback
-
-        ablation_mode (None in production):
-          'no_phase1'       A1: skip exact match
-          'no_multihop'     A2: seed node only, no traversal
-          'depth_2'         A3: force depth=2
-          'depth_3'         A4: force depth=3
-          'no_multi_entity' A6c: disable multi-entity retrieval
-        """
         if ablation_mode is not None and ablation_mode.startswith('depth_'):
             try:
                 depth = int(ablation_mode.split('_', 1)[1])
@@ -84,7 +49,6 @@ class StatefulK8sRetriever:
         related = intent_data.get("related_concepts", [])
 
         try:
-            # Phase 1: Exact match (A1: skipped)
             if ablation_mode == 'no_phase1':
                 root_name = None
             else:
@@ -96,7 +60,6 @@ class StatefulK8sRetriever:
                 else:
                     record = self._schema_deps(root_name, depth)
             else:
-                # Phase 2: Vector search
                 search_query = f"{primary} {' '.join(related)} Kubernetes"
                 embedding    = self.vector_mgr.generate_embedding(search_query)
                 record       = self._vector_deps(embedding, depth)
@@ -122,9 +85,6 @@ class StatefulK8sRetriever:
 
             graph_context = json.dumps(record, indent=2, ensure_ascii=False)
 
-            # Multi-entity retrieval: gabungkan konteks dari hingga 2 related_concepts.
-            # Diperlukan untuk planning/generate_yaml yang mencakup 2+ resource
-            # yang tidak dapat dicapai dalam 3 hop dari primary saja.
             effective_multi_entity = (
                 set() if ablation_mode == 'no_multi_entity' else _MULTI_ENTITY_INTENTS
             )
@@ -156,33 +116,22 @@ class StatefulK8sRetriever:
             return f"Error retrieving context from Neo4j: {str(e)}", []
 
     def _exact_match(self, primary: str) -> str | None:
-        """Returns the canonical node name if an exact match exists, else None."""
         if not primary:
             return None
         rows = self.db.execute_query(EXACT_MATCH_QUERY, {"primary_resource": primary})
         return rows[0]["name"] if rows else None
 
     def _schema_deps(self, root_name: str, max_depth: int) -> dict | None:
-        """Fetch schema dependencies for a known root node name."""
         cypher = SCHEMA_DEPS_QUERY.format(max_depth=max_depth)
         rows   = self.db.execute_query(cypher, {"root_name": root_name})
         return dict(rows[0]) if rows else None
 
     def _vector_deps(self, embedding: list, max_depth: int) -> dict | None:
-        """Fetch schema dependencies via vector similarity."""
         cypher = HYBRID_VECTOR_GRAPH_QUERY.format(max_depth=max_depth)
         rows   = self.db.execute_query(cypher, {"embedding": embedding})
         return dict(rows[0]) if rows else None
 
     def _build_reasoning_path(self, root_name: str, max_depth: int) -> list[str]:
-        """
-        Returns deduplicated list of actual parent→child edge strings, e.g.:
-          "Deployment -[HAS_PROPERTY]-> DeploymentSpec"
-          "DeploymentSpec -[HAS_PROPERTY]-> PodTemplateSpec"
-
-        Menggunakan PATH_EDGES_QUERY yang mengekstrak node perantara nyata
-        dari jalur graf — bukan pintasan langsung root ke leaf.
-        """
         if not root_name:
             return []
         try:

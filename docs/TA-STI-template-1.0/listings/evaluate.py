@@ -1,23 +1,12 @@
-# scripts/evaluate.py — Fungsi komputasi metrik evaluasi (baris 1-453 dari skrip lengkap)
-# Bagian yang dihilangkan: mode invokers, checkpoint/resume logic, summary printing.
-# Skrip lengkap tersedia di repositori: scripts/evaluate.py
-"""
-Dimensi evaluasi:
-  AnsQ (40%): Answer Quality  — syntactic validity, schema compliance, faithfulness, answer relevance
-  RetQ (35%): Retrieval Quality — precision@k, recall@k, F1@k, graph coverage, NDCG@k, edge_coverage
-  ReaQ (25%): Reasoning Quality — hop accuracy, multi-hop success, scope accuracy, grounding score
-"""
 import re
 import math
 
-# ── Scope question detection keywords ────────────────────────────────────────
 _SCOPE_Q_KEYWORDS = [
     "scope", "scoped", "namespaced", "cluster-scoped", "cluster-wide",
     "namespace-level", "cluster-level", "lingkup", "cakupan",
     "bisa diakses lintas", "seluruh cluster", "non-namespaced",
 ]
 
-# ── K8s term regex — untuk grounding check (hanya CamelCase + single-word K8s) ──
 _K8S_TERM_RE = re.compile(
     r'\b(?:'
     r'[A-Z][a-z]+(?:[A-Z][a-zA-Z]+)+'
@@ -36,7 +25,6 @@ _K8S_TERM_RE = re.compile(
 
 
 def _token_f1(pred: str, gold: str) -> float:
-    """Token-level F1 fallback when embedder unavailable."""
     pred_tokens = set(pred.lower().split())
     gold_tokens = set(gold.lower().split())
     if not pred_tokens or not gold_tokens:
@@ -48,7 +36,6 @@ def _token_f1(pred: str, gold: str) -> float:
 
 
 def _cosine_similarity(embedder, text1: str, text2: str) -> float:
-    """Cosine similarity between two text embeddings."""
     import numpy as np
     e1 = embedder.embed_query(text1)
     e2 = embedder.embed_query(text2)
@@ -58,14 +45,12 @@ def _cosine_similarity(embedder, text1: str, text2: str) -> float:
 
 
 def _effective_type(fixture_type: str, ground_truth: dict) -> str:
-    """Resolve 'realworld' to its concrete sub-type if specified in ground_truth."""
     if fixture_type == "realworld":
         return ground_truth.get("realworld_subtype", "realworld")
     return fixture_type
 
 
 def _extract_yaml_block(text: str) -> str:
-    """Extract YAML block from markdown fenced code or plain text."""
     if "```yaml" in text:
         parts = text.split("```yaml", 1)
         if len(parts) > 1:
@@ -86,16 +71,6 @@ def compute_ansq(
     embedder=None,
     ablation_mode: str | None = None,
 ) -> dict:
-    """
-    Answer Quality metrics.
-
-    Sub-metrics:
-      syntactic_validity  — (yaml_gen only) apakah YAML yang digenerate dapat diparse?
-      schema_compliance   — (yaml_gen only) apakah YAML lolos kubernetes-validate?
-      answer_relevance    — cosine similarity vs ground truth answer
-      faithfulness        — fraksi expected nodes yang disebut dalam jawaban
-      layer3_compliance   — (yaml_gen, ablation only) Neo4j required-field check
-    """
     scores = {}
     fixture_type = _effective_type(fixture_type, ground_truth)
 
@@ -134,9 +109,6 @@ def compute_ansq(
     else:
         scores["answer_relevance"] = _token_f1(answer, gt_answer)
 
-    # Faithfulness: fraksi expected nodes yang dirujuk dalam jawaban.
-    # Gunakan key_nodes (node kunci yang dikurasi) jika tersedia, fallback ke relevant_nodes.
-    # Menangani bentuk jamak (Pod → pods, Namespace → namespaces) dalam jawaban bahasa Indonesia.
     def _node_matches(node: str, answer_lower: str) -> bool:
         nl = node.lower()
         return nl in answer_lower or nl + "s" in answer_lower or nl + "es" in answer_lower
@@ -146,7 +118,6 @@ def compute_ansq(
     hit = sum(1 for n in gt_nodes if _node_matches(n, answer.lower()))
     scores["faithfulness"] = hit / len(gt_nodes) if gt_nodes else 1.0
 
-    # Layer 3 compliance — hanya untuk ablation study (bukan production run atau A5)
     if fixture_type == "yaml_gen" and ablation_mode is not None and ablation_mode != "no_yaml_layer3":
         yaml_candidate = _extract_yaml_block(answer)
         try:
@@ -171,17 +142,6 @@ def compute_ansq(
 
 
 def compute_retq(reasoning_path: list, ground_truth: dict) -> dict:
-    """
-    Retrieval Quality metrics.
-
-    Sub-metrics (semua berkontribusi setara ke retq_score):
-      precision_at_k  — fraksi retrieved nodes yang relevan
-      recall_at_k     — fraksi relevant nodes yang berhasil diambil
-      f1_at_k         — rata-rata harmonik precision dan recall
-      graph_coverage  — fraksi expected path SOURCE-nodes yang cocok
-      ndcg_at_k       — kualitas peringkat: relevant node di awal lebih baik
-      edge_coverage   — fraksi expected edges dalam reasoning_path
-    """
     _RELATION_RE = re.compile(r"-\[([^\]]+)\]->?")
 
     def _node_tokens(step: str) -> list:
@@ -252,18 +212,6 @@ def compute_reaq(
     k8s_vocabulary: set = None,
     cgg_mode: bool = False,
 ) -> dict:
-    """
-    Reasoning Quality metrics.
-
-    Sub-metrics:
-      hop_accuracy         — berapa expected path hops yang benar-benar dilalui
-      multi_hop_success    — apakah pertanyaan multi-hop menghasilkan traversal?
-      scope_accuracy       — hanya dievaluasi ketika pertanyaan menyebut scope
-                             ATAU resource adalah Cluster-scoped
-      grounding_score      — 1 - hallucination_rate.
-                             Mode normal: dicocokkan terhadap vocab K8s global (Neo4j).
-                             CGG mode: dicocokkan terhadap graph_context query ini saja.
-    """
     fixture_type  = _effective_type(fixture_type, ground_truth)
     expected_path = ground_truth.get("expected_path", [])
     multi_hop     = ground_truth.get("multi_hop", False)
@@ -279,9 +227,6 @@ def compute_reaq(
 
     multi_hop_success = 1.0 if (multi_hop and reasoning_path) or (not multi_hop) else 0.0
 
-    # Scope accuracy — kondisional: hanya dievaluasi jika pertanyaan menyebut scope
-    # atau resource adalah Cluster-scoped. Namespaced resource tanpa pertanyaan scope
-    # diberi skor 1.0 (tidak dihukum atas default Namespaced yang benar).
     question_lower = question.lower()
     scope_relevant = (
         any(kw in question_lower for kw in _SCOPE_Q_KEYWORDS)

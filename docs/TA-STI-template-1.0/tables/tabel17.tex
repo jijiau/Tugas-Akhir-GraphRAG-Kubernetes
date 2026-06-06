@@ -1,22 +1,22 @@
 \renewcommand{\arraystretch}{1.3}
 \captionsetup[table]{justification=raggedright,singlelinecheck=false}
 \begin{table}[H]
-\caption{Lima Node LangGraph Agent Pipeline}
+\caption{Lima Modul \textit{Agent} LangGraph Pipeline}
 \label{tbl:langgraph_nodes}
 \centering
 \begin{tabular}{|p{0.12\textwidth}|p{0.20\textwidth}|p{0.35\textwidth}|p{0.20\textwidth}|}
 \hline
-\textbf{Node} & \textbf{Fungsi} & \textbf{Aktivitas} & \textbf{Komponen} \\
+\textbf{Modul} & \textbf{Fungsi} & \textbf{Aktivitas} & \textbf{Komponen} \\
 \hline
-\textit{memory} & Ambil riwayat & Membaca 5 giliran percakapan terakhir dari penyimpanan SQLite. & SQLite (\textit{ZepMemoryStore}) \\
+\textit{memory} & Ambil riwayat & Membaca 5 giliran percakapan terakhir dari penyimpanan SQLite. & SQLite (\textit{SQLiteMemoryStore}) \\
 \hline
 \textit{thinker} & Ekstraksi \textit{intent} & Menganalisis pertanyaan + riwayat, mengeluarkan JSON berisi \textit{primary\_resource}, \textit{related\_concepts}, dan \textit{intent\_type}. & GPT-4o-mini \\
 \hline
 \textit{retriever} & Eksekusi \textit{retrieval} & Meneruskan JSON intent ke \textit{StatefulK8sRetriever} untuk retrieval bertingkat; menghasilkan \textit{graph\_context} dan \textit{reasoning\_path}. & \textit{StatefulK8s Retriever} \\
 \hline
-\textit{speaker} & Generasi respons & Menggunakan konteks graf dan \textit{reasoning path} untuk menghasilkan jawaban naratif atau blok YAML. & Groq llama-3.1-8b-instant \\
+\textit{speaker} & Generasi respons & Menggunakan konteks graf dan \textit{reasoning path} untuk menghasilkan jawaban naratif atau blok YAML. & GPT-4o-mini \\
 \hline
-\textit{saver} & Simpan riwayat & Menyimpan pasangan pertanyaan--jawaban ke SQLite untuk giliran percakapan berikutnya. & SQLite (\textit{ZepMemoryStore}) \\
+\textit{saver} & Simpan riwayat & Menyimpan pasangan pertanyaan--jawaban ke SQLite untuk giliran percakapan berikutnya. & SQLite (\textit{SQLiteMemoryStore}) \\
 \hline
 \end{tabular}
 \end{table}

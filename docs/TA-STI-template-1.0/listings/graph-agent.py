@@ -1,4 +1,3 @@
-# src/chatbot/graph_agent.py
 import json
 import logging
 import operator
@@ -13,8 +12,6 @@ from src.memory.zep_store import ZepMemoryStore
 
 logger = logging.getLogger(__name__)
 
-# Batas karakter graph_context yang diteruskan ke Speaker.
-# Ditentukan dari kapasitas konteks GPT-4o-mini dan pengujian empiris.
 MAX_CONTEXT_CHARS = 12_000
 
 _zep_store = None
@@ -39,7 +36,6 @@ class AgentState(TypedDict):
 
 
 def retrieve_memory_node(state: AgentState):
-    """Fetches conversation history from ZepMemoryStore."""
     session_id = state.get("session_id", "default_session")
     try:
         history = get_zep().get_history(session_id=session_id, limit=5)
@@ -50,10 +46,6 @@ def retrieve_memory_node(state: AgentState):
 
 
 def extract_intent_node(state: AgentState):
-    """
-    The 'Thinker'. Reads history + question, resolves pronouns,
-    and outputs a strict JSON intent for the custom retriever.
-    """
     if state.get("error"):
         return state
 
@@ -85,9 +77,7 @@ def extract_intent_node(state: AgentState):
 
 
 def _make_retrieval_node(ablation_mode: str | None = None):
-    """Returns an execute_retrieval_node closure bound to ablation_mode."""
     def execute_retrieval_node(state: AgentState):
-        """Passes the extracted JSON intent to the deterministic Python retriever."""
         if state.get("error"):
             return {"graph_context": "Error in understanding intent.", "reasoning_path": []}
         try:
@@ -106,7 +96,6 @@ def _make_retrieval_node(ablation_mode: str | None = None):
 
 
 def generate_response_node(state: AgentState):
-    """The 'Speaker'. Uses LLM + graph context to formulate the final answer."""
     try:
         _ERROR_STRINGS = (
             "Database retrieval failed.",
@@ -128,7 +117,6 @@ def generate_response_node(state: AgentState):
 
         chat_history = state["chat_history"]
         intent_type = state.get("intent_type") or "explain"
-        # Hindari label 'followup' di sesi baru yang belum punya riwayat nyata
         if intent_type == "followup" and chat_history.strip() in ("", "Belum ada riwayat percakapan."):
             intent_type = "explain"
 
@@ -145,7 +133,6 @@ def generate_response_node(state: AgentState):
 
 
 def save_memory_node(state: AgentState):
-    """Saves the completed conversation turn to ZepMemoryStore."""
     session_id = state.get("session_id", "default_session")
     try:
         user_msg = state["question"]
@@ -158,7 +145,6 @@ def save_memory_node(state: AgentState):
 
 
 def create_agent_graph(ablation_mode: str | None = None):
-    """Compiles the LangGraph state machine."""
     workflow = StateGraph(AgentState)
     workflow.add_node("memory",    retrieve_memory_node)
     workflow.add_node("thinker",   extract_intent_node)

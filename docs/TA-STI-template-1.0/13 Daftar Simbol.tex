@@ -11,94 +11,64 @@
 
 
 
+\begin{longtable}{@{} l >{\raggedright\arraybackslash}p{8cm} c @{}}
+\multicolumn{1}{l}{\textbf{Notasi}} & \multicolumn{1}{l}{\textbf{Deskripsi}} & \multicolumn{1}{l}{\parbox[c]{3cm}{\raggedright \textbf{Pemakaian pertama kali}}} \\[0.5ex]
+\hline
+\endhead
 
-\begin{longtable}{@{} l >{\raggedright\arraybackslash}p{6.5cm} c @{}}
-\multicolumn{1}{l}{\textbf{Notasi}} & \multicolumn{1}{l}{\textbf{Deskripsi}} & \multicolumn{1}{l}{\parbox[c]{3.5cm}{\raggedright \textbf{Pemakaian pertama kali}}} \\
+% ─── Huruf Yunani ────────────────────────────────────────────────────────────
 
+\multicolumn{3}{@{}l}{\textbf{Huruf Yunani}} \\[0.5ex]
 
+$\rho$  & Koefisien korelasi Spearman & \pageref{fig:boundary-hops-vs-gain} \\
+$\Delta$ & Selisih skor antar sistem  & \pageref{chap:evaluasi} \\[1ex]
 
-% \multicolumn{2}{l}{\textbf{Huruf Yunani (Parameter Model)}} \\
+% ─── Variabel Skalar ─────────────────────────────────────────────────────────
 
-$\alpha$ & Koefisien bobot untuk \textit{loss function}, tingkat signifikansi statistik & 75 \\
-$\beta$ & Koefisien bobot untuk \textit{Binary Cross-Entropy loss} & 75 \\
-$\lambda$ & Koefisien bobot untuk CTC \textit{loss}, parameter regularisasi & 75 \\
-$\theta$ & Parameter model \textit{neural network} & 75 \\
-$\sigma$ & Deviasi standar & 75 \\
-$\mu$ & Rata-rata (\textit{mean}) & 75 \\
-$\epsilon$ & \textit{Token blank}/kosong dalam CTC, konstanta kecil untuk stabilitas numerik & 75 \\
-$\Delta$ & Delta (selisih/perubahan nilai) & 75 \\
-$\pi$ & \textit{Alignment path} dalam CTC & 75 \\
-$\pi_t$ & \textit{Token} pada \textit{timestep} $t$ dalam \textit{alignment path} & 76 \\[1ex]
+\multicolumn{3}{@{}l}{\textbf{Variabel Skalar}} \\[0.5ex]
 
-% \multicolumn{2}{l}{\textbf{Operator Matematis}} \\
+$d$     & Kedalaman \textit{traversal} graf & \pageref{chap:perancangan} \\
+$f$     & \textit{Fixture} evaluasi individual & \pageref{eq:hop-accuracy} \\
+$i$     & Indeks posisi atau indeks \textit{fixture} & \pageref{eq:ndcg} \\
+$k$     & Parameter top-$k$ \textit{retrieval} & \pageref{eq:precision-recall} \\
+$n$     & Jumlah sampel atau \textit{fixture} & \pageref{fig:boundary-hops-vs-gain} \\
+$p$     & \textit{p-value} uji signifikansi statistik & \pageref{fig:boundary-hops-vs-gain} \\
+$rel_i$ & Relevansi biner node pada posisi ke-$i$ & \pageref{eq:ndcg} \\[1ex]
 
-$\nabla$ atau $\partial$ & Operator gradien atau turunan parsial & 75 \\
-$\sum$ & Operator penjumlahan & 75 \\
-$\prod$ & Operator perkalian & 75 \\
-$\int$ & Operator integral & 75 \\
-argmax & Argumen yang memaksimalkan fungsi & 76 \\
-$\sim$ & Terdistribusi menurut & 75 \\
-$\to$ & Menuju atau konvergen ke & 75 \\[1ex]
+% ─── Himpunan ────────────────────────────────────────────────────────────────
 
-% \multicolumn{2}{l}{\textbf{Fungsi \textit{Loss} dan Kerugian}} \\
+\multicolumn{3}{@{}l}{\textbf{Himpunan}} \\[0.5ex]
 
-$\mathcal{L}$ & Fungsi \textit{loss} (kerugian) & 75 \\
-$\mathcal{L}_{total}$ & Total \textit{loss function} & 75 \\
-$\mathcal{L}_{adversarial}$ atau $\mathcal{L}_{adv}$ & \textit{Adversarial loss} & 75 \\
-$\mathcal{L}_{reconstruction}$ & \textit{Reconstruction loss} & 75 \\
-$\mathcal{L}_{L1}$ & L1 \textit{loss} (\textit{Mean Absolute Error}) & 75 \\
-$\mathcal{L}_{L2}$ & L2 \textit{loss} (\textit{Mean Squared Error}) & 75 \\
-$\mathcal{L}_{CTC}$ & CTC (\textit{Connectionist Temporal Classification}) \textit{loss} & 75 \\
-$\mathcal{L}_{perceptual}$ & \textit{Perceptual loss} & 75 \\
-$\mathcal{L}_{pixel}$ & \textit{Pixel-wise loss} & 75 \\
-$\mathcal{L}_{BCE}$ & \textit{Binary Cross-Entropy loss} & 75 \\
-$\mathcal{L}_{GAN}$ & GAN \textit{loss} & 75 \\
-$\mathcal{L}_{cycle}$ & \textit{Cycle consistency loss} & 75 \\[1ex]
+$E_{\text{retrieved}}$ & Himpunan \textit{edge} pada subgraf hasil penelusuran & \pageref{eq:path-coverage} \\
+$E_{\text{relevant}}$  & Himpunan \textit{edge} relevan menurut \textit{ground truth} & \pageref{eq:path-coverage} \\
+$F$    & Himpunan seluruh \textit{fixture} evaluasi & \pageref{eq:hop-accuracy} \\
+$N_{\text{retrieved}}$ & Himpunan \textit{node} yang diambil saat \textit{retrieval} & \pageref{eq:precision-recall} \\
+$N_{\text{relevant}}$  & Himpunan \textit{node} relevan menurut \textit{ground truth} & \pageref{eq:precision-recall} \\
+$N_{\text{kunci}}$     & Himpunan \textit{node} kunci pada \textit{ground truth} & \pageref{eq:faithfulness} \\
+$N_{\text{jawaban}}$   & Himpunan \textit{node} yang disebut dalam jawaban sistem & \pageref{eq:faithfulness} \\
+$T_{\text{grounded}}$  & Himpunan istilah Kubernetes yang terlacak ke konteks & \pageref{eq:grounding} \\
+$T_{\text{jawaban}}$   & Himpunan istilah Kubernetes dalam jawaban sistem & \pageref{eq:grounding} \\[1ex]
 
-% \multicolumn{2}{l}{\textbf{Variabel Model dan Komponen GAN}} \\
+% ─── Vektor ──────────────────────────────────────────────────────────────────
 
-$G$ & \textit{Generator} dalam GAN & 75 \\
-$D$ & \textit{Discriminator} dalam GAN & 75 \\
-$G(z)$ & \textit{Output} dari \textit{generator} dengan \textit{input} $z$ & 75 \\
-$D(x)$ & \textit{Output} dari \textit{discriminator} dengan \textit{input} $x$ & 75 \\
-$G_{A \to B}$ & \textit{Generator} dari domain $A$ ke $B$ & 75 \\
-$G_{B \to A}$ & \textit{Generator} dari domain $B$ ke $A$ & 75 \\
-$V(D, G)$ & Fungsi nilai (\textit{value function}) dalam GAN & 75 \\
-$x$ & Sampel data asli, \textit{input} citra & 75 \\
-$y$ & Label atau \textit{ground truth}, kondisi dalam \textit{conditional GAN} & 75 \\
-$z$ & \textit{Noise vector} atau representasi laten \\[1ex]
+\multicolumn{3}{@{}l}{\textbf{Vektor}} \\[0.5ex]
 
-% \multicolumn{2}{l}{\textbf{Distribusi Probabilitas}} \\
+$\mathbf{e}_a$ & Vektor \textit{embedding} jawaban sistem & \pageref{eq:answer-relevance} \\
+$\mathbf{e}_g$ & Vektor \textit{embedding} jawaban acuan (\textit{ground truth}) & \pageref{eq:answer-relevance} \\[1ex]
 
-$\mathbb{E}$ & Ekspektasi atau nilai harapan & 75 \\
-$p_{data}$ & Distribusi data asli & 75 \\
-$p_z$ & Distribusi \textit{prior} (\textit{noise}) & 75 \\
-$p(y|x)$ & Probabilitas bersyarat \textit{output} $y$ \textit{given input} $x$ & 75 \\
-$p_t(\pi_t|x)$ & Probabilitas \textit{token} pada \textit{timestep} $t$ \\[1ex]
+% ─── Notasi Graf ─────────────────────────────────────────────────────────────
 
-% \multicolumn{2}{l}{\textbf{Fungsi dan Transformasi CTC}} \\
+\multicolumn{3}{@{}l}{\textbf{Notasi Graf}} \\[0.5ex]
 
-$\mathcal{B}$ & Fungsi penciutan (\textit{collapse function}) dalam CTC & 75 \\
-$\mathcal{B}^{-1}$ & Fungsi invers penciutan dalam CTC & 75 \\
-$T$ & Jumlah \textit{timestep} atau panjang \textit{sequence} \\[1ex]
+$\mathcal{K}$          & \textit{Knowledge graph} sebagai himpunan \textit{triples} $(h, r, t)$ & \pageref{eq:rag-conditional} \\
+$\mathcal{Z}(x,\mathcal{K})$ & Himpunan subgraf relevan yang ditarik dari $\mathcal{K}$ untuk kueri $x$ & \pageref{eq:rag-conditional} \\[1ex]
 
-% \multicolumn{2}{l}{\textbf{Metrik Jarak dan Norma}} \\
+% ─── Fungsi dan Metrik ───────────────────────────────────────────────────────
 
-$|x - G(y)|_1$ & L1 \textit{distance} antara \textit{ground truth} dan \textit{generated image} & 75 \\
-$|x - G(y)|_2$ & L2 \textit{distance} antara \textit{ground truth} dan \textit{generated image} & 75 \\
-$N \times N$ & Ukuran \textit{patch} dalam PatchGAN \\[1ex]
+\multicolumn{3}{@{}l}{\textbf{Fungsi dan Metrik}} \\[0.5ex]
 
-% \multicolumn{2}{l}{\textbf{Statistik dan Analisis}} \\
-
-$d$ & Cohen's $d$ (\textit{effect size}) & 75 \\
-$n$ & Jumlah sampel & 75 \\
-$p$ & \textit{p-value} (nilai probabilitas statistik) & 75 \\
-$r$ & Koefisien korelasi & 75 \\
-$R^2$ & Koefisien determinasi \\[1ex]
-
-% \multicolumn{2}{l}{\textbf{Notasi Kompleksitas Komputasi}} \\
-
-$O(n)$ & Notasi Big-O untuk kompleksitas linear & 75 \\
-$O(n^2)$ & Notasi Big-O untuk kompleksitas kuadratik & 75 \\
+$d_{\text{pred}}(f)$ & Kedalaman \textit{traversal} yang dieksekusi sistem untuk \textit{fixture} $f$ & \pageref{eq:hop-accuracy} \\
+$d_{\text{gt}}(f)$   & Kedalaman yang dibutuhkan menurut anotasi \textit{ground truth} fixture $f$ & \pageref{eq:hop-accuracy} \\
+$\text{RetQ-gain}_i$ & Selisih RetQ GraphRAG dan Vector RAG untuk \textit{fixture} ke-$i$ & \pageref{eq:retq-gain} \\
 
 \end{longtable}

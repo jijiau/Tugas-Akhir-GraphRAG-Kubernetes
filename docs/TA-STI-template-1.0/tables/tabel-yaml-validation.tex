@@ -1,0 +1,18 @@
+\renewcommand{\arraystretch}{1.3}
+\captionsetup[table]{justification=raggedright,singlelinecheck=false}
+\begin{table}[H]
+\caption{Fungsi Tiga Lapis Validasi YAML}
+\label{tbl:yaml_validation_iv}
+\centering
+\begin{tabular}{|p{0.08\textwidth}|p{0.28\textwidth}|p{0.52\textwidth}|}
+\hline
+\textbf{Lapis} & \textbf{Mekanisme} & \textbf{Fungsi} \\
+\hline
+1 & PyYAML \texttt{safe\_load} & Memvalidasi sintaksis YAML; kegagalan menghasilkan entri pada daftar \texttt{syntax\_errors}. \\
+\hline
+2 & \textit{kubernetes-validate} & Memvalidasi kesesuaian struktur YAML terhadap skema OpenAPI Kubernetes v1.29; kegagalan menghasilkan entri pada daftar \texttt{schema\_errors}. \\
+\hline
+3 & Kueri Neo4j terhadap KG & Memverifikasi kelengkapan \textit{required field} untuk setiap \textit{resource}; \textit{field} yang absen dikumpulkan pada daftar \texttt{missing\_fields}. \\
+\hline
+\end{tabular}
+\end{table}

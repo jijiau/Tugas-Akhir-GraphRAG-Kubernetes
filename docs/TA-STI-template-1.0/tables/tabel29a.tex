@@ -1,0 +1,22 @@
+\renewcommand{\arraystretch}{1.3}
+\captionsetup[table]{justification=raggedright,singlelinecheck=false}
+\begin{table}[H]
+\caption{Sub-Metrik \textit{Answer Quality} (AnsQ) Sistem GraphRAG (97 \textit{Fixture})}
+\label{tbl:ansq_submetrics}
+\centering
+\begin{tabular}{| p{0.38\textwidth} | c | p{0.38\textwidth} |}
+\hline
+\textbf{Sub-Metrik} & \textbf{Nilai} & \textbf{Keterangan} \\
+\hline
+\textit{Syntactic Validity} (YAML) & 0,8947 & 17 dari 19 \textit{fixture} yang menghasilkan YAML lolos PyYAML (15 \textit{yaml\_gen} + 4 \textit{realworld}) \\
+\hline
+\textit{Schema Compliance} (YAML)  & 0,7895 & Kesesuaian skema Kubernetes v1.29 \\
+\hline
+\textit{Answer Relevance}           & 0,6747 & Kemiripan \textit{cosine} jawaban vs.\ \textit{ground truth} \\
+\hline
+\textit{Faithfulness}               & 0,4356 & Proporsi node kunci disebutkan dalam jawaban \\
+\hline
+\textbf{Skor AnsQ}                  & \textbf{0,5771} & Rata-rata sub-metrik yang berlaku \\
+\hline
+\end{tabular}
+\end{table}

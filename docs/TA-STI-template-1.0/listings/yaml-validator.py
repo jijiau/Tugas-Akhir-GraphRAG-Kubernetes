@@ -1,4 +1,3 @@
-# src/validation/yaml_validator.py
 import logging
 import yaml
 from src.graph.neo4j_client import Neo4jClient
@@ -8,12 +7,6 @@ logger = logging.getLogger(__name__)
 
 
 class YAMLValidator:
-    """
-    Three-layer YAML validation:
-      1. PyYAML   — syntax correctness
-      2. kubernetes-validate — schema compliance against K8s 1.29 spec
-      3. Neo4j graph — required fields cross-check (thesis contribution)
-    """
 
     def __init__(self):
         self.db = Neo4jClient()
@@ -26,7 +19,6 @@ class YAMLValidator:
             "missing_fields": [],
         }
 
-        # Layer 1: PyYAML syntax
         try:
             data = yaml.safe_load(yaml_string)
         except yaml.YAMLError as e:
@@ -39,7 +31,6 @@ class YAMLValidator:
             result["syntax_errors"].append("YAML root must be a mapping, got: " + type(data).__name__)
             return result
 
-        # Layer 2: kubernetes-validate schema
         try:
             import kubernetes_validate
             kubernetes_validate.validate(data, "1.29", strict=False)
@@ -51,7 +42,6 @@ class YAMLValidator:
             msg  = getattr(e, "message", str(e))
             result["schema_errors"].append(f"{path}: {msg}" if path else msg)
 
-        # Layer 3: Neo4j required fields
         try:
             rows = self.db.execute_query(REQUIRED_FIELDS_QUERY, {"kind": kind})
             required_fields = {r["field_name"] for r in rows}
@@ -69,7 +59,6 @@ class YAMLValidator:
         return result
 
     def _flatten_keys(self, obj, prefix: str = "") -> list[str]:
-        """Recursively extract dotted key paths from a nested dict."""
         keys = []
         if isinstance(obj, dict):
             for k, v in obj.items():

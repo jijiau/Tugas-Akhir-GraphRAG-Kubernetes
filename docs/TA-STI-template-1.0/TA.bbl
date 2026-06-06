@@ -50,40 +50,6 @@
       \verb 10.1016/j.jnca.2021.103076
       \endverb
     \endentry
-    \entry{moreno2025rag}{article}{}
-      \name{author}{1}{}{%
-        {{un=0,uniquepart=base,hash=f87dd0314321aa07ebffb79d4938efb6}{%
-           family={Antonio\bibnamedelima Moreno-Cediel},
-           familyi={A\bibinitperiod\bibinitdelim M\bibinithyphendelim C\bibinitperiod},
-           given={David\bibnamedelima De-Fitero-Dominguez},
-           giveni={D\bibinitperiod\bibinitdelim D\bibinithyphendelim F\bibinithyphendelim D\bibinitperiod},
-           givenun=0,
-           suffix={Eva\bibnamedelimb Garcia-Lopez.\bibnamedelimi Antonio\bibnamedelima Garcia-Cabot},
-           suffixi={E\bibinitperiod\bibinitdelim G\bibinithyphendelim L\bibinitperiod\bibinitdelim A\bibinitperiod\bibinitdelim G\bibinithyphendelim C\bibinitperiod},
-           suffixun=0}}%
-      }
-      \strng{namehash}{f87dd0314321aa07ebffb79d4938efb6}
-      \strng{fullhash}{f87dd0314321aa07ebffb79d4938efb6}
-      \strng{bibnamehash}{f87dd0314321aa07ebffb79d4938efb6}
-      \strng{authorbibnamehash}{f87dd0314321aa07ebffb79d4938efb6}
-      \strng{authornamehash}{f87dd0314321aa07ebffb79d4938efb6}
-      \strng{authorfullhash}{f87dd0314321aa07ebffb79d4938efb6}
-      \field{sortinit}{A}
-      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
-      \field{extradatescope}{labelyear}
-      \field{labeldatesource}{}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{author}
-      \field{journaltitle}{Knowledge-Based Systems}
-      \field{title}{Optimising retrieval performance in RAG systems: A new growing window semantic chunking strategy to address weak semantic boundaries}
-      \field{volume}{331}
-      \field{year}{2025}
-      \field{pages}{114896}
-      \range{pages}{1}
-      \verb{doi}
-      \verb 10.1016/j.knosys.2025.114896
-      \endverb
-    \endentry
     \entry{cao2025neusymrag}{misc}{}
       \name{author}{11}{}{%
         {{un=0,uniquepart=base,hash=d1ac1086388bdb7ae479168dc6cdcfaa}{%
@@ -175,10 +141,10 @@
       \verb 2505.19754
       \endverb
       \verb{urlraw}
-      \verb file:///mnt/data/2 - NeuSym-RAG.pdf
+      \verb https://arxiv.org/abs/2505.19754
       \endverb
       \verb{url}
-      \verb file:///mnt/data/2%20-%20NeuSym-RAG.pdf
+      \verb https://arxiv.org/abs/2505.19754
       \endverb
     \endentry
     \entry{cncf_2023_survey}{misc}{}
@@ -437,7 +403,7 @@
       \field{title}{Retrieval-augmented generation with graphs (GraphRAG)}
       \field{year}{2024}
     \endentry
-    \entry{he2024gretriever}{unpublished}{}
+    \entry{he2024gretriever}{inproceedings}{}
       \name{author}{8}{}{%
         {{un=0,uniquepart=base,hash=ebba55921bac5d290c9d601598d539c6}{%
            family={He},
@@ -500,9 +466,15 @@
       \field{labeldatesource}{}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{note}{Unpublished manuscript, based on user-provided document; no official venue or URL available}
+      \field{booktitle}{The Twelfth International Conference on Learning Representations (ICLR 2024)}
       \field{title}{G-Retriever: Retrieval-Augmented Generation for Textual Graph Understanding and Question Answering}
       \field{year}{2024}
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2402.07630
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2402.07630
+      \endverb
     \endentry
     \entry{hofer2024construction}{article}{}
       \name{author}{5}{}{%
@@ -870,6 +842,55 @@
       \field{journaltitle}{arXiv preprint arXiv:2505.20099}
       \field{title}{Large Language Models Meet Knowledge Graphs for Question Answering: Synthesis and Opportunities}
       \field{year}{2025}
+    \endentry
+    \entry{moreno2025rag}{article}{}
+      \name{author}{4}{}{%
+        {{un=0,uniquepart=base,hash=0a1b7b21d21b5607924c1654b132cfbb}{%
+           family={Moreno-Cediel},
+           familyi={M\bibinithyphendelim C\bibinitperiod},
+           given={Antonio},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=743b9dbddba478d9818caa6e382afc0e}{%
+           family={Garcia-Lopez},
+           familyi={G\bibinithyphendelim L\bibinitperiod},
+           given={Eva},
+           giveni={E\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=3628ee5e121e671ce5e30e70bcd4dbfd}{%
+           family={Garcia-Cabot},
+           familyi={G\bibinithyphendelim C\bibinitperiod},
+           given={Antonio},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=9e8994e0d0c205b1341c55a1ab939229}{%
+           family={De-Fitero-Dominguez},
+           familyi={D\bibinithyphendelim F\bibinithyphendelim D\bibinitperiod},
+           given={David},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{53e05fe9c01e6600c36ef2e908bbf43e}
+      \strng{fullhash}{8be42ee2d2b897afa9543cef104ae5c0}
+      \strng{bibnamehash}{8be42ee2d2b897afa9543cef104ae5c0}
+      \strng{authorbibnamehash}{8be42ee2d2b897afa9543cef104ae5c0}
+      \strng{authornamehash}{53e05fe9c01e6600c36ef2e908bbf43e}
+      \strng{authorfullhash}{8be42ee2d2b897afa9543cef104ae5c0}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{author}
+      \field{journaltitle}{Knowledge-Based Systems}
+      \field{title}{Optimising retrieval performance in RAG systems: A new growing window semantic chunking strategy to address weak semantic boundaries}
+      \field{volume}{331}
+      \field{year}{2025}
+      \field{pages}{114896}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.1016/j.knosys.2025.114896
+      \endverb
     \endentry
     \entry{niaksu2015}{article}{}
       \name{author}{1}{}{%

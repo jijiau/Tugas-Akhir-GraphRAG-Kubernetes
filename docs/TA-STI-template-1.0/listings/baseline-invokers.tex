@@ -1,0 +1,20 @@
+\begin{lstlisting}[caption={Pseudokode \textit{invoker} \texttt{invoke\_mode} untuk mode Vector RAG dan Vanilla LLM}, label={lst:baseline-invokers}]
+// Mode "vector" -- Vector RAG
+FUNCTION invoke_mode(question, session_id):
+  embedding  <- generate_embedding(question)
+  results    <- execute_query(SIMPLE_GRAPH_EXPAND_QUERY,
+                              {embedding: embedding, top_k: 5})
+  context    <- ""
+  node_names <- []
+  FOR EACH record IN results:
+    Collect node fullName and related fullName (deduplicated into node_names)
+    Append snippet(Resource, Description, Related To) to context
+  prompt <- "Context: " + context + "  Question: " + question
+  RETURN llm.invoke(prompt).content, node_names, context
+
+
+// Mode "llm" -- Vanilla LLM
+FUNCTION invoke_mode(question, session_id):
+  response <- llm.invoke(question)    // no retrieval, no augmentation
+  RETURN response.content, [], ""
+\end{lstlisting}

@@ -3,7 +3,7 @@
 
 \begin{center}
 
-    \textbf{Implementasi \textit{Graph Retrieval-Augmented Generation} Berbasis \textit{Knowledge Graph} untuk Meningkatkan Kualitas \textit{Retrieval} dan Validitas Konfigurasi Kubernetes} \\
+    \textbf{Implementasi \textit{Graph Retrieval-Augmented Generation} untuk Meningkatkan Presisi \textit{Retrieval} dan Validitas Sintaksis pada Konfigurasi Kubernetes} \\
     \vspace{0.4cm}
     oleh \\
     \vspace{0.4cm}
@@ -13,12 +13,11 @@
 
 
 \begin{spacing}{1.0}
-Transformasi menuju arsitektur \textit{cloud-native} menempatkan Kubernetes sebagai standar \textit{de facto} untuk orkestrasi kontainer, namun kompleksitas konfigurasi berbasis YAML menjadi tantangan operasional yang signifikan. Pemanfaatan \textit{Large Language Models} (LLM) dalam menjawab pertanyaan teknis Kubernetes rentan menghasilkan konfigurasi yang keliru secara semantik atau tidak valid secara sintaksis—fenomena yang dikenal sebagai halusinasi. Pendekatan \textit{Retrieval-Augmented Generation} (RAG) berbasis vektor yang umum digunakan juga terbukti tidak memadai karena gagal menangkap relasi hierarkis dan referensial yang diperlukan dalam domain Kubernetes, dengan akurasi yang hanya mencapai 63,4\% \textit{exact match} dan 69,8\% \textit{context precision}.
+Kubernetes menjadi standar orkestrasi kontainer \textit{cloud-native}, namun kompleksitas konfigurasi YAML mendorong penggunaan LLM yang rentan menghasilkan halusinasi, yaitu konfigurasi yang keliru secara semantik atau tidak valid secara sintaksis. Pendekatan \textit{Retrieval-Augmented Generation} (RAG) berbasis vektor terbukti tidak memadai karena gagal menangkap relasi hierarkis domain Kubernetes, dengan akurasi hanya mencapai 63,4\% \textit{exact match} dan 69,8\% \textit{context precision}.
 
-Penelitian ini membangun sistem \textit{Graph Retrieval-Augmented Generation} (GraphRAG) untuk dokumentasi Kubernetes menggunakan metodologi CRISP-DM. \textit{Knowledge graph} dibangun dari blok \textit{definitions} pada spesifikasi OpenAPI Kubernetes v1.30 (\textit{swagger.json}) dan menghasilkan 725 \textit{node} definisi dengan 18 jenis \textit{edge} yang merepresentasikan relasi struktural dan semantik antar-objek Kubernetes. Mekanisme \textit{retrieval} bertingkat (\textit{cascading retrieval}) memprioritaskan pencocokan nama eksak, dilengkapi \textit{fallback} kemiripan vektor, serta penelusuran graf multi-lompatan (\textit{multi-hop graph traversal}) hingga 3 lompatan. \textit{Pipeline} respon dibangun menggunakan LangGraph dengan GPT-4o-mini untuk ekstraksi niat kueri dan Groq LLaMA untuk pembuatan jawaban.
+Penelitian ini membangun sistem \textit{Graph Retrieval-Augmented Generation} (GraphRAG) dari spesifikasi OpenAPI Kubernetes v1.30, menghasilkan \textit{knowledge graph} dengan 725 \textit{node}, 18 jenis \textit{edge}, dan 7 kategori relasi. Mekanisme \textit{retrieval} menggabungkan pencocokan nama eksak, \textit{fallback} kemiripan vektor, dan \textit{multi-hop graph traversal} dengan kedalaman adaptif berbasis \textit{intent} ($d = 2$ atau $d = 3$). Validasi YAML diimplementasikan dalam tiga lapis berbasis \textit{knowledge graph}. \textit{Pipeline} dibangun menggunakan LangGraph dengan GPT-4o-mini sebagai \textit{Thinker} dan \textit{Speaker}, Neo4j, dan SQLite.
 
-Sistem dievaluasi menggunakan 97 \textit{fixture} uji tervalidasi pakar dalam tiga dimensi: \textit{Answer Quality} (AnsQ, bobot 40\%), \textit{Retrieval Quality} (RetQ, bobot 35\%), dan \textit{Reasoning Quality} (ReaQ, bobot 25\%). Hasil evaluasi menunjukkan bahwa sistem GraphRAG mencapai skor AnsQ sebesar 0,58, RetQ sebesar 0,65, dan ReaQ sebesar 0,87 dengan total skor komposit sebesar 0,68. Sistem juga menghasilkan berkas konfigurasi YAML yang valid secara sintaksis dan dilengkapi jejak penalaran graf (\textit{reasoning path}) sebagai mekanisme pendeteksi halusinasi LLM.
+Penelitian ini membandingkan GraphRAG terhadap Vector RAG dan Vanilla LLM menggunakan 97 \textit{fixture} uji tervalidasi pakar. AnsQ setara antar-sistem ($p > 0{,}05$). Keunggulan GraphRAG teridentifikasi pada dimensi \textit{retrieval} dan penalaran: RetQ 0,7259 vs.\ 0,4255 (Vector RAG) dan 0,0241 (Vanilla LLM); ReaQ 0,5554 vs.\ 0,3307 dan 0,3351; \textit{Path Coverage} 0,8515 ($\Delta = +0{,}310$ vs.\ Vector RAG); RGA 0,4536 vs.\ 0,2784 dan 0,0206. Seluruh keunggulan signifikan ($p < 0{,}001$) dikonfirmasi melalui uji Wilcoxon + \textit{bootstrap} 95\% CI dengan koreksi Holm-Bonferroni.
 
-Kata kunci: \textit{Graph Retrieval-Augmented Generation}, \textit{knowledge graph}, Kubernetes, YAML, halusinasi LLM.
+Kata kunci: \textit{Graph Retrieval-Augmented Generation}, \textit{knowledge graph}, Kubernetes, YAML, halusinasi LLM, \textit{intent-adaptive depth traversal}, \textit{Path Coverage}, \textit{Hop Accuracy}.
 \end{spacing}
-

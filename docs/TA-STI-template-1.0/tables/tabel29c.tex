@@ -1,0 +1,28 @@
+\renewcommand{\arraystretch}{1.3}
+\captionsetup[table]{justification=raggedright,singlelinecheck=false}
+\begin{table}[H]
+\caption{Sub-Metrik \textit{Reasoning Quality} (ReaQ) Sistem GraphRAG (97 \textit{Fixture})}
+\label{tbl:reaq_submetrics}
+\centering
+\begin{tabular}{| p{0.38\textwidth} | c | p{0.38\textwidth} |}
+\hline
+\textbf{Sub-Metrik} & \textbf{Nilai} & \textbf{Peran} \\
+\hline
+\multicolumn{3}{|l|}{\textit{Komponen komposit ReaQ}} \\
+\hline
+\textit{Hop Accuracy}   & 0,3505 & Akurasi pemilihan kedalaman: $d_{\text{pred}} = d_{\text{gt}}$ \\
+\hline
+\textit{Grounding Score} & 0,7602 & Proporsi istilah K8s terlacak ke \textit{retrieved context} \\
+\hline
+\textbf{Skor ReaQ}      & \textbf{0,5554} & $(\text{HopAcc} + \text{Grounding})/2$ \\
+\hline
+\multicolumn{3}{|l|}{\textit{Diagnostik (tidak masuk komposit)}} \\
+\hline
+\textit{Hallucination Rate} & 0,2398 & $1 - \text{Grounding Score}$; semakin rendah semakin baik \\
+\hline
+\multicolumn{3}{|l|}{\textit{Metrik domain}} \\
+\hline
+RGA (\textit{Retrieval-Grounded Answer}) & 0,4536 & Jawaban benar \textit{dan} didukung \textit{retrieval} \\
+\hline
+\end{tabular}
+\end{table}

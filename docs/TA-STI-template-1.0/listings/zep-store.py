@@ -1,11 +1,3 @@
-# src/memory/zep_store.py
-#
-# SQLite-based conversation memory — pengganti Zep v1.
-# Zep v1 memanggil LLM internal (entity extraction) yang memboroskan token
-# tanpa nilai tambah untuk penelitian ini. SQLite memberikan persistensi
-# yang cukup dengan zero token overhead dan zero Docker dependency tambahan.
-# Public API identik dengan versi Zep sehingga graph_agent.py tidak perlu diubah.
-
 import sqlite3
 import logging
 from pathlib import Path
@@ -32,7 +24,6 @@ def _get_connection() -> sqlite3.Connection:
     return conn
 
 
-# Singleton connection — satu koneksi per proses
 _conn: sqlite3.Connection | None = None
 
 
@@ -45,10 +36,6 @@ def _db() -> sqlite3.Connection:
 
 
 class ZepMemoryStore:
-    """
-    Conversation memory berbasis SQLite.
-    Nama kelas dipertahankan agar tidak ada perubahan di graph_agent.py.
-    """
 
     def __init__(self):
         _db()
@@ -76,7 +63,6 @@ class ZepMemoryStore:
                 """,
                 (session_id, limit)
             ).fetchall()
-            # Rows dikembalikan dari terbaru ke terlama — balik urutannya
             rows = list(reversed(rows))
             return "\n".join(f"{role}: {content}" for role, content in rows)
         except Exception as e:

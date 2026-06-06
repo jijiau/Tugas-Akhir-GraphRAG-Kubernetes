@@ -4,18 +4,18 @@
 \contentsline {lstlisting}{\numberline {III.4}{\ignorespaces Wujud YAML daftar objek \textit {Container}}}{32}{lstlisting.3.4}%
 \contentsline {lstlisting}{\numberline {III.5}{\ignorespaces Skema referensi pemetaan pada \texttt {swagger.json}}}{33}{lstlisting.3.5}%
 \contentsline {lstlisting}{\numberline {III.6}{\ignorespaces Wujud YAML pemetaan objek \textit {Quantity}}}{33}{lstlisting.3.6}%
-\contentsline {lstlisting}{\numberline {V.1}{\ignorespaces Kamus kedalaman \textit {traversal} per tipe \textit {intent} (\texttt {\_DEPTH\_BY\_INTENT})}}{74}{lstlisting.5.1}%
-\contentsline {lstlisting}{\numberline {V.2}{\ignorespaces Cypher \textit {query} untuk verifikasi \textit {required fields} pada Lapis 3 Validasi YAML}}{77}{lstlisting.5.2}%
-\contentsline {lstlisting}{\numberline {A.1}{\ignorespaces \texttt {src/memory/zep\_store.py} — Manajemen Memori Percakapan}}{105}{lstlisting.a.A.1}%
-\contentsline {lstlisting}{\numberline {A.2}{\ignorespaces \texttt {src/ingestion/parser.py} — Pipeline Ingestion Data (SwaggerGraphBuilder)}}{108}{lstlisting.a.A.2}%
-\contentsline {lstlisting}{\numberline {A.3}{\ignorespaces \texttt {src/chatbot/graph\_agent.py} — LangGraph Agent Pipeline}}{118}{lstlisting.a.A.3}%
-\contentsline {lstlisting}{\numberline {A.4}{\ignorespaces \texttt {src/chatbot/custom\_retriever.py} — Mekanisme Retrieval Bertingkat}}{123}{lstlisting.a.A.4}%
-\contentsline {lstlisting}{\numberline {A.5}{\ignorespaces \texttt {src/validation/yaml\_validator.py} — Validasi YAML Tiga Lapis}}{128}{lstlisting.a.A.5}%
-\contentsline {lstlisting}{\numberline {A.6}{\ignorespaces \texttt {src/graph/queries.py} — Query Cypher Neo4j}}{131}{lstlisting.a.A.6}%
-\contentsline {lstlisting}{\numberline {A.7}{\ignorespaces \texttt {scripts/evaluate.py} — Fungsi Metrik Evaluasi (AnsQ, RetQ, ReaQ)}}{135}{lstlisting.a.A.7}%
+\contentsline {lstlisting}{\numberline {V.1}{\ignorespaces Kamus kedalaman \textit {traversal} per tipe \textit {intent} (\texttt {\_DEPTH\_BY\_INTENT})}}{77}{lstlisting.5.1}%
+\contentsline {lstlisting}{\numberline {V.2}{\ignorespaces Pseudokode \textit {invoker} \texttt {invoke\_mode} untuk mode Vector RAG dan Vanilla LLM}}{85}{lstlisting.5.2}%
+\contentsline {lstlisting}{\numberline {A.1}{\ignorespaces \texttt {src/memory/zep\_store.py} — Manajemen Memori Percakapan}}{113}{lstlisting.a.A.1}%
+\contentsline {lstlisting}{\numberline {A.2}{\ignorespaces \texttt {src/ingestion/parser.py} — Pipeline Ingestion Data (SwaggerGraphBuilder)}}{116}{lstlisting.a.A.2}%
+\contentsline {lstlisting}{\numberline {A.3}{\ignorespaces \texttt {src/chatbot/graph\_agent.py} — LangGraph Agent Pipeline}}{125}{lstlisting.a.A.3}%
+\contentsline {lstlisting}{\numberline {A.4}{\ignorespaces \texttt {src/chatbot/custom\_retriever.py} — Mekanisme Retrieval Bertingkat}}{129}{lstlisting.a.A.4}%
+\contentsline {lstlisting}{\numberline {A.5}{\ignorespaces \texttt {src/validation/yaml\_validator.py} — Validasi YAML Tiga Lapis}}{134}{lstlisting.a.A.5}%
+\contentsline {lstlisting}{\numberline {A.6}{\ignorespaces \texttt {src/graph/queries.py} — Query Cypher Neo4j}}{136}{lstlisting.a.A.6}%
+\contentsline {lstlisting}{\numberline {A.7}{\ignorespaces \texttt {scripts/evaluate.py} — Fungsi Metrik Evaluasi (AnsQ, RetQ, ReaQ)}}{138}{lstlisting.a.A.7}%
 \contentsline {lstlisting}{\numberline {B.1}{\ignorespaces \texttt {fixture-deployment-basic.json} — Konseptual: Pembaruan Image Deployment}}{147}{lstlisting.a.B.1}%
 \contentsline {lstlisting}{\numberline {B.2}{\ignorespaces \texttt {fixture-service-types.json} — Konseptual: Service LoadBalancer vs.\ Ingress}}{148}{lstlisting.a.B.2}%
-\contentsline {lstlisting}{\numberline {B.3}{\ignorespaces \texttt {fixture-scale-existing-deployment.json} — Lanjutan: Skalakan Replika Deployment}}{149}{lstlisting.a.B.3}%
+\contentsline {lstlisting}{\numberline {B.3}{\ignorespaces \texttt {fixture-scale-existing-deployment.json} — Lanjutan: Skalakan Replika Deployment}}{150}{lstlisting.a.B.3}%
 \contentsline {lstlisting}{\numberline {B.4}{\ignorespaces \texttt {fixture-ingress-service-pod.json} — Relasional: Alur Traffic Ingress→Service→Pod}}{150}{lstlisting.a.B.4}%
 \contentsline {lstlisting}{\numberline {B.5}{\ignorespaces \texttt {fixture-hpa-deployment-pod.json} — Relasional: HPA dan Penskalaan Otomatis}}{152}{lstlisting.a.B.5}%
 \contentsline {lstlisting}{\numberline {B.6}{\ignorespaces \texttt {fixture-cronjob-backup.json} — Generasi YAML: CronJob Backup Database}}{154}{lstlisting.a.B.6}%

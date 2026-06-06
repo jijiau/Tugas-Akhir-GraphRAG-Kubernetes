@@ -1,0 +1,302 @@
+This is XeTeX, Version 3.141592653-2.6-0.999995 (MiKTeX 24.1) (preloaded format=xelatex.fmt)
+ restricted \write18 enabled.
+entering extended mode
+(TA.tex
+LaTeX2e <2023-11-01> patch level 1
+L3 programming layer <2024-01-04>
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/base\book.cls
+Document Class: book 2023/05/17 v1.4n Standard LaTeX document class
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/base\bk12.clo))
+
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/base\inputenc.s
+ty
+
+Package inputenc Warning: inputenc package ignored with utf8 based engines.
+
+)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/fontspec\fontsp
+ec.sty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/l3packages/xpar
+se\xparse.sty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/l3kernel\expl3.
+sty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3bac
+kend-xetex.def)))
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/fontspec\fontsp
+ec-xetex.sty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/base\fontenc.st
+y)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/fontspec\fontsp
+ec.cfg)))
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/generic/babel\babel.s
+ty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/generic/babel\xebabel
+.def)
+*************************************
+* Local config file bblopts.cfg used
+*
+
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/arabi\bblopts.c
+fg)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/babel-indonesia
+n\indonesian.ldf))
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/generic/babel/locale/
+id\babel-indonesian.tex)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/csquotes\csquot
+es.sty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolb
+ox.sty)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval
+.sty)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/csquotes\csquot
+es.def)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/csquotes\csquot
+es.cfg))
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/setspace\setspa
+ce.sty)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphi
+cx.sty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphi
+cs.sty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.s
+ty)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\gr
+aphics.cfg)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\xe
+tex.def)))
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption
+.sty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption
+3.sty))
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/caption\subcapt
+ion.sty)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/multirow\multir
+ow.sty)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/tocloft\tocloft
+.sty)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/titlesec\titles
+ec.sty)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/lipsum\lipsum.s
+ty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/l3packages/l3ke
+ys2e\l3keys2e.sty)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/lipsum\lipsum.l
+td.tex))
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/floatrow\floatr
+ow.sty)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/listings\listin
+gs.sty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstmis
+c.sty)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/listings\listin
+gs.cfg))
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath
+.sty
+For additional information on amsmath, use the `?' option.
+
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amstext
+.sty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.
+sty))
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.
+sty)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.
+sty))
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amssym
+b.sty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amsfon
+ts.sty))
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/enumitem\enumit
+em.sty)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/parskip\parskip
+.sty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\kvopt
+ions.sty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/generic/ltxcmds\ltxcm
+ds.sty)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/kvsetkeys\kvset
+keys.sty)))
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/tools\longtable
+.sty)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/booktabs\bookta
+bs.sty)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/datetime2\datet
+ime2.sty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/tracklang\track
+lang.sty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/generic/tracklang\tra
+cklang.tex))
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/xkeyval\xkeyval
+.sty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/generic/xkeyval\xkeyv
+al.tex
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/generic/xkeyval\xkvut
+ils.tex)))
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/datetime2-bahas
+ai\datetime2-bahasai.ldf))
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geomet
+ry.sty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifvtex.
+sty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.s
+ty))
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geomet
+ry.cfg))
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/algorithms\algo
+rithm.sty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/base\ifthen.sty
+))
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/algorithmicx\al
+gorithmicx.sty
+Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
+)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/algorithmicx\al
+gpseudocode.sty
+Document Style - pseudocode environments for use with the `algorithmicx' style
+)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/microtype\micro
+type.sty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/microtype\micro
+type-xetex.def)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/microtype\micro
+type.cfg))
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/tools\array.sty
+)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/threeparttable\
+threeparttable.sty)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/tools\tabularx.
+sty)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/xcolor\xcolor.s
+ty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\co
+lor.cfg)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/graphics\mathco
+lor.ltx))
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/appendix\append
+ix.sty)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperr
+ef.sty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/generic/infwarerr\inf
+warerr.sty)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/generic/kvdefinekeys\
+kvdefinekeys.sty)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/generic/pdfescape\pdf
+escape.sty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/generic/pdftexcmds\pd
+ftexcmds.sty))
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/hycolor\hycolor
+.sty)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/letltxmacro\let
+ltxmacro.sty)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/auxhook\auxhook
+.sty)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\namere
+f.sty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/refcount\refcou
+nt.sty)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/generic/gettitlestrin
+g\gettitlestring.sty))
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\pd1enc
+.def)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/generic/intcalc\intca
+lc.sty)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc.
+def)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/generic/bitset\bitset
+.sty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/generic/bigintcalc\bi
+gintcalc.sty))
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/base\atbegshi-l
+tx.sty))
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hxetex
+.def
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\str
+ingenc.sty)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck\
+rerunfilecheck.sty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/generic/uniquecounter
+\uniquecounter.sty)))
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/biblatex-chicag
+o\biblatex-chicago.sty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/xstring\xstring
+.sty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/generic/xstring\xstri
+ng.tex))
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/biblatex\biblat
+ex.sty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/logreq\logreq.s
+ty
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/logreq\logreq.d
+ef))
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/biblatex\blx-dm
+.def)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/biblatex\blx-un
+icode.def)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/biblatex\blx-co
+mpat.def)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/biblatex\biblat
+ex.def)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/biblatex-chicag
+o\chicago-authordate.bbx)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/biblatex-chicag
+o\chicago-authordate.cbx
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/biblatex-chicag
+o\chicago-dates-common.cbx))
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/biblatex\biblat
+ex.cfg)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/biblatex\blx-ca
+se-expl3.sty)))
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstlan
+g1.sty)
+
+Package csquotes Warning: No style for language 'indonesian'.
+(csquotes)                Using fallback style on input line 364.
+
+No file TA.aux.
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/base\ts1cmr.fd)
+
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/caption\ltcapti
+on.sty)
+(C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\tex/latex/floatrow\fr-lon
+gtable.sty)
+*geometry* driver: auto-detecting
+*geometry* detected driver: xetex
+(TA.out)
+Runaway argument?
+{\376\377\000F\000i\000x\000t\000u\000r\000e\000\040\000B\000.\0006\0\ETC.
+! File ended while scanning use of \@@BOOKMARK.
+<inserted text> 
+                \par 
+l.364 \begin{document}
+                      
+(TA.out)
+Runaway argument?
+{\376\377\000F\000i\000x\000t\000u\000r\000e\000\040\000B\000.\0006\0\ETC.
+! File ended while scanning use of \@@BOOKMARK.
+<inserted text> 
+                \par 
+l.364 \begin{document}
+                      
+
+Package hyperref Warning: Rerun to get /PageLabels entry.
+
+
+Package biblatex Warning: Language 'indonesian' not supported.
+(biblatex)                Using dummy definitions on input line 364.
+
+(TA.bbl) (1 Halaman Judul.tex
+
+Package datetime2 Warning: Region `bahasai' has ignored 
+(datetime2)                the following settings:
+(datetime2)                showmonthname=true
+ on input line 39.
+
+[1
+Sorry, but "C:\Users\Jihan Aurelia\AppData\Local\Programs\MiKTeX\miktex\bin\x64\xelatex.exe" did not succeed for the following reason:
+
+  MiKTeX cannot retrieve attributes for the directory 'C:\Users\Jihan Aurelia\Downloads\heroku-x64.exe\'.
+
+The log file hopefully contains the information to get MiKTeX going again:
+
+  C:\Users\Jihan Aurelia\AppData\Local\MiKTeX\miktex\log\xelatex.log

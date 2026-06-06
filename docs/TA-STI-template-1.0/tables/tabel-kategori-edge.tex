@@ -1,0 +1,26 @@
+\renewcommand{\arraystretch}{1.3}
+\captionsetup[table]{justification=raggedright,singlelinecheck=false}
+\begin{table}[H]
+\caption{Tujuh Kategori Relasi dalam \textit{Knowledge Graph} Kubernetes}
+\label{tbl:kategori_edge}
+\centering
+\begin{tabular}{| p{0.15\textwidth} | p{0.18\textwidth} | p{0.52\textwidth} |}
+\hline
+\textbf{Kategori} & \textbf{Strategi} & \textbf{Definisi Fungsional} \\
+\hline
+Struktural & Deterministik & Relasi langsung dari \textit{field} OpenAPI (\texttt{\$ref}, \texttt{allOf}, \texttt{oneOf}, \texttt{anyOf}); merepresentasikan hierarki dan komposisi skema \\
+\hline
+\textit{Workload} & Semi-deterministik & Relasi komposisi beban kerja; \textit{resource} tingkat tinggi mengandung dan mengelola \textit{Pod}/\textit{Container} \\
+\hline
+Penyimpanan & Semi-deterministik & Relasi manajemen volume persisten dari klaim PVC hingga pemilihan \textit{StorageClass} \\
+\hline
+Konfigurasi & Semi-deterministik & Relasi injeksi konfigurasi \textit{runtime} ke \textit{Container} melalui \textit{ConfigMap} dan \textit{Secret} \\
+\hline
+Jaringan & Semi-deterministik & Relasi \textit{routing} trafik dari \textit{Ingress} ke \textit{Service} hingga ke \textit{Pod} via selektor label \\
+\hline
+RBAC & Semi-deterministik & Relasi kontrol akses berbasis peran; \textit{RoleBinding} ke \textit{Role} dan \textit{ServiceAccount} \\
+\hline
+\textit{Autoscaling} & Semi-deterministik & Relasi target penskalaan otomatis HPA ke \textit{resource} \textit{workload} \\
+\hline
+\end{tabular}
+\end{table}

@@ -1,0 +1,13 @@
+\contentsline {myequations}{\numberline {II.1}Model kondisional GraphRAG berbasis \textit {knowledge graph}}{18}{equation.2.5.1}%
+\contentsline {myequations}{\numberline {II.2}Metrik \textit {Faithfulness}: proporsi node kunci dalam jawaban}{20}{equation.2.6.2}%
+\contentsline {myequations}{\numberline {II.3}Metrik \textit {Answer Relevance} berbasis kemiripan kosinus \textit {embedding}}{20}{equation.2.6.3}%
+\contentsline {myequations}{\numberline {II.4}Metrik \textit {Syntactic Validity} keluaran YAML}{20}{equation.2.6.4}%
+\contentsline {myequations}{\numberline {II.5}Metrik \textit {Schema Compliance} terhadap spesifikasi OpenAPI Kubernetes}{20}{equation.2.6.5}%
+\contentsline {myequations}{\numberline {II.6}Metrik \textit {Precision@k} dan \textit {Recall@k} pada \textit {retrieval}}{21}{equation.2.6.6}%
+\contentsline {myequations}{\numberline {II.7}Metrik \textit {F1-Score@k}: rata-rata harmonik presisi dan kelengkapan}{21}{equation.2.6.7}%
+\contentsline {myequations}{\numberline {II.8}Metrik \textit {NDCG@k}: peringkat hasil \textit {retrieval} bernormalisasi}{21}{equation.2.6.8}%
+\contentsline {myequations}{\numberline {II.9}Metrik \textit {Grounding Score}: proporsi istilah Kubernetes berbasis konteks}{22}{equation.2.6.9}%
+\contentsline {myequations}{\numberline {II.10}Metrik \textit {Hop Accuracy}: ketepatan kedalaman \textit {traversal} berbasis \textit {intent}}{22}{equation.2.6.10}%
+\contentsline {myequations}{\numberline {II.11}Metrik \textit {Path Coverage}: kelengkapan konteks relasional berbasis \textit {edge}}{23}{equation.2.6.11}%
+\contentsline {myequations}{\numberline {II.12}Metrik \textit {Retrieval-Grounded Answer} (RGA): jawaban benar berbasis \textit {retrieval}}{23}{equation.2.6.12}%
+\contentsline {myequations}{\numberline {VI.1}\textit {RetQ-gain} per \textit {fixture} sebagai ukuran keunggulan relatif}{98}{equation.6.3.1}%
