@@ -14,9 +14,9 @@
 
 TA "Implementasi GraphRAG untuk Meningkatkan Presisi Retrieval dan Validitas Sintaksis pada Konfigurasi Kubernetes" (Jihan Aurelia, ITB). Audit menyeluruh 9 poin agar proyek selaras end-to-end, **tanpa hallucination** (semua klaim terbukti kuantitatif).
 
-**/goal:** lantai keras **> 0,80 untuk SEMUA metrik evaluasi**, diupayakan **MAYORITAS metrik ≥ 0,85**.
+**/goal:** lantai keras **> 0,85 untuk SEMUA metrik evaluasi** *(diperbarui 2026-06-09 sesuai instruksi user)*.
 
-**Hipotesis inti:** angka evaluasi rendah saat ini diduga **gejala measurement/implementasi yang rusak**, bukan kinerja sistem sebenarnya. Tugas: temukan SEMUA kesalahan (fixture salah / metrik salah untuk scope / mekanisme graf salah), perbaiki dengan benar, re-run, lalu angka jujur yang muncul diharapkan > 0,80 (mayoritas ≥ 0,85).
+**Framing yang dikoreksi (Fase 0, 2026-06-09):** hipotesis lama "angka rendah = measurement rusak" **ditolak sebagai asumsi**. Setiap skor rendah harus diatribusikan ke salah satu dari tiga kelas: (1) bug measurement, (2) bug gold-standard, atau (3) **defisiensi KG/mekanisme yang nyata**. Target >0,85 hanya sah tercapai sejauh kelas 1–2 dominan. Di mana kelas 3 yang nyata, angka tetap dilaporkan apa adanya di Bab VII — tidak di-tuning. Lihat `critical_review.md` untuk detail.
 
 **Scope data (locked):** KG HANYA dari blok `definitions` swagger.json K8s v1.30. Tidak ada klaster aktif, tidak ada runtime `kubectl`. Tujuan (T1/T2/T3) & Rumusan Masalah **dikunci**. Studi literatur dikunci **kecuali sub-bab evaluasi**.
 
@@ -43,14 +43,19 @@ TA "Implementasi GraphRAG untuk Meningkatkan Presisi Retrieval dan Validitas Sin
 | **F6** | Docstring `evaluate.py` basi (formula `/3` lama) | `evaluate.py:18-21` vs `:341,:416` | Bug komentar (kode benar) |
 | **F7** | `top_k` tak konsisten — 3 (graph_retriever) vs 5 (evaluate vector) | `evaluate.py:561`, `graph_retriever.py:15` | Hardcode tanpa justifikasi |
 | **F8** | Threshold RGA `0.5` hardcode | `evaluate.py:435,450-453` | Verifikasi sitasi GraphRAG-Bench Han 2024 di `.bib` |
-| **F9** | BELUM DIAUDIT — pembangunan KG (T1): derivasi 18 edge lintas-resource | `src/ingestion/parser.py`, `src/models/swagger_models.py` | Cek deterministik vs hand-coded |
-| **F10** | BELUM DIAUDIT — validator YAML 3-lapis (T2) | `src/validation/{yaml_validator,cgg_validator,auditor}.py` | Inti tujuan kedua |
-| **F11** | BELUM DIAUDIT — klasifikasi intent + metode statistik | `src/chatbot/prompts.py`, `scripts/statistical_test.py` | Dasar semua klaim signifikansi |
-| OK1 | Angka tesis konsisten dgn kode & `_final` CSV (tidak ada fabrikasi) | Bab VI:104, tabel29b/c | — |
-| OK2 | Depth mapping punya rasional struktural + ablation | `custom_retriever.py:15-40` | Mostly defensible |
-| OK3 | Batasan Masalah Bab I selaras scope | Bab I:48-51 | Selaras |
+| **F9** | ✅ DIAUDIT — 14 dari 18 edge hand-coded (Pass 3 `parser.py:324-371`); 4 struktural deterministik (HAS_PROPERTY/EXTENDS/ONE_OF/ANY_OF) | `src/ingestion/parser.py:228-371` | Klaim "auto-derived" tidak tepat; tesis harus menyebut hand-coded |
+| **F10** | ✅ DIAUDIT — validator 3-lapis sehat; L3 hanya aktif saat ablation | `src/validation/yaml_validator.py:30-68`; `evaluate.py:240` | L3 tidak masuk production AnsQ |
+| **F11** | ✅ DIAUDIT — intent 5 kategori LLM; statistik Wilcoxon+bootstrap+Holm-Bonferroni one-tailed; metodologi sehat | `prompts.py:15-20`; `statistical_test.py:119-183` | — |
+| **F14** | **KRITIS (baru)** — KG 18-edge ter-dekopling dari generasi: context path HAS_PROPERTY-only, `PATH_EDGES_QUERY` all-18-edge hanya untuk display/metrik | `queries.py:26,110-113,85-103`; `graph_agent.py:102-109` | Klaim T1 tak terbukti; ceiling path_coverage ~87%; AnsQ < baseline |
+| **F7′** | **Diperbarui** — 3 nilai top_k: prod seed=1, GraphRetriever=3, eval vector=5 | `queries.py:110`; `graph_retriever.py:15`; `evaluate.py:561` | Seed=1 cap recall; perlu sweep + dokumentasi |
+| **F12** | **Baru** — schema validator memakai K8s 1.29 bukan 1.30 | `yaml_validator.py:45` | schema_compliance 0,7895 mungkin under-estimated |
+| **F15** | **Baru** — embedding English-generic + keyword-soup query vs pertanyaan asli | `vector_index.py:15`; `custom_retriever.py:117` | Defisiensi retrieval nyata |
+| **F13** | **Status pakar belum dikonfirmasi** — materi ada, hasil n=4 belum terlihat | `docs/validation/` | Klaim validasi eksternal pending |
+| OK1 | Angka tesis konsisten dgn kode & `_final` CSV (tidak ada fabrikasi) | `data/eval_results_graphrag_final.csv` | — |
+| OK2 | Depth mapping punya rasional struktural + ablation | `custom_retriever.py:33-39` | Defensible |
+| OK3 | Batasan Masalah Bab I selaras scope | Bab I | Selaras |
 
-**Baseline `_final` (sebelum perbaikan):** GraphRAG AnsQ 0,5771 / RetQ 0,6631 / ReaQ 0,7602 / PathCov 0,8515 / HopAcc 0,3505 / RGA 0,4536; YAML syntactic 0,8947 (n=19), schema 0,7895. Hanya PathCov & YAML syntactic ≥0,85.
+**Baseline `_final` (sebelum perbaikan):** GraphRAG AnsQ 0,5771 / RetQ 0,6631 / ReaQ 0,7602 / PathCov 0,8515 / HopAcc 0,3505 / RGA 0,4536; YAML syntactic 0,8947 (n=19), schema 0,7895; RAGAS faithfulness 0,2125 (n=88), ctx_precision 0,3169, ctx_recall 0,3799. Hanya PathCov & YAML syntactic ≥0,85. **AnsQ GraphRAG < kedua baseline** (defisiensi genuine).
 
 ---
 

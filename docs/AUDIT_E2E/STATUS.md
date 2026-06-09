@@ -7,7 +7,7 @@
 | Fase | Judul | Status | Dok detail | Artefak |
 |------|-------|--------|-----------|---------|
 | -1 | Setup scaffolding | ✅ DONE (2026-06-09) | — | CHARTER, STATUS, STYLE_GUIDE, memory |
-| 0 | Diagnosis forensik (read-only) | ⬜ TODO | `phases/FASE_0.md` | `bug_register.md`, `metric_suitability.md` |
+| 0 | Diagnosis forensik (read-only) | ✅ DONE (2026-06-09) | `phases/FASE_0.md` | `bug_register.md`, `metric_suitability.md`, `critical_review.md` |
 | 1 | Perbaiki measurement (kode) | ⬜ TODO | `phases/FASE_1.md` | — |
 | 2 | Re-kurasi GT fixture (data) | ⬜ TODO | `phases/FASE_2.md` | `fixture_fix_log.md` |
 | 3 | Re-run evaluasi penuh | ⬜ TODO | `phases/FASE_3.md` | `_final` CSV baru |
@@ -24,11 +24,34 @@ Legend: ✅ done · 🔶 in-progress · ⬜ todo
 
 ## Handoff notes (terbaru di atas)
 
+### 2026-06-09 — Fase 0 selesai
+- Artefak dihasilkan: `bug_register.md` (16 temuan F1–F16 + F13), `metric_suitability.md` (semua metrik dinilai), `critical_review.md` (10 ancaman validitas).
+- **Tidak ada perubahan kode/data/tesis.** Stats pass Python read-only saja.
+- Target diperbarui: **>0,85 semua metrik** (dari >0,80/mayoritas ≥0,85).
+- Framing dikoreksi: 3 root-cause class; KG sendiri diidentifikasi sebagai genuine mechanism deficiency (F14, F15).
+
+**Temuan kritis Fase 0:**
+1. **F14 (KRITIS):** Context path hanya HAS_PROPERTY — 14 edge semantik tidak masuk konteks LLM. Klaim T1 belum terbukti. AnsQ GraphRAG < kedua baseline (genuine RC=3). **Keputusan user diperlukan: Opsi A (fix SCHEMA_DEPS_QUERY ke all-18-edge) vs Opsi B (sempitkan klaim T1).**
+2. **F2 (6 fixture out-of-scope):** command×3 + troubleshooting×3 — runtime kubectl, zero-curation GT. Re-scope atau re-kurasi Fase 2.
+3. **F3 (HopAccuracy artefak):** d_gt = len(expected_path) ~75-112 bukan depth 1–5. Pasca-fix jadi tautologi → pertimbangkan ganti formula.
+4. **F7′ (top_k tiga nilai):** prod seed=1, GraphRetriever=3, eval vector=5. Perlu sweep + dokumentasi Fase 1.
+5. **F4 (node GT hilang):** AccessMode + SecretType tidak ada di swagger definitions; StorageClass FQN salah.
+
+**Metrik berisiko intrinsik (tidak dijamin ≥0,85 meski semua bug diperbaiki):**
+- AnsQ composite (GraphRAG < baseline; tergantung F14 decision)
+- RAGAS faithfulness (LLM judge ketat; intrinsik sulit)
+- RAGAS ctx_precision/recall (tergantung F14)
+- RGA (binary, sensitif threshold)
+
+**Langkah berikut Fase 1:**
+- Konfirmasi keputusan F14 (Opsi A vs B) ke user *sebelum* eksekusi
+- Perbaiki F1 (vector baseline pure-dense), F3 (HopAccuracy formula/replace), F5 (RAGAS n logging), F6 (docstring), F7′ (top_k sweep+konsistensi), F8 (RGA threshold justifikasi), F12 (validator versi)
+- Buat `docs/AUDIT_E2E/topk_selection.md` (sweep k, pilih domain-terbaik, dokumentasikan)
+- Fase 2 paralel/setelah: re-kurasi 6 fixture out-of-scope, fix 3 node GT missing
+
 ### 2026-06-09 — Fase -1 selesai
 - Scaffolding dibuat: `CHARTER.md`, `STATUS.md`, `STYLE_GUIDE.md`, `memory/audit-e2e-charter.md` (+ pointer di `MEMORY.md`).
 - Belum ada perubahan kode/data/tesis.
-- **Langkah berikut:** buka sesi baru → "Detailkan & kerjakan Fase 0 audit E2E". Fase 0 read-only (diagnosis), hasilkan `bug_register.md` + `metric_suitability.md`.
-- Reminder: maks 3–4 subagent serentak (limit sesi pernah kena di 9 agen). Neo4j sudah menyala & bisa diakses.
 
 ## Catatan angka baseline (untuk perbandingan setelah re-run)
 GraphRAG `_final`: AnsQ 0,5771 · RetQ 0,6631 · ReaQ 0,7602 · PathCov 0,8515 · HopAcc 0,3505 · RGA 0,4536 · YAML syntactic 0,8947 (n=19) · schema 0,7895.
