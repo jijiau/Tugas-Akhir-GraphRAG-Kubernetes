@@ -207,29 +207,29 @@
 \babel@toc {indonesian}{}\relax 
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {IV.1}{\ignorespaces Rancangan solusi berdasarkan metodologi CRISP--DM}}{47}{figure.caption.21}%
-\contentsline {figure}{\numberline {IV.2}{\ignorespaces \textit {Architecture Diagram} Sistem \textit {GraphRAG} Kubernetes}}{52}{figure.caption.22}%
-\contentsline {figure}{\numberline {IV.3}{\ignorespaces Diagram Urutan (\textit {Sequence Diagram}) Alur Kerja Sistem GraphRAG}}{53}{figure.caption.23}%
-\contentsline {figure}{\numberline {IV.4}{\ignorespaces Alur \textit {Pipeline Ingestion} dari \texttt {swagger.json} ke Neo4j \textit {Knowledge Graph}}}{54}{figure.caption.24}%
-\contentsline {figure}{\numberline {IV.5}{\ignorespaces \textit {Use Case Diagram} Interaksi Pengguna dengan Sistem GraphRAG}}{58}{figure.caption.28}%
-\contentsline {figure}{\numberline {IV.6}{\ignorespaces Evolusi Rancangan: Vanilla LLM $\rightarrow $ Vector RAG $\rightarrow $ GraphRAG}}{60}{figure.caption.29}%
+\contentsline {figure}{\numberline {IV.2}{\ignorespaces \textit {Architecture Diagram} Sistem \textit {GraphRAG} Kubernetes}}{51}{figure.caption.22}%
+\contentsline {figure}{\numberline {IV.3}{\ignorespaces Diagram Urutan (\textit {Sequence Diagram}) Alur Kerja Sistem GraphRAG}}{52}{figure.caption.23}%
+\contentsline {figure}{\numberline {IV.4}{\ignorespaces \textit {Pipeline Ingestion} dari \texttt {swagger.json} ke Neo4j \textit {Knowledge Graph}}}{53}{figure.caption.24}%
+\contentsline {figure}{\numberline {IV.5}{\ignorespaces \textit {Use Case Diagram} Interaksi Pengguna dengan Sistem GraphRAG}}{57}{figure.caption.28}%
+\contentsline {figure}{\numberline {IV.6}{\ignorespaces Evolusi Rancangan: Vanilla LLM $\rightarrow $ Vector RAG $\rightarrow $ GraphRAG}}{59}{figure.caption.29}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {V.1}{\ignorespaces Alur fase 1: Pembuatan \textit {Node Definition} dari \texttt {swagger.json}}}{65}{figure.caption.32}%
-\contentsline {figure}{\numberline {V.2}{\ignorespaces Alur fase 2: Pembuatan \textit {Edge} Struktural dari Referensi \texttt {\$ref}}}{67}{figure.caption.34}%
-\contentsline {figure}{\numberline {V.3}{\ignorespaces Alur fase 2.5: Pembuatan \textit {Edge} Hierarki dan Tipe Alternatif}}{68}{figure.caption.35}%
-\contentsline {figure}{\numberline {V.4}{\ignorespaces Alur fase 3: Pembuatan \textit {Edge} Semantik dari Pola Domain Kubernetes}}{69}{figure.caption.36}%
-\contentsline {figure}{\numberline {V.5}{\ignorespaces Alur fase 1.5: Pembuatan Vektor \textit {Embedding} untuk Seluruh \textit {Node}}}{71}{figure.caption.37}%
-\contentsline {figure}{\numberline {V.6}{\ignorespaces Diagram interaksi lima modul \textit {agent} \textit {LangGraph}}}{74}{figure.caption.40}%
-\contentsline {figure}{\numberline {V.7}{\ignorespaces Alur \textit {cascading retrieval} tiga tahap}}{76}{figure.caption.42}%
-\contentsline {figure}{\numberline {V.8}{\ignorespaces Pengaruh kedalaman \textit {traversal} terhadap RetQ per kategori \textit {fixture}}}{78}{figure.caption.44}%
-\contentsline {figure}{\numberline {V.9}{\ignorespaces \textit {Precision@k}, \textit {Recall@k}, dan NDCG@k terhadap kedalaman \textit {traversal}}}{79}{figure.caption.45}%
-\contentsline {figure}{\numberline {V.10}{\ignorespaces Distribusi panjang \textit {graph context} pada 97 \textit {fixture}}}{80}{figure.caption.46}%
-\contentsline {figure}{\numberline {V.11}{\ignorespaces Skor evaluasi per-faktor terhadap nilai batas karakter}}{80}{figure.caption.47}%
-\contentsline {figure}{\numberline {V.12}{\ignorespaces Alur validasi YAML tiga lapis berbasis \textit {knowledge graph}}}{82}{figure.caption.48}%
-\contentsline {figure}{\numberline {V.13}{\ignorespaces Perbandingan alur eksekusi ketiga sistem yang dievaluasi: Vanilla LLM, Vector RAG, dan \textit {GraphRAG}}}{84}{figure.caption.49}%
+\contentsline {figure}{\numberline {V.1}{\ignorespaces Alur fase 1: Pembuatan \textit {Node Definition} dari \texttt {swagger.json}}}{63}{figure.caption.32}%
+\contentsline {figure}{\numberline {V.2}{\ignorespaces Alur fase 2: Pembuatan \textit {Edge} Struktural dari Referensi \texttt {\$ref}}}{65}{figure.caption.34}%
+\contentsline {figure}{\numberline {V.3}{\ignorespaces Alur fase 2.5: Pembuatan \textit {Edge} Hierarki dan Tipe Alternatif}}{66}{figure.caption.35}%
+\contentsline {figure}{\numberline {V.4}{\ignorespaces Alur fase 3: Pembuatan \textit {Edge} Semantik dari Pola Domain Kubernetes}}{67}{figure.caption.36}%
+\contentsline {figure}{\numberline {V.5}{\ignorespaces Alur fase 1.5: Pembuatan Vektor \textit {Embedding} untuk Seluruh \textit {Node}}}{69}{figure.caption.37}%
+\contentsline {figure}{\numberline {V.6}{\ignorespaces Diagram interaksi lima modul \textit {agent} \textit {LangGraph}}}{72}{figure.caption.40}%
+\contentsline {figure}{\numberline {V.7}{\ignorespaces Alur \textit {cascading retrieval} tiga tahap}}{74}{figure.caption.42}%
+\contentsline {figure}{\numberline {V.8}{\ignorespaces Pengaruh kedalaman \textit {traversal} terhadap RetQ per kategori \textit {fixture}}}{76}{figure.caption.44}%
+\contentsline {figure}{\numberline {V.9}{\ignorespaces \textit {Precision@k}, \textit {Recall@k}, dan NDCG@k terhadap kedalaman \textit {traversal}}}{77}{figure.caption.45}%
+\contentsline {figure}{\numberline {V.10}{\ignorespaces Distribusi panjang \textit {graph context} pada 97 \textit {fixture}}}{78}{figure.caption.46}%
+\contentsline {figure}{\numberline {V.11}{\ignorespaces Skor evaluasi per-faktor terhadap nilai batas karakter}}{78}{figure.caption.47}%
+\contentsline {figure}{\numberline {V.12}{\ignorespaces Alur validasi YAML tiga lapis berbasis \textit {knowledge graph}}}{80}{figure.caption.48}%
+\contentsline {figure}{\numberline {V.13}{\ignorespaces Perbandingan alur eksekusi ketiga sistem yang dievaluasi: Vanilla LLM, Vector RAG, dan \textit {GraphRAG}}}{82}{figure.caption.49}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {VI.1}{\ignorespaces Rata-rata \textit {RetQ-gain} (GraphRAG $-$ Vector RAG) per tipe \textit {fixture}.}}{99}{figure.caption.60}%
-\contentsline {figure}{\numberline {VI.2}{\ignorespaces \textit {Scatter plot} jumlah \textit {hop} yang dilalui vs.\ \textit {RetQ-gain} per \textit {fixture}. Korelasi Spearman $\rho = +0{,}290$ ($p = 0{,}004$, $n = 97$).}}{100}{figure.caption.62}%
-\contentsline {figure}{\numberline {VI.3}{\ignorespaces \textit {Scatter plot} derajat node primer vs.\ \textit {RetQ-gain}. Korelasi Spearman $\rho = +0{,}467$ ($p < 0{,}001$, $n = 96$).}}{101}{figure.caption.63}%
+\contentsline {figure}{\numberline {VI.1}{\ignorespaces Rata-rata \textit {RetQ-gain} (GraphRAG $-$ Vector RAG) per tipe \textit {fixture}.}}{97}{figure.caption.60}%
+\contentsline {figure}{\numberline {VI.2}{\ignorespaces \textit {Scatter plot} jumlah \textit {hop} yang dilalui vs.\ \textit {RetQ-gain} per \textit {fixture}. Korelasi Spearman $\rho = +0{,}290$ ($p = 0{,}004$, $n = 97$).}}{99}{figure.caption.62}%
+\contentsline {figure}{\numberline {VI.3}{\ignorespaces \textit {Scatter plot} derajat node primer vs.\ \textit {RetQ-gain}.}}{100}{figure.caption.63}%
 \addvspace {10\p@ }
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 

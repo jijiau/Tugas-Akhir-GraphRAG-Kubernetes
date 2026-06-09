@@ -17,7 +17,7 @@ Penelitian ini telah mengimplementasikan sistem \textit{Graph Retrieval-Augmente
 
 \section{Keterbatasan}
 
-Penelitian ini mengidentifikasi tiga keterbatasan utama yang memengaruhi cakupan dan generalisabilitas hasil.
+Penelitian ini mengidentifikasi tiga keterbatasan utama yang memengaruhi hasil.
 
 \textbf{Pertama}, \textit{knowledge graph} yang dibangun merupakan \textit{directed graph} yang hanya merepresentasikan relasi struktural-skema dari bagian \texttt{definitions} pada \texttt{swagger.json} Kubernetes v1.30. Keterbatasan ini berdampak pada tiga aspek cakupan: (a) relasi operasional seperti ikatan RBAC antara \textit{ServiceAccount} dan \textit{ClusterRole} tidak dapat dijangkau melalui \textit{traversal} karena \textit{edge} hanya ada dalam arah terbalik (\textit{RoleBinding} $\to$ \textit{ServiceAccount}); (b) operasi API (\texttt{paths}), \textit{Custom Resource Definition}, dan versi Kubernetes selain v1.30 tidak tercakup; serta (c) status \textit{runtime} pada kluster asli Kubernetes tidak terepresentasi dalam graf yang bersifat statis.
 

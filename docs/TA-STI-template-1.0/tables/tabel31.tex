@@ -4,25 +4,25 @@
 \caption{Perbandingan Skor per Faktor: Vanilla LLM vs.\ Vector RAG vs.\ GraphRAG (97 \textit{Fixture}, 95\% CI \textit{bootstrap})}
 \label{tbl:baseline_comparison}
 \centering
-\begin{tabular}{| p{0.22\textwidth} | >{\centering\arraybackslash}p{0.19\textwidth} | >{\centering\arraybackslash}p{0.19\textwidth} | >{\centering\arraybackslash}p{0.19\textwidth} | >{\centering\arraybackslash}p{0.07\textwidth} |}
+\begin{tabular}{| p{0.28\textwidth} | >{\centering\arraybackslash}p{0.15\textwidth} | >{\centering\arraybackslash}p{0.15\textwidth} | >{\centering\arraybackslash}p{0.15\textwidth} | >{\centering\arraybackslash}p{0.08\textwidth} |}
 \hline
 \textbf{Faktor} & \textbf{Vanilla LLM} & \textbf{Vector RAG} & \textbf{GraphRAG} & \textbf{Sig} \\
 \hline
 \multicolumn{5}{|l|}{\textit{Dimensi utama}} \\
 \hline
-\textbf{AnsQ} & 0,5956 \scriptsize{[0,56; 0,63]} & \textbf{0,5916} \scriptsize{[0,55; 0,63]} & 0,5771 \scriptsize{[0,53; 0,62]} & n.s. \\
+\textbf{AnsQ} & 0,5956 & \textbf{0,5916} & 0,5771 & n.s. \\
 \hline
-\textbf{RetQ} & 0,0241 \scriptsize{[0,01; 0,04]} & 0,4255 \scriptsize{[0,37; 0,48]} & \textbf{0,7259} \scriptsize{[0,66; 0,78]} & *** \\
+\textbf{RetQ} & 0,0241 & 0,4255 & \textbf{0,7259} & *** \\
 \hline
-\textbf{ReaQ} & 0,3351 \scriptsize{[0,30; 0,37]} & 0,3307 \scriptsize{[0,31; 0,36]} & \textbf{0,5554} \scriptsize{[0,51; 0,61]} & *** \\
+\textbf{ReaQ} & 0,3351 & 0,3307 & \textbf{0,5554} & *** \\
 \hline
 \multicolumn{5}{|l|}{\textit{Metrik domain Kubernetes}} \\
 \hline
-\textbf{\textit{Path Coverage}} & 0,0722 \scriptsize{[0,03; 0,12]} & 0,5411 \scriptsize{[0,46; 0,62]} & \textbf{0,8515} \scriptsize{[0,79; 0,91]} & *** \\
+\textbf{\textit{Path Coverage}} & 0,0722 & 0,5411 & \textbf{0,8515} & *** \\
 \hline
-\textbf{\textit{Hop Accuracy}} & 0,0722 \scriptsize{[0,03; 0,12]} & 0,0000 \scriptsize{[0,00; 0,00]} & \textbf{0,3505} \scriptsize{[0,26; 0,45]} & *** \\
+\textbf{\textit{Hop Accuracy}} & 0,0722 & 0,0000 & \textbf{0,3505} & *** \\
 \hline
-\textbf{RGA} & 0,0206 \scriptsize{[0,00; 0,05]} & 0,2784 \scriptsize{[0,19; 0,37]} & \textbf{0,4536} \scriptsize{[0,36; 0,56]} & *** \\
+\textbf{RGA} & 0,0206 & 0,2784 & \textbf{0,4536} & *** \\
 \hline
 \textbf{\textit{Syntactic Validity}} & 0,8947 & 0,8947 & 0,8947 & n.s. \\
 \hline
@@ -38,6 +38,6 @@
 \hline
 \textit{Hallucination Rate} & 0,4019 & 0,3385 & \textbf{0,2398} & --- \\
 \hline
-\multicolumn{5}{l}{\small Sig: signifikansi GraphRAG vs.\ kedua \textit{baseline} (Wilcoxon + \textit{bootstrap}, koreksi Holm-Bonferroni). *** $p < 0{,}001$; n.s.\ = tidak signifikan. Detail per-\textit{baseline} pada Tabel~\ref{tbl:statistical_test}.} \\
+\multicolumn{5}{l}{\small Sig: *** $p < 0{,}001$; n.s.\ = tidak signifikan. Detail per-\textit{baseline} pada Tabel~\ref{tbl:statistical_test}.} \\
 \end{tabular}
 \end{table}

@@ -97,13 +97,11 @@
 \usepackage{algorithmicx} % for algorithmic environment
 \usepackage{algpseudocode} % for pseudocode
 \usepackage{microtype} % Untuk optimasi typography dan spacing
-\usepackage{floatrow} % for customizing float (figure and table) positions
 \usepackage{array} % for better arrays (eg. in tabular environment)
 \usepackage{threeparttable} % for tables with notes
 \usepackage{tabularx} % for tables with adjustable-width columns
 \usepackage{xcolor} % for color definitions
 \usepackage[title,titletoc]{appendix} % for appendix management
-\usepackage{csquotes} % for context-sensitive quotation facilities
 \usepackage[hidelinks]{hyperref} % for hyperlinks
 \usepackage{pdfpages} % for including full PDF pages (validator forms)
 
@@ -215,6 +213,9 @@
     \or Desember%  % 12th month
   \fi
 }
+
+% --- Halaman tidak dipaksa rata bawah (hindari gap di tengah) ---
+\raggedbottom
 
 % --- Atur margin halaman untuk single-sided format (satu muka) ---
 \geometry{
