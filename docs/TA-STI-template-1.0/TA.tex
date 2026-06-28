@@ -84,6 +84,10 @@
 \usepackage{titlesec} % for customizing titles
 \usepackage{lipsum} % for dummy text (lorem ipsum text)
 \usepackage{floatrow} % for customizing float (figure and table) positions
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.8}
+\renewcommand{\textfraction}{0.07}
+\renewcommand{\floatpagefraction}{0.7}
 \usepackage{listings} % for code listing
 \usepackage{amsmath} % for math
 \usepackage{amssymb} % for math symbols
@@ -242,15 +246,16 @@
     numberstyle=\tiny\color{codegray},
     stringstyle=\color{codepurple},
     basicstyle=\ttfamily\footnotesize,
-    breakatwhitespace=false,         
-    breaklines=true,                 
-    captionpos=b,                    
-    keepspaces=true,                 
-    numbers=left,                    
-    numbersep=5pt,                  
-    showspaces=false,                
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=t,
+    frame=single,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
     showstringspaces=false,
-    showtabs=false,                  
+    showtabs=false,
     tabsize=4,
     language=Python
 }
@@ -334,10 +339,11 @@
 } 
 % --- Listing ---
 \captionsetup[lstlisting]{
-  labelsep=space, 
-  format=hang, 
-  justification=raggedright, 
-  singlelinecheck=false
+  labelsep=space,
+  format=plain,
+  justification=raggedright,
+  singlelinecheck=false,
+  margin=0pt
 }
 \floatsetup[lstlisting]{
   capposition=top
@@ -455,7 +461,7 @@
   %\makeatother
 \input{Lampiran-A.tex}
 \input{Lampiran-B.tex}
-\input{Lampiran-C.tex}
+%\input{Lampiran-C.tex}
 \input{Lampiran-D.tex}
 \input{Lampiran-E.tex}
 \end{appendices}

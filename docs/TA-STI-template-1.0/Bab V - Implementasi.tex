@@ -23,7 +23,7 @@ Bagian ini menguraikan realisasi teknis pembangunan \textit{knowledge graph} Kub
 \subsection{Implementasi \textit{Pipeline Ingestion} dan Representasi Objek}
 \label{subsec:implementasi-ingestion}
 
-Sistem mengkonstruksi \textit{knowledge graph} dengan mengeksekusi kelas \textit{Swagger\-Graph\-Builder} yang terdefinisi di \texttt{src/ingestion/parser.py} terhadap berkas \texttt{swagger.json} Kubernetes versi 1.30, sebagaimana dirancang pada Subbab~\ref{subsec:pipeline-ingestion}. Seluruh fase dieksekusi secara berurutan.
+Sistem mengkonstruksi \textit{knowledge graph} dengan mengeksekusi kelas \textit{Swagger\-Graph\-Builder} yang terdefinisi di \texttt{src/ingestion/parser.py} terhadap berkas \texttt{swagger. json} Kubernetes versi 1.30, sebagaimana dirancang pada Subbab~\ref{subsec:pipeline-ingestion}. Seluruh fase dieksekusi secara berurutan.
 
 Fase 1 membuat \textit{node} dari setiap entri bagian \texttt{definitions} dalam \texttt{swagger.json}. Sistem memeriksa keberadaan \textit{field} \texttt{x-kubernetes-group-version-kind} (GVK) pada setiap definisi untuk mengklasifikasikan \textit{node} sebagai \textit{K8sResource} (sumber daya Kubernetes utama yang memiliki GVK) atau \textit{sub-resource} (tipe pendukung tanpa GVK). Sebanyak 5 tipe generik dikecualikan karena tidak relevan untuk pembuatan konfigurasi YAML.
 
@@ -60,7 +60,7 @@ Fase 2 hanya menangani referensi properti langsung. Skema OpenAPI juga mendefini
 \begin{figure}[H]
     \centering
     \captionsetup{justification=centering}
-    \includegraphics[width=0.75\textwidth]{images/Pass25.png}
+    \includegraphics[width=0.68\textwidth]{images/Pass25.png}
     \caption{Alur fase 2.5: Pembuatan \textit{Edge} Hierarki dan Tipe Alternatif}
     \label{fig:pass25-inheritance}
 \end{figure}
@@ -103,7 +103,7 @@ Ketiga subbab di atas secara bersama-sama merealisasikan pembangunan \textit{kno
 \section{Implementasi Mekanisme \textit{GraphRAG}}
 % ─────────────────────────────────────────────────────────────────────
 
-\textit{Pipeline} \textit{chatbot} diimplementasikan sebagai \textit{directed acyclic graph} (DAG) menggunakan LangGraph pada berkas \texttt{src/chatbot/graph\_agent.py}. \textit{State} yang dipertukarkan antarmodul \textit{agent} didefinisikan sebagai \textit{TypedDict} dengan nama \texttt{AgentState} yang memuat sembilan \textit{field}: \texttt{messages}, \texttt{question}, \texttt{session\_id}, \texttt{chat\_history}, \texttt{extracted\_intent}, \texttt{graph\_context}, \texttt{reasoning\_path}, \texttt{intent\_type}, dan \texttt{error}. Lima modul \textit{agent} yang dieksekusi secara linear sebagaimana ditunjukkan pada Tabel~\ref{tbl:langgraph_nodes} diimplementasikan masing-masing sebagai fungsi Python yang menerima dan mengembalikan \texttt{AgentState}.
+\textit{Pipeline} \textit{chatbot} diimplementasikan sebagai \textit{directed acyclic graph} (DAG) menggunakan LangGraph pada berkas \texttt{src/chatbot/graph\_agent.py}. \textit{State} yang dipertukarkan antarmodul \textit{agent} didefinisikan sebagai \textit{TypedDict} dengan nama \texttt{Agent State} yang memuat sembilan \textit{field}: \texttt{messages}, \texttt{question}, \texttt{session\_id}, \texttt{chat\_history}, \texttt{extracted\_intent}, \texttt{graph\_context}, \texttt{reasoning\_path}, \texttt{intent\_type}, dan \texttt{error}. Lima modul \textit{agent} yang dieksekusi secara linear sebagaimana ditunjukkan pada Tabel~\ref{tbl:langgraph_nodes} diimplementasikan masing-masing sebagai fungsi Python yang menerima dan mengembalikan \texttt{AgentState}.
 
 \input{tables/tabel17.tex}
 
@@ -117,13 +117,13 @@ Interaksi antarmodul \textit{agent} beserta aliran data melalui \texttt{AgentSta
     \label{fig:langgraph_pipeline}
 \end{figure}
 
-Arsitektur \textit{dual-LLM} diimplementasikan dengan konfigurasi \textit{temperature} yang berbeda untuk setiap peran: modul \textit{thinker} menggunakan \texttt{temperature}=0,0 untuk keluaran JSON yang deterministik, sedangkan modul \textit{speaker} menggunakan \texttt{temperature}=0,1 sebagai titik keseimbangan antara \textit{faithfulness} terhadap konteks graf dan variasi naratif respons. Detail implementasi setiap modul \textit{agent} diuraikan pada Subbab~\ref{subsec:implementasi-intent} hingga Subbab~\ref{subsec:implementasi-antarmuka}.
+Arsitektur \textit{dual-LLM} diimplementasikan dengan konfigurasi \textit{temperature} yang berbeda untuk setiap peran: modul \textit{thinker} menggunakan \texttt{temperature}=0,0 untuk keluaran JSON yang deterministik, sedangkan modul \textit{speaker} menggunakan \textit{temperature}=0,1 sebagai titik keseimbangan antara \textit{faithfulness} terhadap konteks graf dan variasi naratif respons. Detail implementasi setiap modul \textit{agent} diuraikan pada Subbab~\ref{subsec:implementasi-intent} hingga Subbab~\ref{subsec:implementasi-antarmuka}.
 
 % --- 5.3.1 ---
 \subsection{Implementasi Klasifikasi \textit{Intent} dan Manajemen Memori}
 \label{subsec:implementasi-intent}
 
-Modul \textit{thinker} mengimplementasikan kebutuhan fungsional F-03 (\textit{Intent Classification}) sebagaimana dirancang pada Subbab~\ref{subsec:klasifikasi-intent}. Modul ini menggunakan GPT-4o-mini dengan \texttt{temperature}=0,0 untuk menghasilkan keluaran JSON yang deterministik tanpa variasi \textit{sampling}. Keluaran JSON memuat dua entitas utama: \texttt{intent\_type} yang mengklasifikasikan jenis kueri ke dalam lima tipe sebagaimana didefinisikan pada Tabel~\ref{tbl:intent_definisi}, serta \texttt{primary\_resource} dan \texttt{related\_concepts} yang mengidentifikasi \textit{resource} Kubernetes yang disebutkan dalam kueri. Konsistensi JSON pada setiap eksekusi krusial karena keluaran yang tidak konsisten akan menyebabkan kegagalan \textit{parsing} pada modul \textit{retriever}.
+Modul \textit{thinker} mengimplementasikan kebutuhan fungsional F-03 (\textit{Intent Classification}) sebagaimana dirancang pada Subbab~\ref{subsec:klasifikasi-intent}. Modul ini menggunakan GPT-4o-mini dengan \texttt{temperature}=0,0 untuk menghasilkan keluaran JSON yang deterministik tanpa variasi \textit{sampling}. Keluaran JSON memuat dua entitas utama: \texttt{intent\_ type} yang mengklasifikasikan jenis kueri ke dalam lima tipe sebagaimana didefinisikan pada Tabel~\ref{tbl:intent_definisi}, serta \texttt{primary\_resource} dan \texttt{related\_concepts} yang mengidentifikasi \textit{resource} Kubernetes yang disebutkan dalam kueri. Konsistensi JSON pada setiap eksekusi krusial karena keluaran yang tidak konsisten akan menyebabkan kegagalan \textit{parsing} pada modul \textit{retriever}.
 
 \input{tables/tabel-intent-definisi.tex}
 
@@ -145,13 +145,13 @@ Mekanisme \textit{retrieval} diimplementasikan dalam kelas \textit{StatefulK8sRe
 
 Tahap 1 mengeksekusi \texttt{EXACT\_MATCH\_QUERY} ke Neo4j menggunakan nama entitas yang diekstraksi modul \textit{thinker}. Apabila Tahap 1 tidak menemukan kecocokan, sistem beralih ke Tahap 2 yang mengeksekusi \texttt{HYBRID\_VECTOR\_GRAPH\_QUERY} menggunakan \textit{embedded string} berupa konkatenasi dari \texttt{primary\_resource}, seluruh elemen \texttt{related\_concepts}, dan kata kunci ``Kubernetes''. Tahap 3 melakukan \textit{multi-hop graph traversal} dari \textit{seed node} yang diperoleh dengan kedalaman yang ditetapkan berdasarkan tipe \textit{intent}.
 
-Pemetaan kedalaman berbasis \textit{intent} diimplementasikan sebagai kamus \texttt{\_DEPTH\_BY\_INTENT} di tingkat modul sebagaimana ditunjukkan pada Listing~\ref{lst:depth-by-intent}. Prioritas resolusi kedalaman adalah: (1) argumen \texttt{max\_depth} yang diberikan secara eksplisit, (2) nilai dari \texttt{\_DEPTH\_BY\_INTENT} berdasarkan \texttt{intent\_type}, dan (3) nilai \textit{default} tiga lompatan. Pemetaan nilai kedalaman untuk setiap tipe \textit{intent} beserta alasan penetapannya ditunjukkan pada Tabel~\ref{tbl:intent_depth_iv}.
+Pemetaan kedalaman berbasis \textit{intent} diimplementasikan sebagai kamus \texttt{\_DEPTH\_BY \_INTENT} di tingkat modul sebagaimana ditunjukkan pada Listing~\ref{lst:depth-by-intent}. Prioritas resolusi kedalaman adalah: (1) argumen \texttt{max\_depth} yang diberikan secara eksplisit, (2) nilai dari \texttt{\_DEPTH\_BY\_INTENT} berdasarkan \texttt{intent\_type}, dan (3) nilai \textit{default} tiga lompatan. Pemetaan nilai kedalaman untuk setiap tipe \textit{intent} beserta alasan penetapannya ditunjukkan pada Tabel~\ref{tbl:intent_depth_iv}.
 
 \input{tables/tabel18.tex}
 
 \input{listings/depth-by-intent.tex}
 
-Pemilihan nilai kedalaman per tipe \textit{intent} divalidasi secara empiris dengan mengevaluasi seluruh 97 \textit{fixture} pada lima variasi kedalaman ($d \in \{1, 2, 3, 4, 5\}$). Hasil tiap kedalaman tetap dibandingkan terhadap konfigurasi \textit{intent-adaptive} yang memilih kedalaman berdasarkan \texttt{\_DEPTH\_BY\_INTENT} untuk memastikan kedalaman per-\textit{intent} berada pada titik optimum tiap kategori. Gambar~\ref{fig:depth_sensitivity_retq} menunjukkan pengaruh kedalaman \textit{traversal} terhadap skor RetQ per kategori \textit{fixture}, sedangkan Gambar~\ref{fig:depth_sensitivity_submetrics} menunjukkan tren \textit{Precision@k}, \textit{Recall@k}, dan NDCG@k secara agregat.
+Pemilihan nilai kedalaman per tipe \textit{intent} divalidasi secara empiris dengan mengevaluasi seluruh \textit{fixture} pada lima variasi kedalaman ($d \in \{1, 2, 3, 4, 5\}$). Hasil tiap kedalaman tetap dibandingkan terhadap konfigurasi \textit{intent-adaptive} yang memilih kedalaman berdasarkan \texttt{\_DEPTH\_BY\_INTENT} untuk memastikan kedalaman per-\textit{intent} berada pada titik optimum tiap kategori. Gambar~\ref{fig:depth_sensitivity_retq} menunjukkan pengaruh kedalaman \textit{traversal} terhadap skor RetQ per kategori \textit{fixture}.
 
 \begin{figure}[H]
     \centering
@@ -163,29 +163,37 @@ Pemilihan nilai kedalaman per tipe \textit{intent} divalidasi secara empiris den
 
 Titik bertanda hitam menunjukkan kedalaman yang digunakan oleh sistem \textit{adaptive}; garis putus-putus vertikal menandai kedalaman 2 (\textit{conceptual}/\textit{followup}) dan kedalaman 3 (kategori lainnya).
 
-\begin{figure}[H]
-    \centering
-    \captionsetup{justification=centering}
-    \includegraphics[width=1.00\textwidth]{images/depth_sensitivity_submetrics.png}
-    \caption{\textit{Precision@k}, \textit{Recall@k}, dan NDCG@k terhadap kedalaman \textit{traversal}}
-    \label{fig:depth_sensitivity_submetrics}
-\end{figure}
+Untuk \textit{intent} yang melibatkan lebih dari satu \textit{resource}, yaitu \textit{planning}, \textit{trace\_ relationship}, dan \textit{generate\_yaml}, implementasi menambahkan \textit{loop} tambahan yang mengambil konteks dari hingga dua \texttt{related\_concepts} yang diekstraksi modul \textit{thinker} dan menggabungkan hasilnya, baik \textit{graph\_context} maupun \textit{reasoning\_path}, dengan hasil dari \texttt{primary\_resource}. Penanganan ini diperlukan karena pertanyaan relasional dan generasi YAML multi-\textit{resource} membutuhkan konteks skema dari seluruh entitas yang disebutkan. Deduplikasi diterapkan pada \textit{reasoning\_path} agar langkah traversal yang identik antarsumber daya tidak dicatat lebih dari satu kali.
 
-Nilai optimal \textit{Precision@k}, \textit{Recall@k}, dan NDCG@k terpusat pada kedalaman 2--3; skor stabil atau menurun pada kedalaman 4 ke atas akibat masuknya \textit{node} generik yang menurunkan presisi konteks.
+Listing~\ref{lst:graph-context-example} menunjukkan contoh \texttt{graph\_context}
+yang diinjeksikan ke dalam \textit{prompt} modul \textit{speaker} sebagai
+\texttt{retrieved\_data}.
+Listing~\ref{lst:reasoning-path-example} menunjukkan \texttt{reasoning\_path}
+yang dihasilkan secara paralel dan ditampilkan kepada pengguna melalui komponen
+\textit{Retrieval Trace Expander} pada antarmuka \textit{web}, sesuai rancangan
+pada Subbab~\ref{subsec:retrieval-bertingkat}.
 
-Untuk \textit{intent} yang melibatkan lebih dari satu \textit{resource}, yaitu \textit{planning}, \textit{trace\_relationship}, dan \textit{generate\_yaml}, implementasi menambahkan \textit{loop} tambahan yang mengambil konteks dari hingga dua \texttt{related\_concepts} yang diekstraksi modul \textit{thinker} dan menggabungkan hasilnya, baik \textit{graph\_context} maupun \textit{reasoning\_path}, dengan hasil dari \texttt{primary\_resource}. Penanganan ini diperlukan karena pertanyaan relasional dan generasi YAML multi-\textit{resource} membutuhkan konteks skema dari seluruh entitas yang disebutkan. Deduplikasi diterapkan pada \textit{reasoning\_path} agar langkah traversal yang identik antarsumber daya tidak dicatat lebih dari satu kali.
+\lstinputlisting[
+    language=json,
+    frame=single,
+    captionpos=t,
+    caption={Contoh \texttt{graph\_context} hasil retrieval untuk kueri Deployment},
+    label={lst:graph-context-example}
+]{listings/graph-context-example.json}
+
+\input{listings/reasoning-path-example.tex}
 
 Untuk memenuhi kendala latensi (NF-02), \textit{graph context} yang disampaikan ke modul \textit{speaker} dibatasi maksimum 12.000 karakter. Nilai ini dipilih melalui dua tahap analisis yang saling melengkapi, sebagaimana ditunjukkan pada Gambar~\ref{fig:context_cap_dist} dan Gambar~\ref{fig:context_cap_sweep}.
 
-Tahap pertama adalah analisis distribusi panjang \textit{graph context} terhadap seluruh 97 \textit{fixture} evaluasi menggunakan mekanisme \textit{dry-run retriever}. Analisis tersebut mengungkap distribusi bimodal: 79 kueri (81,4\%) menghasilkan konteks sepanjang 11.606 karakter dan 18 kueri (18,6\%) menghasilkan 17.849 karakter, sesuai dengan kedalaman traversal \textit{intent-adaptive} yang berbeda (Gambar~\ref{fig:context_cap_dist}).
+Tahap pertama adalah analisis distribusi panjang \textit{graph context} terhadap seluruh \textit{fixture} evaluasi menggunakan mekanisme \textit{dry-run retriever}. Analisis tersebut mengungkap distribusi bimodal: 81,4\% kueri menghasilkan konteks sepanjang 11.606 karakter dan 18,6\% kueri menghasilkan 17.849 karakter, sesuai dengan kedalaman traversal \textit{intent-adaptive} yang berbeda (Gambar~\ref{fig:context_cap_dist}).
 
-Tahap kedua adalah evaluasi empiris terhadap lima nilai batas karakter yang berbeda, yaitu 10.000, 12.000, 15.000, 18.000, dan 20.000. Pengujian ini dilakukan dengan mengeksekusi seluruh 97 \textit{fixture} evaluasi pada tiap-tiap nilai batas (Gambar~\ref{fig:context_cap_sweep}). Hasil evaluasi per-faktor menunjukkan bahwa nilai 12.000 karakter menghasilkan AnsQ tertinggi di antara semua kandidat. Batas yang lebih besar (15k--20k) mengakibatkan penurunan \textit{faithfulness} pada submetrik AnsQ karena konteks yang terlalu panjang sehingga model \textit{speaker} kehilangan fokus pada dokumen referensi. Sebaliknya, batas 10.000 menghasilkan ReaQ yang lebih tinggi tetapi AnsQ yang lebih rendah karena konteks yang tidak memadai untuk generasi jawaban yang lengkap. GPT-4o-mini mendukung jendela konteks 128.000 token sehingga batas ini bukan kendala kapasitas, melainkan pengendali kualitas, biaya, dan latensi.
+Tahap kedua adalah evaluasi empiris terhadap lima nilai batas karakter yang berbeda, yaitu 10.000, 12.000, 15.000, 18.000, dan 20.000. Pengujian ini dilakukan dengan mengeksekusi seluruh \textit{fixture} evaluasi pada tiap-tiap nilai batas (Gambar~\ref{fig:context_cap_sweep}). Hasil evaluasi per-faktor menunjukkan bahwa nilai 12.000 karakter menghasilkan AnsQ tertinggi di antara semua kandidat. Batas yang lebih besar (15k--20k) mengakibatkan penurunan \textit{faithfulness} pada submetrik AnsQ karena konteks yang terlalu panjang sehingga model \textit{speaker} kehilangan fokus pada dokumen referensi. Sebaliknya, batas 10.000 menghasilkan ReaQ yang lebih tinggi tetapi AnsQ yang lebih rendah karena konteks yang tidak memadai untuk generasi jawaban yang lengkap. GPT-4o-mini mendukung jendela konteks 128.000 token sehingga batas ini bukan kendala kapasitas, melainkan pengendali kualitas, biaya, dan latensi. Nilai 12.000 karakter ditetapkan sebagai parameter sistem pada tahap pengembangan dan dipertahankan konsisten di seluruh evaluasi.
 
 \begin{figure}[H]
     \centering
     \captionsetup{justification=centering}
     \includegraphics[width=0.88\textwidth]{images/context_cap_distribution.png}
-    \caption{Distribusi panjang \textit{graph context} pada 97 \textit{fixture}}
+    \caption{Distribusi panjang \textit{graph context} pada seluruh \textit{fixture} evaluasi}
     \label{fig:context_cap_dist}
 \end{figure}
 
@@ -207,7 +215,7 @@ Modul \textit{speaker} mengimplementasikan dua jalur keluaran berdasarkan tipe \
 
 Validasi YAML diimplementasikan dalam kelas \textit{YAMLValidator} pada berkas \texttt{src/ validation/yaml\_validator.py}. Tiga lapisan validasi dieksekusi secara berurutan sebagaimana ditunjukkan pada Gambar~\ref{fig:yaml_validation}. Hasil validasi berupa objek \textit{YAMLValidationResult} dengan empat \textit{field}: \texttt{valid} (\textit{Boolean}), \texttt{syntax\_errors} (daftar kesalahan sintaksis PyYAML), \texttt{schema \_errors} (daftar pelanggaran skema Kubernetes), dan \texttt{missing\_fields} (daftar \textit{required field} yang tidak ditemukan dalam YAML yang dihasilkan). Ketika salah satu lapisan mendeteksi kegagalan, antarmuka menampilkan peringatan \texttt{Warning: Potential Syntax Error} kepada pengguna.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \captionsetup{justification=centering}
     \includegraphics[width=0.48\textwidth]{images/yaml_validation.png}
@@ -219,7 +227,7 @@ Validasi YAML diimplementasikan dalam kelas \textit{YAMLValidator} pada berkas \
 \subsection{Implementasi Antarmuka \textit{Web} Interaktif}
 \label{subsec:implementasi-antarmuka}
 
-Antarmuka pengguna diimplementasikan menggunakan \textit{Streamlit} pada berkas \texttt{main.py} sebagaimana dirancang pada Subbab~\ref{subsec:perancangan-antarmuka}. Keempat \textit{use case} pada Gambar~\ref{fig:usecase_diagram} direalisasikan sebagai fitur-fitur berikut.
+Antarmuka pengguna diimplementasikan menggunakan \textit{Streamlit} pada berkas main.py sebagaimana dirancang pada Subbab~\ref{subsec:perancangan-antarmuka}. Keempat \textit{use case} pada Gambar~\ref{fig:usecase_diagram} direalisasikan sebagai fitur-fitur berikut.
 
 \textbf{UC01: Mengajukan Pertanyaan Teknis Kubernetes.}
 Masukan pengguna diterima melalui \texttt{st.chat\_input()} di bagian bawah antarmuka. Setiap sesi percakapan mendapatkan UUID unik yang disimpan di \texttt{st.session\_state} dan digunakan sebagai kunci pengambilan riwayat percakapan dari SQLite. Manajemen multi-sesi diimplementasikan melalui \textit{sidebar} dengan tombol ``Chat Baru'' untuk memulai sesi baru dan daftar sesi sebelumnya yang dapat diakses kembali. Setiap pertanyaan diteruskan ke \texttt{agent\_graph.invoke()} bersama \texttt{session\_id} yang aktif.
@@ -249,7 +257,7 @@ Kedua sistem pembanding yang dirancang pada Subbab~\ref{sec:perancangan-baseline
 \begin{figure}[H]
     \centering
     \captionsetup{justification=centering}
-    \includegraphics[width=0.95\textwidth]{images/baseline-flow.png}
+    \includegraphics[width=0.75\textwidth]{images/baseline-flow.png}
     \caption{Perbandingan alur eksekusi ketiga sistem yang dievaluasi: Vanilla LLM, Vector RAG, dan \textit{GraphRAG}}
     \label{fig:baseline-flow}
 \end{figure}
@@ -266,9 +274,9 @@ Implementasi ini secara sengaja meniadakan seluruh komponen augmentasi yang dimi
 \subsection{Implementasi Vector RAG}
 \label{subsec:implementasi-vector-rag}
 
-Vector RAG diaktifkan melalui argumen \texttt{-{}-mode vector} dan mengimplementasikan \textit{retrieval} berbasis kemiripan vektor. \textit{Invoker} menghasilkan \textit{embedding} kueri melalui \texttt{VectorIndexManager.generate\_embedding()} dengan model \textit{text-embedding-3-small} yang sama dengan GraphRAG, kemudian mengeksekusi \texttt{SIMPLE\_GRAPH \_EXPAND\_QUERY} terhadap \textit{native vector index} Neo4j untuk mengambil top-$k$=5 \textit{node} termirip.
+Vector RAG diaktifkan melalui argumen \texttt{-{}-mode vector} dan mengimplementasikan \textit{retrieval} berbasis kemiripan vektor. \textit{Invoker} menghasilkan \textit{embedding} kueri melalui \texttt{VectorIndexManager.generate\_embedding()} dengan model \textit{text- embedding-3-small} yang sama dengan GraphRAG, kemudian mengeksekusi \texttt{SIMPLE\_GRAPH \_EXPAND\_QUERY} terhadap \textit{native vector index} Neo4j untuk mengambil top-$k$=5 \textit{node} termirip.
 
-Konteks disusun dengan merangkai tiap hasil menjadi \textit{snippet} berlabel \texttt{Resource}, \texttt{Description}, dan \texttt{Related To} yang digabungkan menggunakan pemisah garis, sebagaimana ditampilkan pada Listing~\ref{lst:baseline-invokers}. Nama \textit{node} yang muncul dikumpulkan dengan deduplikasi melalui himpunan \texttt{seen} dan dikembalikan sebagai \texttt{reasoning\_path} yang menjadi dasar penilaian RetQ. \textit{Invoker} kemudian menyusun \textit{prompt} bertemplat \texttt{Context}, \texttt{Question}, dan \texttt{Answer}, lalu meneruskannya ke modul \textit{speaker} GPT-4o-mini. Implementasi ini tidak menggunakan klasifikasi \textit{intent}, kedalaman \textit{intent-adaptive}, traversal \textit{multi-hop} lebih dari satu lompatan, penggabungan multi-entitas, maupun validasi YAML sehingga merepresentasikan pendekatan RAG konvensional sebagaimana dirancang pada Subbab~\ref{subsec:rancangan-vector-rag}.
+Konteks disusun dengan merangkai tiap hasil menjadi \textit{snippet} berlabel \texttt{Resource}, \texttt{Description}, dan \texttt{Related To} yang digabungkan menggunakan pemisah garis, sebagaimana ditampilkan pada Listing~\ref{lst:baseline-invokers}. Nama \textit{node} yang muncul dikumpulkan dengan deduplikasi melalui himpunan \texttt{seen} dan dikembalikan sebagai \texttt{reasoning\_ path} yang menjadi dasar penilaian RetQ. \textit{Invoker} kemudian menyusun \textit{prompt} bertemplat \texttt{Context}, \texttt{Question}, dan \texttt{Answer}, lalu meneruskannya ke modul \textit{speaker} GPT-4o-mini. Implementasi ini tidak menggunakan klasifikasi \textit{intent}, kedalaman \textit{intent-adaptive}, traversal \textit{multi-hop} lebih dari satu lompatan, penggabungan multi-entitas, maupun validasi YAML sehingga merepresentasikan pendekatan RAG konvensional sebagaimana dirancang pada Subbab~\ref{subsec:rancangan-vector-rag}.
 
 \input{listings/baseline-invokers.tex}
 

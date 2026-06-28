@@ -1,43 +1,41 @@
 \renewcommand{\arraystretch}{1.3}
 \captionsetup[table]{justification=raggedright,singlelinecheck=false}
 \begin{table}[H]
-\caption{Perbandingan Skor per Faktor: Vanilla LLM vs.\ Vector RAG vs.\ GraphRAG (97 \textit{Fixture}, 95\% CI \textit{bootstrap})}
+\caption{Perbandingan Skor per Dimensi: Vanilla LLM vs.\ Vector RAG vs.\ GraphRAG}
 \label{tbl:baseline_comparison}
 \centering
-\begin{tabular}{| p{0.28\textwidth} | >{\centering\arraybackslash}p{0.15\textwidth} | >{\centering\arraybackslash}p{0.15\textwidth} | >{\centering\arraybackslash}p{0.15\textwidth} | >{\centering\arraybackslash}p{0.08\textwidth} |}
+\begin{tabular}{| p{0.28\textwidth} | >{\centering\arraybackslash}p{0.13\textwidth} | >{\centering\arraybackslash}p{0.13\textwidth} | >{\centering\arraybackslash}p{0.13\textwidth} | >{\centering\arraybackslash}p{0.10\textwidth} |}
 \hline
-\textbf{Faktor} & \textbf{Vanilla LLM} & \textbf{Vector RAG} & \textbf{GraphRAG} & \textbf{Sig} \\
+\textbf{Metrik} & \textbf{Vanilla LLM} ($n{=}103$) & \textbf{Vector RAG} ($n{=}103$) & \textbf{GraphRAG} ($n{=}102$) & \textbf{Sig} \\
 \hline
-\multicolumn{5}{|l|}{\textit{Dimensi utama}} \\
+\multicolumn{5}{|l|}{\textit{Answer Quality (AnsQ)}} \\
 \hline
-\textbf{AnsQ} & 0,5956 & \textbf{0,5916} & 0,5771 & n.s. \\
+AnsQ komposit & 0,7464 & 0,7976 & \textbf{0,8031} & ***$^\dagger$ \\
 \hline
-\textbf{RetQ} & 0,0241 & 0,4255 & \textbf{0,7259} & *** \\
+\quad \textit{Answer Semantic Similarity} & 0,7173 & 0,7499 & 0,7698 & \\
 \hline
-\textbf{ReaQ} & 0,3351 & 0,3307 & \textbf{0,5554} & *** \\
+\quad \textit{Syntactic Validity}$^\ddagger$ & 0,8333 & 0,9333 & \textbf{1,0000} & \\
 \hline
-\multicolumn{5}{|l|}{\textit{Metrik domain Kubernetes}} \\
+\quad \textit{Schema Compliance}$^\ddagger$ & 0,7667 & \textbf{0,9333} & 0,8929 & \\
 \hline
-\textbf{\textit{Path Coverage}} & 0,0722 & 0,5411 & \textbf{0,8515} & *** \\
+\multicolumn{5}{|l|}{\textit{Retrieval Quality (RetQ)}} \\
 \hline
-\textbf{\textit{Hop Accuracy}} & 0,0722 & 0,0000 & \textbf{0,3505} & *** \\
+RetQ F1 & --- & 0,2419 & \textbf{0,7089} & ***$^\P$ \\
 \hline
-\textbf{RGA} & 0,0206 & 0,2784 & \textbf{0,4536} & *** \\
+\quad \textit{Precision} & --- & 0,5018 & \textbf{0,8405} & \\
 \hline
-\textbf{\textit{Syntactic Validity}} & 0,8947 & 0,8947 & 0,8947 & n.s. \\
+\quad \textit{Recall} & --- & 0,2275 & \textbf{0,7258} & \\
 \hline
-\multicolumn{5}{|l|}{\textit{Diagnostik}} \\
+\multicolumn{5}{|l|}{\textit{Reasoning Quality (ReaQ)}} \\
 \hline
-\textit{Answer Relevance} & 0,6239 & 0,6468 & \textbf{0,6747} & --- \\
+\textit{Faithfulness} & N/A & 0,1654 ($n{=}81$) & \textbf{0,3055} ($n{=}95$) & ***$^\S$ \\
 \hline
-\textit{Faithfulness} & \textbf{0,5193} & 0,4872 & 0,4356 & --- \\
+\textit{Hop Accuracy} (all) & N/A & N/A$^*$ & \textbf{0,7562} ($n{=}93$) & --- \\
 \hline
-\textit{NDCG@k} & 0,0000 & 0,4443 & \textbf{0,7492} & --- \\
+\quad \textit{Hop Acc.}\ focused ($\leq$15 \textit{edge}) & --- & --- & \textbf{0,9086} ($n{=}50$) & \\
 \hline
-\textit{Grounding Score} & 0,5981 & 0,6615 & \textbf{0,7602} & --- \\
+\quad \textit{Hop Acc.}\ closure ($>$15 \textit{edge}) & --- & --- & 0,5791 ($n{=}43$) & \\
 \hline
-\textit{Hallucination Rate} & 0,4019 & 0,3385 & \textbf{0,2398} & --- \\
-\hline
-\multicolumn{5}{l}{\small Sig: *** $p < 0{,}001$; n.s.\ = tidak signifikan. Detail per-\textit{baseline} pada Tabel~\ref{tbl:statistical_test}.} \\
 \end{tabular}
 \end{table}
+{\small\noindent --- = metrik tidak berlaku (\textit{not applicable} by design); dikecualikan dari perbandingan statistik. Sig: *** $p<0{,}001$ (Wilcoxon + \textit{paired bootstrap} 1.000 iterasi, Holm-Bonferroni). $^\dagger$ AnsQ: GraphRAG $>$ Vanilla LLM ($p<0{,}001$); GraphRAG vs.\ Vector RAG tidak signifikan ($p_\text{Holm}=0{,}067$). $^\ddagger$ \textit{Syntactic Validity} dan \textit{Schema Compliance}: hanya \textit{fixture} \textit{yaml\_gen} ($n=28/30/30$). $^\S$ \textit{Faithfulness}: GraphRAG vs.\ Vector RAG ($\Delta{+}0{,}127$, $p<0{,}001$); N/A vs.\ Vanilla LLM (tanpa \textit{retrieval}). $^*$ \textit{Hop Accuracy} Vector RAG: tidak berlaku (tanpa traversal graf); dikecualikan dari perbandingan. $^\P$ RetQ: *** merujuk pada GraphRAG vs.\ Vector RAG ($\Delta{+}0{,}465$, $p{<}0{,}001$); Vanilla LLM tidak berlaku (---).}

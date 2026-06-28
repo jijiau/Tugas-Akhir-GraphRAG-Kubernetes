@@ -324,6 +324,56 @@
       \field{title}{Gartner Says Cloud Will Be the Centerpiece of New Digital Experiences}
       \field{year}{2021}
     \endentry
+    \entry{gu_2024}{article}{}
+      \name{author}{5}{}{%
+        {{un=0,uniquepart=base,hash=d44a083334abce10800ec774041e67d3}{%
+           family={Gu},
+           familyi={G\bibinitperiod},
+           given={Yi},
+           giveni={Y\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=7d3a16c28b664a8e3715a4847dbc7bea}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={Junwei},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=2a35f71d5af3d2306fdb57474b731cda}{%
+           family={Xia},
+           familyi={X\bibinitperiod},
+           given={Yifan},
+           giveni={Y\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=5b9a54b9d83697231299711961622ab8}{%
+           family={Liu},
+           familyi={L\bibinitperiod},
+           given={Zhiyuan},
+           giveni={Z\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=5ff29ba5ea8e6fdd73a84f998eec45f2}{%
+           family={Wen},
+           familyi={W\bibinitperiod},
+           given={Ji-Rong},
+           giveni={J\bibinithyphendelim R\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{b4f22f46b99eb30eb08fe815db5c7047}
+      \strng{fullhash}{a5b93828384297111075816e2c5cadd3}
+      \strng{bibnamehash}{a5b93828384297111075816e2c5cadd3}
+      \strng{authorbibnamehash}{a5b93828384297111075816e2c5cadd3}
+      \strng{authornamehash}{b4f22f46b99eb30eb08fe815db5c7047}
+      \strng{authorfullhash}{a5b93828384297111075816e2c5cadd3}
+      \field{sortinit}{G}
+      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{author}
+      \field{journaltitle}{arXiv preprint}
+      \field{note}{Cited for \textit{Hop-Accuracy} edge-recall formulation; confirm full citation from Ma et al.\ \parencite{ma_llm_kg_2025} reference list}
+      \field{title}{MidMed: Towards Mixed-Type Dialogues for Medical Consultation}
+      \field{year}{2024}
+    \endentry
     \entry{han_graphrag_2024}{article}{}
       \name{author}{10}{}{%
         {{un=0,uniquepart=base,hash=fed5f4462a7695c610dfc99ebdba881f}{%
@@ -842,6 +892,55 @@
       \field{journaltitle}{arXiv preprint arXiv:2505.20099}
       \field{title}{Large Language Models Meet Knowledge Graphs for Question Answering: Synthesis and Opportunities}
       \field{year}{2025}
+    \endentry
+    \entry{manning_ir_2008}{book}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=2214edb8305f7ccd7cdc310b3a8ae1b4}{%
+           family={Manning},
+           familyi={M\bibinitperiod},
+           given={Christopher\bibnamedelima D.},
+           giveni={C\bibinitperiod\bibinitdelim D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=68f523934985e2f967ab2b15f4ded07c}{%
+           family={Raghavan},
+           familyi={R\bibinitperiod},
+           given={Prabhakar},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=9a80de0e5ec6df57363aaf321a5d05be}{%
+           family={Schütze},
+           familyi={S\bibinitperiod},
+           given={Hinrich},
+           giveni={H\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{location}{1}{%
+        {Cambridge, UK}%
+      }
+      \list{publisher}{1}{%
+        {Cambridge University Press}%
+      }
+      \strng{namehash}{56b44e50eec2e98e36ad6aa3a5e7af9b}
+      \strng{fullhash}{56b44e50eec2e98e36ad6aa3a5e7af9b}
+      \strng{bibnamehash}{56b44e50eec2e98e36ad6aa3a5e7af9b}
+      \strng{authorbibnamehash}{56b44e50eec2e98e36ad6aa3a5e7af9b}
+      \strng{authornamehash}{56b44e50eec2e98e36ad6aa3a5e7af9b}
+      \strng{authorfullhash}{56b44e50eec2e98e36ad6aa3a5e7af9b}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{978-0-521-86571-5}
+      \field{title}{Introduction to Information Retrieval}
+      \field{year}{2008}
+      \verb{urlraw}
+      \verb https://nlp.stanford.edu/IR-book/
+      \endverb
+      \verb{url}
+      \verb https://nlp.stanford.edu/IR-book/
+      \endverb
     \endentry
     \entry{moreno2025rag}{article}{}
       \name{author}{4}{}{%

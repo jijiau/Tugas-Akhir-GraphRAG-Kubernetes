@@ -1,6 +1,6 @@
-\renewcommand{\arraystretch}{1.3}
+\renewcommand{\arraystretch}{1.1}
 \captionsetup[table]{justification=raggedright,singlelinecheck=false}
-\begin{table}[H]
+\begin{table}[htbp]
 \caption{Pemetaan kebutuhan bisnis terhadap dimensi dan metrik evaluasi}
 \label{tbl:mapping_bisnis_evaluasi}
 \centering
@@ -8,11 +8,11 @@
 \hline
 \textbf{Kebutuhan Bisnis} & \textbf{Pertanyaan Evaluasi} & \textbf{Dimensi} & \textbf{Metrik Utama} \\
 \hline
-B01 -- Inefisiensi Waktu & Apakah hasil \textit{retrieval} memiliki nilai dengan presisi tinggi dan mencakup seluruh relasi yang dibutuhkan dalam satu kueri sehingga meminimalisir waktu penulusuran relasi secara manual? & RetQ & F1@k, NDCG@k, \textit{Path Coverage} \\
+B01 -- Inefisiensi Waktu & Apakah hasil \textit{retrieval} memiliki presisi tinggi dan mencakup relasi yang dibutuhkan sehingga meminimalisir penelusuran manual? & RetQ & Precision, Recall, F1 (\textit{set-based}, Manning 2008) \\
 \hline
-B02 -- Kesenjangan Pengetahuan & Apakah jawaban yang dihasilkan dapat ditelusuri ke konteks graf yang relevan, bukan berasal dari pengetahuan parametrik model? & ReaQ & \textit{Hop Accuracy}, \textit{Grounding Score}, RGA \\
+B02 -- Kesenjangan Pengetahuan & Apakah jawaban dapat ditelusuri ke konteks graf yang relevan, bukan dari pengetahuan parametrik model? & ReaQ & \textit{Hop Accuracy}, \textit{Faithfulness} \\
 \hline
-B03 -- Risiko Konfigurasi & Apakah keluaran YAML valid dan relevan terhadap kueri? & AnsQ & \textit{Syntactic Validity}, \textit{Schema Compliance}, \textit{Answer Relevance}, \textit{Faithfulness} \\
+B03 -- Risiko Konfigurasi & Apakah keluaran YAML valid dan relevan terhadap kueri? & AnsQ & \textit{Syntactic Validity}, \textit{Schema Compliance}, \textit{Answer Semantic Similarity} \\
 \hline
 \end{tabular}
 \end{table}
