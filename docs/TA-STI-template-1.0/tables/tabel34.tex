@@ -1,30 +1,30 @@
 \renewcommand{\arraystretch}{1.3}
 \captionsetup[table]{justification=raggedright,singlelinecheck=false}
 \begin{table}[H]
-\caption{Rata-rata \textit{RetQ-gain} (GraphRAG $-$ Vector RAG) per Tipe \textit{Fixture}}
-\label{tbl:retq-gain-by-type}
+\caption{Rata-rata \textit{RetQ-gain} GraphRAG dibanding Vector RAG per Kategori \textit{Fixture}}
+\label{tbl:retq_gain_by_type}
 \centering
-\begin{tabular}{| p{0.22\textwidth} | c | c | p{0.32\textwidth} |}
+\begin{tabular}{| p{0.26\textwidth} | c | c | p{0.36\textwidth} |}
 \hline
-\textbf{Tipe} & \textbf{$n$} & \textbf{Rata-rata \textit{RetQ-gain}} & \textbf{Karakteristik Kueri} \\
+\textbf{Kategori} & \textbf{\textit{n}} & \textbf{Rata-rata \textit{gain}} & \textbf{Karakteristik} \\
 \hline
-\textit{command}         & 3  & $+0{,}671$ & Konfigurasi operasional lini perintah \\
+\textit{followup}        & 12 & \textbf{$+0{,}6642$} & Pertanyaan multi-\textit{turn}, butuh konteks relasi lintas-\textit{resource} \\
 \hline
-\textit{planning}        & 5  & $+0{,}605$ & Perancangan multi-komponen bertingkat \\
+\textit{yaml\_gen}       & 25 & $+0{,}5450$ & Generasi YAML dengan dependensi skema ketat \\
 \hline
-\textit{followup}        & 12 & $+0{,}574$ & Tindak lanjut relasi antar-\textit{resource} \\
+\textit{planning}        &  5 & $+0{,}5406$ & Perencanaan kapasitas, butuh traversal multi-\textit{hop} \\
 \hline
-\textit{troubleshooting} & 5  & $+0{,}551$ & Diagnosis lintas \textit{resource} \\
+\textit{command}         &  3 & $+0{,}4614$ & Perintah \texttt{kubectl}, referensi komponen spesifik \\
 \hline
-\textit{yaml\_gen}       & 15 & $+0{,}337$ & Generasi manifes terstruktur \\
+\textit{troubleshooting} &  5 & $+0{,}4219$ & Diagnosis, butuh relasi status--kondisi \\
 \hline
-\textit{relationship}    & 18 & $+0{,}264$ & Pemetaan hubungan eksplisit \\
+\textit{realworld}       &  9 & $+0{,}4014$ & Skenario klaster nyata \\
 \hline
-\textit{conceptual}      & 15 & $+0{,}168$ & Penjelasan konsep tunggal \\
+\textit{conceptual}      & 25 & $+0{,}3870$ & Pertanyaan konsep; jawaban sering ada tanpa traversal dalam \\
 \hline
-\textit{realworld}       & 24 & $+0{,}089$ & Skenario dunia nyata (konteks luas) \\
+\textit{relationship}    & 18 & $+0{,}3540$ & Hubungan antar-\textit{resource}; GraphRAG dominan dalam relasi eksplisit \\
 \hline
-\textbf{Keseluruhan}     & \textbf{97} & $+0{,}300$ & --- \\
+\textbf{Keseluruhan}     & \textbf{102} & $+0{,}467$ & Seluruh \textit{fixture} aktif \\
 \hline
 \end{tabular}
 \end{table}

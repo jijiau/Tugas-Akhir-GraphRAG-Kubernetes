@@ -21,7 +21,7 @@
 \multicolumn{3}{@{}l}{\textbf{Huruf Yunani}} \\[0.5ex]
 
 $\rho$  & Koefisien korelasi Spearman & \pageref{fig:boundary-hops-vs-gain} \\
-$\Delta$ & Selisih skor antar sistem  & \pageref{chap:evaluasi} \\[1ex]
+$\Delta$ & Selisih skor antarsistem  & \pageref{chap:evaluasi} \\[1ex]
 
 % ─── Variabel Skalar ─────────────────────────────────────────────────────────
 
@@ -29,32 +29,27 @@ $\Delta$ & Selisih skor antar sistem  & \pageref{chap:evaluasi} \\[1ex]
 
 $d$     & Kedalaman \textit{traversal} graf & \pageref{chap:perancangan} \\
 $f$     & \textit{Fixture} evaluasi individual & \pageref{eq:hop-accuracy} \\
-$i$     & Indeks posisi atau indeks \textit{fixture} & \pageref{eq:ndcg} \\
 $k$     & Parameter top-$k$ \textit{retrieval} & \pageref{eq:precision-recall} \\
 $n$     & Jumlah sampel atau \textit{fixture} & \pageref{fig:boundary-hops-vs-gain} \\
-$p$     & \textit{p-value} uji signifikansi statistik & \pageref{fig:boundary-hops-vs-gain} \\
-$rel_i$ & Relevansi biner node pada posisi ke-$i$ & \pageref{eq:ndcg} \\[1ex]
+$p$     & \textit{p-value} uji signifikansi statistik & \pageref{fig:boundary-hops-vs-gain} \\[1ex]
 
 % ─── Himpunan ────────────────────────────────────────────────────────────────
 
 \multicolumn{3}{@{}l}{\textbf{Himpunan}} \\[0.5ex]
 
-$E_{\text{retrieved}}$ & Himpunan \textit{edge} pada subgraf hasil penelusuran & \pageref{eq:path-coverage} \\
-$E_{\text{relevant}}$  & Himpunan \textit{edge} relevan menurut \textit{ground truth} & \pageref{eq:path-coverage} \\
-$F$    & Himpunan seluruh \textit{fixture} evaluasi & \pageref{eq:hop-accuracy} \\
+$C_{\text{total}}$     & Himpunan semua klaim yang diekstrak dari jawaban sistem & \pageref{eq:faithfulness} \\
+$C_{\text{supported}}$ & Himpunan klaim yang didukung oleh konteks yang di-\textit{retrieve} & \pageref{eq:faithfulness} \\
+$E_{\text{pred}}$      & Himpunan \textit{edge} jalur penalaran yang dieksekusi sistem & \pageref{eq:hop-accuracy} \\
+$E_{\text{expected}}$  & Himpunan \textit{edge} jalur penalaran yang diharapkan (\textit{ground truth}) & \pageref{eq:hop-accuracy} \\
 $N_{\text{retrieved}}$ & Himpunan \textit{node} yang diambil saat \textit{retrieval} & \pageref{eq:precision-recall} \\
-$N_{\text{relevant}}$  & Himpunan \textit{node} relevan menurut \textit{ground truth} & \pageref{eq:precision-recall} \\
-$N_{\text{kunci}}$     & Himpunan \textit{node} kunci pada \textit{ground truth} & \pageref{eq:faithfulness} \\
-$N_{\text{jawaban}}$   & Himpunan \textit{node} yang disebut dalam jawaban sistem & \pageref{eq:faithfulness} \\
-$T_{\text{grounded}}$  & Himpunan istilah Kubernetes yang terlacak ke konteks & \pageref{eq:grounding} \\
-$T_{\text{jawaban}}$   & Himpunan istilah Kubernetes dalam jawaban sistem & \pageref{eq:grounding} \\[1ex]
+$N_{\text{relevant}}$  & Himpunan \textit{node} relevan menurut \textit{ground truth} & \pageref{eq:precision-recall} \\[1ex]
 
 % ─── Vektor ──────────────────────────────────────────────────────────────────
 
 \multicolumn{3}{@{}l}{\textbf{Vektor}} \\[0.5ex]
 
-$\mathbf{e}_a$ & Vektor \textit{embedding} jawaban sistem & \pageref{eq:answer-relevance} \\
-$\mathbf{e}_g$ & Vektor \textit{embedding} jawaban acuan (\textit{ground truth}) & \pageref{eq:answer-relevance} \\[1ex]
+$\mathbf{e}_{\text{ans}}$ & Vektor \textit{embedding} jawaban sistem & \pageref{eq:answer-relevance} \\
+$\mathbf{e}_{\text{gt}}$ & Vektor \textit{embedding} jawaban \textit{ground truth} & \pageref{eq:answer-relevance} \\[1ex]
 
 % ─── Notasi Graf ─────────────────────────────────────────────────────────────
 
@@ -67,8 +62,6 @@ $\mathcal{Z}(x,\mathcal{K})$ & Himpunan subgraf relevan yang ditarik dari $\math
 
 \multicolumn{3}{@{}l}{\textbf{Fungsi dan Metrik}} \\[0.5ex]
 
-$d_{\text{pred}}(f)$ & Kedalaman \textit{traversal} yang dieksekusi sistem untuk \textit{fixture} $f$ & \pageref{eq:hop-accuracy} \\
-$d_{\text{gt}}(f)$   & Kedalaman yang dibutuhkan menurut anotasi \textit{ground truth} fixture $f$ & \pageref{eq:hop-accuracy} \\
 $\text{RetQ-gain}_i$ & Selisih RetQ GraphRAG dan Vector RAG untuk \textit{fixture} ke-$i$ & \pageref{eq:retq-gain} \\
 
 \end{longtable}

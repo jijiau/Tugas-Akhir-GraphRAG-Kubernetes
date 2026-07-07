@@ -1,4 +1,4 @@
-﻿\renewcommand{\arraystretch}{1.25}
+﻿\renewcommand{\arraystretch}{1.1}
 \captionsetup[longtable]{justification=raggedright,singlelinecheck=false}
 
 \begin{longtable}{ p{3cm} p{5cm} p{5cm} }
@@ -19,8 +19,8 @@
 \endlastfoot
 
 T01 - Representasi Struktur Data &
-Menggunakan pemecahan teks secara \textit{linear chunking} ataupun konstruksi \textit{knowledge graph} berbasis ekstraksi entitas generik dari teks, tanpa mendefinisikan taksonomi jenis relasi yang spesifik terhadap semantik domain target \parencite{cao2025neusymrag, civiot2025graphrag, hsgrag2025acm}. &
-Terjadi kehilangan konteks mendalam (\textit{loss of deep context}) dan ambiguitas semantik relasi. Sistem gagal memahami kedalaman hierarki bersarang (misalnya properti \texttt{limits} sebagai turunan dari \textit{Deployment}) sekaligus tidak dapat membedakan jenis relasi antarobjek Kubernetes. \\ \hline
+\textit{Linear chunking} atau \textit{knowledge graph} berbasis entitas generik tanpa taksonomi relasi spesifik domain \parencite{cao2025neusymrag, civiot2025graphrag, hsgrag2025acm}. &
+\textit{Loss of deep context} dan ambiguitas relasi; sistem gagal memahami hierarki bersarang (misal: \texttt{limits} sebagai turunan \textit{Deployment}) dan tidak dapat membedakan jenis relasi antarobjek. \\ \hline
 
 T02 - Mekanisme Validasi &
 Validasi bergantung pada model LLM atau aturan manual berbasis \textit{hard constraints} yang harus ditulis satu per satu \parencite{wan2025empowering}. &

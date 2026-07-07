@@ -30,7 +30,7 @@ Menambahkan aturan \textit{fallback traversal}, memperkaya heuristik pengenalan 
 
 \textbf{R-03} &
 Kegagalan Generasi Kode (\textit{Syntax Error}) &
-Konfigurasi yang dihasilkan tidak dapat diparse dan berpotensi gagal dieksekusi, sehingga melanggar standar \textit{Syntactic Validity}. &
+Konfigurasi yang dihasilkan tidak dapat diparse dan berpotensi gagal dieksekusi sehingga melanggar standar \textit{Syntactic Validity}. &
 Mengintegrasikan PyYAML sebagai validator otomatis, serta menambahkan prosedur \textit{post-processing} sebagai prosedur koreksi jika parser mendeteksi kesalahan sintaksis. \\ \hline
 
 \textbf{R-04} &
@@ -40,7 +40,7 @@ Menggunakan model penilai yang lebih kuat, melakukan \textit{cross-validation} s
 
 \textbf{R-05} &
 Latensi Tinggi pada Proses \textit{Retrieval--Generation} &
-Waktu respon melebihi batas toleransi (maksimal 60 detik), sehingga sistem sulit digunakan secara \textit{real-time}. &
+Waktu respon melebihi batas toleransi (maksimal 60 detik) sehingga sistem sulit digunakan secara \textit{real-time}. &
 Mengoptimalkan \textit{pipeline} dengan \textit{caching}, pembatasan traversal, \textit{batching request}, serta melakukan stress test untuk memastikan waktu rata-rata berada dalam batas KPI. \\ \hline
 
 \textbf{R-06} &

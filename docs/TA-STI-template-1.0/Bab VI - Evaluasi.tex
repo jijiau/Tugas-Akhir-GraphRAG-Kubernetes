@@ -5,7 +5,7 @@
 \chapter{EVALUASI}
 \label{chap:evaluasi}
 
-Bab ini menjawab tujuan penelitian ketiga: membandingkan kinerja sistem \textit{GraphRAG} terhadap dua \textit{baseline} --- \textit{Vector RAG} dan \textit{Vanilla LLM} --- pada domain konfigurasi Kubernetes, sekaligus memverifikasi kontribusi tiap komponen sistem secara internal.
+Bab ini menjawab tujuan penelitian ketiga: membandingkan kinerja sistem \textit{GraphRAG} terhadap dua \textit{baseline}, yaitu \textit{Vector RAG} dan \textit{Vanilla LLM}, pada domain konfigurasi Kubernetes, sekaligus memverifikasi kontribusi tiap komponen sistem secara internal.
 
 % ─────────────────────────────────────────────────────────────────────
 \section{Metode Evaluasi}
@@ -18,7 +18,7 @@ Subbab ini memaparkan kerangka metodologis yang menjadi landasan seluruh analisi
 \label{sec:expert_validation}
 % ─────────────────────────────────────────────────────────────────────
 
-Evaluasi menggunakan \textit{dataset} yang terdiri dari 102 \textit{fixture} aktif untuk sistem GraphRAG dan 103 \textit{fixture} untuk kedua \textit{baseline}. Dataset mencakup delapan kategori pertanyaan: \textit{conceptual} (25), \textit{yaml\_gen} (25), \textit{relationship} (18), \textit{followup} (12), \textit{realworld} (9), \textit{planning} (5), \textit{troubleshooting} (5), dan \textit{command} (3). Seluruh pertanyaan dan jawaban \textit{ground truth} ditulis dalam bahasa Inggris. Distribusi kategori mencerminkan variasi penggunaan berdasarkan hasil wawancara dengan pakar.
+Evaluasi menggunakan \textit{dataset} yang terdiri dari 102 \textit{fixture}. Dataset mencakup delapan kategori pertanyaan: \textit{conceptual} (25), \textit{yaml\_gen} (25), \textit{relationship} (18), \textit{followup} (12), \textit{realworld} (9), \textit{planning} (5), \textit{troubleshooting} (5), dan \textit{command} (3). Seluruh pertanyaan dan jawaban \textit{ground truth} ditulis dalam bahasa Inggris. Distribusi kategori mencerminkan variasi penggunaan berdasarkan hasil wawancara dengan pakar.
 
 Sebelum evaluasi kuantitatif dilaksanakan, \textit{dataset} divalidasi secara kualitatif melalui wawancara mendalam dengan tiga praktisi \textit{DevOps}/SRE yang menggunakan Kubernetes dan LLM secara aktif. Profil narasumber ditampilkan pada Tabel~\ref{tbl:expert_profile}.
 
@@ -28,7 +28,7 @@ Wawancara dilaksanakan dalam dua segmen. Segmen pertama meminta narasumber membe
 
 \input{tables/tabel28.tex}
 
-Penilaian menunjukkan variasi yang bermakna. \textit{Fixture} definitif murni (\texttt{deployment\_basic}, rata-rata 1,67) dinilai tidak realistis karena praktisi berpengalaman tidak menanyakan definisi dasar ke LLM. Sebaliknya, \textit{fixture} berbasis skenario konkret (\texttt{statefulset\_with\_pvc}, \texttt{networkpolicy\_deny\_all}) mendapatkan skor tertinggi (4,67--5,00) karena mencerminkan kebutuhan operasional nyata. Segmen kedua menggali tipe pertanyaan yang secara organik diajukan kepada LLM: ketiga narasumber secara konsisten menyebutkan \textit{debug} dan \textit{troubleshooting} sebagai penggunaan utama, diikuti generasi YAML dengan penyesuaian konteks dan perencanaan arsitektur. Penilaian ini bersifat \textbf{kualitatif} ($n{=}3$, tidak representatif secara statistik) dan berfungsi sebagai validasi kelayakan \textit{dataset}, bukan sebagai bukti kuantitatif.
+Penilaian menunjukkan bahwa \textit{fixture} definitif murni (\texttt{deployment\_basic}, rata-rata 1,67) dinilai tidak realistis karena praktisi berpengalaman tidak menanyakan definisi dasar ke LLM. Sebaliknya, \textit{fixture} berbasis skenario konkret (\texttt{stateful set\_with\_pvc}, \texttt{networkpolicy\_deny\_all}) mendapatkan skor tertinggi (4,67--5,00) karena mencerminkan kebutuhan operasional nyata. Segmen kedua menggali tipe pertanyaan yang secara organik diajukan kepada LLM: ketiga narasumber secara konsisten menyebutkan \textit{debug} dan \textit{troubleshooting} sebagai penggunaan utama, diikuti generasi YAML dengan penyesuaian konteks dan perencanaan arsitektur. Penilaian ini bersifat \textbf{kualitatif} dan berfungsi sebagai validasi kelayakan \textit{dataset}, bukan sebagai bukti kuantitatif.
 
 % ─────────────────────────────────────────────────────────────────────
 \subsection{Metrik dan Dimensi Evaluasi}
@@ -39,13 +39,13 @@ Definisi lengkap setiap metrik beserta turunan literaturnya dipaparkan di Subbab
 
 \begin{enumerate}
     \item \textbf{\textit{Answer Quality} (AnsQ)}.
-    AnsQ merupakan rata-rata tiga sub-metrik: (a)~\textit{answer relevance} --- kemiripan kosinus \textit{embedding} antara jawaban sistem dan \textit{ground truth} \parencite{es_ragas_2023}; (b)~\textit{syntactic validity} --- apakah \textit{output} berupa YAML yang dapat di-\textit{parse} (\texttt{yaml.safe\_load}); dan (c)~\textit{schema compliance} --- kesesuaian terhadap skema Kubernetes v1.30, khusus \textit{fixture} \textit{yaml\_gen}.
+    AnsQ merupakan rata-rata tiga sub-metrik: (a)~\textit{answer relevance}, yaitu kemiripan kosinus \textit{embedding} antara jawaban sistem dan \textit{ground truth} \parencite{es_ragas_2023}; (b)~\textit{syntactic validity}, yaitu apakah \textit{output} berupa YAML yang dapat di-\textit{parse} (\texttt{yaml.safe\_load}); dan (c)~\textit{schema compliance}, yaitu kesesuaian terhadap skema Kubernetes v1.30, khusus \textit{fixture} \textit{yaml\_gen}.
 
     \item \textbf{\textit{Retrieval Quality} (RetQ)}.
-    RetQ dioperasionalkan sebagai \textit{set-based} Precision/Recall/F1 antara himpunan \textit{node} pada \textit{reasoning path} sistem dan himpunan \textit{relevant\_nodes} \textit{ground truth} \parencite{manning_ir_2008}. Metrik utama yang dilaporkan adalah \textbf{F1} (rata-rata harmonik Precision dan Recall). \textit{Ground truth} menetapkan \textit{relevant\_nodes} sebagai seluruh \textit{node} yang terhubung secara skema dari \textit{resource} utama, sehingga cakupannya cenderung luas dan memengaruhi nilai presisi absolut. Keunggulan RetQ GraphRAG sebaiknya dibaca bersama metrik lain yang tidak bergantung pada definisi tersebut: \textit{hop accuracy}, relevansi jawaban, dan validitas YAML.
+    RetQ dioperasionalkan sebagai \textit{set-based} Precision/Recall/F1 antara himpunan \textit{node} pada \textit{reasoning path} sistem dan himpunan \textit{relevant\_nodes} \textit{ground truth} \parencite{manning_ir_2008}. Metrik utama yang dilaporkan adalah \textbf{F1} (rata-rata harmonik Precision dan Recall). \textit{Ground truth} menetapkan \textit{relevant\_nodes} sebagai seluruh \textit{node} yang terhubung secara skema dari \textit{resource} utama sehingga cakupannya cenderung luas dan memengaruhi nilai presisi absolut. Keunggulan RetQ GraphRAG sebaiknya dibaca bersama metrik lain yang tidak bergantung pada definisi tersebut: \textit{hop accuracy}, relevansi jawaban, dan validitas YAML.
 
     \item \textbf{\textit{Reasoning Quality} (ReaQ)}.
-    ReaQ memiliki dua komponen: (a)~\textit{hop accuracy} --- \textit{edge recall} antara \textit{edge} yang ditraversal sistem dan \textit{expected path} \textit{ground truth} \parencite{manning_ir_2008}, dianalisis secara terstratifikasi berdasarkan ukuran subgraf; dan (b)~\textit{faithfulness} --- proporsi klaim dalam jawaban yang dapat dilacak ke \textit{retrieved context} \parencite{es_ragas_2023}. Nilai \textit{faithfulness} perlu dibaca dengan dua \textit{caveat}: (1)~sistem dirancang \textit{open-book} sehingga LLM melengkapi konteks graf dengan pengetahuan parametrik ketika informasi tidak mencukupi; dan (2)~metrik ini tidak sepenuhnya \textit{applicable} untuk kategori \textit{yaml\_gen} yang menghasilkan kode konkret. Analisis mendalam disajikan pada Subbab~\ref{subsec:analisis-reaq}.
+    ReaQ memiliki dua komponen: (a)~\textit{hop accuracy}, yaitu \textit{edge recall} antara \textit{edge} yang ditraversal sistem dan \textit{expected path} \textit{ground truth} \parencite{manning_ir_2008}, dianalisis secara terstratifikasi berdasarkan ukuran subgraf; dan (b)~\textit{faithfulness}, yaitu proporsi klaim dalam jawaban yang dapat dilacak ke \textit{retrieved context} \parencite{es_ragas_2023}. Nilai \textit{faithfulness} perlu dibaca dengan dua \textit{caveat}: (1)~sistem dirancang \textit{open-book} sehingga LLM melengkapi konteks graf dengan pengetahuan parametrik ketika informasi tidak mencukupi; dan (2)~metrik ini tidak sepenuhnya \textit{applicable} untuk kategori \textit{yaml\_gen} yang menghasilkan kode konkret. Analisis mendalam disajikan pada Subbab~\ref{subsec:analisis-reaq}.
 \end{enumerate}
 
 % ─────────────────────────────────────────────────────────────────────
@@ -56,7 +56,7 @@ Definisi lengkap setiap metrik beserta turunan literaturnya dipaparkan di Subbab
 Evaluasi dilakukan terhadap tiga sistem menggunakan \textit{dataset} yang sama, \textit{speaker} LLM yang identik (GPT-4o-mini, \textit{temperature}=0,1), dan seluruh metrik yang sama:
 
 \begin{enumerate}
-    \item \textbf{Vanilla LLM}: menjawab langsung tanpa konteks apapun --- mengukur kemampuan pengetahuan parametrik model.
+    \item \textbf{Vanilla LLM}: menjawab langsung tanpa konteks apapun sehingga jawaban sepenuhnya mencerminkan pengetahuan parametrik model.
     \item \textbf{Vector RAG}: \textit{cosine similarity} top-5 terhadap \textit{vector index} Neo4j, tanpa traversal graf.
     \item \textbf{GraphRAG}: sistem lengkap dengan \textit{exact match} + \textit{multi-hop graph traversal} + \textit{intent-adaptive depth} + validasi YAML.
 \end{enumerate}
@@ -86,9 +86,9 @@ Gambar~\ref{fig:eval_systems_4metrics} dan Tabel~\ref{tbl:baseline_comparison} m
 \subsection{\textit{Answer Quality} (AnsQ)}
 % ─────────────────────────────────────────────────────────────────────
 
-Pada dimensi AnsQ, ketiga sistem mencapai skor yang sebanding: GraphRAG memperoleh AnsQ 0,8031, Vector RAG 0,7976, dan Vanilla LLM 0,7464. Keunggulan GraphRAG terhadap Vanilla LLM signifikan ($\Delta{+}0{,}056$, $p{<}0{,}001$), sedangkan selisih dengan Vector RAG tidak signifikan secara statistik ($\Delta{+}0{,}005$, $p_{\text{Holm}}{=}0{,}067$, Tabel~\ref{tbl:statistical_test}). Hasil ini mengindikasikan bahwa kualitas teks jawaban ditentukan oleh kemampuan generatif LLM, bukan oleh mekanisme \textit{retrieval}.
+Pada dimensi AnsQ, ketiga sistem mencapai skor yang sebanding: GraphRAG memperoleh AnsQ 0,8031, Vector RAG 0,7984, dan Vanilla LLM 0,7469. Keunggulan GraphRAG terhadap Vanilla LLM signifikan ($\Delta{+}0{,}056$, $p{<}0{,}001$), sedangkan selisih dengan Vector RAG tidak signifikan secara statistik ($\Delta{+}0{,}005$, $p_{\text{Holm}}{=}0{,}067$, Tabel~\ref{tbl:statistical_test}). Hasil ini mengindikasikan bahwa kualitas teks jawaban ditentukan oleh kemampuan generatif LLM, bukan oleh mekanisme \textit{retrieval}.
 
-Pada sub-metrik \textit{syntactic validity} YAML, GraphRAG memperoleh skor sempurna (1,0000, $n{=}28$) dibanding Vector RAG (0,9333) dan Vanilla LLM (0,8333) --- konsisten dengan lapisan validasi YAML yang ditambahkan pada Fase~3 LangGraph. Pada \textit{schema compliance}, Vector RAG memperoleh skor tertinggi (0,9333) dibanding GraphRAG (0,8929): dua \textit{fixture} HPA pada GraphRAG menghasilkan \texttt{apiVersion: autoscaling/v2beta2} (deprecated sejak Kubernetes v1.26), dan \textit{fixture} \texttt{serviceaccount\_pod\_binding} gagal pada ketiga sistem karena alasan struktural.
+Pada sub-metrik \textit{syntactic validity} YAML, GraphRAG memperoleh skor sempurna (1,0000, $n{=}28$) dibanding Vector RAG (0,9333) dan Vanilla LLM (0,8333), konsisten dengan lapisan validasi YAML yang ditambahkan pada Fase~3 LangGraph. Pada \textit{schema compliance}, Vector RAG memperoleh skor tertinggi (0,9655) dibanding GraphRAG (0,9259): dua \textit{fixture} HPA pada GraphRAG menghasilkan \texttt{apiVersion: autoscaling/v2beta2} (deprecated sejak Kubernetes v1.26).
 
 \begin{figure}[H]
     \centering
@@ -106,9 +106,9 @@ Tabel~\ref{tbl:ansq_submetrics} merinci skor AnsQ dan sub-metriknya untuk ketiga
 \subsection{\textit{Retrieval Quality} (RetQ)}
 % ─────────────────────────────────────────────────────────────────────
 
-RetQ merupakan dimensi yang paling jelas membedakan ketiga sistem. GraphRAG memperoleh Precision 0,8405 / Recall 0,7258 / F1 0,7089, Vector RAG 0,5018 / 0,2275 / 0,2419, dan Vanilla LLM 0,0000 pada ketiganya. Keunggulan GraphRAG sangat signifikan pada kedua perbandingan ($p{<}0{,}001$, Holm-Bonferroni, Tabel~\ref{tbl:statistical_test}).
+RetQ merupakan dimensi yang paling jelas membedakan ketiga sistem. GraphRAG memperoleh Precision 0,8405 / Recall 0,7258 / F1 0,7089, Vector RAG 0,5047 / 0,2294 / 0,2437, dan Vanilla LLM 0,0000 pada ketiganya. Keunggulan GraphRAG sangat signifikan pada kedua perbandingan ($p{<}0{,}001$, Holm-Bonferroni, Tabel~\ref{tbl:statistical_test}).
 
-Vanilla LLM memperoleh RetQ~0,0000 karena tidak melakukan \textit{retrieval} terstruktur: tidak ada \textit{reasoning path} sehingga tidak ada \textit{node} yang dibandingkan terhadap \textit{ground truth}. Vector RAG mencapai F1~0,2419 melalui \textit{cosine similarity} top-5, namun tanpa traversal \textit{multi-hop}, hanya \textit{seed node} yang terjangkau. GraphRAG dengan \textit{multi-hop traversal} kedalaman adaptif menjangkau \textit{intermediate structural nodes} --- misalnya \textit{DeploymentSpec}, \textit{PodTemplateSpec}, dan \textit{Container} dalam rantai dependensi skema --- menghasilkan Precision yang lebih tinggi sekaligus Recall yang jauh lebih baik dari Vector RAG ($\Delta$Recall $+0{,}498$).
+Vanilla LLM memperoleh RetQ~0,0000 karena tidak melakukan \textit{retrieval} terstruktur: tidak ada \textit{reasoning path} sehingga tidak ada \textit{node} yang dibandingkan terhadap \textit{ground truth}. Vector RAG mencapai F1~0,2437 melalui \textit{cosine similarity} top-5, namun tanpa traversal \textit{multi-hop}, hanya \textit{seed node} yang terjangkau. GraphRAG dengan \textit{multi-hop traversal} kedalaman adaptif menjangkau \textit{intermediate structural nodes} (misalnya \textit{DeploymentSpec}, \textit{PodTemplateSpec}, dan \textit{Container} dalam rantai dependensi skema), menghasilkan Precision yang lebih tinggi sekaligus Recall yang jauh lebih baik dari Vector RAG ($\Delta$Recall $+0{,}496$).
 
 \begin{figure}[H]
     \centering
@@ -126,13 +126,13 @@ Tabel~\ref{tbl:retq_submetrics} merinci Precision, Recall, dan F1 untuk ketiga s
 \subsection{\textit{Reasoning Quality} (ReaQ)}
 % ─────────────────────────────────────────────────────────────────────
 
-\textit{Hop accuracy} mengukur \textit{edge recall}: proporsi \textit{edge} dalam \textit{expected path ground truth} yang berhasil dilalui sistem selama traversal \parencite{manning_ir_2008}. GraphRAG memperoleh \textit{hop accuracy} keseluruhan 0,7562 ($n{=}93$ \textit{fixture} dengan \textit{expected\_path} tak kosong).
+\textit{Hop accuracy} mengukur \textit{edge recall}, yaitu proporsi \textit{edge} dalam \textit{expected path ground truth} yang berhasil dilalui sistem selama traversal \parencite{manning_ir_2008}. GraphRAG memperoleh \textit{hop accuracy} keseluruhan 0,7562 ($n{=}93$ \textit{fixture} dengan \textit{expected\_path} tak kosong).
 
-Analisis stratifikasi berdasarkan ukuran subgraf (Tabel~\ref{tbl:hop_accuracy_stratified}) mengungkapkan pola penting: pada \textit{fixture} \textit{focused} ($\leq$15 \textit{edge}, $n{=}50$), sistem mencapai \textit{hop accuracy} 0,9086 --- hampir seluruh \textit{edge} relevan berhasil dilalui. Sebaliknya, pada \textit{fixture} \textit{closure} ($>$15 \textit{edge}, $n{=}43$), \textit{hop accuracy} turun menjadi 0,5791 karena subgraf besar inheran lebih sulit ditelusuri secara menyeluruh pada kedalaman adaptif.
+Analisis stratifikasi berdasarkan ukuran subgraf (Tabel~\ref{tbl:hop_accuracy_stratified}) mengungkapkan pola penting, yaitu pada \textit{fixture} \textit{focused} ($\leq$15 \textit{edge}), sistem mencapai \textit{hop accuracy} 0,9086, artinya hampir seluruh \textit{edge} relevan berhasil dilalui. Sebaliknya, pada \textit{fixture} \textit{closure} ($>$15 \textit{edge}), \textit{hop accuracy} turun menjadi 0,5791 karena semakin banyak \textit{edge} yang perlu dicakup, semakin besar peluang sebagian \textit{edge} terlewat dalam penelusuran berkedalaman terbatas.
 
 \input{tables/tabel31b.tex}
 
-\textit{Faithfulness} mengukur proporsi klaim dalam jawaban yang dapat dilacak ke \textit{retrieved context} \parencite{es_ragas_2023}. GraphRAG memperoleh \textit{faithfulness} 0,3055 ($n{=}95$), dibandingkan Vector RAG 0,1654 ($n{=}81$). Selisih ini signifikan ($\Delta{+}0{,}127$, $p{<}0{,}001$), menunjukkan bahwa konteks berbasis graf meningkatkan proporsi klaim yang terdukung.
+\textit{Faithfulness} mengukur proporsi klaim dalam jawaban yang dapat dilacak ke \textit{retrieved context} \parencite{es_ragas_2023}. GraphRAG memperoleh \textit{faithfulness} 0,3055 ($n{=}95$), dibandingkan Vector RAG 0,1675 ($n{=}80$). Selisih ini signifikan ($\Delta{+}0{,}127$, $p{<}0{,}001$), menunjukkan bahwa konteks berbasis graf meningkatkan proporsi klaim yang terdukung.
 
 \begin{figure}[H]
     \centering
@@ -141,8 +141,6 @@ Analisis stratifikasi berdasarkan ukuran subgraf (Tabel~\ref{tbl:hop_accuracy_st
     \caption{Distribusi skor \textit{faithfulness} GraphRAG vs.\ Vector RAG.}
     \label{fig:eval_ragas_faithfulness_dist}
 \end{figure}
-
-Nilai 0,3055 tetap lebih rendah dari ambang 0,80; komposisi dan interpretasi hasil ini dianalisis mendalam pada Subbab~\ref{subsec:analisis-reaq}.
 
 \input{tables/tabel31c.tex}
 
@@ -161,49 +159,49 @@ Tabel~\ref{tbl:category_scores} menyajikan skor per kategori \textit{fixture} un
     \centering
     \captionsetup{justification=centering}
     \includegraphics[width=0.90\textwidth]{images/eval_by_intent.png}
-    \caption{AnsQ, RetQ F1, dan \textit{Hop Accuracy} GraphRAG per kategori \textit{fixture}.}
+    \caption{AnsQ, RetQ, dan ReaQ GraphRAG per kategori \textit{fixture}.}
     \label{fig:eval_by_intent}
 \end{figure}
 
 \input{tables/tabel30.tex}
 
-Sistem GraphRAG memperoleh RetQ tertinggi pada \textit{yaml\_gen} (0,817) dan \textit{followup} (0,826), mencerminkan efektivitas traversal bertingkat pada kueri yang secara inheren membutuhkan konteks relasional antar-\textit{resource}. \textit{Hop accuracy} tertinggi diraih oleh kategori \textit{followup} (0,933) dan \textit{planning} (1,000) yang memang membutuhkan traversal multi-\textit{hop}. Kategori \textit{relationship} memperoleh \textit{faithfulness} tertinggi (0,389) karena jawaban yang menyatakan ulang relasi struktural dapat dilacak langsung ke konteks graf. Sebaliknya, \textit{yaml\_gen} memperoleh \textit{faithfulness} terendah (0,206): sistem mengisi nilai YAML konkret dari konvensi praktik, bukan dari deskripsi skema, sehingga \textit{faithfulness} secara konstruk tidak sepenuhnya \textit{applicable} untuk pembangkitan kode. Pola ini berkontribusi pada kasus paradoks (\textit{faith}~$\leq$~0,30 tetapi AnsQ~$\geq$~0,70) yang dianalisis lebih lanjut pada Subbab~\ref{subsec:analisis-reaq}.
+Pada dimensi RetQ, kategori \textit{followup} (0,826) dan \textit{yaml\_gen} (0,817) memperoleh skor tertinggi yang mencerminkan efektivitas traversal bertingkat pada kueri yang membutuhkan konteks relasional antar-\textit{resource}. Pada dimensi ReaQ, kategori \textit{planning} memperoleh skor tertinggi (0,746), diikuti oleh \textit{conceptual} (0,629) dan \textit{yaml\_gen} (0,567). Sebaliknya, \textit{troubleshooting} (0,336) dan \textit{realworld} (0,386) memperoleh ReaQ terendah yang mengindikasikan bahwa kueri berbasis skenario operasional lebih sulit ditelusuri dan divalidasi terhadap konteks yang diambil. Analisis lebih lanjut disajikan pada Subbab~\ref{subsec:analisis-reaq}.
 
 % ─────────────────────────────────────────────────────────────────────
 \section{Analisis Evaluasi}
 \label{sec:analisis-evaluasi}
 % ─────────────────────────────────────────────────────────────────────
 
-Bagian ini menganalisis hasil pada Bagian~\ref{sec:hasil-evaluasi} dari enam sudut: per-dimensi (AnsQ, RetQ, ReaQ), studi mekanisme internal (kedalaman traversal, ablasi, kondisi batas), perbandingan statistik tiga sistem, dan sintesis lintas-metrik.
+Bagian ini menganalisis hasil pada Bagian~\ref{sec:hasil-evaluasi} dari empat sudut: per-dimensi (AnsQ, RetQ, ReaQ), studi mekanisme internal (kedalaman traversal, ablasi, kondisi batas), perbandingan statistik tiga sistem, dan sintesis lintas-metrik.
 
 % ─────────────────────────────────────────────────────────────────────
 \subsection{Analisis \textit{Answer Quality} (AnsQ)}
 \label{subsec:analisis-ansq}
 % ─────────────────────────────────────────────────────────────────────
 
-Ketiga sistem mencapai AnsQ yang sebanding (GraphRAG 0,803 / Vector RAG 0,798 / Vanilla LLM 0,746), dengan selisih GraphRAG terhadap Vector RAG yang tidak signifikan secara statistik ($\Delta{+}0{,}005$, $p_{\text{Holm}}{=}0{,}067$). Pola ini mencerminkan karakteristik \textit{LLM-bound}: kualitas teks jawaban ditentukan oleh kapabilitas generatif model bahasa, bukan oleh mekanisme \textit{retrieval}. Selama model yang digunakan sama (GPT-4o-mini), perbedaan AnsQ antarsistem akan selalu kecil. Implikasinya, AnsQ bukan pembeda utama antara arsitektur GraphRAG dan Vector RAG; keunggulan komparatif terukur terletak pada RetQ dan ReaQ.
+Ketiga sistem mencapai AnsQ yang sebanding (GraphRAG 0,803 / Vector RAG 0,798 / Vanilla LLM 0,746) dengan selisih GraphRAG terhadap Vector RAG yang tidak signifikan secara statistik ($\Delta{+}0{,}005$, $p_{\text{Holm}}{=}0{,}067$). Pola ini mencerminkan karakteristik \textit{LLM-bound}: kualitas teks jawaban ditentukan oleh kapabilitas generatif model bahasa, bukan oleh mekanisme \textit{retrieval}. Selama model yang digunakan sama (GPT-4o-mini), perbedaan AnsQ antarsistem akan selalu kecil. Implikasinya, AnsQ bukan pembeda utama antara arsitektur GraphRAG dan Vector RAG; keunggulan komparatif terukur terletak pada RetQ dan ReaQ.
 
 % ─────────────────────────────────────────────────────────────────────
 \subsection{Analisis \textit{Retrieval Quality} (RetQ)}
 \label{subsec:analisis-retq}
 % ─────────────────────────────────────────────────────────────────────
 
-RetQ merupakan dimensi paling diskriminatif: GraphRAG mengungguli Vector RAG sebesar $+0{,}465$ F1 ($p{<}0{,}001$) dan Vanilla LLM sebesar $+0{,}709$ ($p{<}0{,}001$). Keunggulan ini bersumber dari traversal \textit{multi-hop} yang menjangkau \textit{intermediate structural nodes} --- misalnya rantai \textit{Deployment}~$\to$~\textit{DeploymentSpec}~$\to$~\textit{PodTemplateSpec}~$\to$~\textit{Container} --- yang tidak dapat dicapai oleh \textit{cosine similarity} top-5 Vector RAG. Analisis lebih lanjut tentang komponen pendorong RetQ disajikan pada Subbab~\ref{subsec:studi-mekanisme}: ablasi A2 (\textit{no\_multihop}) menghilangkan $-0{,}656$ pp RetQ, dan T1 (18-\textit{edge} semantik) berkontribusi $+0{,}152$ pp.
+RetQ merupakan dimensi paling diskriminatif: GraphRAG mengungguli Vector RAG sebesar $+0{,}465$ F1 ($p{<}0{,}001$) dan Vanilla LLM sebesar $+0{,}709$ ($p{<}0{,}001$). Keunggulan ini bersumber dari traversal \textit{multi-hop} yang menjangkau \textit{intermediate structural nodes} (misalnya rantai \textit{Deployment}~$\to$~\textit{DeploymentSpec}~$\to$~\textit{PodTemplateSpec}~$\to$~\textit{Container}) yang tidak dapat dicapai oleh \textit{cosine similarity} top-5 Vector RAG. Analisis lebih lanjut tentang komponen pendorong RetQ disajikan pada Subbab~\ref{subsec:studi-mekanisme}: ablasi A2 (\textit{no\_multihop}) menghilangkan $-0{,}656$ pp RetQ, dan T1 (18-\textit{edge} semantik) berkontribusi $+0{,}152$ pp.
 
 % ─────────────────────────────────────────────────────────────────────
 \subsection{Analisis \textit{Reasoning Quality} (ReaQ)}
 \label{subsec:analisis-reaq}
 % ─────────────────────────────────────────────────────────────────────
 
-\textit{Hop accuracy} keseluruhan 0,756 mencerminkan \textit{trade-off} traversal yang bersifat inheran. Pada \textit{fixture} \textit{focused} ($\leq$15 \textit{edge}, $n{=}50$), sistem mencapai 0,909 --- hampir seluruh relasi relevan berhasil dilalui. Skor turun ke 0,579 pada \textit{fixture} \textit{closure} ($>$15 \textit{edge}, $n{=}43$) karena kedalaman adaptif $d{=}2$ tidak dapat menelusuri semua cabang subgraf besar secara menyeluruh. Pola ini terdokumentasi pada eksperimen kedalaman (Subbab~\ref{subsec:studi-mekanisme}): menambah kedalaman meningkatkan \textit{hop accuracy} (lihat $d{=}4$, 0,901) namun menurunkan presisi RetQ, sehingga $d{=}2$ tetap optimal secara agregat.
+\textit{Hop accuracy} keseluruhan 0,756 mencerminkan \textit{trade-off} traversal yang bersifat inheren. Pada \textit{fixture} \textit{focused} ($\leq$15 \textit{edge}, $n{=}50$), sistem mencapai 0,909, artinya hampir seluruh relasi relevan berhasil dilalui. Skor turun ke 0,579 pada \textit{fixture} \textit{closure} ($>$15 \textit{edge}, $n{=}43$) karena kedalaman adaptif $d{=}2$ tidak dapat menelusuri semua cabang subgraf besar secara menyeluruh. Pola ini terdokumentasi pada eksperimen kedalaman (Subbab~\ref{subsec:studi-mekanisme}): menambah kedalaman meningkatkan \textit{hop accuracy} (lihat $d{=}4$, 0,901) namun menurunkan presisi RetQ sehingga $d{=}2$ tetap optimal secara agregat.
 
-\textit{Faithfulness} 0,3055 berada jauh di bawah ambang 0,80, namun interpretasi angka ini memerlukan pemahaman desain sistem. \texttt{prompts.py} Aturan~1 secara eksplisit menyatakan \textit{``If Retrieved Data is empty or does not cover the specific concept asked, answer using your general Kubernetes knowledge''}. Sistem ini memang dirancang \textit{open-book}: \textit{knowledge graph} berfungsi sebagai \textit{scaffold} struktural, dan LLM diizinkan melengkapi jawaban dengan pengetahuan parametrik ketika informasi tidak tersedia dalam konteks yang di-\textit{retrieve}.
+\textit{Faithfulness} 0,3055 berada jauh di bawah ambang 0,80, namun interpretasi angka ini memerlukan pemahaman desain sistem. Aturan~1 dalam \texttt{prompts.py} secara eksplisit menyatakan \textit{``If Retrieved Data is empty or does not cover the specific concept asked, answer using your general Kubernetes knowledge''}. Sistem ini memang dirancang \textit{open-book}, yaitu \textit{knowledge graph} berfungsi sebagai \textit{scaffold} struktural, dan LLM diizinkan melengkapi jawaban dengan pengetahuan parametrik ketika informasi tidak tersedia dalam konteks yang di-\textit{retrieve}.
 
-Untuk mengkuantifikasi seberapa besar porsi jawaban bersumber dari graf versus ingatan LLM, seluruh 102 \textit{fixture} dianalisis menggunakan dekomposisi klaim berbasis GPT-4o: tiap klaim diklasifikasikan sebagai \textit{supported} (terdukung konteks), \textit{modality} (isi didukung, beda formulasi deklaratif~$\to$~prosedural), \textit{partial}, atau \textit{absent} (tidak ada di konteks). Hasilnya disajikan pada Tabel~\ref{tbl:faith_decomposition}.
+Untuk mengkuantifikasi seberapa besar porsi jawaban bersumber dari graf versus ingatan LLM, seluruh 102 \textit{fixture} dianalisis menggunakan dekomposisi klaim berbasis GPT-4o. Tiap jawaban dipecah menjadi klaim-klaim faktual atomik, kemudian tiap klaim diklasifikasikan ke dalam empat kategori: \textit{supported} (klaim terlacak langsung ke teks konteks yang di-\textit{retrieve}), \textit{modality} (isi klaim bersumber dari konteks, namun diformulasikan ulang dari pernyataan skema deklaratif menjadi instruksi prosedural), \textit{partial} (klaim mengandung komponen dari konteks sekaligus detail yang ditambahkan LLM secara mandiri), dan \textit{absent} (klaim tidak memiliki rujukan di konteks dan bersumber sepenuhnya dari pengetahuan parametrik LLM). Hasilnya disajikan pada Tabel~\ref{tbl:faith_decomposition}.
 
 \input{tables/tabel31d.tex}
 
-Dari 818 klaim, \textbf{55,6\% bersumber dari pengetahuan parametrik} (\textit{absent}) --- dan hanya 41,4\% dapat dilacak ke konteks graf secara jelas (\textit{supported}~$+$~\textit{modality}). Pola ini konsisten pada kedua subset: 55,6\% parametrik untuk \textit{fixture} berbasis skema ($n{=}86$) maupun 55,8\% untuk \textit{fixture} \textit{free-text} ($n{=}16$), mengindikasikan bahwa desain \textit{open-book} berdampak sistemik, bukan artefak satu kelompok pertanyaan saja.
+Dari 818 klaim, \textbf{55,6\% bersumber dari pengetahuan parametrik} (\textit{absent}), sedangkan hanya 41,4\% dapat dilacak ke konteks graf secara jelas (\textit{supported}~$+$~\textit{modality}). Pola ini konsisten pada kedua subset: 55,6\% parametrik untuk \textit{fixture} berbasis skema ($n{=}86$) maupun 55,8\% untuk \textit{fixture} \textit{free-text} ($n{=}16$), mengindikasikan bahwa desain \textit{open-book} berdampak sistemik, bukan artefak satu kelompok pertanyaan saja.
 
 Pertanyaan yang muncul kemudian adalah: mengapa \textit{faithfulness} rendah (0,306) tetapi AnsQ tetap tinggi (0,803)? Gambar~\ref{fig:faith_vs_ansq_scatter} memvisualisasikan sebaran pasangan skor keduanya per \textit{fixture}.
 
@@ -215,9 +213,9 @@ Pertanyaan yang muncul kemudian adalah: mengapa \textit{faithfulness} rendah (0,
     \label{fig:faith_vs_ansq_scatter}
 \end{figure}
 
-Korelasi Pearson $r{=}0{,}23$ (hampir nol) membuktikan bahwa \textit{faithfulness} dan AnsQ \textbf{ortogonal}: tinggi-rendahnya \textit{faithfulness} tidak memprediksi kualitas jawaban. Dari 102 \textit{fixture}, \textbf{41 masuk kuadran paradoks} (\textit{faith}~$\leq$~0,30 tetapi AnsQ~$\geq$~0,70), didominasi tipe \textit{yaml\_gen} (\textit{faith} rata-rata 0,206, AnsQ 0,910): LLM mengisi nilai YAML konkret dari ingatan parametrik, menghasilkan jawaban yang tepat secara teknis namun tidak terlacak ke konteks graf --- perilaku yang memang dikehendaki desain \textit{open-book}.
+Korelasi Pearson $r{=}0{,}23$ (hampir nol) membuktikan bahwa \textit{faithfulness} dan AnsQ \textbf{ortogonal}: tinggi-rendahnya \textit{faithfulness} tidak memprediksi kualitas jawaban. Dari 102 \textit{fixture}, \textbf{41 masuk kuadran paradoks} (\textit{faith}~$\leq$~0,30 tetapi AnsQ~$\geq$~0,70), didominasi tipe \textit{yaml\_gen} (\textit{faith} rata-rata 0,206, AnsQ 0,910): LLM mengisi nilai YAML konkret dari ingatan parametrik, menghasilkan jawaban yang tepat secara teknis namun tidak terlacak ke konteks graf, suatu perilaku yang memang dikehendaki desain \textit{open-book}.
 
-Variasi antarkategori memperkuat temuan ini. Satu-satunya kategori dengan \textit{faithfulness} DAN AnsQ sama-sama rendah adalah \textit{followup} (\textit{faith} 0,044, AnsQ 0,590), yang mencerminkan limitasi genuine sistem pada kueri multi-\textit{turn} tanpa retensi konteks antarsesi. Sebaliknya, kategori \textit{relationship} memperoleh \textit{faithfulness} tertinggi (0,389) karena menyatakan ulang relasi struktural yang dapat dilacak langsung ke konteks graf. Terakhir, perlu dibedakan dua analisis ini: \textit{Faithfulness} 0,3055 dihitung oleh judge GPT-4o-mini pada $n{=}95$ \textit{fixture} dan merupakan metrik resmi yang dibandingkan antarsistem; sedangkan dekomposisi klaim pada Tabel~\ref{tbl:faith_decomposition} menggunakan judge GPT-4o pada $n{=}102$ \textit{fixture} untuk mengidentifikasi sumber klaim (DOCUMENT vs.\ PARAMETRIC) --- ini analisis diagnostik yang meng-\textit{corroborate} metrik resmi, bukan nilai \textit{faithfulness} kedua.
+Variasi antarkategori memperkuat temuan ini. Satu-satunya kategori dengan \textit{faithfulness} dan AnsQ sama-sama rendah adalah \textit{followup} (\textit{faith} 0,044, AnsQ 0,590), yang mencerminkan limitasi genuine sistem pada kueri multi-\textit{turn} tanpa retensi konteks antarsesi. Sebaliknya, kategori \textit{relationship} memperoleh \textit{faithfulness} tertinggi (0,389) karena menyatakan ulang relasi struktural yang dapat dilacak langsung ke konteks graf.
 
 % ─────────────────────────────────────────────────────────────────────
 \subsection{Studi Mekanisme}
@@ -242,14 +240,26 @@ Eksperimen kedalaman mengeksplorasi pengaruh kedalaman traversal $d$ terhadap ti
     \label{fig:depth_sensitivity_bab6}
 \end{figure}
 
-Kedalaman $d{=}2$ merupakan titik optimal untuk RetQ F1 (0,7089) dan AnsQ (0,8031). Pada $d{=}1$, RetQ turun drastis menjadi 0,3666 karena \textit{retrieval} dangkal hanya menjangkau \textit{seed node} tanpa konteks dependensi skema. Pada $d{=}4$ dan $d{=}5$, \textit{Hop Accuracy} naik (0,9007 dan 0,8760) --- sistem menelusuri lebih banyak \textit{edge} relevan --- tetapi RetQ justru turun (0,6113 dan 0,5838) karena traversal lebih dalam menarik \textit{node} tambahan yang menurunkan presisi. Pola ini mengkonfirmasi \textit{trade-off} antara \textit{edge recall} dan presisi \textit{retrieval}: kedalaman adaptif $d{=}2$ (default) mempertahankan keseimbangan terbaik untuk mayoritas kueri.
+Kedalaman $d{=}2$ merupakan titik optimal untuk RetQ F1 (0,7089) dan AnsQ (0,8031). Pada $d{=}1$, RetQ turun drastis menjadi 0,3666 karena \textit{retrieval} dangkal hanya menjangkau \textit{seed node} tanpa konteks dependensi skema. Pada $d{=}4$ dan $d{=}5$, \textit{Hop Accuracy} naik (0,9007 dan 0,8760) karena sistem menelusuri lebih banyak \textit{edge} relevan, tetapi RetQ justru turun (0,6113 dan 0,5838) karena traversal lebih dalam menarik \textit{node} tambahan yang menurunkan presisi. Pola ini mengonfirmasi \textit{trade-off} antara \textit{edge recall} dan presisi \textit{retrieval}: kedalaman adaptif $d{=}2$ (default) mempertahankan keseimbangan terbaik untuk mayoritas kueri.
 
 % ─────────────────────────────────────────────────────────────────────
 \subsection{Analisis Internal: \textit{Ablation Study}}
 \label{sec:ablation-study}
 % ─────────────────────────────────────────────────────────────────────
 
-\textit{Ablation study} dilakukan untuk memverifikasi kontribusi terukur tiap komponen sistem GraphRAG. Tujuh konfigurasi ablasi (A1--A7) dirancang sehingga tiap konfigurasi menonaktifkan tepat satu komponen, dievaluasi terhadap 103 \textit{fixture}. Tabel~\ref{tbl:ablation_results} menyajikan skor absolut dan selisih terhadap \textit{baseline} (18-\textit{edge}), sedangkan Tabel~\ref{tbl:ablation_significance} menyajikan signifikansi statistiknya.
+\textit{Ablation study} dilakukan untuk memverifikasi kontribusi terukur tiap komponen sistem GraphRAG. Tujuh konfigurasi ablasi (A1--A7) dirancang sehingga tiap konfigurasi menonaktifkan tepat satu komponen, dievaluasi terhadap 102 \textit{fixture}. Definisi tiap konfigurasi adalah sebagai berikut.
+
+\begin{enumerate}
+    \item \textbf{A1 (\textit{no\_phase1}):} Fase~1 \textit{exact match} dinonaktifkan; sistem langsung ke traversal tanpa memastikan \textit{seed node} yang tepat.
+    \item \textbf{A2 (\textit{no\_multihop}):} Traversal \textit{multi-hop} dinonaktifkan; sistem hanya mengambil \textit{seed node} tanpa ekspansi dependensi skema.
+    \item \textbf{A3 (\textit{depth=2 fixed}):} Kedalaman traversal ditetapkan tetap 2 untuk semua \textit{intent}, tanpa adaptasi.
+    \item \textbf{A4 (\textit{depth=3 fixed}):} Kedalaman traversal ditetapkan tetap 3 untuk semua \textit{intent}, tanpa adaptasi.
+    \item \textbf{A5 (\textit{no\_yaml\_layer3}):} Layer~3 validasi YAML (\textit{cross-check} \textit{field} wajib ke Neo4j) dinonaktifkan.
+    \item \textbf{A6 (\textit{no\_multi\_entity}):} \textit{Multi-entity retrieval} dinonaktifkan; sistem hanya menelusuri satu entitas per kueri.
+    \item \textbf{A7 (\textit{HAS\_PROPERTY only}):} Hanya 1 tipe \textit{edge} (\textit{HAS\_PROPERTY}) yang aktif, menggantikan 18 tipe \textit{edge} semantik \textit{baseline}.
+\end{enumerate}
+
+Tabel~\ref{tbl:ablation_results} menyajikan skor absolut dan selisih terhadap \textit{baseline} (18 jenis \textit{edge}), sedangkan Tabel~\ref{tbl:ablation_significance} menyajikan signifikansi statistiknya.
 
 \begin{figure}[H]
     \centering
@@ -263,20 +273,17 @@ Kedalaman $d{=}2$ merupakan titik optimal untuk RetQ F1 (0,7089) dan AnsQ (0,803
 
 \input{tables/tabel36.tex}
 
-\textbf{A2 (\textit{no\_multihop})} menghasilkan penurunan terbesar: RetQ turun $-0{,}656$ pp dan \textit{Hop Accuracy} turun $-0{,}700$ pp ($p{<}0{,}001$), mengkonfirmasi bahwa \textit{multi-hop graph traversal} adalah komponen paling krusial. Tanpa traversal \textit{multi-hop}, sistem hanya memperoleh \textit{seed node} tanpa konteks dependensi skema yang diperlukan untuk kueri relasional.
+\textbf{A2 (\textit{no\_multihop})} menghasilkan penurunan terbesar: RetQ turun $-0{,}656$ pp dan \textit{Hop Accuracy} turun $-0{,}700$ pp ($p{<}0{,}001$), mengonfirmasi bahwa \textit{multi-hop graph traversal} adalah komponen paling krusial. Tanpa traversal \textit{multi-hop}, sistem hanya memperoleh \textit{seed node} tanpa konteks dependensi skema yang diperlukan untuk kueri relasional.
 
-\textbf{A1 (\textit{no\_phase1})} menurunkan RetQ sebesar $-0{,}309$ pp ($p{<}0{,}001$), mengkonfirmasi peran \textit{exact match} Fase~1 sebagai gerbang yang memastikan \textit{seed node} tepat sebelum traversal dimulai.
+\textbf{A1 (\textit{no\_phase1})} menurunkan RetQ sebesar $-0{,}309$ pp ($p{<}0{,}001$), mengonfirmasi peran \textit{exact match} Fase~1 sebagai gerbang yang memastikan \textit{seed node} tepat sebelum traversal dimulai.
 
 \textbf{A3 (\textit{depth=2 fixed})} menurunkan RetQ $-0{,}123$ pp dan \textit{Hop Accuracy} $-0{,}147$ pp ($p{<}0{,}001$), sementara \textbf{A4 (\textit{depth=3 fixed})} menghasilkan selisih RetQ yang tidak signifikan ($\Delta{=}{-}0{,}050$, $p{=}0{,}071$) tetapi \textit{Hop Accuracy} meningkat ($+0{,}145$ pp): kedalaman tetap 3 menghasilkan \textit{edge recall} lebih tinggi namun tidak meningkatkan RetQ secara agregat.
 
 \textbf{A5 (\textit{no\_yaml\_layer3})} menurunkan RetQ $-0{,}057$ pp (signifikan, $p{=}0{,}004$); dampaknya terletak terutama pada konsistensi \textit{retrieval} struktural, bukan pada validitas sintaksis YAML secara langsung.
 
-\textbf{A6c (\textit{no\_multi\_entity})} menunjukkan selisih kecil yang tidak signifikan ($\Delta$RetQ $-0{,}011$, $p{=}0{,}376$), mengindikasikan bahwa \textit{multi-entity retrieval} memberikan manfaat marginal pada agregat dataset ini.
+\textbf{A6 (\textit{no\_multi\_entity})} menunjukkan selisih kecil yang tidak signifikan ($\Delta$RetQ $-0{,}011$, $p{=}0{,}376$), mengindikasikan bahwa \textit{multi-entity retrieval} memberikan manfaat marginal pada agregat dataset ini.
 
-\subsubsection{T1: Kontribusi 18 Tipe \textit{Edge} Semantik}
-\label{subsubsec:t1-edge-semantik}
-
-\textbf{A7 (\textit{HAS\_PROPERTY only})} merupakan konfigurasi dengan hanya 1 tipe \textit{edge} aktif (vs.\ 18 tipe pada \textit{baseline}), sehingga perbandingannya membuktikan kontribusi 18 tipe \textit{edge} semantik secara langsung.
+\textbf{A7 (\textit{HAS\_PROPERTY only})} merupakan konfigurasi dengan hanya 1 tipe \textit{edge} aktif (vs.\ 18 tipe pada \textit{baseline}) sehingga perbandingannya membuktikan kontribusi 18 tipe \textit{edge} semantik secara langsung. Gambar~\ref{fig:eval_t1_has_property_vs_18edge} dan Tabel~\ref{tbl:t1_proof} menunjukkan bahwa 18 tipe \textit{edge} semantik meningkatkan RetQ F1 sebesar $+0{,}152$ pp dan \textit{Hop Accuracy} sebesar $+0{,}232$ pp, keduanya signifikan ($p{<}0{,}001$). Selisih AnsQ ($+0{,}018$ pp) tidak signifikan, mengonfirmasi bahwa 18 tipe \textit{edge} berkontribusi pada kualitas \textit{retrieval} dan penalaran, bukan pada kualitas teks jawaban.
 
 \begin{figure}[H]
     \centering
@@ -287,8 +294,6 @@ Kedalaman $d{=}2$ merupakan titik optimal untuk RetQ F1 (0,7089) dan AnsQ (0,803
 \end{figure}
 
 \input{tables/tabel33b.tex}
-
-Tabel~\ref{tbl:t1_proof} menunjukkan bahwa 18 tipe \textit{edge} semantik meningkatkan RetQ F1 sebesar $+0{,}152$ pp dan \textit{Hop Accuracy} sebesar $+0{,}232$ pp, keduanya signifikan ($p{<}0{,}001$). Selisih AnsQ ($+0{,}018$ pp) tidak signifikan, mengkonfirmasi bahwa 18 tipe \textit{edge} berkontribusi pada kualitas \textit{retrieval} dan penalaran, bukan pada kualitas teks jawaban.
 
 % ─────────────────────────────────────────────────────────────────────
 \subsection{Perbandingan Tiga Sistem: Uji Signifikansi}
@@ -310,11 +315,11 @@ Tabel~\ref{tbl:statistical_test} menyajikan signifikansi statistik perbandingan 
 Tiga temuan utama dari uji signifikansi:
 
 \begin{enumerate}
-    \item \textbf{RetQ}: GraphRAG unggul secara sangat signifikan terhadap kedua \textit{baseline} --- $\Delta{+}0{,}465$ vs.\ Vector RAG dan $\Delta{+}0{,}709$ vs.\ Vanilla LLM ($p{<}0{,}001$), dengan 95\% CI yang tidak menyentuh nol. Ini merupakan klaim utama yang didukung data terkuat.
+    \item \textbf{RetQ}: GraphRAG unggul secara sangat signifikan terhadap kedua \textit{baseline} ($\Delta{+}0{,}465$ vs.\ Vector RAG dan $\Delta{+}0{,}709$ vs.\ Vanilla LLM, $p{<}0{,}001$), dengan 95\% CI yang tidak menyentuh nol. Ini merupakan klaim utama yang didukung data terkuat.
 
     \item \textbf{AnsQ}: GraphRAG lebih unggul dari Vanilla LLM ($\Delta{+}0{,}056$, $p{<}0{,}001$), namun tidak berbeda signifikan dari Vector RAG ($\Delta{+}0{,}005$, $p_{\text{Holm}}{=}0{,}067$). Kualitas teks jawaban tidak dipengaruhi mekanisme \textit{retrieval} selama LLM yang digunakan sama.
 
-    \item \textit{Faithfulness}: GraphRAG lebih tinggi dari Vector RAG ($\Delta{+}0{,}127$, $p{<}0{,}001$); nilai absolut (0,3055) mencerminkan desain \textit{open-book} --- 55,6\% klaim bersumber dari pengetahuan parametrik LLM (dekomposisi $n{=}102$) --- dan bersifat ortogonal terhadap AnsQ (Pearson $r{=}0{,}23$); dianalisis mendalam pada Subbab~\ref{subsec:analisis-reaq}.
+    \item \textit{Faithfulness}: GraphRAG lebih tinggi dari Vector RAG ($\Delta{+}0{,}127$, $p{<}0{,}001$); nilai absolut (0,3055) mencerminkan desain \textit{open-book} (55,6\% klaim bersumber dari pengetahuan parametrik LLM) dan bersifat ortogonal terhadap AnsQ (Pearson $r{=}0{,}23$); dianalisis mendalam pada Subbab~\ref{subsec:analisis-reaq}.
 \end{enumerate}
 
 % ─────────────────────────────────────────────────────────────────────
@@ -342,15 +347,15 @@ Nilai positif pada Persamaan~\ref{eq:retq-gain} menunjukkan GraphRAG unggul; nil
 
 \input{tables/tabel34.tex}
 
-Berdasarkan data pada Tabel~\ref{tbl:retq_gain_by_type}, GraphRAG mengungguli Vector RAG pada \textbf{seluruh delapan kategori} \textit{fixture}, tanpa satu pun kategori yang menghasilkan \textit{gain} nol atau negatif. Kategori \textit{followup} memperoleh \textit{gain} tertinggi ($+0{,}664$): kueri yang membutuhkan konteks relasi lintas-\textit{resource} paling diuntungkan oleh traversal multi-\textit{hop}. Kategori \textit{relationship} memperoleh \textit{gain} terendah ($+0{,}354$) namun tetap positif. Magnitudo \textit{gain} absolut bergantung pada luas definisi \textit{relevant\_nodes} di \textit{ground truth} (Opsi~A); arah keunggulan GraphRAG konsisten di seluruh kategori.
+Berdasarkan data pada Tabel~\ref{tbl:retq_gain_by_type}, GraphRAG mengungguli Vector RAG pada \textbf{seluruh delapan kategori} \textit{fixture}, tanpa satu pun kategori yang menghasilkan \textit{gain} nol atau negatif. Kategori \textit{followup} memperoleh \textit{gain} tertinggi ($+0{,}664$): kueri yang membutuhkan konteks relasi lintas-\textit{resource} paling diuntungkan oleh traversal multi-\textit{hop}. Kategori \textit{relationship} memperoleh \textit{gain} terendah ($+0{,}354$) namun tetap positif. Terlihat bahwa arah keunggulan GraphRAG konsisten positif di seluruh kategori \textit{fixture}.
 
-Dua faktor kuantitatif dianalisis menggunakan korelasi Spearman terhadap \textit{RetQ-gain}: derajat node primer dalam graf (\texttt{graph\_degree}) dan jumlah \textit{hop} yang dilalui selama \textit{retrieval} (\texttt{hops\_retrieved}).
+Dua faktor kuantitatif dianalisis menggunakan korelasi Spearman terhadap \textit{RetQ-gain}, yaitu derajat node primer dalam graf (\texttt{graph\_degree}) dan jumlah \textit{hop} yang dilalui selama \textit{retrieval} (\texttt{hops\_retrieved}).
 
 \begin{figure}[H]
     \centering
     \captionsetup{justification=centering}
     \includegraphics[width=0.82\textwidth]{images/boundary_degree_vs_gain.png}
-    \caption{\textit{Scatter plot} derajat node primer vs.\ \textit{RetQ-gain} per \textit{fixture} ($\rho{=}{+}0{,}245$, $p{=}0{,}013$, $n{=}101$).}
+    \caption{\textit{Scatter plot} derajat node primer vs.\ \textit{RetQ-gain} per \textit{fixture} ($\rho{=}{+}0{,}245$, $p{=}0{,}013$).}
     \label{fig:boundary-degree-vs-gain}
 \end{figure}
 
@@ -358,13 +363,13 @@ Dua faktor kuantitatif dianalisis menggunakan korelasi Spearman terhadap \textit
     \centering
     \captionsetup{justification=centering}
     \includegraphics[width=0.82\textwidth]{images/boundary_hops_vs_gain.png}
-    \caption{\textit{Scatter plot} jumlah \textit{hop} yang dilalui vs.\ \textit{RetQ-gain} per \textit{fixture} ($\rho{=}{-}0{,}082$, $p{=}0{,}414$, $n{=}102$).}
+    \caption{\textit{Scatter plot} jumlah \textit{hop} yang dilalui vs.\ \textit{RetQ-gain} per \textit{fixture} ($\rho{=}{-}0{,}082$, $p{=}0{,}414$).}
     \label{fig:boundary-hops-vs-gain}
 \end{figure}
 
 \input{tables/tabel35.tex}
 
-Derajat node menunjukkan korelasi positif yang lemah namun signifikan ($\rho{=}{+}0{,}245$, $p{=}0{,}013$, $n{=}101$): \textit{resource} Kubernetes dengan konektivitas lebih tinggi dalam \textit{knowledge graph} (seperti \textit{Deployment}, \textit{StatefulSet}) secara konsisten menghasilkan \textit{gain} lebih besar, karena traversal multi-\textit{hop} dapat menjangkau lebih banyak konteks relasional yang relevan. Sebaliknya, jumlah \textit{hop} yang dilalui tidak menunjukkan korelasi yang signifikan ($\rho{=}{-}0{,}082$, $p{=}0{,}414$): kedalaman traversal bukan prediktor kuat keunggulan \textit{retrieval} secara individu per \textit{fixture}.
+Derajat node menunjukkan korelasi positif yang lemah namun signifikan ($\rho{=}{+}0{,}245$, $p{=}0{,}013$): \textit{resource} Kubernetes dengan konektivitas lebih tinggi dalam \textit{knowledge graph} (seperti \textit{Deployment}, \textit{StatefulSet}) secara konsisten menghasilkan \textit{gain} lebih besar, karena traversal multi-\textit{hop} dapat menjangkau lebih banyak konteks relasional yang relevan. Sebaliknya, jumlah \textit{hop} yang dilalui tidak menunjukkan korelasi yang signifikan ($\rho{=}{-}0{,}082$, $p{=}0{,}414$): kedalaman traversal bukan prediktor kuat keunggulan \textit{retrieval} secara individu per \textit{fixture}.
 
 Berdasarkan analisis di atas, kondisi batas sistem GraphRAG dirumuskan sebagai berikut.
 
@@ -380,20 +385,13 @@ GraphRAG tidak memberikan keunggulan bermakna ketika:
     \item \textit{resource} utama memiliki konektivitas sangat rendah sehingga kemiripan semantik berbasis \textit{embedding} sudah memadai.
 \end{enumerate}
 
-% ─────────────────────────────────────────────────────────────────────
-\subsection{Sintesis: Interpretasi Terpadu Empat Metrik}
-\label{subsec:sintesis-evaluasi}
-% ─────────────────────────────────────────────────────────────────────
+Hasil analisis per-dimensi yang telah dipaparkan menghasilkan empat angka yang tampak tidak selaras pada pandangan pertama: AnsQ 0,803 tinggi, RetQ unggul signifikan ($+0{,}465$ vs.\ Vector RAG, $p{<}0{,}001$), namun \textit{faithfulness} hanya mencapai 0,306. Keempat angka ini sebenarnya membentuk profil yang koheren apabila dibaca dalam konteks desain sistem. Tabel~\ref{tbl:baseline_comparison} menyajikan ringkasan skor per dimensi ketiga sistem.
 
-Subbab ini merangkai keempat angka evaluasi menjadi satu narasi koheren dan menyelesaikan ketegangan antara AnsQ tinggi dan \textit{faithfulness} rendah yang mungkin tampak kontradiktif (Gambar~\ref{fig:eval_systems_4metrics}).
+Sebagaimana dibahas pada Subbab~\ref{subsec:analisis-retq} dan \ref{subsec:analisis-ansq}, RetQ 0,709 merupakan kontribusi inti GraphRAG ($+0{,}465$ vs.\ Vector RAG, $p{<}0{,}001$), sedangkan AnsQ 0,803 yang setara dengan Vector RAG ($\Delta{+}0{,}005$) merupakan konsekuensi karakteristik \textit{LLM-bound}. Yang perlu diinterpretasikan lebih lanjut adalah \textit{faithfulness} 0,306, karena angka ini berpotensi menimbulkan kesan bahwa KG tidak berkontribusi secara bermakna.
 
-RetQ 0,709 ($+0{,}465$ vs.\ Vector RAG) adalah kontribusi inti dan klaim terkuat penelitian ini: GraphRAG secara terstruktur menemukan rantai relasi skema Kubernetes yang tidak dapat dijangkau oleh \textit{cosine similarity} berbasis vektor. \textit{Hop accuracy} 0,756 (focused 0,909) mengkonfirmasi bahwa traversal mengikuti \textit{edge} penalaran yang benar untuk mayoritas kueri berstruktur. Kedua metrik ini bersifat intrinsik graf dan merupakan nilai unik GraphRAG.
+\textit{Faithfulness} 0,306 rendah, namun angka ini bukan indikasi KG tidak berkontribusi. KG yang dibangun dari blok \textit{definitions} Kubernetes secara arsitektural hanya memodelkan relasi antar-\textit{resource} bertipe-objek sebagai \textit{edge}; nilai skalar (seperti \texttt{image}, \texttt{command}, dan \texttt{args}) serta penjelasan prosedural tidak dapat direpresentasikan sebagai simpul atau hubungan dalam graf. Oleh karena itu, desain \textit{open-book} bukan sekadar pilihan, melainkan keharusan arsitektural: KG menyediakan kerangka relasional yang terverifikasi, sedangkan LLM mengisi detail yang secara struktural absen dari graf. Keduanya sebenarnya bersifat ortogonal ($r{=}0{,}23$) karena mengukur hal yang berbeda: AnsQ mengukur kebenaran dan relevansi jawaban, sedangkan \textit{faithfulness} mengukur keterlacakan klaim ke konteks yang di-\textit{retrieve}. Kontribusi KG pada sistem ini justru tercermin pada RetQ ($+0{,}465$ vs.\ Vector RAG, $p{<}0{,}001$) dan \textit{hop accuracy} 0,756, yaitu dua kapabilitas yang tidak tersedia pada Vanilla LLM maupun Vector RAG karena keduanya tidak melakukan traversal struktural graf.
 
-AnsQ 0,803 tinggi, namun selisihnya terhadap Vector RAG ($+0{,}005$) tidak signifikan. Ini bukan kelemahan, melainkan konsekuensi logis: kualitas teks jawaban bersifat \textit{LLM-bound} --- selama model yang digunakan sama, fluensi dan relevansi teks akan selalu sebanding. Kontribusi GraphRAG tidak terletak pada teks yang lebih fasih, melainkan pada konteks struktural yang lebih kaya yang menjamin \textit{retrieval} yang dapat dilacak (\textit{traceable}).
-
-\textit{Faithfulness} 0,306 rendah --- dan ini konsisten dengan desain. Sistem \textit{open-book} yang mengizinkan LLM menggunakan pengetahuan parametrik (55,6\% klaim) akan selalu memperoleh \textit{faithfulness} rendah dengan metrik ini. Ketegangan dengan AnsQ diselesaikan oleh ortogonalitas keduanya ($r{=}0{,}23$): AnsQ mengukur \textit{kebenaran dan relevansi jawaban}; \textit{faithfulness} mengukur \textit{keterlacakan klaim ke konteks yang di-\textit{retrieve}}. Sistem yang melengkapi \textit{scaffold} graf dengan pengetahuan parametrik yang reliabel --- persis yang dirancang --- akan menghasilkan AnsQ tinggi dan \textit{faithfulness} sedang: persis yang teramati.
-
-Dengan demikian, kontribusi terukur GraphRAG terletak pada \textbf{retrieval} (RetQ, \textit{hop accuracy}) dan \textit{traceability} --- yang Vector RAG dan Vanilla LLM tidak miliki --- bukan pada kefasihan teks. Kualitas teks setara karena \textit{LLM-bound}, dan \textit{faithfulness} rendah karena desain \textit{open-book} yang disengaja, bukan karena defek sistem.
+Dengan demikian, kontribusi terukur GraphRAG terletak pada \textit{retrieval} terstruktur (RetQ, \textit{hop accuracy}) dan keterlacakan \textit{reasoning path} yang tidak dimiliki Vector RAG maupun Vanilla LLM, bukan pada kefasihan teks. AnsQ yang setara dengan Vector RAG merupakan konsekuensi desain \textit{LLM-bound}, sedangkan \textit{faithfulness} yang rendah merupakan konsekuensi desain \textit{open-book} yang disengaja. Keduanya bukan indikator defek sistem, melainkan bagian dari profil sistem yang memang dirancang demikian.
 
 % ─────────────────────────────────────────────────────────────────────
 \section{Validasi Kualitatif atas Jawaban Sistem}
@@ -404,14 +402,12 @@ Selain evaluasi otomatis terhadap 102 \textit{fixture}, penelitian ini melakukan
 
 \input{tables/tabel37.tex}
 
-Penilaian ini bersifat \textbf{kualitatif pendukung} ($n{=}4$, tidak representatif secara statistik). Nilainya terletak pada konfirmasi kelayakan, bukan pada klaim kuantitatif. Tiga observasi yang selaras dengan metrik otomatis:
+Penilaian ini bersifat \textbf{kualitatif pendukung}. Nilainya terletak pada konfirmasi kelayakan, bukan pada klaim kuantitatif. Tiga observasi yang selaras dengan metrik evaluasi:
 
 \begin{enumerate}
     \item \textbf{Keunggulan pada kueri relasional.} S3 (penjelasan relasi) memperoleh rata-rata tertinggi (4,38), selaras dengan temuan bahwa kategori \textit{relationship} memiliki \textit{faithfulness} tertinggi (0,389) dan \textit{gain} RetQ yang konsisten positif.
 
-    \item \textbf{Keterbatasan kelengkapan YAML.} \textit{Kelengkapan} pada S1 memperoleh skor terendah (3,83); seluruh pakar menyatakan YAML perlu sedikit modifikasi sebelum siap digunakan dalam produksi. Ini konsisten dengan \textit{schema compliance} 0,8929 pada kategori \textit{yaml\_gen}.
-
-    \item \textbf{\textit{Retrieval Trace} meningkatkan kepercayaan.} Pakar memberi skor kepercayaan 4,50 terhadap \textit{Retrieval Trace} --- tertinggi di antara seluruh item. Tiga dari empat pakar secara eksplisit menyebutkan visibilitas \textit{reasoning path} sebagai pembeda utama dari LLM biasa, selaras dengan keunggulan RetQ ($+0{,}465$ pp vs.\ Vector RAG, $p{<}0{,}001$) dan \textit{hop accuracy} (0,756).
+    \item \textbf{\textit{Retrieval Trace} meningkatkan kepercayaan.} Pakar memberi skor kepercayaan 4,50 terhadap \textit{Retrieval Trace}, tertinggi di antara seluruh item. Tiga dari empat pakar secara eksplisit menyebutkan visibilitas \textit{reasoning path} sebagai pembeda utama dari LLM biasa, selaras dengan keunggulan RetQ ($+0{,}465$ pp vs.\ Vector RAG, $p{<}0{,}001$) dan \textit{hop accuracy} (0,756).
 \end{enumerate}
 
-Keselarasan ketiga observasi ini menunjukkan bahwa metrik yang dirancang dalam penelitian ini mengukur aspek yang relevan dengan ekspektasi pengguna, meski klaim ini dibatasi pada $n{=}4$ pakar.
+Keselarasan observasi ini menunjukkan bahwa metrik yang dirancang dalam penelitian ini mengukur aspek yang relevan dengan ekspektasi pengguna.

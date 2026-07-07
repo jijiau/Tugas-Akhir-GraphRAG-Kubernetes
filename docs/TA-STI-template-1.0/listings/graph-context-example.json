@@ -1,0 +1,11 @@
+{
+  "RootResource": "Deployment",
+  "RootKind": "Deployment",
+  "ApiVersion": "apps/v1",
+  "VectorSimilarityScore": 1.0,
+  "SchemaDependencies": [
+    { "name": "DeploymentSpec",  "kind": "DeploymentSpec" },
+    { "name": "PodTemplateSpec", "kind": "PodTemplateSpec" },
+    { "name": "PodSpec",         "kind": "PodSpec" }
+  ]
+}

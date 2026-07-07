@@ -1,0 +1,40 @@
+{
+  "nodes": [
+    {
+      "id": "io.k8s.api.apps.v1.DeploymentStrategy",
+      "labels": ["Definition"],
+      "name": "DeploymentStrategy",
+      "fullName": "io.k8s.api.apps.v1.DeploymentStrategy",
+      "kind": "SubResource",
+      "is_root": false,
+      "scope": "N/A",
+      "description": "DeploymentStrategy describes how to replace existing pods with new ones.",
+      "source": "k8s_swagger_v1",
+      "embedding": "[0.0123, -0.0456, ...]  // 1536-dim, dipangkas"
+    },
+    {
+      "id": "io.k8s.api.apps.v1.RollingUpdateDeployment",
+      "labels": ["Definition"],
+      "name": "RollingUpdateDeployment",
+      "fullName": "io.k8s.api.apps.v1.RollingUpdateDeployment",
+      "kind": "SubResource",
+      "is_root": false,
+      "scope": "N/A",
+      "description": "Spec to control the desired behavior of rolling update.",
+      "source": "k8s_swagger_v1",
+      "embedding": "[0.0891, 0.0027, ...]  // 1536-dim, dipangkas"
+    }
+  ],
+  "relationships": [
+    {
+      "type": "HAS_PROPERTY",
+      "start": "io.k8s.api.apps.v1.DeploymentStrategy",
+      "end": "io.k8s.api.apps.v1.RollingUpdateDeployment",
+      "properties": {
+        "name": "rollingUpdate",
+        "is_array": false,
+        "is_required": false
+      }
+    }
+  ]
+}

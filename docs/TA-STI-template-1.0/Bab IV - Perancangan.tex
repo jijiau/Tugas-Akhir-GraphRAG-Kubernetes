@@ -12,13 +12,13 @@ serta pemetaan kebutuhan fungsional dan non-fungsional yang telah dijelaskan pad
 bagian sebelumnya, langkah selanjutnya adalah merumuskan rancangan solusi yang akan
 dikembangkan dalam penelitian ini. Rancangan solusi ini disusun secara sistematis
 mengacu pada metodologi \textit{Cross-Industry Standard Process for Data Mining}
-(CRISP--DM) sebagaimana ditampilkan pada Gambar~\ref{fig:crispdm_diagram}.
+(CRISP-DM) sebagaimana ditampilkan pada Gambar~\ref{fig:crispdm_diagram}.
 
 \begin{figure}[H]
     \centering
     \captionsetup{justification=centering}
     \includegraphics[width=0.70\textwidth]{images/Solusi-Methodology.png}
-    \caption{Rancangan solusi berdasarkan metodologi CRISP--DM}
+    \caption{Rancangan solusi berdasarkan metodologi CRISP-DM}
     \label{fig:crispdm_diagram}
 \end{figure}
 
@@ -32,7 +32,7 @@ Setiap aktivitas pada tahap \textit{Data Preparation}, \textit{Modelling}, \text
 \textit{Output Generation}, \textit{Evaluation}, dan \textit{Deployment} dipetakan secara langsung
 terhadap kebutuhan fungsional yang harus dipenuhi oleh sistem.
 Pemetaan ini memastikan bahwa rancangan solusi GraphRAG tidak hanya bersifat konseptual,
-namun juga merefleksikan proses yang dibutuhkan untuk mencapai tujuan penelitian.
+namun juga mencerminkan proses yang dibutuhkan untuk mencapai tujuan penelitian.
 Hubungan antara tahapan metodologi dan kebutuhan fungsional ditunjukkan pada
 Tabel~\ref{tbl:mapping_methodology_requirements}.
 
@@ -101,7 +101,7 @@ sebagaimana ditunjukkan pada Gambar~\ref{fig:ingestion_pipeline}.
 \begin{figure}[H]
     \centering
     \captionsetup{justification=centering}
-    \includegraphics[width=0.70\textwidth]{images/ingestion_pipeline.png}
+    \includegraphics[width=0.75\textwidth]{images/ingestion_pipeline.png}
     \caption{\textit{Pipeline Ingestion} dari \texttt{swagger.json} ke Neo4j \textit{Knowledge Graph}}
     \label{fig:ingestion_pipeline}
 \end{figure}
@@ -182,7 +182,7 @@ bersifat spesifik.
 Manajemen memori percakapan dirancang menggunakan basis data relasional ringan dengan
 identifikasi sesi berbasis UUID. Pada setiap interaksi, riwayat percakapan dimuat dan
 diteruskan ke modul \textit{thinker} bersama kueri baru.
-Riwayat ini memungkinkan komunikasi 2 arah antara LLM dengan pengguna, contohnya untuk memahami rujukan seperti "hal tersebut" atau "itu" berdasarkan konteks percakapan
+Riwayat ini memungkinkan komunikasi dua arah antara LLM dengan pengguna, misalnya untuk memahami rujukan seperti "hal tersebut" atau "itu" berdasarkan konteks percakapan
 sebelumnya tanpa memerlukan pengulangan nama entitas secara eksplisit.
 Setelah respons dihasilkan, pasangan kueri-respons disimpan untuk digunakan pada
 interaksi berikutnya.

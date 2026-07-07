@@ -38,7 +38,7 @@ Arsitektur Kubernetes dibangun atas konsep klaster yang terdiri dari dua kelompo
     \textit{Worker Nodes} merupakan lapisan eksekusi tempat aplikasi berjalan dalam bentuk Pod. Node terdiri atas tiga komponen inti:
     \begin{enumerate}[a.]
         \item \textbf{kubelet} yang bertugas mengeksekusi Pod sesuai \textit{specification} yang diterima dari \textit{Control Plane},
-        \item \textbf{kube-proxy} yang menyediakan layanan \textit{network forwarding} dan \textit{load balancing} sederhana antar Pod dalam klaster,
+        \item \textbf{kube-proxy} yang menyediakan layanan \textit{network forwarding} dan \textit{load balancing} sederhana antar-\textit{Pod} dalam klaster,
         \item \textbf{\textit{container runtime}} yang bertanggung jawab menjalankan kontainer. Dengan demikian, Node menjalankan komputasi terdistribusi yang dikontrol oleh \textit{Control Plane} melalui komunikasi berbasis API.
     \end{enumerate}
 \end{enumerate}
@@ -71,7 +71,7 @@ Pengembang berinteraksi dengan model sumber daya Kubernetes melalui pendekatan \
     \item \texttt{spec}: Mendefinisikan \textit{desired state} atau kondisi yang diharapkan dari sebuah objek Kubernetes.
 \end{enumerate}
 
-Penyusunan manifes YAML menuntut pemahaman terkait batasan skema. Pengembang harus bisa membedakan secara presisi antara atribut wajib (\textit{required}) penentu validitas dan atribut opsional (\textit{optional}) penambah fitur khusus. Praktik terbaik dalam penulisan IaC menyarankan modularitas dokumen, konsistensi penggunaan label, dan pemisahan logika aplikasi dari data konfigurasi.
+Penyusunan manifes YAML menuntut pemahaman terkait batasan skema. Pengembang dituntut memahami perbedaan antara atribut wajib (\textit{required}) yang menentukan validitas manifes dan atribut opsional (\textit{optional}) yang memberikan fleksibilitas konfigurasi. Praktik terbaik dalam penulisan IaC menyarankan modularitas dokumen, konsistensi penggunaan label, dan pemisahan logika aplikasi dari data konfigurasi.
 
 \section{\textit{Large Language Models} (LLM)}
 \subsection{Definisi dan Kapabilitas}
@@ -79,7 +79,7 @@ Penyusunan manifes YAML menuntut pemahaman terkait batasan skema. Pengembang har
 
 Meskipun unggul dalam pemahaman bahasa alami, LLM memiliki keterbatasan faktual yang signifikan ketika diterapkan pada domain teknis. Beberapa keterbatasan yang disorot oleh \textcite{wan2025empowering} meliputi,
 \begin{enumerate}[a.]
-    \item \textit{Hallucination}, yaitu kemampuan menghasilkan jawaban yang secara linguistik meyakinkan tetapi tidak memiliki landasan fakta yang jelas sehingga berisiko menyesatkan proses pengambilan keputusan teknis.
+    \item \textit{Hallucination}, yaitu kecenderungan menghasilkan jawaban yang secara linguistik meyakinkan tetapi tidak memiliki landasan fakta yang jelas sehingga berisiko menyesatkan proses pengambilan keputusan teknis.
     \item Keterbatasan cakupan pengetahuan, LLM hanya mengandalkan data yang ada di internet sehingga tidak selalu mencakup konteks domain spesifik.
     \item Tidak adanya referensi sumber bukti, yaitu LLM tidak dapat memberikan justifikasi atau referensi eksplisit terhadap jawaban yang dihasilkan.
 \end{enumerate}
@@ -182,12 +182,12 @@ Dengan demikian, penerapan RAG pada dokumentasi Kubernetes tidak hanya berfungsi
 
 Posisi penelitian ini dalam taksonomi tersebut terletak pada kombinasi \textit{schema-based} dengan metode \textit{rule/knowledge-based}: sumber pengetahuan berupa spesifikasi OpenAPI Kubernetes yang bersifat formal dan terstruktur, sementara konstruksi KG dilakukan melalui aturan transformasi deterministik yang dirancang secara eksplisit berdasarkan semantik domain. Berbeda dengan pendekatan \textit{schema-free} berbasis LLM yang bersifat stokastik dan menghasilkan struktur graf yang bervariasi antareksekusi \parencite{pan2024unifying}, pendekatan \textit{rule-based} menghasilkan representasi yang konsisten dan dapat direproduksi selama sumber skemanya tidak berubah.
 
-Sifat deterministik KG berbasis skema ini membuka peluang penggunaan ganda: selain sebagai basis \textit{retrieval}, graf yang sama dapat dimanfaatkan sebagai validator struktural. \textcite{rahman2023misconfigurations} menemukan bahwa sekitar 80\% miskonfigurasi Kubernetes bersifat struktural sehingga dapat dideteksi melalui analisis statis (\textit{static analysis}) tanpa menjalankan kluster aktif. Temuan ini memvalidasi prinsip pendekatan validasi berbasis skema: jika spesifikasi \textit{required fields} setiap objek Kubernetes sudah terenkode dalam representasi graf, pemeriksaan kelengkapan atribut wajib dapat dilakukan langsung terhadap graf tersebut, tanpa memerlukan mekanisme \textit{dry-run} yang bergantung pada infrastruktur nyata.
+Sifat deterministik KG berbasis skema ini membuka peluang penggunaan ganda: selain sebagai basis \textit{retrieval}, graf yang sama dapat dimanfaatkan sebagai validator struktural. \textcite{rahman2023misconfigurations} menemukan bahwa sekitar 80\% miskonfigurasi Kubernetes bersifat struktural sehingga dapat dideteksi melalui analisis statis (\textit{static analysis}) tanpa menjalankan klaster aktif. Temuan ini memvalidasi prinsip pendekatan validasi berbasis skema: jika spesifikasi \textit{required fields} setiap objek Kubernetes sudah terenkode dalam representasi graf, pemeriksaan kelengkapan atribut wajib dapat dilakukan langsung terhadap graf tersebut, tanpa memerlukan mekanisme \textit{dry-run} yang bergantung pada infrastruktur nyata.
 
 \subsection{GraphRAG: Integrasi \textit{Knowledge Graph} dan \textit{Large Language Models}}
 \label{subsec:graphrag}
 
-\textit{Large Language Models} (LLM) dan \textit{Knowledge Graphs} (KG) merupakan dua paradigma representasi pengetahuan yang saling melengkapi. LLM unggul dalam pemrosesan bahasa alami serta generalisasi lintas tugas tetapi rentan terhadap halusinasi fakta. Sebaliknya, KG menawarkan representasi pengetahuan faktual dalam bentuk struktur graf eksplisit yang kuat untuk penalaran simbolik namun kurang mampu menangani pemahaman bahasa alami yang kompleks \parencite{pan2024unifying}.
+\textit{Large Language Models} (LLM) dan \textit{Knowledge Graphs} (KG) merupakan dua paradigma representasi pengetahuan yang saling melengkapi. LLM unggul dalam pemrosesan bahasa alami serta generalisasi lintas tugas, tetapi rentan terhadap halusinasi fakta. Sebaliknya, KG menawarkan representasi pengetahuan faktual dalam bentuk struktur graf eksplisit yang kuat untuk penalaran simbolik, namun kurang mampu menangani pemahaman bahasa alami yang kompleks \parencite{pan2024unifying}.
 
 Untuk mengatasi kelemahan LLM tersebut, pendekatan \textit{Retrieval-Augmented Generation} (RAG) konvensional sering digunakan. Namun, RAG tradisional bekerja dengan cara memecah dokumen menjadi potongan teks (\textit{chunks}) independen sehingga sering kali menghilangkan informasi struktural dan relasi esensial antarentitas \parencite{ma_llm_kg_2025}. Sebagai solusi komprehensif atas keterbatasan tersebut, muncullah konsep \textit{Graph Retrieval-Augmented Generation} (GraphRAG).
 
@@ -205,35 +205,30 @@ Pendekatan GraphRAG ini menjadi sangat krusial dalam domain berskala kompleks se
 
 Solusi atas dilema kedalaman ini adalah mekanisme \textit{intent-adaptive retrieval}, yaitu strategi yang menyesuaikan kedalaman atau strategi \textit{traversal} berdasarkan klasifikasi maksud (\textit{intent}) dari kueri pengguna. Literatur NLP dan IR menunjukkan bahwa mengklasifikasi tipe kueri sebelum \textit{retrieval} meningkatkan presisi konteks secara signifikan \parencite{zhao_rag_survey_2024}: kueri definitif (\textit{explain}) memerlukan konteks yang lebih dangkal dan terfokus, sedangkan kueri generatif atau relasional (\textit{generate\_yaml}, \textit{trace\_relationship}) memerlukan penelusuran yang lebih dalam untuk menangkap dependensi multi-tingkat antarobjek. Dengan demikian, klasifikasi \textit{intent} bukan sekadar pra-pemrosesan kueri, melainkan mekanisme kendali yang menentukan batas eksplorasi kontekstual dalam ruang graf.
 
-\section{Metrik Evaluasi Sistem Informasi Retrieval}
+\section{Metrik Evaluasi Sistem \textit{GraphRAG}}
 \label{sec:metrik-evaluasi}
 
-Evaluasi sistem GraphRAG membutuhkan landasan metrik yang bersumber dari literatur \textit{Information Retrieval} (IR) dan NLP. Bagian ini membahas konsep metrik standar yang menjadi acuan beserta formulasi perhitungannya. Selain metrik standar tersebut, tiga metrik \textit{graph traversal} (\textit{Hop Accuracy}, \textit{Path Coverage}, dan \textit{Retrieval-Grounded Answer}) diadaptasi dan dioperasionalisasikan ke konteks grafis Kubernetes; definisi lengkapnya disajikan pada Subbab~\ref{subsec:metrik-domain-spesifik-bab2}. Seluruh metrik dalam penelitian ini dinormalisasi ke rentang $[0,1]$ dengan orientasi seragam sehingga nilai yang lebih tinggi menandakan kualitas yang lebih baik.
+Evaluasi sistem \textit{GraphRAG} menggunakan kerangka tiga dimensi yang diadaptasi dari \textcite{ma_llm_kg_2025}: \textit{Answer Quality} (AnsQ), \textit{Retrieval Quality} (RetQ), dan \textit{Reasoning Quality} (ReaQ). Bagian ini membahas konsep dan formulasi tiap metrik dalam setiap dimensi. Seluruh metrik dinormalisasi ke rentang $[0,1]$ dengan orientasi seragam sehingga nilai yang lebih tinggi menandakan kualitas yang lebih baik.
 
-\subsection{\textit{Answer Quality}}
+Dari kerangka RAGAS \parencite{es_ragas_2023}, penelitian ini mengadopsi dua metrik: \textit{Answer Semantic Similarity} (AnsQ) dan \textit{Faithfulness} (ReaQ). Metrik RAGAS lainnya (\textit{Context Precision}, \textit{Context Recall}) tidak digunakan karena kualitas \textit{retrieval} diukur via RetQ berbasis \textit{node} mengikuti kerangka IR standar \parencite{manning_ir_2008}.
 
-Evaluasi kualitas jawaban sistem RAG mencakup metrik kesesuaian isi jawaban maupun validitas struktural keluaran. Untuk \textit{fixture} bertipe generatif (\textit{yaml\_gen}), dimensi ini juga mencakup validitas sintaksis dan kesesuaian skema keluaran YAML.
+\subsection{\textit{Answer Quality} (AnsQ)}
+
+Evaluasi dimensi kualitas jawaban mencakup kemiripan semantik jawaban terhadap \textit{ground truth} (\textit{Answer Semantic Similarity}), serta validitas struktural keluaran YAML untuk \textit{fixture} bertipe \textit{yaml\_gen}.
 
 \begin{enumerate}
-    \item \textbf{\textit{Faithfulness}}\\
-    Mengukur sejauh mana jawaban yang dihasilkan oleh LLM bersumber dari konteks yang diambil, bukan dari pengetahuan parametrisnya sendiri \parencite{es_ragas_2023}. Metrik ini secara langsung mengukur risiko halusinasi: jawaban yang tinggi \textit{faithfulness}-nya berarti setiap klaim dapat ditelusuri ke konteks yang disediakan. Dalam penelitian ini, formulasi RAGAS diadaptasi ke level node graf, sehingga \textit{faithfulness} dihitung sebagai proporsi node kunci pada \textit{ground truth} yang disebutkan secara eksplisit dalam jawaban:
+    \item \textbf{\textit{Answer Semantic Similarity} (AR)}\\
+    Mengukur kemiripan semantik antara jawaban sistem dan jawaban \textit{ground truth} menggunakan kemiripan kosinus \textit{embedding} \parencite{es_ragas_2023}:
     \begin{equation}
-    \text{Faithfulness} = \frac{|\,N_{\text{kunci}} \cap N_{\text{jawaban}}\,|}{|\,N_{\text{kunci}}\,|},
-    \eqcaption{Metrik \textit{Faithfulness}: proporsi node kunci dalam jawaban}
-    \label{eq:faithfulness}
-    \end{equation}
-    dengan $N_{\text{kunci}}$ adalah himpunan node kunci pada \textit{ground truth} dan $N_{\text{jawaban}}$ adalah himpunan node yang disebutkan dalam jawaban.
-
-    \item \textbf{\textit{Answer Relevance}}\\
-    Mengukur kesesuaian semantik antara jawaban yang dihasilkan dan jawaban acuan (\textit{ground truth}) \parencite{es_ragas_2023}. Implementasinya berbasis kemiripan kosinus antara representasi vektor \textit{embedding} jawaban sistem $\mathbf{e}_a$ dan \textit{embedding} jawaban acuan $\mathbf{e}_g$:
-    \begin{equation}
-    \text{Answer Relevance} = \cos(\mathbf{e}_a, \mathbf{e}_g) = \frac{\mathbf{e}_a \cdot \mathbf{e}_g}{\lVert \mathbf{e}_a \rVert \, \lVert \mathbf{e}_g \rVert}.
-    \eqcaption{Metrik \textit{Answer Relevance} berbasis kemiripan kosinus \textit{embedding}}
+    \text{AR} = \cos(\mathbf{e}_{\text{ans}},\, \mathbf{e}_{\text{gt}})
+    = \frac{\mathbf{e}_{\text{ans}} \cdot \mathbf{e}_{\text{gt}}}{\lVert\mathbf{e}_{\text{ans}}\rVert\,\lVert\mathbf{e}_{\text{gt}}\rVert},
+    \eqcaption{Metrik \textit{Answer Semantic Similarity}: kemiripan kosinus jawaban sistem dan \textit{ground truth}}
     \label{eq:answer-relevance}
     \end{equation}
+    dengan $\mathbf{e}_{\text{ans}}$ adalah vektor \textit{embedding} jawaban sistem dan $\mathbf{e}_{\text{gt}}$ adalah vektor \textit{embedding} jawaban \textit{ground truth}.
 
     \item \textbf{\textit{Syntactic Validity}}\\
-    Mengukur proporsi keluaran YAML yang dapat diurai tanpa galat menggunakan \textit{parser} standar seperti \texttt{pyyaml}. Metrik ini bersifat biner pada level \textit{fixture}, yaitu bernilai $1$ jika dokumen YAML valid dan $0$ jika tidak \parencite{moreno2025rag}:
+    Mengukur proporsi keluaran YAML yang dapat diurai tanpa galat menggunakan \textit{parser} \texttt{pyyaml}. Metrik ini bersifat biner pada level \textit{fixture} \parencite{moreno2025rag}:
     \begin{equation}
     \text{Syntactic Validity} = \frac{|\,\text{YAML lolos } parsing\,|}{|\,\text{total } fixture\ \textit{yaml\_gen}\,|}.
     \eqcaption{Metrik \textit{Syntactic Validity} keluaran YAML}
@@ -241,22 +236,24 @@ Evaluasi kualitas jawaban sistem RAG mencakup metrik kesesuaian isi jawaban maup
     \end{equation}
 
     \item \textbf{\textit{Schema Compliance}}\\
-    Mengukur kesesuaian YAML terhadap spesifikasi skema yang berlaku, dalam konteks ini spesifikasi OpenAPI Kubernetes v1.30 \parencite{kubernetes_docs}. Sebagaimana \textit{syntactic validity}, metrik ini bersifat biner pada level \textit{fixture}:
+    Mengukur kesesuaian YAML terhadap spesifikasi OpenAPI Kubernetes v1.30 \parencite{kubernetes_docs}:
     \begin{equation}
     \text{Schema Compliance} = \frac{|\,\text{YAML lolos validasi skema}\,|}{|\,\text{total } fixture\ \textit{yaml\_gen}\,|}.
     \eqcaption{Metrik \textit{Schema Compliance} terhadap spesifikasi OpenAPI Kubernetes}
     \label{eq:schema-compliance}
     \end{equation}
-    Metrik ketiga dan keempat ini hanya relevan untuk \textit{fixture} bertipe \textit{yaml\_gen}.
+
 \end{enumerate}
 
-\subsection{\textit{Retrieval Quality}}
+Dua metrik terakhir (\textit{Syntactic Validity}, \textit{Schema Compliance}) hanya berlaku untuk \textit{fixture} bertipe \textit{yaml\_gen}, sedangkan AR (\textit{Answer Semantic Similarity}) berlaku untuk seluruh mode sistem (GraphRAG, Vector, LLM).
 
-Evaluasi komponen \textit{retrieval} menggunakan metrik standar IR yang mengukur ketepatan dan kelengkapan node yang diambil selama \textit{traversal} graf. Misalkan $N_{\text{retrieved}}$ adalah himpunan node yang diambil dan $N_{\text{relevant}}$ adalah himpunan node relevan menurut \textit{ground truth}.
+\subsection{\textit{Retrieval Quality} (RetQ)}
+
+Evaluasi dimensi kualitas \textit{retrieval} menggunakan metrik IR standar berbasis \textit{node} \parencite{manning_ir_2008}. Misalkan $N_{\text{retrieved}}$ adalah himpunan \textit{node} yang diambil dan $N_{\text{relevant}}$ adalah himpunan \textit{node} relevan menurut \textit{ground truth}.
 
 \begin{enumerate}
     \item \textbf{Precision@k dan Recall@k}\\
-    \textit{Precision@k} mengukur proporsi node relevan di antara node yang diambil, sedangkan \textit{Recall@k} mengukur proporsi node relevan yang berhasil ditemukan dari seluruh node relevan yang ada \parencite{zhao_rag_survey_2024}:
+    \textit{Precision@k} mengukur proporsi \textit{node} relevan di antara \textit{node} yang diambil, sedangkan \textit{Recall@k} mengukur proporsi \textit{node} relevan yang berhasil ditemukan dari seluruh \textit{node} relevan yang ada \parencite{zhao_rag_survey_2024}:
     \begin{equation}
     \text{Precision@k} = \frac{|\,N_{\text{retrieved}} \cap N_{\text{relevant}}\,|}{|\,N_{\text{retrieved}}\,|}, \qquad
     \text{Recall@k} = \frac{|\,N_{\text{retrieved}} \cap N_{\text{relevant}}\,|}{|\,N_{\text{relevant}}\,|}.
@@ -265,82 +262,47 @@ Evaluasi komponen \textit{retrieval} menggunakan metrik standar IR yang mengukur
     \end{equation}
 
     \item \textbf{F1-Score@k}\\
-    Merupakan rata-rata harmonik antara \textit{Precision@k} dan \textit{Recall@k}, memberikan gambaran seimbang tentang \textit{trade-off} antara ketepatan dan kelengkapan \parencite{zhao_rag_survey_2024}:
+    Merupakan rata-rata harmonik antara \textit{Precision@k} dan \textit{Recall@k} \parencite{zhao_rag_survey_2024}:
     \begin{equation}
     \text{F1@k} = 2 \times \frac{\text{Precision@k} \times \text{Recall@k}}{\text{Precision@k} + \text{Recall@k}}.
     \eqcaption{Metrik \textit{F1-Score@k}: rata-rata harmonik presisi dan kelengkapan}
     \label{eq:f1}
     \end{equation}
 
-    \item \textbf{NDCG@k (\textit{Normalized Discounted Cumulative Gain})}\\
-    Mengevaluasi kualitas peringkat hasil \textit{retrieval} dengan memberikan bobot lebih tinggi pada node relevan yang muncul di posisi atas \parencite{es_ragas_2023}. Nilai \textit{Discounted Cumulative Gain} (DCG) dinormalisasi terhadap nilai idealnya (IDCG):
-    \begin{equation}
-    \text{NDCG@k} = \frac{\text{DCG@k}}{\text{IDCG@k}}, \qquad
-    \text{DCG@k} = \sum_{i=1}^{k} \frac{rel_i}{\log_2(i + 1)},
-    \eqcaption{Metrik \textit{NDCG@k}: peringkat hasil \textit{retrieval} bernormalisasi}
-    \label{eq:ndcg}
-    \end{equation}
-    dengan $rel_i$ bernilai $1$ jika node pada posisi ke-$i$ relevan dan $0$ jika tidak. Metrik ini penting dalam konteks RAG karena node relevan yang terpotong akibat batasan token LLM tidak memberikan manfaat apapun.
 \end{enumerate}
 
-\subsection{\textit{Reasoning Quality}}
+Metrik \textit{Precision@k}, \textit{Recall@k}, dan \textit{F1@k} hanya berlaku untuk mode GraphRAG dan Vector; mode LLM tidak melakukan \textit{retrieval} eksplisit sehingga metrik ini tidak dapat diukur.
 
-Evaluasi dimensi penalaran mengukur sejauh mana jawaban sistem dapat diverifikasi melalui konteks yang diambil, bukan semata dari pengetahuan parametrik LLM. Metrik standar yang digunakan adalah \textit{Grounding Score}:
+\subsection{\textit{Reasoning Quality} (ReaQ)}
 
-\begin{enumerate}
-    \item \textbf{\textit{Grounding Score}}\\
-    Mengukur proporsi istilah teknis Kubernetes dalam jawaban yang dapat ditelusuri secara langsung ke konteks yang diambil, bukan berasal dari pengetahuan bawaan model \parencite{es_ragas_2023}. Nilai tinggi menunjukkan bahwa jawaban berbasis konteks graf, bukan halusinasi:
-    \begin{equation}
-    \text{Grounding Score} = \frac{|\,T_{\text{grounded}}\,|}{|\,T_{\text{jawaban}}\,|},
-    \eqcaption{Metrik \textit{Grounding Score}: proporsi istilah Kubernetes berbasis konteks}
-    \label{eq:grounding}
-    \end{equation}
-    dengan $T_{\text{jawaban}}$ adalah himpunan istilah Kubernetes dalam jawaban dan $T_{\text{grounded}}$ adalah himpunan istilah yang dapat ditelusuri ke konteks yang di-\textit{retrieve}.
-
-\end{enumerate}
-
-Kerangka evaluasi tiga dimensi (AnsQ, RetQ, ReaQ) ini diperluas dengan tiga metrik yang diadaptasi untuk konteks \textit{graph traversal} Kubernetes, sebagaimana diuraikan pada Subbab~\ref{subsec:metrik-domain-spesifik-bab2}.
-
-\subsection{Metrik Evaluasi Berbasis \textit{Graph Traversal}}
-\label{subsec:metrik-domain-spesifik-bab2}
-
-Metrik standar IR tidak memadai untuk mengevaluasi \textit{GraphRAG} karena mengabaikan kelengkapan jalur relasional (\textit{edge}) dan validitas konteks graf. Sebagai solusi, penelitian ini mengoperasionalkan tiga metrik \textit{graph traversal} khusus Kubernetes: \textit{Hop Accuracy} dan \textit{Path Coverage}, serta \textit{Retrieval-Grounded Answer} (RGA) yang diadaptasi dari \textit{AR-metric} \parencite{han_graphrag_2024}.
+Evaluasi dimensi penalaran mengukur sejauh mana jalur \textit{multi-hop} dan ketersandaran jawaban pada konteks yang diambil. \textit{Hop-Accuracy} bersifat intrinsik graf (GraphRAG), sedangkan \textit{Faithfulness} berlaku untuk mode GraphRAG dan Vector RAG.
 
 \begin{enumerate}
-    \item \textbf{\textit{Hop Accuracy}}\\
-    Mengukur ketepatan kedalaman penelusuran (\textit{traversal}) yang dilakukan sistem terhadap kedalaman yang dibutuhkan menurut \textit{ground truth}. Metrik ini memvalidasi apakah mekanisme \textit{intent-adaptive depth} berhasil memetakan tipe kueri ke kedalaman yang tepat:
+    \item \textbf{\textit{Hop-Accuracy} (Hop-Acc)}\\
+    Mengukur sejauh mana jalur penalaran \textit{multi-hop} yang dieksekusi sistem mencakup relasi yang diharapkan menurut anotasi \textit{ground truth}, dalam bentuk \textit{edge recall} pada subgraf penalaran \parencite{gu_2024}:
     \begin{equation}
-    \text{Hop Accuracy} = \frac{|\,\{f \mid d_{\text{pred}}(f) = d_{\text{gt}}(f)\}\,|}{|\,F\,|},
-    \eqcaption{Metrik \textit{Hop Accuracy}: ketepatan kedalaman \textit{traversal} berbasis \textit{intent}}
+    \text{Hop-Acc} = \frac{|\,E_{\text{pred}} \cap E_{\text{expected}}\,|}{|\,E_{\text{expected}}\,|},
+    \eqcaption{Metrik \textit{Hop-Accuracy}: \textit{edge recall} jalur penalaran \textit{multi-hop}}
     \label{eq:hop-accuracy}
     \end{equation}
-    dengan $F$ adalah himpunan seluruh \textit{fixture}, $d_{\text{pred}}(f)$ adalah kedalaman penelusuran yang dieksekusi sistem untuk \textit{fixture} $f$ (operasionalisasi: jumlah langkah dalam \texttt{reasoning\_path} yang dikembalikan), dan $d_{\text{gt}}(f)$ adalah kedalaman yang dibutuhkan menurut anotasi \textit{ground truth} (operasionalisasi: jumlah \textit{edge} dalam \texttt{expected\_path} pada \textit{fixture}). Mekanisme \textit{intent-adaptive depth} (T2) diverifikasi jika $d_{\text{pred}}(f) = d_{\text{gt}}(f)$ untuk sebagian besar \textit{fixture}.
+    dengan $E_{\text{pred}}$ adalah himpunan \textit{edge} pada jalur penalaran yang dieksekusi sistem (dari \texttt{reasoning\_path}) dan $E_{\text{expected}}$ adalah himpunan \textit{edge} yang diharapkan menurut \textit{ground truth} (dari \texttt{expected\_path}).
 
-    \item \textbf{\textit{Path Coverage}}\\
-    Mengukur kelengkapan konteks relasional yang diambil dengan mempertimbangkan baik node maupun \textit{edge} yang menghubungkannya. Formulasi berbasis \textit{edge} ini lebih diskriminatif daripada cakupan berbasis node semata, karena sebuah node dapat diambil tanpa relasi penghubung yang tepat:
+    \item \textbf{\textit{Faithfulness} (FS)}\\
+    Mengukur proporsi klaim dalam jawaban sistem yang dapat didukung oleh konteks yang diambil, bukan dari pengetahuan parametrik LLM \parencite{es_ragas_2023}. Jawaban didekomposisi menjadi klaim-klaim individual, lalu proporsi klaim yang dapat diinferensikan dari konteks dihitung:
     \begin{equation}
-    \text{Path Coverage} = \frac{|\,E_{\text{retrieved}} \cap E_{\text{relevant}}\,|}{|\,E_{\text{relevant}}\,|},
-    \eqcaption{Metrik \textit{Path Coverage}: kelengkapan konteks relasional berbasis \textit{edge}}
-    \label{eq:path-coverage}
+    \text{FS} = \frac{|\,C_{\text{supported}}\,|}{|\,C_{\text{total}}\,|},
+    \eqcaption{Metrik \textit{Faithfulness}: proporsi klaim jawaban yang didukung konteks}
+    \label{eq:faithfulness}
     \end{equation}
-    dengan $E_{\text{retrieved}}$ adalah himpunan \textit{edge} pada subgraf hasil penelusuran dan $E_{\text{relevant}}$ adalah himpunan \textit{edge} relevan menurut \textit{ground truth}.
-
-    \item \textbf{\textit{Retrieval-Grounded Answer} (RGA)}\\
-    Mengukur proporsi jawaban yang benar \textit{dan} didukung oleh konteks yang berhasil diambil. Metrik ini diadaptasi dari \textit{Answer Recall metric} (AR-metric) \parencite{han_graphrag_2024}: sebuah jawaban yang benar tetapi tidak didukung oleh konteks graf yang relevan diklasifikasikan sebagai tebakan parametrik, bukan bukti keunggulan sistem:
-    \begin{equation}
-    \text{RGA} = \frac{|\,\{f \mid \text{correct}(f) = 1 \wedge \text{grounded}(f) = 1\}\,|}{|\,F\,|},
-    \eqcaption{Metrik \textit{Retrieval-Grounded Answer} (RGA): jawaban benar berbasis \textit{retrieval}}
-    \label{eq:rga}
-    \end{equation}
-    dengan $\text{correct}(f) = 1$ jika jawaban sistem untuk \textit{fixture} $f$ dinilai benar berdasarkan \textit{faithfulness} dan \textit{answer relevance}, dan $\text{grounded}(f) = 1$ jika \textit{path coverage} sistem untuk \textit{fixture} tersebut melebihi ambang batas minimal yang ditetapkan ($\geq 0{,}5$).
+    dengan $C_{\text{total}}$ adalah himpunan semua klaim yang diekstrak dari jawaban sistem dan $C_{\text{supported}} = \{c \in C_{\text{total}} \mid c \text{ dapat diinferensikan dari konteks yang di-\textit{retrieve}}\}$. Metrik ini berlaku untuk mode GraphRAG dan Vector RAG.
 \end{enumerate}
 
-Ketiga metrik ini bersifat komplementer terhadap metrik standar IR: \textit{Hop Accuracy} memvalidasi mekanisme \textit{intent-adaptive depth} (T2), \textit{Path Coverage} memvalidasi kelengkapan struktural KG (T1), dan RGA memvalidasi bahwa keunggulan sistem bukan sekadar artefak dari kemampuan generatif LLM (T2). Dimensi RetQ mencakup F1@k, NDCG@k, dan \textit{Path Coverage}; dimensi ReaQ mencakup \textit{Hop Accuracy} dan \textit{Grounding Score}.
+Dalam penelitian ini, metrik dibedakan berdasarkan cakupan penerapannya: AR (\textit{Answer Semantic Similarity}) berlaku untuk ketiga mode sistem (GraphRAG, Vector, LLM); metrik RetQ (Precision, Recall, F1) hanya bermakna untuk GraphRAG dan Vector; \textit{Hop-Accuracy} bersifat intrinsik graf (GraphRAG); dan \textit{Faithfulness} berlaku untuk GraphRAG dan Vector RAG.
 
 \section{Penelitian Terkait}
 \label{sec:penelitian-terkait}
 
-Bagian ini merangkum tiga penelitian terdahulu yang paling relevan terhadap pendekatan yang dikembangkan dalam penelitian ini. Ketiga penelitian tersebut dipilih karena secara bersama-sama merepresentasikan perkembangan mutakhir penerapan \textit{Knowledge Graph} dan RAG pada domain teknis spesifik, sehingga membentuk pijakan perbandingan langsung terhadap kontribusi yang diajukan.
+Bagian ini merangkum tiga penelitian terdahulu yang paling relevan terhadap pendekatan yang dikembangkan dalam penelitian ini. Ketiga penelitian tersebut dipilih karena secara bersama-sama merepresentasikan perkembangan mutakhir penerapan \textit{Knowledge Graph} dan RAG pada domain teknis spesifik sehingga membentuk pijakan perbandingan langsung terhadap kontribusi yang diajukan.
 
 \subsection{GraphRAG untuk Platform IoT Domain-Spesifik}
 

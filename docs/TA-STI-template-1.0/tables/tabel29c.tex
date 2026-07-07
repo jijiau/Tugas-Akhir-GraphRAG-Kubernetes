@@ -1,28 +1,21 @@
 \renewcommand{\arraystretch}{1.3}
 \captionsetup[table]{justification=raggedright,singlelinecheck=false}
 \begin{table}[H]
-\caption{Sub-Metrik \textit{Reasoning Quality} (ReaQ) Sistem GraphRAG (97 \textit{Fixture})}
+\caption{Sub-Metrik \textit{Reasoning Quality} (ReaQ) Sistem GraphRAG}
 \label{tbl:reaq_submetrics}
 \centering
-\begin{tabular}{| p{0.38\textwidth} | c | p{0.38\textwidth} |}
+\begin{tabular}{| p{0.38\textwidth} | c | p{0.36\textwidth} |}
 \hline
-\textbf{Sub-Metrik} & \textbf{Nilai} & \textbf{Peran} \\
+\textbf{Sub-Metrik} & \textbf{Nilai} & \textbf{Keterangan} \\
 \hline
-\multicolumn{3}{|l|}{\textit{Komponen komposit ReaQ}} \\
+\textit{Hop-Accuracy (edge recall)} & 0,7562 ($n{=}93$) & Fraksi \textit{edge} GT yang dilalui traversal \parencite{manning_ir_2008} \\
 \hline
-\textit{Hop Accuracy}   & 0,3505 & Akurasi pemilihan kedalaman: $d_{\text{pred}} = d_{\text{gt}}$ \\
+\quad Focused ($\leq$15 \textit{edge}) & \textbf{0,9086} ($n{=}50$) & Subgraf terfokus: pencakupan tinggi \\
 \hline
-\textit{Grounding Score} & 0,7602 & Proporsi istilah K8s terlacak ke \textit{retrieved context} \\
+\quad Closure ($>$15 \textit{edge}) & 0,5791 ($n{=}43$) & Subgraf besar: pencakupan lebih terbatas \\
 \hline
-\textbf{Skor ReaQ}      & \textbf{0,5554} & $(\text{HopAcc} + \text{Grounding})/2$ \\
-\hline
-\multicolumn{3}{|l|}{\textit{Diagnostik (tidak masuk komposit)}} \\
-\hline
-\textit{Hallucination Rate} & 0,2398 & $1 - \text{Grounding Score}$; semakin rendah semakin baik \\
-\hline
-\multicolumn{3}{|l|}{\textit{Metrik domain}} \\
-\hline
-RGA (\textit{Retrieval-Grounded Answer}) & 0,4536 & Jawaban benar \textit{dan} didukung \textit{retrieval} \\
+\textit{Faithfulness} & 0,3055 ($n{=}95$) & Proporsi klaim jawaban yang terdukung \textit{context} \parencite{es_ragas_2023} \\
 \hline
 \end{tabular}
 \end{table}
+{\small\noindent \textit{Hop-Accuracy (edge recall)} N/A untuk \textit{fixture} dengan \textit{expected\_path} kosong (dirata-rata dari $n{=}93$). \textit{Faithfulness} rendah (0,3055) mencerminkan desain \textit{open-book}: 55,6\% klaim parametrik (dekomposisi $n{=}102$); bukan defek sistem. ReaQ Vanilla LLM: N/A (tidak ada \textit{retrieval context} untuk dievaluasi).}

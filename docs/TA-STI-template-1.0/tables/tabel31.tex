@@ -1,41 +1,41 @@
 \renewcommand{\arraystretch}{1.3}
 \captionsetup[table]{justification=raggedright,singlelinecheck=false}
 \begin{table}[H]
-\caption{Perbandingan Skor per Dimensi: Vanilla LLM vs.\ Vector RAG vs.\ GraphRAG}
+\caption{Perbandingan Skor per Dimensi: Vanilla LLM vs.\ Vector RAG vs.\ Graph RAG}
 \label{tbl:baseline_comparison}
 \centering
-\begin{tabular}{| p{0.28\textwidth} | >{\centering\arraybackslash}p{0.13\textwidth} | >{\centering\arraybackslash}p{0.13\textwidth} | >{\centering\arraybackslash}p{0.13\textwidth} | >{\centering\arraybackslash}p{0.10\textwidth} |}
+\begin{tabular}{| p{0.28\textwidth} | >{\centering\arraybackslash}p{0.13\textwidth} | >{\centering\arraybackslash}p{0.13\textwidth} | >{\centering\arraybackslash}p{0.13\textwidth} |}
 \hline
-\textbf{Metrik} & \textbf{Vanilla LLM} ($n{=}103$) & \textbf{Vector RAG} ($n{=}103$) & \textbf{GraphRAG} ($n{=}102$) & \textbf{Sig} \\
+\textbf{Metrik} & \textbf{Vanilla LLM} ($n{=}102$) & \textbf{Vector RAG} ($n{=}102$) & \textbf{Graph RAG} ($n{=}102$) \\
 \hline
-\multicolumn{5}{|l|}{\textit{Answer Quality (AnsQ)}} \\
+\multicolumn{4}{|l|}{\textit{Answer Quality (AnsQ)}} \\
 \hline
-AnsQ komposit & 0,7464 & 0,7976 & \textbf{0,8031} & ***$^\dagger$ \\
+AnsQ komposit & 0,7469 & 0,7984 & \textbf{0,8031}$^{***\dagger}$ \\
 \hline
-\quad \textit{Answer Semantic Similarity} & 0,7173 & 0,7499 & 0,7698 & \\
+\quad \textit{Answer Semantic Similarity} & 0,7175 & 0,7503 & 0,7698 \\
 \hline
-\quad \textit{Syntactic Validity}$^\ddagger$ & 0,8333 & 0,9333 & \textbf{1,0000} & \\
+\quad \textit{Syntactic Validity}$^\ddagger$ & 0,8333 & 0,9333 & \textbf{1,0000} \\
 \hline
-\quad \textit{Schema Compliance}$^\ddagger$ & 0,7667 & \textbf{0,9333} & 0,8929 & \\
+\quad \textit{Schema Compliance}$^\ddagger$ & 0,7931 & \textbf{0,9655} & 0,9259 \\
 \hline
-\multicolumn{5}{|l|}{\textit{Retrieval Quality (RetQ)}} \\
+\multicolumn{4}{|l|}{\textit{Retrieval Quality (RetQ)}} \\
 \hline
-RetQ F1 & --- & 0,2419 & \textbf{0,7089} & ***$^\P$ \\
+RetQ F1 & --- & 0,2437 & \textbf{0,7089}$^{***\P}$ \\
 \hline
-\quad \textit{Precision} & --- & 0,5018 & \textbf{0,8405} & \\
+\quad \textit{Precision} & --- & 0,5047 & \textbf{0,8405} \\
 \hline
-\quad \textit{Recall} & --- & 0,2275 & \textbf{0,7258} & \\
+\quad \textit{Recall} & --- & 0,2294 & \textbf{0,7258} \\
 \hline
-\multicolumn{5}{|l|}{\textit{Reasoning Quality (ReaQ)}} \\
+\multicolumn{4}{|l|}{\textit{Reasoning Quality (ReaQ)}} \\
 \hline
-\textit{Faithfulness} & N/A & 0,1654 ($n{=}81$) & \textbf{0,3055} ($n{=}95$) & ***$^\S$ \\
+\textit{Faithfulness} & N/A & 0,1675 ($n{=}80$) & \textbf{0,3055}$^{***\S}$ ($n{=}95$) \\
 \hline
-\textit{Hop Accuracy} (all) & N/A & N/A$^*$ & \textbf{0,7562} ($n{=}93$) & --- \\
+\textit{Hop Accuracy} (all) & N/A & N/A$^*$ & \textbf{0,7562} ($n{=}93$) \\
 \hline
-\quad \textit{Hop Acc.}\ focused ($\leq$15 \textit{edge}) & --- & --- & \textbf{0,9086} ($n{=}50$) & \\
+\quad \textit{Hop Acc.}\ focused ($\leq$15 \textit{edge}) & --- & --- & \textbf{0,9086} ($n{=}50$) \\
 \hline
-\quad \textit{Hop Acc.}\ closure ($>$15 \textit{edge}) & --- & --- & 0,5791 ($n{=}43$) & \\
+\quad \textit{Hop Acc.}\ closure ($>$15 \textit{edge}) & --- & --- & 0,5791 ($n{=}43$) \\
 \hline
 \end{tabular}
 \end{table}
-{\small\noindent --- = metrik tidak berlaku (\textit{not applicable} by design); dikecualikan dari perbandingan statistik. Sig: *** $p<0{,}001$ (Wilcoxon + \textit{paired bootstrap} 1.000 iterasi, Holm-Bonferroni). $^\dagger$ AnsQ: GraphRAG $>$ Vanilla LLM ($p<0{,}001$); GraphRAG vs.\ Vector RAG tidak signifikan ($p_\text{Holm}=0{,}067$). $^\ddagger$ \textit{Syntactic Validity} dan \textit{Schema Compliance}: hanya \textit{fixture} \textit{yaml\_gen} ($n=28/30/30$). $^\S$ \textit{Faithfulness}: GraphRAG vs.\ Vector RAG ($\Delta{+}0{,}127$, $p<0{,}001$); N/A vs.\ Vanilla LLM (tanpa \textit{retrieval}). $^*$ \textit{Hop Accuracy} Vector RAG: tidak berlaku (tanpa traversal graf); dikecualikan dari perbandingan. $^\P$ RetQ: *** merujuk pada GraphRAG vs.\ Vector RAG ($\Delta{+}0{,}465$, $p{<}0{,}001$); Vanilla LLM tidak berlaku (---).}
+{\small\noindent --- = tidak berlaku; *** $p<0{,}001$. $^\dagger$ AnsQ: GraphRAG $>$ Vanilla LLM ($p<0{,}001$); GraphRAG vs.\ Vector RAG tidak signifikan ($p_\text{Holm}=0{,}067$). $^\ddagger$ \textit{Syntactic Validity}: $n{=}28/30/30$; \textit{Schema Compliance}: $n{=}27/29/29$ (\textit{fixture} \texttt{serviceaccount\_pod\_binding} dikecualikan --- RBAC di luar \textit{scope definitions}). $^\S$ \textit{Faithfulness}: GraphRAG vs.\ Vector RAG ($\Delta{+}0{,}127$, $p<0{,}001$); N/A vs.\ Vanilla LLM (tanpa \textit{retrieval}). $^*$ \textit{Hop Accuracy} Vector RAG: tidak berlaku (tanpa traversal graf); dikecualikan dari perbandingan. $^\P$ RetQ: *** merujuk pada GraphRAG vs.\ Vector RAG ($\Delta{+}0{,}465$, $p{<}0{,}001$); Vanilla LLM tidak berlaku (---).}

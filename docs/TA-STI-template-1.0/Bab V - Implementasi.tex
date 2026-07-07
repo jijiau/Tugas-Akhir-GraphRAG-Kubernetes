@@ -13,6 +13,20 @@ Implementasi sistem \textit{GraphRAG} Kubernetes dilaksanakan menggunakan bahasa
 
 \input{tables/tabel25.tex}
 
+Keterhubungan antarkomponen pada Tabel~\ref{tbl:tech_stack} beserta seluruh mekanisme
+sistem digambarkan secara menyeluruh pada Gambar~\ref{fig:arsitektur_implementasi}
+menggunakan Model C4 (\textit{Container Diagram}), yang menunjukkan tiga zona utama:
+konstruksi \textit{knowledge graph} (\textit{offline}), mekanisme kueri \textit{GraphRAG}
+(\textit{runtime}), dan lapisan penyimpanan yang menghubungkan keduanya.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{justification=centering}
+    \includegraphics[width=0.82\textwidth]{images/c4_architecture.png}
+    \caption{Arsitektur Implementasi}
+    \label{fig:arsitektur_implementasi}
+\end{figure}
+
 % ─────────────────────────────────────────────────────────────────────
 \section{Implementasi \textit{Pipeline} Ekstraksi dan \textit{Knowledge Graph}}
 % ─────────────────────────────────────────────────────────────────────
@@ -23,7 +37,7 @@ Bagian ini menguraikan realisasi teknis pembangunan \textit{knowledge graph} Kub
 \subsection{Implementasi \textit{Pipeline Ingestion} dan Representasi Objek}
 \label{subsec:implementasi-ingestion}
 
-Sistem mengkonstruksi \textit{knowledge graph} dengan mengeksekusi kelas \textit{Swagger\-Graph\-Builder} yang terdefinisi di \texttt{src/ingestion/parser.py} terhadap berkas \texttt{swagger. json} Kubernetes versi 1.30, sebagaimana dirancang pada Subbab~\ref{subsec:pipeline-ingestion}. Seluruh fase dieksekusi secara berurutan.
+Sistem mengkonstruksi \textit{knowledge graph} dengan mengeksekusi kelas \textit{Swagger\-Graph\-Builder} yang terdefinisi di \texttt{src/ingestion/parser.py} terhadap berkas \texttt{swagger.json} Kubernetes v1.30, sebagaimana dirancang pada Subbab~\ref{subsec:pipeline-ingestion}. Seluruh fase dieksekusi secara berurutan.
 
 Fase 1 membuat \textit{node} dari setiap entri bagian \texttt{definitions} dalam \texttt{swagger.json}. Sistem memeriksa keberadaan \textit{field} \texttt{x-kubernetes-group-version-kind} (GVK) pada setiap definisi untuk mengklasifikasikan \textit{node} sebagai \textit{K8sResource} (sumber daya Kubernetes utama yang memiliki GVK) atau \textit{sub-resource} (tipe pendukung tanpa GVK). Sebanyak 5 tipe generik dikecualikan karena tidak relevan untuk pembuatan konfigurasi YAML.
 
@@ -35,7 +49,7 @@ Fase 1 membuat \textit{node} dari setiap entri bagian \texttt{definitions} dalam
     \label{fig:pass1-node-creation}
 \end{figure}
 
-Eksekusi fase 1 menghasilkan 725 \textit{node}, terdiri atas 183 \textit{node} K8sResource dan 542 \textit{node} \textit{sub-resource}. Fase selanjutnya, yaitu fase 1.5 hingga fase 3, membangun representasi vektor dan relasi antar\textit{node} sebagaimana diuraikan pada Subbab~\ref{subsec:implementasi-vektorisasi} dan Subbab~\ref{subsec:implementasi-taksonomi-relasi}.
+Eksekusi fase 1 menghasilkan 725 \textit{node}, terdiri atas 183 \textit{node} K8sResource dan 542 \textit{node} \textit{sub-resource}. Lima dari 730 definisi yang diidentifikasi pada Subbab~\ref{subsec:eda} tidak diikutsertakan karena merupakan tipe utilitas internal \textit{apimachinery} (\texttt{FieldsV1}, \texttt{OwnerReference}, \texttt{Patch}, \texttt{StatusCause}, \texttt{Info}) yang tidak memiliki relevansi penulisan YAML dan tidak menghasilkan \textit{edge} dalam \textit{knowledge graph}. Fase selanjutnya, yaitu fase 1.5 hingga fase 3, membangun representasi vektor dan relasi antar\textit{node} sebagaimana diuraikan pada Subbab~\ref{subsec:implementasi-vektorisasi} dan Subbab~\ref{subsec:implementasi-taksonomi-relasi}.
 
 % --- 5.2.2 ---
 \subsection{Implementasi Taksonomi Relasi \textit{Knowledge Graph}}
@@ -93,7 +107,7 @@ Pembangunan \textit{embedding} semantik dilakukan pada proses fase 1.5 yang diek
     \label{fig:pass15-embedding}
 \end{figure}
 
-Vektor disimpan sebagai properti \texttt{embedding} pada setiap \textit{node} di Neo4j dan diindeks menggunakan \textit{Native Vector Index} dengan fungsi kemiripan \textit{cosine}. Pendekatan ini memungkinkan \textit{vector similarity search} dilakukan dalam satu \textit{query} Cypher tanpa kebutuhan \textit{vector store} eksternal terpisah. Implementasi kode lengkap kelas \textit{SwaggerGraphBuilder} (fase 1 hingga fase 3) disajikan pada Lampiran~\ref{lst:parser}.
+Vektor disimpan sebagai properti \texttt{embedding} pada setiap \textit{node} di Neo4j dan diindeks menggunakan \textit{Native Vector Index} dengan fungsi kemiripan \textit{cosine}. Pendekatan ini memungkinkan \textit{vector similarity search} dilakukan dalam satu \textit{query} Cypher tanpa kebutuhan \textit{vector store} eksternal terpisah. Implementasi kode lengkap kelas \textit{SwaggerGraphBuilder} (fase 1 hingga fase 3) tersedia pada berkas \texttt{src/ingestion/parser.py} di repositori proyek.
 
 Ketiga subbab di atas secara bersama-sama merealisasikan pembangunan \textit{knowledge graph} Kubernetes. Tabel~\ref{tbl:kg_statistics} merangkum statistik akhir \textit{knowledge graph} yang dihasilkan dan menjadi fondasi mekanisme \textit{GraphRAG} yang diuraikan pada bagian berikutnya.
 

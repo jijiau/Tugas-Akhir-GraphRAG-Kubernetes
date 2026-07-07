@@ -1,0 +1,25 @@
+\renewcommand{\arraystretch}{1.3}
+\captionsetup[table]{justification=raggedright,singlelinecheck=false}
+\begin{table}[H]
+\caption{Dekomposisi Klaim Jawaban GraphRAG: Sumber Pengetahuan DOCUMENT vs.\ PARAMETRIC}
+\label{tbl:faith_decomposition}
+\centering
+\begin{tabular}{| >{\raggedright\arraybackslash}p{0.18\textwidth} | >{\centering\arraybackslash}p{0.18\textwidth} | >{\centering\arraybackslash}p{0.13\textwidth} | >{\centering\arraybackslash}p{0.09\textwidth} | >{\raggedright\arraybackslash}p{0.25\textwidth} |}
+\hline
+\textbf{Kategori} & \textbf{Sumber} & \textbf{Jumlah Klaim} & \textbf{\%} & \textbf{Keterangan} \\
+\hline
+\textit{supported} & DOCUMENT & 258 & 31,5 & Klaim terlacak ke konteks graf \\
+\hline
+\textit{modality} & DOCUMENT & 81 & 9,9 & Isi didukung, beda formulasi deklaratif~$\to$~prosedural \\
+\hline
+\textit{partial} & (abu-abu) & 24 & 2,9 & Sebagian terdukung konteks \\
+\hline
+\textit{absent} & PARAMETRIC & 455 & 55,6 & Klaim dari ingatan parametrik LLM \\
+\hline
+\hline
+\textbf{Total DOCUMENT} & & \textbf{339} & \textbf{41,4} & \textit{supported} $+$ \textit{modality} \\
+\hline
+\textbf{Total PARAMETRIC} & & \textbf{455} & \textbf{55,6} & \textit{absent} \\
+\hline
+\end{tabular}
+\end{table}

@@ -13,16 +13,16 @@ Lampiran ini menyajikan 10 \textit{fixture} evaluasi yang digunakan dalam valida
 \hline
 \textbf{No} & \textbf{ID} & \textbf{Tipe} & \textbf{Resource Utama} & \textbf{Scope} & \textbf{M-H} \\
 \hline
-1 & \texttt{deployment\_basic}            & konseptual    & Deployment              & Namespaced & Ya \\
-2 & \texttt{service\_types}               & konseptual    & Service                 & Namespaced & Ya \\
-3 & \texttt{scale\_existing \_deployment}  & lanjutan      & Deployment              & Namespaced & Tidak \\
-4 & \texttt{ingress\_service \_pod}        & relasional    & Ingress                 & Namespaced & Ya \\
-5 & \texttt{hpa\_deployment \_pod}         & relasional    & HorizontalPodAutoscaler & Namespaced & Ya \\
-6 & \texttt{cronjob\_backup}              & generasi YAML & CronJob                 & Namespaced & Ya \\
-7 & \texttt{networkpolicy \_deny\_all}     & generasi YAML & NetworkPolicy           & Namespaced & Tidak \\
-8 & \texttt{statefulset\_with \_pvc}       & generasi YAML & StatefulSet             & Namespaced & Ya \\
-9 & \texttt{pi\_want\_to \_reject\_all \_docker}   & skenario nyata & Namespace      & Cluster    & Ya \\
-10 & \texttt{kubectl\_find \_pods\_with \_env} & perintah     & Pod                    & Namespaced & Tidak \\
+1 & \textit{deployment\_basic}            & konseptual    & Deployment              & Namespaced & Ya \\
+2 & \textit{service\_types}               & konseptual    & Service                 & Namespaced & Ya \\
+3 & \textit{scale\_existing \_deployment}  & lanjutan      & Deployment              & Namespaced & Tidak \\
+4 & \textit{ingress\_service \_pod}        & relasional    & Ingress                 & Namespaced & Ya \\
+5 & \textit{hpa\_deployment \_pod}         & relasional    & HorizontalPodAutoscaler & Namespaced & Ya \\
+6 & \textit{cronjob\_backup}              & generasi YAML & CronJob                 & Namespaced & Ya \\
+7 & \textit{networkpolicy \_deny\_all}     & generasi YAML & NetworkPolicy           & Namespaced & Tidak \\
+8 & \textit{statefulset\_with \_pvc}       & generasi YAML & StatefulSet             & Namespaced & Ya \\
+9 & \textit{deployment\_vs\_statefulset \_comparison} & skenario nyata & Deployment      & Namespaced    & Ya \\
+10 & \textit{kubectl\_find \_pods\_with \_env} & perintah     & Pod                    & Namespaced & Tidak \\
 \hline
 \end{tabular}
 }
@@ -36,6 +36,8 @@ Lampiran ini menyajikan 10 \textit{fixture} evaluasi yang digunakan dalam valida
 
 \lstinputlisting[
     language=json,
+    frame=single,
+    captionpos=t,
     caption={\texttt{fixture-deployment-basic.json} — Konseptual: Pembaruan Image Deployment},
     label={lst:fixture-deployment-basic}
 ]{listings/fixture-deployment-basic.json}
@@ -48,6 +50,8 @@ Lampiran ini menyajikan 10 \textit{fixture} evaluasi yang digunakan dalam valida
 
 \lstinputlisting[
     language=json,
+    frame=single,
+    captionpos=t,
     caption={\texttt{fixture-service-types.json} — Konseptual: Service LoadBalancer vs.\ Ingress},
     label={lst:fixture-service-types}
 ]{listings/fixture-service-types.json}
@@ -60,6 +64,8 @@ Lampiran ini menyajikan 10 \textit{fixture} evaluasi yang digunakan dalam valida
 
 \lstinputlisting[
     language=json,
+    frame=single,
+    captionpos=t,
     caption={\texttt{fixture-scale-existing-deployment.json} — Lanjutan: Skalakan Replika Deployment},
     label={lst:fixture-scale-deployment}
 ]{listings/fixture-scale-existing-deployment.json}
@@ -72,6 +78,8 @@ Lampiran ini menyajikan 10 \textit{fixture} evaluasi yang digunakan dalam valida
 
 \lstinputlisting[
     language=json,
+    frame=single,
+    captionpos=t,
     caption={\texttt{fixture-ingress-service-pod.json} — Relasional: Alur Traffic Ingress→Service→Pod},
     label={lst:fixture-ingress-service}
 ]{listings/fixture-ingress-service-pod.json}
@@ -84,6 +92,8 @@ Lampiran ini menyajikan 10 \textit{fixture} evaluasi yang digunakan dalam valida
 
 \lstinputlisting[
     language=json,
+    frame=single,
+    captionpos=t,
     caption={\texttt{fixture-hpa-deployment-pod.json} — Relasional: HPA dan Penskalaan Otomatis},
     label={lst:fixture-hpa-deployment}
 ]{listings/fixture-hpa-deployment-pod.json}
@@ -96,6 +106,8 @@ Lampiran ini menyajikan 10 \textit{fixture} evaluasi yang digunakan dalam valida
 
 \lstinputlisting[
     language=json,
+    frame=single,
+    captionpos=t,
     caption={\texttt{fixture-cronjob-backup.json} — Generasi YAML: CronJob Backup Database},
     label={lst:fixture-cronjob}
 ]{listings/fixture-cronjob-backup.json}
@@ -108,6 +120,8 @@ Lampiran ini menyajikan 10 \textit{fixture} evaluasi yang digunakan dalam valida
 
 \lstinputlisting[
     language=json,
+    frame=single,
+    captionpos=t,
     caption={\texttt{fixture-networkpolicy-deny-all.json} — Generasi YAML: NetworkPolicy Deny-All},
     label={lst:fixture-networkpolicy}
 ]{listings/fixture-networkpolicy-deny-all.json}
@@ -120,21 +134,25 @@ Lampiran ini menyajikan 10 \textit{fixture} evaluasi yang digunakan dalam valida
 
 \lstinputlisting[
     language=json,
+    frame=single,
+    captionpos=t,
     caption={\texttt{fixture-statefulset-with-pvc.json} — Generasi YAML: StatefulSet dengan PVC},
     label={lst:fixture-statefulset}
 ]{listings/fixture-statefulset-with-pvc.json}
 
 % ─────────────────────────────────────────────────────────────────────────────
-\section{Fixture B.9 — \texttt{pi\_want\_to\_reject\_all\_docker} (Skenario Nyata)}
+\section{Fixture B.9 — \texttt{deployment\_vs\_statefulset\_comparison} (Skenario Nyata)}
 % ─────────────────────────────────────────────────────────────────────────────
 
-\textit{Fixture} bertipe \textit{realworld} ini berasal dari pertanyaan Stack Overflow. Pertanyaan tentang kebijakan pembatasan \textit{docker registry} menguji kemampuan sistem mengarahkan pengguna ke konsep \textit{Admission Controller} yang tidak memiliki representasi langsung sebagai node di KG.
+\textit{Fixture} bertipe \textit{realworld} ini berasal dari pertanyaan Stack Overflow. Pertanyaan tentang perbedaan skema antara Deployment dan StatefulSet menguji kemampuan sistem melakukan perbandingan lintas \textit{resource}, sebuah pola pertanyaan konseptual dengan dua \textit{root node} sekaligus.
 
 \lstinputlisting[
     language=json,
-    caption={\texttt{fixture-pi-reject-docker-registry.json} — Skenario Nyata: Kebijakan Registry Docker},
-    label={lst:fixture-reject-docker}
-]{listings/fixture-pi-reject-docker-registry.json}
+    frame=single,
+    captionpos=t,
+    caption={\texttt{fixture-deployment-vs-statefulset.json} — Skenario Nyata: Perbandingan Deployment vs.\ StatefulSet},
+    label={lst:fixture-deployment-vs-statefulset}
+]{listings/fixture-deployment-vs-statefulset.json}
 
 % ─────────────────────────────────────────────────────────────────────────────
 \section{Fixture B.10 — \texttt{kubectl\_find\_pods\_with\_env} (Perintah)}
@@ -144,6 +162,8 @@ Lampiran ini menyajikan 10 \textit{fixture} evaluasi yang digunakan dalam valida
 
 \lstinputlisting[
     language=json,
+    frame=single,
+    captionpos=t,
     caption={\texttt{fixture-kubectl-find-pods-with-env.json} — Perintah: Pencarian Environment Variable},
     label={lst:fixture-kubectl-env}
 ]{listings/fixture-kubectl-find-pods-with-env.json}

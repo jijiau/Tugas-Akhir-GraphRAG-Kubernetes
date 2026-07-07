@@ -1,30 +1,30 @@
 \renewcommand{\arraystretch}{1.3}
 \captionsetup[table]{justification=raggedright,singlelinecheck=false}
 \begin{table}[H]
-\caption{Skor Evaluasi Sistem GraphRAG per Kategori \textit{Fixture}}
+\caption{Skor Evaluasi Sistem GraphRAG per Kategori \textit{Fixture} ($n{=}102$)}
 \label{tbl:category_scores}
 \centering
-\begin{tabular}{| p{0.20\textwidth} | c | c | c | c | c | c |}
+\begin{tabular}{| p{0.20\textwidth} | c | c | c | c |}
 \hline
-\textbf{Kategori} & \textbf{\textit{n}} & \textbf{AnsQ} & \textbf{RetQ} & \textbf{ReaQ} & \textbf{PathCov} & \textbf{HopAcc} \\
+\textbf{Kategori} & \textbf{\textit{n}} & \textbf{AnsQ} & \textbf{RetQ} & \textbf{ReaQ} \\
 \hline
-\textit{yaml\_gen}       & 15 & 0,84 & \textbf{0,92} & 0,62 & \textbf{1,00} & 0,67 \\
+\textit{yaml\_gen}       & 25 & \textbf{0,910} & \textbf{0,817} & 0,567 \\
 \hline
-\textit{followup}        & 12 & 0,52 & 0,89 & 0,61 & 0,89 & 0,58 \\
+\textit{followup}        & 12 & 0,590 & 0,826 & 0,491 \\
 \hline
-\textit{command}         &  3 & 0,49 & 0,88 & 0,46 & 1,00 & 0,33 \\
+\textit{command}         &  3 & 0,803 & 0,781 & 0,449 \\
 \hline
-\textit{relationship}    & 18 & \textbf{0,68} & 0,80 & 0,57 & 0,90 & 0,17 \\
+\textit{relationship}    & 18 & 0,812 & 0,590 & 0,439 \\
 \hline
-\textit{conceptual}      & 15 & 0,66 & 0,75 & \textbf{0,66} & 0,89 & 0,47 \\
+\textit{conceptual}      & 25 & 0,818 & 0,708 & 0,629 \\
 \hline
-\textit{planning}        &  5 & 0,46 & 0,82 & 0,32 & 0,97 & 0,00 \\
+\textit{planning}        &  5 & 0,726 & 0,632 & \textbf{0,746} \\
 \hline
-\textit{troubleshooting} &  5 & 0,40 & 0,82 & 0,28 & 0,99 & 0,00 \\
+\textit{troubleshooting} &  5 & 0,867 & 0,534 & 0,336 \\
 \hline
-\textit{realworld}       & 24 & 0,39 & 0,39 & 0,53 & 0,61 & 0,25 \\
+\textit{realworld}       &  9 & 0,739 & 0,611 & 0,386 \\
 \hline
-\textbf{Keseluruhan}     & \textbf{97} & \textbf{0,58} & \textbf{0,73} & \textbf{0,56} & \textbf{0,85} & \textbf{0,35} \\
+\textbf{Keseluruhan}     & \textbf{102} & \textbf{0,803} & \textbf{0,709} & \textbf{0,531} \\
 \hline
 \end{tabular}
 \end{table}

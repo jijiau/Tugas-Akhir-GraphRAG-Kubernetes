@@ -1,10 +1,10 @@
 \renewcommand{\arraystretch}{1.3}
 \captionsetup[table]{justification=raggedright,singlelinecheck=false}
 \begin{table}[H]
-\caption{Penilaian Pakar atas Jawaban Sistem GraphRAG (Skala 1--5, $n=4$ Pakar)}
+\caption{Penilaian Kualitatif Pakar atas Jawaban Sistem GraphRAG (Skala 1--5, $n{=}4$ Pakar)}
 \label{tbl:expert_answer_ratings}
 \centering
-\begin{tabular}{| p{0.22\textwidth} | c | c | c | c | c |}
+\begin{tabular}{| p{0.22\textwidth} | c | c | c | c |}
 \hline
 \textbf{Dimensi Penilaian} & \textbf{S1 YAML} & \textbf{S2 \textit{Troubleshoot}} & \textbf{S3 Relasi} & \textbf{Rata-rata} \\
 \hline
@@ -18,12 +18,11 @@ Kesediaan Pakai & 3,25 & 4,00 & \textbf{4,50} & 3,92 \\
 \hline
 \textbf{Rata-rata skenario} & 3,88 & 3,94 & \textbf{4,38} & --- \\
 \hline
-\multicolumn{5}{|l|}{\textit{Retrieval Trace}} \\
+\multicolumn{5}{|l|}{\textit{Retrieval Trace (lintas skenario)}} \\
 \hline
 Keterbacaan & \multicolumn{3}{c|}{4,00} & --- \\
 \hline
 Peningkatan kepercayaan & \multicolumn{3}{c|}{\textbf{4,50}} & --- \\
 \hline
-\multicolumn{5}{l}{\small S1 = generasi YAML; S2 = \textit{troubleshooting}; S3 = penjelasan relasi antar-\textit{resource}.} \\
 \end{tabular}
 \end{table}

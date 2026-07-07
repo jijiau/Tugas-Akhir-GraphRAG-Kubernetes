@@ -1,7 +1,7 @@
-﻿\cleardoublepage
+\cleardoublepage
 \chapter{HASIL EVALUASI KUANTITATIF PER \textit{FIXTURE}}
 
-Lampiran ini menyajikan nilai metrik lengkap untuk seluruh 97 \textit{fixture} evaluasi pada sistem \textit{GraphRAG} Kubernetes. Tabel~\ref{tbl:ansq-full} menampilkan metrik \textit{Answer Quality} (AnsQ); Tabel~\ref{tbl:retq-full} menampilkan metrik \textit{Retrieval Quality} (RetQ); Tabel~\ref{tbl:reaq-full} menampilkan metrik \textit{Reasoning Quality} (ReaQ); dan Tabel~\ref{tbl:domain-full} menampilkan metrik domain Kubernetes (Path Coverage, Hop Accuracy, RGA, lapisan kegagalan YAML, dan \textit{intent} yang terdeteksi). Kolom \textbf{Sint.}\ dan \textbf{Skema} pada Tabel~\ref{tbl:ansq-full} hanya relevan untuk \textit{fixture} bertipe \texttt{yaml}; nilai ``---'' menunjukkan bahwa metrik tersebut tidak diukur untuk tipe \textit{fixture} yang bersangkutan.
+Lampiran ini menyajikan nilai metrik lengkap untuk seluruh 102 \textit{fixture} evaluasi pada sistem \textit{GraphRAG} Kubernetes. Tabel~\ref{tbl:ansq-full} menampilkan metrik \textit{Answer Quality} (AnsQ); Tabel~\ref{tbl:retq-full} menampilkan metrik \textit{Retrieval Quality} (RetQ); dan Tabel~\ref{tbl:reaq-full} menampilkan metrik \textit{Reasoning Quality} (ReaQ). Kolom \textbf{Sint.}\ dan \textbf{Skema} pada Tabel~\ref{tbl:ansq-full} hanya relevan untuk \textit{fixture} bertipe \texttt{yaml}; nilai ``---'' menunjukkan bahwa metrik tersebut tidak diukur atau tidak berlaku untuk \textit{fixture} yang bersangkutan (mis.\ \textbf{Faithfulness} pada \textit{fixture} yang gagal dinilai oleh RAGAS, atau \textbf{HopAcc} pada \textit{fixture} tanpa \textit{expected path}).
 
 Singkatan tipe \textit{fixture}: \textit{cmd} = perintah, \textit{cncpt} = konseptual, \textit{fllwp} = lanjutan, \textit{plan} = perencanaan, \textit{rlwld} = skenario nyata, \textit{rel} = relasional, \textit{trbl} = \textit{troubleshooting}, \textit{yaml} = generasi YAML.
 
@@ -10,214 +10,224 @@ Singkatan tipe \textit{fixture}: \textit{cmd} = perintah, \textit{cncpt} = konse
 % ─────────────────────────────────────────────────────────────
 
 \begin{footnotesize}
-\begin{longtable}{|p{3.4cm}|c|c|c|c|c|c|}
-\caption{Nilai Metrik AnsQ per \textit{Fixture} (97 \textit{Fixture})}
+\begin{longtable}{|p{3.6cm}|c|c|c|c|c|}
+\caption{Nilai Metrik AnsQ per \textit{Fixture} (102 \textit{Fixture})}
 \label{tbl:ansq-full} \\
 \hline
-\textbf{ID Fixture} & \textbf{Tipe} & \textbf{Sint.} & \textbf{Skema} & \textbf{Relevansi} & \textbf{Faithf.} & \textbf{AnsQ} \\
+\textbf{ID Fixture} & \textbf{Tipe} & \textbf{Sint.} & \textbf{Skema} & \textbf{Relevansi} & \textbf{AnsQ} \\
 \hline
 \endfirsthead
 \hline
-\textbf{ID Fixture} & \textbf{Tipe} & \textbf{Sint.} & \textbf{Skema} & \textbf{Relevansi} & \textbf{Faithf.} & \textbf{AnsQ} \\
+\textbf{ID Fixture} & \textbf{Tipe} & \textbf{Sint.} & \textbf{Skema} & \textbf{Relevansi} & \textbf{AnsQ} \\
 \hline
 \endhead
 \hline
 \endfoot
 \hline
 \endlastfoot
-\texttt{kubectl\ \_export \ \_namespace\ \_res..} & cmd & --- & --- & 0,7932 & 0,5714 & \textbf{0,6823} \\
+\textit{kubectl\_export\_namespace\_res..} & cmd & --- & --- & 0.7430 & \textbf{0.7430} \\
 \hline
-\texttt{kubectl\ \_find \ \_pods\ \_with \ \_env} & cmd & --- & --- & 0,7659 & 0,0233 & \textbf{0,3946} \\
+\textit{kubectl\_find\_pods\_with\_env} & cmd & --- & --- & 0.7867 & \textbf{0.7867} \\
 \hline
-\texttt{kubectl\ \_force \ \_delete\ \_pod} & cmd & --- & --- & 0,8005 & 0,0116 & \textbf{0,4061} \\
+\textit{kubectl\_force\_delete\_pod} & cmd & --- & --- & 0.8797 & \textbf{0.8797} \\
 \hline
-\texttt{configmap\ \_usage} & cncpt & --- & --- & 0,7743 & 0,3333 & \textbf{0,5538} \\
+\textit{configmap\_usage} & cncpt & --- & --- & 0.6978 & \textbf{0.6978} \\
 \hline
-\texttt{daemonset\ \_purpose} & cncpt & --- & --- & 0,7847 & 0,3333 & \textbf{0,5590} \\
+\textit{container\_lifecycle\_concept} & cncpt & --- & --- & 0.8068 & \textbf{0.8068} \\
 \hline
-\texttt{deployment\ \_basic} & cncpt & --- & --- & 0,7962 & 0,5000 & \textbf{0,6481} \\
+\textit{daemonset\_purpose} & cncpt & --- & --- & 0.8108 & \textbf{0.8108} \\
 \hline
-\texttt{hpa\ \_target} & cncpt & --- & --- & 0,5467 & 0,6667 & \textbf{0,6067} \\
+\textit{deployment\_basic} & cncpt & --- & --- & 0.8394 & \textbf{0.8394} \\
 \hline
-\texttt{ingress\ \_purpose} & cncpt & --- & --- & 0,6670 & 0,2500 & \textbf{0,4585} \\
+\textit{empty\_dir\_volume\_concept} & cncpt & --- & --- & 0.8441 & \textbf{0.8441} \\
 \hline
-\texttt{job\ \_cronjob} & cncpt & --- & --- & 0,7998 & 0,6000 & \textbf{0,6999} \\
+\textit{env\_var\_concept} & cncpt & --- & --- & 0.6947 & \textbf{0.6947} \\
 \hline
-\texttt{namespace\ \_quota} & cncpt & --- & --- & 0,6591 & 0,0000 & \textbf{0,3295} \\
+\textit{hpa\_target} & cncpt & --- & --- & 0.8716 & \textbf{0.8716} \\
 \hline
-\texttt{persistent\ \_volume \ \_concept} & cncpt & --- & --- & 0,6568 & 0,6000 & \textbf{0,6284} \\
+\textit{ingress\_purpose} & cncpt & --- & --- & 0.8242 & \textbf{0.8242} \\
 \hline
-\texttt{pod\ \_spec} & cncpt & --- & --- & 0,6882 & 1,0000 & \textbf{0,8441} \\
+\textit{job\_cronjob} & cncpt & --- & --- & 0.7687 & \textbf{0.7687} \\
 \hline
-\texttt{required\ \_fields \ \_container} & cncpt & --- & --- & 0,6442 & 1,0000 & \textbf{0,8221} \\
+\textit{limit\_range\_concept} & cncpt & --- & --- & 0.8657 & \textbf{0.8657} \\
 \hline
-\texttt{scope\ \_accuracy \ \_node} & cncpt & --- & --- & 0,7307 & 0,6667 & \textbf{0,6987} \\
+\textit{namespace\_quota} & cncpt & --- & --- & 0.8263 & \textbf{0.8263} \\
 \hline
-\texttt{secret\ \_types} & cncpt & --- & --- & 0,8498 & 0,6667 & \textbf{0,7583} \\
+\textit{node\_affinity\_concept} & cncpt & --- & --- & 0.8538 & \textbf{0.8538} \\
 \hline
-\texttt{service\ \_types} & cncpt & --- & --- & 0,8210 & 0,5000 & \textbf{0,6605} \\
+\textit{persistent\_volume\_concept} & cncpt & --- & --- & 0.8709 & \textbf{0.8709} \\
 \hline
-\texttt{statefulset\ \_storage} & cncpt & --- & --- & 0,7816 & 0,5000 & \textbf{0,6408} \\
+\textit{pod\_disruption\_budget\_concept} & cncpt & --- & --- & 0.8427 & \textbf{0.8427} \\
 \hline
-\texttt{storageclass \ \_concept} & cncpt & --- & --- & 0,8943 & 1,0000 & \textbf{0,9471} \\
+\textit{pod\_spec} & cncpt & --- & --- & 0.8734 & \textbf{0.8734} \\
 \hline
-\texttt{add\ \_env\ \_from \ \_configmap} & fllwp & --- & --- & 0,5846 & 0,1667 & \textbf{0,3756} \\
+\textit{probe\_concept} & cncpt & --- & --- & 0.7549 & \textbf{0.7549} \\
 \hline
-\texttt{add\ \_env\ \_from \ \_secret} & fllwp & --- & --- & 0,5683 & 0,3333 & \textbf{0,4508} \\
+\textit{required\_fields\_container} & cncpt & --- & --- & 0.6926 & \textbf{0.6926} \\
 \hline
-\texttt{add\ \_hpa\ \_to \ \_deployment} & fllwp & --- & --- & 0,6388 & 0,1250 & \textbf{0,3819} \\
+\textit{resource\_requirements\_concept} & cncpt & --- & --- & 0.8763 & \textbf{0.8763} \\
 \hline
-\texttt{add\ \_liveness\ \_probe} & fllwp & --- & --- & 0,6432 & 0,2727 & \textbf{0,4580} \\
+\textit{scope\_accuracy\_node} & cncpt & --- & --- & 0.8549 & \textbf{0.8549} \\
 \hline
-\texttt{add\ \_pvc\ \_to \ \_statefulset} & fllwp & --- & --- & 0,6577 & 0,6667 & \textbf{0,6622} \\
+\textit{secret\_types} & cncpt & --- & --- & 0.8465 & \textbf{0.8465} \\
 \hline
-\texttt{add\ \_readiness\ \_probe} & fllwp & --- & --- & 0,6136 & 1,0000 & \textbf{0,8068} \\
+\textit{service\_types} & cncpt & --- & --- & 0.8521 & \textbf{0.8521} \\
 \hline
-\texttt{add\ \_resource\ \_limits} & fllwp & --- & --- & 0,5920 & 0,6667 & \textbf{0,6293} \\
+\textit{statefulset\_storage} & cncpt & --- & --- & 0.8432 & \textbf{0.8432} \\
 \hline
-\texttt{add\ \_resource\ \_limits \ \_deployment} & fllwp & --- & --- & 0,5680 & 0,2000 & \textbf{0,3840} \\
+\textit{storageclass\_concept} & cncpt & --- & --- & 0.7750 & \textbf{0.7750} \\
 \hline
-\texttt{change\ \_service\ \_type} & fllwp & --- & --- & 0,6108 & 0,5000 & \textbf{0,5554} \\
+\textit{toleration\_concept} & cncpt & --- & --- & 0.8665 & \textbf{0.8665} \\
 \hline
-\texttt{expose\ \_with\ \_ingress} & fllwp & --- & --- & 0,6774 & 0,3333 & \textbf{0,5054} \\
+\textit{volume\_mount\_concept} & cncpt & --- & --- & 0.7888 & \textbf{0.7888} \\
 \hline
-\texttt{scale\ \_existing \ \_deployment} & fllwp & --- & --- & 0,6749 & 0,5000 & \textbf{0,5875} \\
+\textit{add\_env\_from\_configmap} & fllwp & --- & --- & 0.5352 & \textbf{0.5352} \\
 \hline
-\texttt{update\ \_image \ \_version} & fllwp & --- & --- & 0,6314 & 0,2222 & \textbf{0,4268} \\
+\textit{add\_env\_from\_secret} & fllwp & --- & --- & 0.5249 & \textbf{0.5249} \\
 \hline
-\texttt{plan\ \_autoscale\ \_ha} & plan & --- & --- & 0,7491 & 0,0909 & \textbf{0,4200} \\
+\textit{add\_hpa\_to\_deployment} & fllwp & --- & --- & 0.6929 & \textbf{0.6929} \\
 \hline
-\texttt{plan\ \_cronjob\ \_batch} & plan & --- & --- & 0,6806 & 0,2308 & \textbf{0,4557} \\
+\textit{add\_liveness\_probe} & fllwp & --- & --- & 0.6185 & \textbf{0.6185} \\
 \hline
-\texttt{plan\ \_namespace \ \_isolation} & plan & --- & --- & 0,8075 & 0,1818 & \textbf{0,4947} \\
+\textit{add\_pvc\_to\_statefulset} & fllwp & --- & --- & 0.6253 & \textbf{0.6253} \\
 \hline
-\texttt{plan\ \_redis \ \_persistent} & plan & --- & --- & 0,7980 & 0,1136 & \textbf{0,4558} \\
+\textit{add\_readiness\_probe} & fllwp & --- & --- & 0.5447 & \textbf{0.5447} \\
 \hline
-\texttt{plan\ \_webapp\ \_with\ \_db} & plan & --- & --- & 0,7562 & 0,2059 & \textbf{0,4810} \\
+\textit{add\_resource\_limits} & fllwp & --- & --- & 0.5290 & \textbf{0.5290} \\
 \hline
-\texttt{configmap\ \_volume \ \_mount} & rlwld & 0.00 & 0.00 & 0,5501 & 0,7500 & \textbf{0,3250} \\
+\textit{add\_resource\_limits\_deployment} & fllwp & --- & --- & 0.5980 & \textbf{0.5980} \\
 \hline
-\texttt{deployment\ \_vs \ \_statefulset\ \_co..} & rlwld & --- & --- & 0,8769 & 0,5000 & \textbf{0,6885} \\
+\textit{change\_service\_type} & fllwp & --- & --- & 0.5246 & \textbf{0.5246} \\
 \hline
-\texttt{hpa\ \_custom\ \_metrics \ \_yaml} & rlwld & 1.00 & 0.00 & 0,6457 & 0,2500 & \textbf{0,4739} \\
+\textit{expose\_with\_ingress} & fllwp & --- & --- & 0.6862 & \textbf{0.6862} \\
 \hline
-\texttt{pbased\ \_on\ \_a\ \_hrefhttpsstackov..} & rlwld & --- & --- & 0,4141 & 0,0000 & \textbf{0,2071} \\
+\textit{scale\_existing\_deployment} & fllwp & --- & --- & 0.5829 & \textbf{0.5829} \\
 \hline
-\texttt{pcopied\ \_from\ \_here\ \_a \ \_hrefhttp..} & rlwld & --- & --- & 0,3424 & 0,0000 & \textbf{0,1712} \\
+\textit{update\_image\_version} & fllwp & --- & --- & 0.6175 & \textbf{0.6175} \\
 \hline
-\texttt{pheres\ \_a\ \_simplified \ \_version\ \_..} & rlwld & --- & --- & 0,6675 & 1,0000 & \textbf{0,8338} \\
+\textit{plan\_autoscale\_ha} & plan & --- & --- & 0.7087 & \textbf{0.7087} \\
 \hline
-\texttt{pi\ \_am\ \_quite\ \_new\ \_to \ \_tektonp} & rlwld & --- & --- & 0,3901 & 0,0000 & \textbf{0,1950} \\
+\textit{plan\_cronjob\_batch} & plan & --- & --- & 0.6385 & \textbf{0.6385} \\
 \hline
-\texttt{pi\ \_am\ \_wondering\ \_if \ \_it\ \_is} & rlwld & --- & --- & 0,6959 & 1,0000 & \textbf{0,8480} \\
+\textit{plan\_namespace\_isolation} & plan & --- & --- & 0.7545 & \textbf{0.7545} \\
 \hline
-\texttt{pi\ \_cant\ \_find \ \_documentation\ \_o..} & rlwld & --- & --- & 0,4701 & 0,0000 & \textbf{0,2350} \\
+\textit{plan\_redis\_persistent} & plan & --- & --- & 0.8411 & \textbf{0.8411} \\
 \hline
-\texttt{pi\ \_have\ \_a\ \_command \ \_to\ \_run} & rlwld & --- & --- & 0,4113 & 0,0000 & \textbf{0,2057} \\
+\textit{plan\_webapp\_with\_db} & plan & --- & --- & 0.6860 & \textbf{0.6860} \\
 \hline
-\texttt{pi\ \_have\ \_a\ \_google \ \_kubernetes\ \_..} & rlwld & --- & --- & 0,5042 & 0,0000 & \textbf{0,2521} \\
+\textit{configmap\_volume\_mount} & rlwld & --- & --- & 0.9020 & \textbf{0.9020} \\
 \hline
-\texttt{pi\ \_have\ \_a\ \_tekton \ \_codepipelin..} & rlwld & --- & --- & 0,4149 & 0,0000 & \textbf{0,2075} \\
+\textit{deployment\_vs\_statefulset\_co..} & rlwld & --- & --- & 0.7499 & \textbf{0.7499} \\
 \hline
-\texttt{pi\ \_want\ \_to\ \_pass\ \_a \ \_certificate} & rlwld & --- & --- & 0,2790 & 0,0000 & \textbf{0,1395} \\
+\textit{hpa\_custom\_metrics\_yaml} & rlwld & 1.00 & 0.00 & 0.7517 & \textbf{0.5839} \\
 \hline
-\texttt{pi\ \_want\ \_to\ \_reject \ \_all\ \_docker} & rlwld & --- & --- & 0,4162 & 0,0000 & \textbf{0,2081} \\
+\textit{pheres\_a\_simplified\_version\_..} & rlwld & --- & --- & 0.6641 & \textbf{0.6641} \\
 \hline
-\texttt{pid\ \_like\ \_to\ \_confirm \ \_informat..} & rlwld & --- & --- & 0,6837 & 1,0000 & \textbf{0,8418} \\
+\textit{pi\_am\_wondering\_if\_it\_is} & rlwld & --- & --- & 0.6916 & \textbf{0.6916} \\
 \hline
-\texttt{pim\ \_trying\ \_to\ \_use \ \_a\ \_container} & rlwld & --- & --- & 0,4171 & 1,0000 & \textbf{0,7086} \\
+\textit{pi\_have\_a\_command\_to\_run} & rlwld & --- & --- & 0.8631 & \textbf{0.8631} \\
 \hline
-\texttt{pim\ \_using\ \_argocd \ \_and\ \_i\ \_want} & rlwld & 1.00 & 0.00 & 0,3478 & 0,0000 & \textbf{0,3369} \\
+\textit{pi\_want\_to\_pass\_a\_certificate} & rlwld & 1.00 & 1.00 & 0.8079 & \textbf{0.9360} \\
 \hline
-\texttt{pkubectl\ \_provides\ \_a \ \_nice\ \_way..} & rlwld & --- & --- & 0,4637 & 1,0000 & \textbf{0,7318} \\
+\textit{precodespec\_containers\_image..} & rlwld & --- & --- & 0.7402 & \textbf{0.7402} \\
 \hline
-\texttt{precodespec\ \_container s\ \_image..} & rlwld & --- & --- & 0,2611 & 0,0000 & \textbf{0,1306} \\
+\textit{serviceaccount\_pod\_binding} & rlwld & 1.00 & 0.00 & 0.5722 & \textbf{0.5241} \\
 \hline
-\texttt{pthis\ \_eks\ \_cluster\ \_has \ \_a\ \_priv..} & rlwld & --- & --- & 0,4660 & 0,0000 & \textbf{0,2330} \\
+\textit{anyof\_intorstring} & rel & --- & --- & 0.8853 & \textbf{0.8853} \\
 \hline
-\texttt{pusing\ \_kubernetes \ \_v1157\ \_in\ \_m..} & rlwld & --- & --- & 0,4032 & 0,0000 & \textbf{0,2016} \\
+\textit{cronjob\_job\_pod} & rel & --- & --- & 0.8705 & \textbf{0.8705} \\
 \hline
-\texttt{pwhen\ \_using\ \_istio \ \_with\ \_kuber..} & rlwld & --- & --- & 0,3748 & 0,0000 & \textbf{0,1874} \\
+\textit{deep\_deployment\_container\_re..} & rel & --- & --- & 0.8370 & \textbf{0.8370} \\
 \hline
-\texttt{pwith\ \_kubectl\ \_i \ \_know\ \_i\ \_can} & rlwld & --- & --- & 0,4646 & 1,0000 & \textbf{0,7323} \\
+\textit{deep\_statefulset\_container\_p..} & rel & --- & --- & 0.8347 & \textbf{0.8347} \\
 \hline
-\texttt{serviceaccount\ \_pod \ \_binding} & rlwld & 0.00 & 0.00 & 0,4963 & 0,2500 & \textbf{0,1866} \\
+\textit{deployment\_pod\_relation} & rel & --- & --- & 0.7834 & \textbf{0.7834} \\
 \hline
-\texttt{anyof\ \_intorstring} & rel & --- & --- & 0,6946 & 0,3333 & \textbf{0,5140} \\
+\textit{extends\_hpa\_metric} & rel & --- & --- & 0.7825 & \textbf{0.7825} \\
 \hline
-\texttt{cronjob\ \_job \ \_pod} & rel & --- & --- & 0,8030 & 1,0000 & \textbf{0,9015} \\
+\textit{hpa\_deployment\_pod} & rel & --- & --- & 0.8483 & \textbf{0.8483} \\
 \hline
-\texttt{deep\ \_deployment \ \_container\ \_re..} & rel & --- & --- & 0,8302 & 0,6000 & \textbf{0,7151} \\
+\textit{ingress\_service\_pod} & rel & --- & --- & 0.6788 & \textbf{0.6788} \\
 \hline
-\texttt{deep\ \_statefulset \ \_container\ \_p..} & rel & --- & --- & 0,8327 & 0,8000 & \textbf{0,8164} \\
+\textit{namespace\_quota\_relation} & rel & --- & --- & 0.8240 & \textbf{0.8240} \\
 \hline
-\texttt{deployment\ \_pod \ \_relation} & rel & --- & --- & 0,7282 & 0,3333 & \textbf{0,5308} \\
+\textit{networkpolicy\_pod\_selector} & rel & --- & --- & 0.8535 & \textbf{0.8535} \\
 \hline
-\texttt{extends\ \_hpa\ \_metric} & rel & --- & --- & 0,7226 & 0,6667 & \textbf{0,6946} \\
+\textit{oneof\_volume\_source} & rel & --- & --- & 0.7506 & \textbf{0.7506} \\
 \hline
-\texttt{hpa\ \_deployment\ \_pod} & rel & --- & --- & 0,8285 & 0,2500 & \textbf{0,5392} \\
+\textit{pod\_namespace\_relation} & rel & --- & --- & 0.7396 & \textbf{0.7396} \\
 \hline
-\texttt{ingress\ \_service\ \_pod} & rel & --- & --- & 0,8139 & 0,5000 & \textbf{0,6570} \\
+\textit{pvc\_storageclass} & rel & --- & --- & 0.7715 & \textbf{0.7715} \\
 \hline
-\texttt{namespace\ \_quota\ \_relation} & rel & --- & --- & 0,8737 & 0,6667 & \textbf{0,7702} \\
+\textit{rbac\_binding} & rel & --- & --- & 0.8206 & \textbf{0.8206} \\
 \hline
-\texttt{networkpolicy\ \_pod\ \_selector} & rel & --- & --- & 0,8204 & 0,3333 & \textbf{0,5769} \\
+\textit{secret\_usage} & rel & --- & --- & 0.7917 & \textbf{0.7917} \\
 \hline
-\texttt{oneof\ \_volume\ \_source} & rel & --- & --- & 0,6429 & 0,2000 & \textbf{0,4214} \\
+\textit{service\_selector} & rel & --- & --- & 0.8488 & \textbf{0.8488} \\
 \hline
-\texttt{pod\ \_namespace\ \_relation} & rel & --- & --- & 0,7960 & 1,0000 & \textbf{0,8980} \\
+\textit{serviceaccount\_token\_binding} & rel & --- & --- & 0.8500 & \textbf{0.8500} \\
 \hline
-\texttt{pvc\ \_storageclass} & rel & --- & --- & 0,7636 & 0,6667 & \textbf{0,7151} \\
+\textit{statefulset\_pvc\_pv} & rel & --- & --- & 0.8386 & \textbf{0.8386} \\
 \hline
-\texttt{rbac\ \_binding} & rel & --- & --- & 0,8464 & 1,0000 & \textbf{0,9232} \\
+\textit{crashloopbackoff\_oomkilled} & trbl & --- & --- & 0.8124 & \textbf{0.8124} \\
 \hline
-\texttt{secret\ \_usage} & rel & --- & --- & 0,6972 & 0,6000 & \textbf{0,6486} \\
+\textit{deployment\_rollout\_stuck} & trbl & --- & --- & 0.8535 & \textbf{0.8535} \\
 \hline
-\texttt{service\ \_selector} & rel & --- & --- & 0,6998 & 0,5000 & \textbf{0,5999} \\
+\textit{imagepullbackoff\_registry\_se..} & trbl & --- & --- & 0.8989 & \textbf{0.8989} \\
 \hline
-\texttt{serviceaccount\ \_token\ \_binding} & rel & --- & --- & 0,8713 & 0,3333 & \textbf{0,6023} \\
+\textit{pod\_pending\_no\_resources} & trbl & --- & --- & 0.8871 & \textbf{0.8871} \\
 \hline
-\texttt{statefulset\ \_pvc\ \_pv} & rel & --- & --- & 0,8216 & 0,6667 & \textbf{0,7441} \\
+\textit{service\_no\_endpoints} & trbl & --- & --- & 0.8843 & \textbf{0.8843} \\
 \hline
-\texttt{crashloopbackoff\ \_oomkilled} & trbl & --- & --- & 0,8392 & 0,0115 & \textbf{0,4254} \\
+\textit{clusterrole\_read\_pods} & yaml & 1.00 & 1.00 & 0.8388 & \textbf{0.9463} \\
 \hline
-\texttt{deployment\ \_rollout\ \_stuck} & trbl & --- & --- & 0,6680 & 0,0345 & \textbf{0,3513} \\
+\textit{clusterrolebinding\_yaml} & yaml & 1.00 & 1.00 & 0.8908 & \textbf{0.9636} \\
 \hline
-\texttt{imagepullbackoff\ \_registry\ \_se..} & trbl & --- & --- & 0,7667 & 0,0233 & \textbf{0,3950} \\
+\textit{configmap\_env} & yaml & 1.00 & 1.00 & 0.7742 & \textbf{0.9247} \\
 \hline
-\texttt{pod\ \_pending\ \_no\ \_resources} & trbl & --- & --- & 0,7459 & 0,0233 & \textbf{0,3846} \\
+\textit{cronjob\_backup} & yaml & 1.00 & 1.00 & 0.6544 & \textbf{0.8848} \\
 \hline
-\texttt{service\ \_no\ \_endpoints} & trbl & --- & --- & 0,8237 & 0,0769 & \textbf{0,4503} \\
+\textit{cronjob\_with\_deadline} & yaml & 1.00 & 1.00 & 0.7502 & \textbf{0.9167} \\
 \hline
-\texttt{clusterrole\ \_read\ \_pods} & yaml & 1.00 & 1.00 & 0,7542 & 0,5000 & \textbf{0,8136} \\
+\textit{daemonset\_fluentd} & yaml & 1.00 & 1.00 & 0.7700 & \textbf{0.9233} \\
 \hline
-\texttt{clusterrolebinding\ \_yaml} & yaml & 1.00 & 1.00 & 0,8875 & 1,0000 & \textbf{0,9719} \\
+\textit{deployment\_3\_replicas} & yaml & 1.00 & 1.00 & 0.7608 & \textbf{0.9203} \\
 \hline
-\texttt{configmap\ \_env} & yaml & 1.00 & 1.00 & 0,6302 & 1,0000 & \textbf{0,9076} \\
+\textit{deployment\_liveness\_probe} & yaml & 1.00 & 1.00 & 0.7265 & \textbf{0.9088} \\
 \hline
-\texttt{cronjob\ \_backup} & yaml & 1.00 & 1.00 & 0,6676 & 0,2500 & \textbf{0,7294} \\
+\textit{deployment\_node\_selector} & yaml & 1.00 & 1.00 & 0.6877 & \textbf{0.8959} \\
 \hline
-\texttt{daemonset\ \_fluentd} & yaml & 1.00 & 1.00 & 0,8328 & 0,3333 & \textbf{0,7915} \\
+\textit{hpa\_cpu\_yaml} & yaml & 1.00 & 0.00 & 0.8905 & \textbf{0.6302} \\
 \hline
-\texttt{deployment\ \_3\ \_replicas} & yaml & 1.00 & 1.00 & 0,7607 & 0,3333 & \textbf{0,7735} \\
+\textit{ingress\_rules} & yaml & 1.00 & 1.00 & 0.8141 & \textbf{0.9380} \\
 \hline
-\texttt{deployment\ \_liveness\ \_probe} & yaml & 1.00 & 1.00 & 0,6128 & 1,0000 & \textbf{0,9032} \\
+\textit{job\_with\_completions} & yaml & 1.00 & 1.00 & 0.7122 & \textbf{0.9041} \\
 \hline
-\texttt{ingress\ \_rules} & yaml & 1.00 & 1.00 & 0,8141 & 0,3333 & \textbf{0,7869} \\
+\textit{limitrange\_yaml} & yaml & 1.00 & 1.00 & 0.7748 & \textbf{0.9249} \\
 \hline
-\texttt{networkpolicy\ \_deny\ \_all} & yaml & 1.00 & 1.00 & 0,7993 & 0,5000 & \textbf{0,8248} \\
+\textit{networkpolicy\_deny\_all} & yaml & 1.00 & 1.00 & 0.7374 & \textbf{0.9125} \\
 \hline
-\texttt{pod\ \_configmap\ \_volume} & yaml & 1.00 & 1.00 & 0,7745 & 0,6000 & \textbf{0,8436} \\
+\textit{networkpolicy\_egress\_yaml} & yaml & 1.00 & 1.00 & 0.7730 & \textbf{0.9243} \\
 \hline
-\texttt{pvc\ \_dynamic} & yaml & 1.00 & 1.00 & 0,8274 & 0,5000 & \textbf{0,8319} \\
+\textit{pod\_configmap\_volume} & yaml & 1.00 & 1.00 & 0.7720 & \textbf{0.9240} \\
 \hline
-\texttt{rolebinding\ \_dev} & yaml & 1.00 & 1.00 & 0,8796 & 1,0000 & \textbf{0,9699} \\
+\textit{pod\_init\_container\_yaml} & yaml & 1.00 & 1.00 & 0.7470 & \textbf{0.9157} \\
 \hline
-\texttt{service\ \_nodeport} & yaml & 1.00 & 1.00 & 0,8096 & 0,3333 & \textbf{0,7857} \\
+\textit{pod\_resource\_limits} & yaml & 1.00 & 1.00 & 0.7149 & \textbf{0.9050} \\
 \hline
-\texttt{statefulset\ \_with\ \_pvc} & yaml & 1.00 & 1.00 & 0,6373 & 0,6667 & \textbf{0,8260} \\
+\textit{pvc\_dynamic} & yaml & 1.00 & 1.00 & 0.8096 & \textbf{0.9365} \\
 \hline
-\texttt{yaml\ \_layer3\ \_required\ \_fields} & yaml & 1.00 & 1.00 & 0,6644 & 0,5000 & \textbf{0,7911} \\
+\textit{rolebinding\_dev} & yaml & 1.00 & 1.00 & 0.8965 & \textbf{0.9655} \\
+\hline
+\textit{secret\_opaque\_yaml} & yaml & 1.00 & 1.00 & 0.6907 & \textbf{0.8969} \\
+\hline
+\textit{service\_nodeport} & yaml & 1.00 & 1.00 & 0.8084 & \textbf{0.9361} \\
+\hline
+\textit{serviceaccount\_yaml} & yaml & 1.00 & 1.00 & 0.6769 & \textbf{0.8923} \\
+\hline
+\textit{statefulset\_with\_pvc} & yaml & 1.00 & 1.00 & 0.8093 & \textbf{0.9364} \\
+\hline
+\textit{yaml\_layer3\_required\_fields} & yaml & 1.00 & 1.00 & 0.7905 & \textbf{0.9302} \\
 \hline
 \end{longtable}
 \end{footnotesize}
@@ -227,214 +237,224 @@ Singkatan tipe \textit{fixture}: \textit{cmd} = perintah, \textit{cncpt} = konse
 % ─────────────────────────────────────────────────────────────
 
 \begin{footnotesize}
-\begin{longtable}{|p{3.4cm}|c|c|c|c|c|c|}
-\caption{Nilai Metrik RetQ per \textit{Fixture} (97 \textit{Fixture})}
+\begin{longtable}{|p{3.6cm}|c|c|c|c|c|}
+\caption{Nilai Metrik RetQ per \textit{Fixture} (102 \textit{Fixture})}
 \label{tbl:retq-full} \\
 \hline
-\textbf{ID Fixture} & \textbf{Tipe} & \textbf{P@k} & \textbf{NDCG@k} & \textbf{PathCov} & \textbf{F1@k} & \textbf{RetQ} \\
+\textbf{ID Fixture} & \textbf{Tipe} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} & \textbf{RetQ} \\
 \hline
 \endfirsthead
 \hline
-\textbf{ID Fixture} & \textbf{Tipe} & \textbf{P@k} & \textbf{NDCG@k} & \textbf{PathCov} & \textbf{F1@k} & \textbf{RetQ} \\
+\textbf{ID Fixture} & \textbf{Tipe} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} & \textbf{RetQ} \\
 \hline
 \endhead
 \hline
 \endfoot
 \hline
 \endlastfoot
-\texttt{kubectl\ \_export\ \_namespace\ \_res..} & cmd & 1,0000 & 1,0000 & 1,0000 & 0,7273 & \textbf{0,9091} \\
+\textit{kubectl\_export\_namespace\_res..} & cmd & 1.0000 & 1.0000 & 1.0000 & \textbf{1.0000} \\
 \hline
-\texttt{kubectl\ \_find\ \_pods\ \_with\ \_env} & cmd & 1,0000 & 1,0000 & 1,0000 & 0,4912 & \textbf{0,8304} \\
+\textit{kubectl\_find\_pods\_with\_env} & cmd & 1.0000 & 0.7436 & 0.8529 & \textbf{0.8529} \\
 \hline
-\texttt{kubectl\ \_force\ \_delete\ \_pod} & cmd & 1,0000 & 1,0000 & 1,0000 & 0,6769 & \textbf{0,8923} \\
+\textit{kubectl\_force\_delete\_pod} & cmd & 1.0000 & 0.3256 & 0.4912 & \textbf{0.4912} \\
 \hline
-\texttt{configmap\ \_usage} & cncpt & 0,0000 & 0,0000 & 0,0000 & 0,0000 & \textbf{0,0000} \\
+\textit{configmap\_usage} & cncpt & 1.0000 & 0.2000 & 0.3333 & \textbf{0.3333} \\
 \hline
-\texttt{daemonset\ \_purpose} & cncpt & 1,0000 & 1,0000 & 1,0000 & 1,0000 & \textbf{1,0000} \\
+\textit{container\_lifecycle\_concept} & cncpt & 0.2069 & 0.8571 & 0.3333 & \textbf{0.3333} \\
 \hline
-\texttt{deployment\ \_basic} & cncpt & 1,0000 & 1,0000 & 1,0000 & 0,9412 & \textbf{0,9804} \\
+\textit{daemonset\_purpose} & cncpt & 1.0000 & 0.8889 & 0.9412 & \textbf{0.9412} \\
 \hline
-\texttt{hpa\ \_target} & cncpt & 1,0000 & 1,0000 & 1,0000 & 1,0000 & \textbf{1,0000} \\
+\textit{deployment\_basic} & cncpt & 1.0000 & 0.8889 & 0.9412 & \textbf{0.9412} \\
 \hline
-\texttt{ingress\ \_purpose} & cncpt & 0,2241 & 0,9508 & 0,9286 & 0,3611 & \textbf{0,7468} \\
+\textit{empty\_dir\_volume\_concept} & cncpt & 1.0000 & 1.0000 & 1.0000 & \textbf{1.0000} \\
 \hline
-\texttt{job\ \_cronjob} & cncpt & 1,0000 & 1,0000 & 1,0000 & 0,9091 & \textbf{0,9697} \\
+\textit{env\_var\_concept} & cncpt & 0.1379 & 0.4000 & 0.2051 & \textbf{0.2051} \\
 \hline
-\texttt{namespace\ \_quota} & cncpt & 0,3846 & 0,6181 & 1,0000 & 0,5556 & \textbf{0,7246} \\
+\textit{hpa\_target} & cncpt & 1.0000 & 0.8636 & 0.9268 & \textbf{0.9268} \\
 \hline
-\texttt{persistent\ \_volume\ \_concept} & cncpt & 0,1628 & 0,4252 & 1,0000 & 0,2800 & \textbf{0,5684} \\
+\textit{ingress\_purpose} & cncpt & 1.0000 & 0.7857 & 0.8800 & \textbf{0.8800} \\
 \hline
-\texttt{pod\ \_spec} & cncpt & 0,7143 & 0,6836 & 1,0000 & 0,3960 & \textbf{0,6932} \\
+\textit{job\_cronjob} & cncpt & 1.0000 & 0.7692 & 0.8696 & \textbf{0.8696} \\
 \hline
-\texttt{required\ \_fields\ \_container} & cncpt & 0,1429 & 0,1773 & 0,6333 & 0,1379 & \textbf{0,3162} \\
+\textit{limit\_range\_concept} & cncpt & 1.0000 & 0.5000 & 0.6667 & \textbf{0.6667} \\
 \hline
-\texttt{scope\ \_accuracy\ \_node} & cncpt & 1,0000 & 1,0000 & 1,0000 & 0,9677 & \textbf{0,9892} \\
+\textit{namespace\_quota} & cncpt & 1.0000 & 1.0000 & 1.0000 & \textbf{1.0000} \\
 \hline
-\texttt{secret\ \_types} & cncpt & 0,0000 & 0,0000 & 1,0000 & 0,0000 & \textbf{0,3333} \\
+\textit{node\_affinity\_concept} & cncpt & 1.0000 & 0.8000 & 0.8889 & \textbf{0.8889} \\
 \hline
-\texttt{service\ \_types} & cncpt & 1,0000 & 1,0000 & 0,8333 & 0,8696 & \textbf{0,9010} \\
+\textit{persistent\_volume\_concept} & cncpt & 1.0000 & 0.8571 & 0.9231 & \textbf{0.9231} \\
 \hline
-\texttt{statefulset\ \_storage} & cncpt & 1,0000 & 1,0000 & 1,0000 & 1,0000 & \textbf{1,0000} \\
+\textit{pod\_disruption\_budget\_concept} & cncpt & 1.0000 & 1.0000 & 1.0000 & \textbf{1.0000} \\
 \hline
-\texttt{storageclass\ \_concept} & cncpt & 1,0000 & 1,0000 & 1,0000 & 0,8571 & \textbf{0,9524} \\
+\textit{pod\_spec} & cncpt & 0.7143 & 0.2740 & 0.3960 & \textbf{0.3960} \\
 \hline
-\texttt{add\ \_env\ \_from\ \_configmap} & fllwp & 1,0000 & 1,0000 & 0,7500 & 0,8000 & \textbf{0,8500} \\
+\textit{probe\_concept} & cncpt & 1.0000 & 0.8750 & 0.9333 & \textbf{0.9333} \\
 \hline
-\texttt{add\ \_env\ \_from\ \_secret} & fllwp & 1,0000 & 1,0000 & 1,0000 & 0,8889 & \textbf{0,9630} \\
+\textit{required\_fields\_container} & cncpt & 0.1071 & 0.1034 & 0.1053 & \textbf{0.1053} \\
 \hline
-\texttt{add\ \_hpa\ \_to\ \_deployment} & fllwp & 0,5000 & 0,6479 & 0,1818 & 0,2857 & \textbf{0,3718} \\
+\textit{resource\_requirements\_concept} & cncpt & 0.1379 & 1.0000 & 0.2424 & \textbf{0.2424} \\
 \hline
-\texttt{add\ \_liveness\ \_probe} & fllwp & 1,0000 & 1,0000 & 0,8182 & 0,8421 & \textbf{0,8868} \\
+\textit{scope\_accuracy\_node} & cncpt & 1.0000 & 1.0000 & 1.0000 & \textbf{1.0000} \\
 \hline
-\texttt{add\ \_pvc\ \_to\ \_statefulset} & fllwp & 1,0000 & 1,0000 & 1,0000 & 1,0000 & \textbf{1,0000} \\
+\textit{secret\_types} & cncpt & 1.0000 & 0.3333 & 0.5000 & \textbf{0.5000} \\
 \hline
-\texttt{add\ \_readiness\ \_probe} & fllwp & 1,0000 & 1,0000 & 1,0000 & 0,8889 & \textbf{0,9630} \\
+\textit{service\_types} & cncpt & 0.2632 & 0.7143 & 0.3846 & \textbf{0.3846} \\
 \hline
-\texttt{add\ \_resource\ \_limits} & fllwp & 1,0000 & 1,0000 & 1,0000 & 0,8889 & \textbf{0,9630} \\
+\textit{statefulset\_storage} & cncpt & 1.0000 & 0.9333 & 0.9655 & \textbf{0.9655} \\
 \hline
-\texttt{add\ \_resource\ \_limits\ \_deployment} & fllwp & 1,0000 & 1,0000 & 0,9000 & 0,8889 & \textbf{0,9296} \\
+\textit{storageclass\_concept} & cncpt & 1.0000 & 0.7500 & 0.8571 & \textbf{0.8571} \\
 \hline
-\texttt{change\ \_service\ \_type} & fllwp & 1,0000 & 1,0000 & 1,0000 & 1,0000 & \textbf{1,0000} \\
+\textit{toleration\_concept} & cncpt & 1.0000 & 1.0000 & 1.0000 & \textbf{1.0000} \\
 \hline
-\texttt{expose\ \_with\ \_ingress} & fllwp & 0,2245 & 1,0000 & 1,0000 & 0,3667 & \textbf{0,7889} \\
+\textit{volume\_mount\_concept} & cncpt & 1.0000 & 0.2500 & 0.4000 & \textbf{0.4000} \\
 \hline
-\texttt{scale\ \_existing\ \_deployment} & fllwp & 1,0000 & 1,0000 & 1,0000 & 1,0000 & \textbf{1,0000} \\
+\textit{add\_env\_from\_configmap} & fllwp & 1.0000 & 0.7273 & 0.8421 & \textbf{0.8421} \\
 \hline
-\texttt{update\ \_image\ \_version} & fllwp & 1,0000 & 1,0000 & 1,0000 & 0,9412 & \textbf{0,9804} \\
+\textit{add\_env\_from\_secret} & fllwp & 1.0000 & 0.8000 & 0.8889 & \textbf{0.8889} \\
 \hline
-\texttt{plan\ \_autoscale\ \_ha} & plan & 0,4921 & 0,9595 & 1,0000 & 0,6458 & \textbf{0,8685} \\
+\textit{add\_hpa\_to\_deployment} & fllwp & 0.5000 & 0.2105 & 0.2963 & \textbf{0.2963} \\
 \hline
-\texttt{plan\ \_cronjob\ \_batch} & plan & 0,2157 & 0,8833 & 1,0000 & 0,3438 & \textbf{0,7423} \\
+\textit{add\_liveness\_probe} & fllwp & 1.0000 & 0.7273 & 0.8421 & \textbf{0.8421} \\
 \hline
-\texttt{plan\ \_namespace\ \_isolation} & plan & 0,5000 & 0,5028 & 0,9091 & 0,6207 & \textbf{0,6775} \\
+\textit{add\_pvc\_to\_statefulset} & fllwp & 1.0000 & 0.9333 & 0.9655 & \textbf{0.9655} \\
 \hline
-\texttt{plan\ \_redis\ \_persistent} & plan & 0,9762 & 0,9839 & 1,0000 & 0,9535 & \textbf{0,9791} \\
+\textit{add\_readiness\_probe} & fllwp & 1.0000 & 0.8889 & 0.9412 & \textbf{0.9412} \\
 \hline
-\texttt{plan\ \_webapp\ \_with\ \_db} & plan & 0,5345 & 0,9385 & 0,9429 & 0,6739 & \textbf{0,8518} \\
+\textit{add\_resource\_limits} & fllwp & 1.0000 & 0.8889 & 0.9412 & \textbf{0.9412} \\
 \hline
-\texttt{configmap\ \_volume\ \_mount} & rlwld & 0,0357 & 0,0903 & 1,0000 & 0,0625 & \textbf{0,3843} \\
+\textit{add\_resource\_limits\_deployment} & fllwp & 1.0000 & 0.8000 & 0.8889 & \textbf{0.8889} \\
 \hline
-\texttt{deployment\ \_vs\ \_statefulset\ \_co..} & rlwld & 1,0000 & 1,0000 & 0,9412 & 0,4103 & \textbf{0,7838} \\
+\textit{change\_service\_type} & fllwp & 1.0000 & 1.0000 & 1.0000 & \textbf{1.0000} \\
 \hline
-\texttt{hpa\ \_custom\ \_metrics\ \_yaml} & rlwld & 1,0000 & 1,0000 & 1,0000 & 1,0000 & \textbf{1,0000} \\
+\textit{expose\_with\_ingress} & fllwp & 0.2245 & 1.0000 & 0.3667 & \textbf{0.3667} \\
 \hline
-\texttt{pbased\ \_on\ \_a\ \_hrefhttpsstackov..} & rlwld & 1,0000 & 1,0000 & 1,0000 & 0,4912 & \textbf{0,8304} \\
+\textit{scale\_existing\_deployment} & fllwp & 1.0000 & 1.0000 & 1.0000 & \textbf{1.0000} \\
 \hline
-\texttt{pcopied\ \_from\ \_here\ \_a\ \_hrefhttp..} & rlwld & 0,0000 & 0,0000 & 0,0000 & 0,0000 & \textbf{0,0000} \\
+\textit{update\_image\_version} & fllwp & 1.0000 & 0.8889 & 0.9412 & \textbf{0.9412} \\
 \hline
-\texttt{pheres\ \_a\ \_simplified\ \_version\ \_..} & rlwld & 1,0000 & 1,0000 & 1,0000 & 1,0000 & \textbf{1,0000} \\
+\textit{plan\_autoscale\_ha} & plan & 0.4762 & 0.9375 & 0.6316 & \textbf{0.6316} \\
 \hline
-\texttt{pi\ \_am\ \_quite\ \_new\ \_to\ \_tektonp} & rlwld & 0,0000 & 0,0000 & 0,0000 & 0,0000 & \textbf{0,0000} \\
+\textit{plan\_cronjob\_batch} & plan & 0.1970 & 0.9286 & 0.3250 & \textbf{0.3250} \\
 \hline
-\texttt{pi\ \_am\ \_wondering\ \_if\ \_it\ \_is} & rlwld & 0,0000 & 0,0000 & 1,0000 & 0,0000 & \textbf{0,3333} \\
+\textit{plan\_namespace\_isolation} & plan & 0.5000 & 0.7500 & 0.6000 & \textbf{0.6000} \\
 \hline
-\texttt{pi\ \_cant\ \_find\ \_documentation\ \_o..} & rlwld & 0,0000 & 0,0000 & 0,0000 & 0,0000 & \textbf{0,0000} \\
+\textit{plan\_redis\_persistent} & plan & 0.9762 & 0.9111 & 0.9425 & \textbf{0.9425} \\
 \hline
-\texttt{pi\ \_have\ \_a\ \_command\ \_to\ \_run} & rlwld & 1,0000 & 1,0000 & 1,0000 & 0,6769 & \textbf{0,8923} \\
+\textit{plan\_webapp\_with\_db} & plan & 0.5345 & 0.8611 & 0.6596 & \textbf{0.6596} \\
 \hline
-\texttt{pi\ \_have\ \_a\ \_google\ \_kubernetes\ \_..} & rlwld & 0,0000 & 0,0000 & 0,0000 & 0,0000 & \textbf{0,0000} \\
+\textit{configmap\_volume\_mount} & rlwld & 0.0357 & 0.3333 & 0.0645 & \textbf{0.0645} \\
 \hline
-\texttt{pi\ \_have\ \_a\ \_tekton\ \_codepipelin..} & rlwld & 0,1429 & 0,0979 & 0,0714 & 0,0952 & \textbf{0,0882} \\
+\textit{deployment\_vs\_statefulset\_co..} & rlwld & 1.0000 & 0.2581 & 0.4103 & \textbf{0.4103} \\
 \hline
-\texttt{pi\ \_want\ \_to\ \_pass\ \_a\ \_certificate} & rlwld & 0,0000 & 0,0000 & 1,0000 & 0,0000 & \textbf{0,3333} \\
+\textit{hpa\_custom\_metrics\_yaml} & rlwld & 1.0000 & 1.0000 & 1.0000 & \textbf{1.0000} \\
 \hline
-\texttt{pi\ \_want\ \_to\ \_reject\ \_all\ \_docker} & rlwld & 0,0000 & 0,0000 & 0,0000 & 0,0000 & \textbf{0,0000} \\
+\textit{pheres\_a\_simplified\_version\_..} & rlwld & 1.0000 & 0.3125 & 0.4762 & \textbf{0.4762} \\
 \hline
-\texttt{pid\ \_like\ \_to\ \_confirm\ \_informat..} & rlwld & 0,2000 & 0,2372 & 1,0000 & 0,2857 & \textbf{0,5076} \\
+\textit{pi\_am\_wondering\_if\_it\_is} & rlwld & 1.0000 & 1.0000 & 1.0000 & \textbf{1.0000} \\
 \hline
-\texttt{pim\ \_trying\ \_to\ \_use\ \_a\ \_container} & rlwld & 1,0000 & 1,0000 & 1,0000 & 1,0000 & \textbf{1,0000} \\
+\textit{pi\_have\_a\_command\_to\_run} & rlwld & 1.0000 & 0.3256 & 0.4912 & \textbf{0.4912} \\
 \hline
-\texttt{pim\ \_using\ \_argocd\ \_and\ \_i\ \_want} & rlwld & 0,0000 & 0,0000 & 0,0000 & 0,0000 & \textbf{0,0000} \\
+\textit{pi\_want\_to\_pass\_a\_certificate} & rlwld & 1.0000 & 1.0000 & 1.0000 & \textbf{1.0000} \\
 \hline
-\texttt{pkubectl\ \_provides\ \_a\ \_nice\ \_way..} & rlwld & 0,0000 & 0,0000 & 1,0000 & 0,0000 & \textbf{0,3333} \\
+\textit{precodespec\_containers\_image..} & rlwld & 1.0000 & 0.7838 & 0.8788 & \textbf{0.8788} \\
 \hline
-\texttt{precodespec\ \_containers\ \_image..} & rlwld & 1,0000 & 1,0000 & 1,0000 & 0,6769 & \textbf{0,8923} \\
+\textit{serviceaccount\_pod\_binding} & rlwld & 0.1071 & 0.5000 & 0.1765 & \textbf{0.1765} \\
 \hline
-\texttt{pthis\ \_eks\ \_cluster\ \_has\ \_a\ \_priv..} & rlwld & 0,0000 & 0,0000 & 0,0000 & 0,0000 & \textbf{0,0000} \\
+\textit{anyof\_intorstring} & rel & 1.0000 & 0.5000 & 0.6667 & \textbf{0.6667} \\
 \hline
-\texttt{pusing\ \_kubernetes\ \_v1157\ \_in\ \_m..} & rlwld & 0,0000 & 0,0000 & 1,0000 & 0,0000 & \textbf{0,3333} \\
+\textit{cronjob\_job\_pod} & rel & 1.0000 & 1.0000 & 1.0000 & \textbf{1.0000} \\
 \hline
-\texttt{pwhen\ \_using\ \_istio\ \_with\ \_kuber..} & rlwld & 0,0000 & 0,0000 & 1,0000 & 0,0000 & \textbf{0,3333} \\
+\textit{deep\_deployment\_container\_re..} & rel & 1.0000 & 0.2759 & 0.4324 & \textbf{0.4324} \\
 \hline
-\texttt{pwith\ \_kubectl\ \_i\ \_know\ \_i\ \_can} & rlwld & 0,0000 & 0,0000 & 0,0000 & 0,0000 & \textbf{0,0000} \\
+\textit{deep\_statefulset\_container\_p..} & rel & 1.0000 & 0.3043 & 0.4667 & \textbf{0.4667} \\
 \hline
-\texttt{serviceaccount\ \_pod\ \_binding} & rlwld & 0,1071 & 0,3489 & 0,6000 & 0,1765 & \textbf{0,3751} \\
+\textit{deployment\_pod\_relation} & rel & 1.0000 & 0.2759 & 0.4324 & \textbf{0.4324} \\
 \hline
-\texttt{anyof\ \_intorstring} & rel & 0,0690 & 0,6364 & 1,0000 & 0,1250 & \textbf{0,5871} \\
+\textit{extends\_hpa\_metric} & rel & 1.0000 & 0.4524 & 0.6230 & \textbf{0.6230} \\
 \hline
-\texttt{cronjob\ \_job\ \_pod} & rel & 1,0000 & 1,0000 & 1,0000 & 0,7500 & \textbf{0,9167} \\
+\textit{hpa\_deployment\_pod} & rel & 1.0000 & 0.4318 & 0.6032 & \textbf{0.6032} \\
 \hline
-\texttt{deep\ \_deployment\ \_container\ \_re..} & rel & 1,0000 & 1,0000 & 0,9697 & 0,4324 & \textbf{0,8007} \\
+\textit{ingress\_service\_pod} & rel & 1.0000 & 0.8750 & 0.9333 & \textbf{0.9333} \\
 \hline
-\texttt{deep\ \_statefulset\ \_container\ \_p..} & rel & 1,0000 & 1,0000 & 0,9787 & 0,5000 & \textbf{0,8262} \\
+\textit{namespace\_quota\_relation} & rel & 1.0000 & 0.8333 & 0.9091 & \textbf{0.9091} \\
 \hline
-\texttt{deployment\ \_pod\ \_relation} & rel & 1,0000 & 1,0000 & 1,0000 & 1,0000 & \textbf{1,0000} \\
+\textit{networkpolicy\_pod\_selector} & rel & 1.0000 & 0.6250 & 0.7692 & \textbf{0.7692} \\
 \hline
-\texttt{extends\ \_hpa\ \_metric} & rel & 1,0000 & 1,0000 & 1,0000 & 0,6230 & \textbf{0,8743} \\
+\textit{oneof\_volume\_source} & rel & 0.1429 & 0.0833 & 0.1053 & \textbf{0.1053} \\
 \hline
-\texttt{hpa\ \_deployment\ \_pod} & rel & 1,0000 & 1,0000 & 1,0000 & 0,6230 & \textbf{0,8743} \\
+\textit{pod\_namespace\_relation} & rel & 1.0000 & 0.3256 & 0.4912 & \textbf{0.4912} \\
 \hline
-\texttt{ingress\ \_service\ \_pod} & rel & 1,0000 & 1,0000 & 0,9565 & 0,9767 & \textbf{0,9778} \\
+\textit{pvc\_storageclass} & rel & 1.0000 & 0.8000 & 0.8889 & \textbf{0.8889} \\
 \hline
-\texttt{namespace\ \_quota\ \_relation} & rel & 1,0000 & 1,0000 & 0,6000 & 0,8000 & \textbf{0,8000} \\
+\textit{rbac\_binding} & rel & 1.0000 & 0.8889 & 0.9412 & \textbf{0.9412} \\
 \hline
-\texttt{networkpolicy\ \_pod\ \_selector} & rel & 1,0000 & 1,0000 & 1,0000 & 0,7692 & \textbf{0,9231} \\
+\textit{secret\_usage} & rel & 0.7143 & 0.2151 & 0.3306 & \textbf{0.3306} \\
 \hline
-\texttt{oneof\ \_volume\ \_source} & rel & 0,0682 & 0,0686 & 0,6102 & 0,0667 & \textbf{0,2485} \\
+\textit{service\_selector} & rel & 1.0000 & 0.2564 & 0.4082 & \textbf{0.4082} \\
 \hline
-\texttt{pod\ \_namespace\ \_relation} & rel & 1,0000 & 1,0000 & 1,0000 & 0,6718 & \textbf{0,8906} \\
+\textit{serviceaccount\_token\_binding} & rel & 0.0682 & 0.4286 & 0.1176 & \textbf{0.1176} \\
 \hline
-\texttt{pvc\ \_storageclass} & rel & 1,0000 & 1,0000 & 1,0000 & 1,0000 & \textbf{1,0000} \\
+\textit{statefulset\_pvc\_pv} & rel & 1.0000 & 0.3333 & 0.5000 & \textbf{0.5000} \\
 \hline
-\texttt{rbac\ \_binding} & rel & 1,0000 & 1,0000 & 1,0000 & 1,0000 & \textbf{1,0000} \\
+\textit{crashloopbackoff\_oomkilled} & trbl & 1.0000 & 0.7838 & 0.8788 & \textbf{0.8788} \\
 \hline
-\texttt{secret\ \_usage} & rel & 0,1071 & 0,4212 & 0,5000 & 0,1818 & \textbf{0,3677} \\
+\textit{deployment\_rollout\_stuck} & trbl & 1.0000 & 0.2759 & 0.4324 & \textbf{0.4324} \\
 \hline
-\texttt{service\ \_selector} & rel & 1,0000 & 1,0000 & 1,0000 & 0,4167 & \textbf{0,8056} \\
+\textit{imagepullbackoff\_registry\_se..} & trbl & 1.0000 & 0.3256 & 0.4912 & \textbf{0.4912} \\
 \hline
-\texttt{serviceaccount\ \_token\ \_binding} & rel & 1,0000 & 1,0000 & 0,5000 & 0,7500 & \textbf{0,7500} \\
+\textit{pod\_pending\_no\_resources} & trbl & 1.0000 & 0.3256 & 0.4912 & \textbf{0.4912} \\
 \hline
-\texttt{statefulset\ \_pvc\ \_pv} & rel & 1,0000 & 1,0000 & 1,0000 & 0,5091 & \textbf{0,8364} \\
+\textit{service\_no\_endpoints} & trbl & 1.0000 & 0.2326 & 0.3774 & \textbf{0.3774} \\
 \hline
-\texttt{crashloopbackoff\ \_oomkilled} & trbl & 1,0000 & 1,0000 & 0,9911 & 0,4870 & \textbf{0,8260} \\
+\textit{clusterrole\_read\_pods} & yaml & 0.1020 & 1.0000 & 0.1852 & \textbf{0.1852} \\
 \hline
-\texttt{deployment\ \_rollout\ \_stuck} & trbl & 1,0000 & 1,0000 & 1,0000 & 0,4324 & \textbf{0,8108} \\
+\textit{clusterrolebinding\_yaml} & yaml & 0.9091 & 1.0000 & 0.9524 & \textbf{0.9524} \\
 \hline
-\texttt{imagepullbackoff\ \_registry\ \_se..} & trbl & 1,0000 & 1,0000 & 1,0000 & 0,4912 & \textbf{0,8304} \\
+\textit{configmap\_env} & yaml & 1.0000 & 1.0000 & 1.0000 & \textbf{1.0000} \\
 \hline
-\texttt{pod\ \_pending\ \_no\ \_resources} & trbl & 1,0000 & 1,0000 & 1,0000 & 0,4912 & \textbf{0,8304} \\
+\textit{cronjob\_backup} & yaml & 1.0000 & 0.9091 & 0.9524 & \textbf{0.9524} \\
 \hline
-\texttt{service\ \_no\ \_endpoints} & trbl & 1,0000 & 1,0000 & 0,9767 & 0,4082 & \textbf{0,7950} \\
+\textit{cronjob\_with\_deadline} & yaml & 1.0000 & 1.0000 & 1.0000 & \textbf{1.0000} \\
 \hline
-\texttt{clusterrole\ \_read\ \_pods} & yaml & 0,1020 & 1,0000 & 1,0000 & 0,1852 & \textbf{0,7284} \\
+\textit{daemonset\_fluentd} & yaml & 1.0000 & 1.0000 & 1.0000 & \textbf{1.0000} \\
 \hline
-\texttt{clusterrolebinding\ \_yaml} & yaml & 0,9091 & 1,0000 & 1,0000 & 0,9524 & \textbf{0,9841} \\
+\textit{deployment\_3\_replicas} & yaml & 1.0000 & 1.0000 & 1.0000 & \textbf{1.0000} \\
 \hline
-\texttt{configmap\ \_env} & yaml & 0,0000 & 0,0000 & 1,0000 & 0,0000 & \textbf{0,3333} \\
+\textit{deployment\_liveness\_probe} & yaml & 1.0000 & 0.9667 & 0.9831 & \textbf{0.9831} \\
 \hline
-\texttt{cronjob\ \_backup} & yaml & 1,0000 & 1,0000 & 1,0000 & 1,0000 & \textbf{1,0000} \\
+\textit{deployment\_node\_selector} & yaml & 1.0000 & 1.0000 & 1.0000 & \textbf{1.0000} \\
 \hline
-\texttt{daemonset\ \_fluentd} & yaml & 1,0000 & 1,0000 & 1,0000 & 1,0000 & \textbf{1,0000} \\
+\textit{hpa\_cpu\_yaml} & yaml & 0.6667 & 1.0000 & 0.8000 & \textbf{0.8000} \\
 \hline
-\texttt{deployment\ \_3\ \_replicas} & yaml & 1,0000 & 1,0000 & 1,0000 & 1,0000 & \textbf{1,0000} \\
+\textit{ingress\_rules} & yaml & 0.4286 & 1.0000 & 0.6000 & \textbf{0.6000} \\
 \hline
-\texttt{deployment\ \_liveness\ \_probe} & yaml & 1,0000 & 1,0000 & 1,0000 & 0,9831 & \textbf{0,9944} \\
+\textit{job\_with\_completions} & yaml & 1.0000 & 1.0000 & 1.0000 & \textbf{1.0000} \\
 \hline
-\texttt{ingress\ \_rules} & yaml & 0,4286 & 1,0000 & 1,0000 & 0,6000 & \textbf{0,8667} \\
+\textit{limitrange\_yaml} & yaml & 0.1250 & 1.0000 & 0.2222 & \textbf{0.2222} \\
 \hline
-\texttt{networkpolicy\ \_deny\ \_all} & yaml & 1,0000 & 1,0000 & 1,0000 & 1,0000 & \textbf{1,0000} \\
+\textit{networkpolicy\_deny\_all} & yaml & 1.0000 & 0.8889 & 0.9412 & \textbf{0.9412} \\
 \hline
-\texttt{pod\ \_configmap\ \_volume} & yaml & 1,0000 & 1,0000 & 1,0000 & 0,6769 & \textbf{0,8923} \\
+\textit{networkpolicy\_egress\_yaml} & yaml & 0.1538 & 1.0000 & 0.2667 & \textbf{0.2667} \\
 \hline
-\texttt{pvc\ \_dynamic} & yaml & 1,0000 & 1,0000 & 1,0000 & 1,0000 & \textbf{1,0000} \\
+\textit{pod\_configmap\_volume} & yaml & 1.0000 & 0.5116 & 0.6769 & \textbf{0.6769} \\
 \hline
-\texttt{rolebinding\ \_dev} & yaml & 1,0000 & 1,0000 & 1,0000 & 1,0000 & \textbf{1,0000} \\
+\textit{pod\_init\_container\_yaml} & yaml & 1.0000 & 0.5116 & 0.6769 & \textbf{0.6769} \\
 \hline
-\texttt{service\ \_nodeport} & yaml & 1,0000 & 1,0000 & 1,0000 & 1,0000 & \textbf{1,0000} \\
+\textit{pod\_resource\_limits} & yaml & 1.0000 & 0.5116 & 0.6769 & \textbf{0.6769} \\
 \hline
-\texttt{statefulset\ \_with\ \_pvc} & yaml & 0,9762 & 1,0000 & 1,0000 & 0,9880 & \textbf{0,9960} \\
+\textit{pvc\_dynamic} & yaml & 0.3256 & 1.0000 & 0.4912 & \textbf{0.4912} \\
 \hline
-\texttt{yaml\ \_layer3\ \_required\ \_fields} & yaml & 1,0000 & 1,0000 & 1,0000 & 1,0000 & \textbf{1,0000} \\
+\textit{rolebinding\_dev} & yaml & 1.0000 & 1.0000 & 1.0000 & \textbf{1.0000} \\
+\hline
+\textit{secret\_opaque\_yaml} & yaml & 1.0000 & 1.0000 & 1.0000 & \textbf{1.0000} \\
+\hline
+\textit{service\_nodeport} & yaml & 1.0000 & 1.0000 & 1.0000 & \textbf{1.0000} \\
+\hline
+\textit{serviceaccount\_yaml} & yaml & 1.0000 & 1.0000 & 1.0000 & \textbf{1.0000} \\
+\hline
+\textit{statefulset\_with\_pvc} & yaml & 0.9762 & 1.0000 & 0.9880 & \textbf{0.9880} \\
+\hline
+\textit{yaml\_layer3\_required\_fields} & yaml & 1.0000 & 1.0000 & 1.0000 & \textbf{1.0000} \\
 \hline
 \end{longtable}
 \end{footnotesize}
@@ -444,431 +464,224 @@ Singkatan tipe \textit{fixture}: \textit{cmd} = perintah, \textit{cncpt} = konse
 % ─────────────────────────────────────────────────────────────
 
 \begin{footnotesize}
-\begin{longtable}{|p{3.4cm}|c|c|c|c|c|c|}
-\caption{Nilai Metrik ReaQ per \textit{Fixture} (97 \textit{Fixture})}
+\begin{longtable}{|p{3.6cm}|c|c|c|c|}
+\caption{Nilai Metrik ReaQ per \textit{Fixture} (102 \textit{Fixture})}
 \label{tbl:reaq-full} \\
 \hline
-\textbf{ID Fixture} & \textbf{Tipe} & \textbf{HopAcc} & \textbf{d\ \_gt} & \textbf{$\Delta$d} & \textbf{Grounding} & \textbf{ReaQ} \\
+\textbf{ID Fixture} & \textbf{Tipe} & \textbf{HopAcc} & \textbf{Faithfulness} & \textbf{ReaQ} \\
 \hline
 \endfirsthead
 \hline
-\textbf{ID Fixture} & \textbf{Tipe} & \textbf{HopAcc} & \textbf{d\ \_gt} & \textbf{$\Delta$d} & \textbf{Grounding} & \textbf{ReaQ} \\
+\textbf{ID Fixture} & \textbf{Tipe} & \textbf{HopAcc} & \textbf{Faithfulness} & \textbf{ReaQ} \\
 \hline
 \endhead
 \hline
 \endfoot
 \hline
 \endlastfoot
-\texttt{kubectl\ \_export\ \_namespace\ \_res..} & cmd & 1,0000 & 3 & 0 & 0,8333 & \textbf{0,9167} \\
+\textit{kubectl\_export\_namespace\_res..} & cmd & 1.0000 & 0.1429 & \textbf{0.1429} \\
 \hline
-\texttt{kubectl\ \_find\ \_pods\ \_with\ \_env} & cmd & 0,0000 & 111 & -79 & 0,4000 & \textbf{0,2000} \\
+\textit{kubectl\_find\_pods\_with\_env} & cmd & 0.7143 & 0.5455 & \textbf{0.5455} \\
 \hline
-\texttt{kubectl\ \_force\ \_delete\ \_pod} & cmd & 0,0000 & 111 & -61 & 0,5000 & \textbf{0,2500} \\
+\textit{kubectl\_force\_delete\_pod} & cmd & 0.2883 & 0.0000 & \textbf{0.0000} \\
 \hline
-\texttt{configmap\ \_usage} & cncpt & 0,0000 & 2 & 7 & 1,0000 & \textbf{0,5000} \\
+\textit{configmap\_usage} & cncpt & --- & 0.1250 & \textbf{0.1250} \\
 \hline
-\texttt{daemonset\ \_purpose} & cncpt & 1,0000 & 8 & 0 & 1,0000 & \textbf{1,0000} \\
+\textit{container\_lifecycle\_concept} & cncpt & 0.2000 & 0.8333 & \textbf{0.8333} \\
 \hline
-\texttt{deployment\ \_basic} & cncpt & 0,0000 & 10 & -1 & 1,0000 & \textbf{0,5000} \\
+\textit{daemonset\_purpose} & cncpt & 1.0000 & 0.3125 & \textbf{0.3125} \\
 \hline
-\texttt{hpa\ \_target} & cncpt & 1,0000 & 21 & 0 & 1,0000 & \textbf{1,0000} \\
+\textit{deployment\_basic} & cncpt & 1.0000 & 0.2000 & \textbf{0.2000} \\
 \hline
-\texttt{ingress\ \_purpose} & cncpt & 0,0000 & 14 & 50 & 0,8000 & \textbf{0,4000} \\
+\textit{empty\_dir\_volume\_concept} & cncpt & 1.0000 & 0.5000 & \textbf{0.5000} \\
 \hline
-\texttt{job\ \_cronjob} & cncpt & 1,0000 & 10 & 0 & 1,0000 & \textbf{1,0000} \\
+\textit{env\_var\_concept} & cncpt & 0.1667 & 1.0000 & \textbf{1.0000} \\
 \hline
-\texttt{namespace\ \_quota} & cncpt & 0,0000 & 5 & 7 & 0,6667 & \textbf{0,3333} \\
+\textit{hpa\_target} & cncpt & 1.0000 & 0.1818 & \textbf{0.1818} \\
 \hline
-\texttt{persistent\ \_volume\ \_concept} & cncpt & 0,0000 & 12 & 88 & 0,5556 & \textbf{0,2778} \\
+\textit{ingress\_purpose} & cncpt & 1.0000 & 0.6667 & \textbf{0.6667} \\
 \hline
-\texttt{pod\ \_spec} & cncpt & 0,0000 & 93 & -61 & 1,0000 & \textbf{0,5000} \\
+\textit{job\_cronjob} & cncpt & 1.0000 & 0.1111 & \textbf{0.1111} \\
 \hline
-\texttt{required\ \_fields\ \_container} & cncpt & 0,0000 & 30 & 2 & 1,0000 & \textbf{0,5000} \\
+\textit{limit\_range\_concept} & cncpt & 1.0000 & 0.3750 & \textbf{0.3750} \\
 \hline
-\texttt{scope\ \_accuracy\ \_node} & cncpt & 1,0000 & 14 & 0 & 1,0000 & \textbf{1,0000} \\
+\textit{namespace\_quota} & cncpt & 1.0000 & 0.8571 & \textbf{0.8571} \\
 \hline
-\texttt{secret\ \_types} & cncpt & 1,0000 & 0 & 0 & 0,6667 & \textbf{0,8333} \\
+\textit{node\_affinity\_concept} & cncpt & 1.0000 & 0.0000 & \textbf{0.0000} \\
 \hline
-\texttt{service\ \_types} & cncpt & 0,0000 & 12 & -2 & 0,7500 & \textbf{0,3750} \\
+\textit{persistent\_volume\_concept} & cncpt & 1.0000 & 0.5455 & \textbf{0.5455} \\
 \hline
-\texttt{statefulset\ \_storage} & cncpt & 1,0000 & 15 & 0 & 0,7500 & \textbf{0,8750} \\
+\textit{pod\_disruption\_budget\_concept} & cncpt & 1.0000 & 0.2727 & \textbf{0.2727} \\
 \hline
-\texttt{storageclass\ \_concept} & cncpt & 1,0000 & 2 & 0 & 0,7500 & \textbf{0,8750} \\
+\textit{pod\_spec} & cncpt & 0.2258 & 0.6667 & \textbf{0.6667} \\
 \hline
-\texttt{add\ \_env\ \_from\ \_configmap} & fllwp & 0,0000 & 12 & -3 & 0,7500 & \textbf{0,3750} \\
+\textit{probe\_concept} & cncpt & 1.0000 & 1.0000 & \textbf{1.0000} \\
 \hline
-\texttt{add\ \_env\ \_from\ \_secret} & fllwp & 1,0000 & 9 & 0 & 0,6000 & \textbf{0,8000} \\
+\textit{required\_fields\_container} & cncpt & 0.0000 & 0.0000 & \textbf{0.0000} \\
 \hline
-\texttt{add\ \_hpa\ \_to\ \_deployment} & fllwp & 0,0000 & 22 & -13 & 0,6667 & \textbf{0,3333} \\
+\textit{resource\_requirements\_concept} & cncpt & 1.0000 & 0.6667 & \textbf{0.6667} \\
 \hline
-\texttt{add\ \_liveness\ \_probe} & fllwp & 0,0000 & 11 & -2 & 0,6667 & \textbf{0,3333} \\
+\textit{scope\_accuracy\_node} & cncpt & 1.0000 & 0.1429 & \textbf{0.1429} \\
 \hline
-\texttt{add\ \_pvc\ \_to\ \_statefulset} & fllwp & 1,0000 & 15 & 0 & 0,5714 & \textbf{0,7857} \\
+\textit{secret\_types} & cncpt & --- & 0.2727 & \textbf{0.2727} \\
 \hline
-\texttt{add\ \_readiness\ \_probe} & fllwp & 1,0000 & 9 & 0 & 0,6667 & \textbf{0,8333} \\
+\textit{service\_types} & cncpt & 1.0000 & --- & \textbf{---} \\
 \hline
-\texttt{add\ \_resource\ \_limits} & fllwp & 1,0000 & 9 & 0 & 0,5000 & \textbf{0,7500} \\
+\textit{statefulset\_storage} & cncpt & 1.0000 & --- & \textbf{---} \\
 \hline
-\texttt{add\ \_resource\ \_limits\ \_deployment} & fllwp & 0,0000 & 10 & -1 & 0,6667 & \textbf{0,3333} \\
+\textit{storageclass\_concept} & cncpt & 1.0000 & 0.6250 & \textbf{0.6250} \\
 \hline
-\texttt{change\ \_service\ \_type} & fllwp & 1,0000 & 10 & 0 & 0,4000 & \textbf{0,7000} \\
+\textit{toleration\_concept} & cncpt & --- & 0.2000 & \textbf{0.2000} \\
 \hline
-\texttt{expose\ \_with\ \_ingress} & fllwp & 0,0000 & 10 & 43 & 0,7500 & \textbf{0,3750} \\
+\textit{volume\_mount\_concept} & cncpt & --- & 0.0833 & \textbf{0.0833} \\
 \hline
-\texttt{scale\ \_existing\ \_deployment} & fllwp & 1,0000 & 9 & 0 & 0,6667 & \textbf{0,8333} \\
+\textit{add\_env\_from\_configmap} & fllwp & 1.0000 & --- & \textbf{---} \\
 \hline
-\texttt{update\ \_image\ \_version} & fllwp & 1,0000 & 9 & 0 & 0,6667 & \textbf{0,8333} \\
+\textit{add\_env\_from\_secret} & fllwp & 1.0000 & 0.0556 & \textbf{0.0556} \\
 \hline
-\texttt{plan\ \_autoscale\ \_ha} & plan & 0,0000 & 34 & 39 & 0,5000 & \textbf{0,2500} \\
+\textit{add\_hpa\_to\_deployment} & fllwp & 0.1905 & --- & \textbf{---} \\
 \hline
-\texttt{plan\ \_cronjob\ \_batch} & plan & 0,0000 & 11 & 49 & 0,6250 & \textbf{0,3125} \\
+\textit{add\_liveness\_probe} & fllwp & 1.0000 & 0.0500 & \textbf{0.0500} \\
 \hline
-\texttt{plan\ \_namespace\ \_isolation} & plan & 0,0000 & 11 & 7 & 0,8333 & \textbf{0,4167} \\
+\textit{add\_pvc\_to\_statefulset} & fllwp & 1.0000 & 0.0000 & \textbf{0.0000} \\
 \hline
-\texttt{plan\ \_redis\ \_persistent} & plan & 0,0000 & 47 & 1 & 0,5714 & \textbf{0,2857} \\
+\textit{add\_readiness\_probe} & fllwp & 1.0000 & 0.0500 & \textbf{0.0500} \\
 \hline
-\texttt{plan\ \_webapp\ \_with\ \_db} & plan & 0,0000 & 35 & 31 & 0,6364 & \textbf{0,3182} \\
+\textit{add\_resource\_limits} & fllwp & 1.0000 & 0.0526 & \textbf{0.0526} \\
 \hline
-\texttt{configmap\ \_volume\ \_mount} & rlwld & 0,0000 & 3 & 29 & 0,6667 & \textbf{0,3333} \\
+\textit{add\_resource\_limits\_deployment} & fllwp & 1.0000 & 0.0500 & \textbf{0.0500} \\
 \hline
-\texttt{deployment\ \_vs\ \_statefulset\ \_co..} & rlwld & 0,0000 & 34 & -25 & 1,0000 & \textbf{0,5000} \\
+\textit{change\_service\_type} & fllwp & 1.0000 & 0.1000 & \textbf{0.1000} \\
 \hline
-\texttt{hpa\ \_custom\ \_metrics\ \_yaml} & rlwld & 1,0000 & 50 & 0 & 0,5000 & \textbf{0,7500} \\
+\textit{expose\_with\_ingress} & fllwp & 1.0000 & 0.0000 & \textbf{0.0000} \\
 \hline
-\texttt{pbased\ \_on\ \_a\ \_hrefhttpsstackov..} & rlwld & 0,0000 & 111 & -79 & 1,0000 & \textbf{0,5000} \\
+\textit{scale\_existing\_deployment} & fllwp & 1.0000 & 0.0625 & \textbf{0.0625} \\
 \hline
-\texttt{pcopied\ \_from\ \_here\ \_a\ \_hrefhttp..} & rlwld & 0,0000 & 3 & -2 & 1,0000 & \textbf{0,5000} \\
+\textit{update\_image\_version} & fllwp & 1.0000 & 0.0714 & \textbf{0.0714} \\
 \hline
-\texttt{pheres\ \_a\ \_simplified\ \_version\ \_..} & rlwld & 1,0000 & 34 & 0 & 0,0000 & \textbf{0,5000} \\
+\textit{plan\_autoscale\_ha} & plan & 1.0000 & 0.4286 & \textbf{0.4286} \\
 \hline
-\texttt{pi\ \_am\ \_quite\ \_new\ \_to\ \_tektonp} & rlwld & 0,0000 & 111 & -111 & 1,0000 & \textbf{0,5000} \\
+\textit{plan\_cronjob\_batch} & plan & 1.0000 & 0.0000 & \textbf{0.0000} \\
 \hline
-\texttt{pi\ \_am\ \_wondering\ \_if\ \_it\ \_is} & rlwld & 1,0000 & 0 & 0 & 1,0000 & \textbf{1,0000} \\
+\textit{plan\_namespace\_isolation} & plan & 1.0000 & 1.0000 & \textbf{1.0000} \\
 \hline
-\texttt{pi\ \_cant\ \_find\ \_documentation\ \_o..} & rlwld & 0,0000 & 3 & 8 & 1,0000 & \textbf{0,5000} \\
+\textit{plan\_redis\_persistent} & plan & 1.0000 & 0.5333 & \textbf{0.5333} \\
 \hline
-\texttt{pi\ \_have\ \_a\ \_command\ \_to\ \_run} & rlwld & 0,0000 & 111 & -61 & 1,0000 & \textbf{0,5000} \\
+\textit{plan\_webapp\_with\_db} & plan & 1.0000 & --- & \textbf{---} \\
 \hline
-\texttt{pi\ \_have\ \_a\ \_google\ \_kubernetes\ \_..} & rlwld & 0,0000 & 19 & -19 & 1,0000 & \textbf{0,5000} \\
+\textit{configmap\_volume\_mount} & rlwld & --- & 0.3750 & \textbf{0.3750} \\
 \hline
-\texttt{pi\ \_have\ \_a\ \_tekton\ \_codepipelin..} & rlwld & 0,0000 & 14 & -7 & 1,0000 & \textbf{0,5000} \\
+\textit{deployment\_vs\_statefulset\_co..} & rlwld & 0.2812 & --- & \textbf{---} \\
 \hline
-\texttt{pi\ \_want\ \_to\ \_pass\ \_a\ \_certificate} & rlwld & 0,0000 & 0 & 3 & 0,7500 & \textbf{0,3750} \\
+\textit{hpa\_custom\_metrics\_yaml} & rlwld & 1.0000 & 0.1667 & \textbf{0.1667} \\
 \hline
-\texttt{pi\ \_want\ \_to\ \_reject\ \_all\ \_docker} & rlwld & 0,0000 & 3 & -3 & 1,0000 & \textbf{0,5000} \\
+\textit{pheres\_a\_simplified\_version\_..} & rlwld & 0.2941 & 0.4000 & \textbf{0.4000} \\
 \hline
-\texttt{pid\ \_like\ \_to\ \_confirm\ \_informat..} & rlwld & 0,0000 & 1 & 3 & 0,5000 & \textbf{0,2500} \\
+\textit{pi\_am\_wondering\_if\_it\_is} & rlwld & --- & 0.2308 & \textbf{0.2308} \\
 \hline
-\texttt{pim\ \_trying\ \_to\ \_use\ \_a\ \_container} & rlwld & 1,0000 & 34 & 0 & 0,5000 & \textbf{0,7500} \\
+\textit{pi\_have\_a\_command\_to\_run} & rlwld & 0.2883 & 0.0000 & \textbf{0.0000} \\
 \hline
-\texttt{pim\ \_using\ \_argocd\ \_and\ \_i\ \_want} & rlwld & 0,0000 & 3 & 47 & 1,0000 & \textbf{0,5000} \\
+\textit{pi\_want\_to\_pass\_a\_certificate} & rlwld & --- & 0.1429 & \textbf{0.1429} \\
 \hline
-\texttt{pkubectl\ \_provides\ \_a\ \_nice\ \_way..} & rlwld & 1,0000 & 0 & 0 & 0,5000 & \textbf{0,7500} \\
+\textit{precodespec\_containers\_image..} & rlwld & 0.7143 & 0.9231 & \textbf{0.9231} \\
 \hline
-\texttt{precodespec\ \_containers\ \_image..} & rlwld & 0,0000 & 111 & -61 & 0,5000 & \textbf{0,2500} \\
+\textit{serviceaccount\_pod\_binding} & rlwld & 0.0000 & 0.5000 & \textbf{0.5000} \\
 \hline
-\texttt{pthis\ \_eks\ \_cluster\ \_has\ \_a\ \_priv..} & rlwld & 0,0000 & 1 & -1 & 1,0000 & \textbf{0,5000} \\
+\textit{anyof\_intorstring} & rel & 1.0000 & 0.7500 & \textbf{0.7500} \\
 \hline
-\texttt{pusing\ \_kubernetes\ \_v1157\ \_in\ \_m..} & rlwld & 1,0000 & 0 & 0 & 1,0000 & \textbf{1,0000} \\
+\textit{cronjob\_job\_pod} & rel & 1.0000 & 0.2857 & \textbf{0.2857} \\
 \hline
-\texttt{pwhen\ \_using\ \_istio\ \_with\ \_kuber..} & rlwld & 0,0000 & 0 & 1 & 1,0000 & \textbf{0,5000} \\
+\textit{deep\_deployment\_container\_re..} & rel & 0.2812 & 0.0000 & \textbf{0.0000} \\
 \hline
-\texttt{pwith\ \_kubectl\ \_i\ \_know\ \_i\ \_can} & rlwld & 0,0000 & 3 & 1 & 0,5000 & \textbf{0,2500} \\
+\textit{deep\_statefulset\_container\_p..} & rel & 0.3261 & 0.0000 & \textbf{0.0000} \\
 \hline
-\texttt{serviceaccount\ \_pod\ \_binding} & rlwld & 0,0000 & 5 & 27 & 1,0000 & \textbf{0,5000} \\
+\textit{deployment\_pod\_relation} & rel & 0.2812 & 0.9000 & \textbf{0.9000} \\
 \hline
-\texttt{anyof\ \_intorstring} & rel & 0,0000 & 1 & 29 & 1,0000 & \textbf{0,5000} \\
+\textit{extends\_hpa\_metric} & rel & 0.4200 & 0.0000 & \textbf{0.0000} \\
 \hline
-\texttt{cronjob\ \_job\ \_pod} & rel & 0,0000 & 10 & -4 & 1,0000 & \textbf{0,5000} \\
+\textit{hpa\_deployment\_pod} & rel & 0.4200 & 0.0667 & \textbf{0.0667} \\
 \hline
-\texttt{deep\ \_deployment\ \_container\ \_re..} & rel & 0,0000 & 33 & -24 & 1,0000 & \textbf{0,5000} \\
+\textit{ingress\_service\_pod} & rel & 1.0000 & 1.0000 & \textbf{1.0000} \\
 \hline
-\texttt{deep\ \_statefulset\ \_container\ \_p..} & rel & 0,0000 & 47 & -32 & 1,0000 & \textbf{0,5000} \\
+\textit{namespace\_quota\_relation} & rel & 0.8333 & 0.5882 & \textbf{0.5882} \\
 \hline
-\texttt{deployment\ \_pod\ \_relation} & rel & 1,0000 & 32 & 0 & 0,7500 & \textbf{0,8750} \\
+\textit{networkpolicy\_pod\_selector} & rel & 0.4444 & 1.0000 & \textbf{1.0000} \\
 \hline
-\texttt{extends\ \_hpa\ \_metric} & rel & 0,0000 & 50 & -29 & 1,0000 & \textbf{0,5000} \\
+\textit{oneof\_volume\_source} & rel & 0.0000 & 0.3750 & \textbf{0.3750} \\
 \hline
-\texttt{hpa\ \_deployment\ \_pod} & rel & 0,0000 & 50 & -29 & 1,0000 & \textbf{0,5000} \\
+\textit{pod\_namespace\_relation} & rel & 0.2883 & 0.6667 & \textbf{0.6667} \\
 \hline
-\texttt{ingress\ \_service\ \_pod} & rel & 0,0000 & 23 & -2 & 0,7500 & \textbf{0,3750} \\
+\textit{pvc\_storageclass} & rel & 0.7857 & 0.1111 & \textbf{0.1111} \\
 \hline
-\texttt{namespace\ \_quota\ \_relation} & rel & 0,0000 & 5 & -2 & 1,0000 & \textbf{0,5000} \\
+\textit{rbac\_binding} & rel & 1.0000 & 0.4375 & \textbf{0.4375} \\
 \hline
-\texttt{networkpolicy\ \_pod\ \_selector} & rel & 0,0000 & 9 & -5 & 1,0000 & \textbf{0,5000} \\
+\textit{secret\_usage} & rel & 0.1615 & 0.0000 & \textbf{0.0000} \\
 \hline
-\texttt{oneof\ \_volume\ \_source} & rel & 0,0000 & 59 & -9 & 1,0000 & \textbf{0,5000} \\
+\textit{service\_selector} & rel & 0.2381 & 0.0000 & \textbf{0.0000} \\
 \hline
-\texttt{pod\ \_namespace\ \_relation} & rel & 0,0000 & 111 & -61 & 1,0000 & \textbf{0,5000} \\
+\textit{serviceaccount\_token\_binding} & rel & 0.0000 & 0.0000 & \textbf{0.0000} \\
 \hline
-\texttt{pvc\ \_storageclass} & rel & 1,0000 & 14 & 0 & 1,0000 & \textbf{1,0000} \\
+\textit{statefulset\_pvc\_pv} & rel & 0.3261 & 0.8182 & \textbf{0.8182} \\
 \hline
-\texttt{rbac\ \_binding} & rel & 1,0000 & 7 & 0 & 1,0000 & \textbf{1,0000} \\
+\textit{crashloopbackoff\_oomkilled} & trbl & 0.7143 & 0.6154 & \textbf{0.6154} \\
 \hline
-\texttt{secret\ \_usage} & rel & 0,0000 & 4 & 28 & 1,0000 & \textbf{0,5000} \\
+\textit{deployment\_rollout\_stuck} & trbl & 0.2812 & 0.1538 & \textbf{0.1538} \\
 \hline
-\texttt{service\ \_selector} & rel & 0,0000 & 42 & -32 & 1,0000 & \textbf{0,5000} \\
+\textit{imagepullbackoff\_registry\_se..} & trbl & 0.2883 & 0.6000 & \textbf{0.6000} \\
 \hline
-\texttt{serviceaccount\ \_token\ \_binding} & rel & 0,0000 & 4 & -2 & 1,0000 & \textbf{0,5000} \\
+\textit{pod\_pending\_no\_resources} & trbl & 0.2883 & 0.1818 & \textbf{0.1818} \\
 \hline
-\texttt{statefulset\ \_pvc\ \_pv} & rel & 0,0000 & 46 & -31 & 1,0000 & \textbf{0,5000} \\
+\textit{service\_no\_endpoints} & trbl & 0.2381 & 0.0000 & \textbf{0.0000} \\
 \hline
-\texttt{crashloopbackoff\ \_oomkilled} & trbl & 0,0000 & 112 & -80 & 0,5000 & \textbf{0,2500} \\
+\textit{clusterrole\_read\_pods} & yaml & 1.0000 & 0.3750 & \textbf{0.3750} \\
 \hline
-\texttt{deployment\ \_rollout\ \_stuck} & trbl & 0,0000 & 32 & -23 & 0,6667 & \textbf{0,3333} \\
+\textit{clusterrolebinding\_yaml} & yaml & 1.0000 & 0.2727 & \textbf{0.2727} \\
 \hline
-\texttt{imagepullbackoff\ \_registry\ \_se..} & trbl & 0,0000 & 111 & -79 & 0,6000 & \textbf{0,3000} \\
+\textit{configmap\_env} & yaml & --- & 0.1111 & \textbf{0.1111} \\
 \hline
-\texttt{pod\ \_pending\ \_no\ \_resources} & trbl & 0,0000 & 111 & -79 & 0,5000 & \textbf{0,2500} \\
+\textit{cronjob\_backup} & yaml & 1.0000 & --- & \textbf{---} \\
 \hline
-\texttt{service\ \_no\ \_endpoints} & trbl & 0,0000 & 43 & -33 & 0,5000 & \textbf{0,2500} \\
+\textit{cronjob\_with\_deadline} & yaml & 1.0000 & 0.1875 & \textbf{0.1875} \\
 \hline
-\texttt{clusterrole\ \_read\ \_pods} & yaml & 0,0000 & 4 & 50 & 0,2500 & \textbf{0,1250} \\
+\textit{daemonset\_fluentd} & yaml & 1.0000 & 0.6667 & \textbf{0.6667} \\
 \hline
-\texttt{clusterrolebinding\ \_yaml} & yaml & 0,0000 & 9 & 1 & 0,6667 & \textbf{0,3333} \\
+\textit{deployment\_3\_replicas} & yaml & 1.0000 & 0.0556 & \textbf{0.0556} \\
 \hline
-\texttt{configmap\ \_env} & yaml & 1,0000 & 0 & 0 & 0,6667 & \textbf{0,8333} \\
+\textit{deployment\_liveness\_probe} & yaml & 1.0000 & 0.0526 & \textbf{0.0526} \\
 \hline
-\texttt{cronjob\ \_backup} & yaml & 1,0000 & 10 & 0 & 0,5000 & \textbf{0,7500} \\
+\textit{deployment\_node\_selector} & yaml & 1.0000 & 0.1364 & \textbf{0.1364} \\
 \hline
-\texttt{daemonset\ \_fluentd} & yaml & 1,0000 & 31 & 0 & 0,5000 & \textbf{0,7500} \\
+\textit{hpa\_cpu\_yaml} & yaml & 1.0000 & 0.2143 & \textbf{0.2143} \\
 \hline
-\texttt{deployment\ \_3\ \_replicas} & yaml & 1,0000 & 32 & 0 & 0,6667 & \textbf{0,8333} \\
+\textit{ingress\_rules} & yaml & 1.0000 & 0.3000 & \textbf{0.3000} \\
 \hline
-\texttt{deployment\ \_liveness\ \_probe} & yaml & 1,0000 & 32 & 0 & 0,5000 & \textbf{0,7500} \\
+\textit{job\_with\_completions} & yaml & 1.0000 & 0.2000 & \textbf{0.2000} \\
 \hline
-\texttt{ingress\ \_rules} & yaml & 0,0000 & 21 & 32 & 0,7500 & \textbf{0,3750} \\
+\textit{limitrange\_yaml} & yaml & 1.0000 & 0.0625 & \textbf{0.0625} \\
 \hline
-\texttt{networkpolicy\ \_deny\ \_all} & yaml & 1,0000 & 9 & 0 & 0,7500 & \textbf{0,8750} \\
+\textit{networkpolicy\_deny\_all} & yaml & 1.0000 & 0.2500 & \textbf{0.2500} \\
 \hline
-\texttt{pod\ \_configmap\ \_volume} & yaml & 0,0000 & 111 & -61 & 0,6667 & \textbf{0,3333} \\
+\textit{networkpolicy\_egress\_yaml} & yaml & 1.0000 & 0.2500 & \textbf{0.2500} \\
 \hline
-\texttt{pvc\ \_dynamic} & yaml & 1,0000 & 14 & 0 & 0,4000 & \textbf{0,7000} \\
+\textit{pod\_configmap\_volume} & yaml & 0.4505 & 0.1667 & \textbf{0.1667} \\
 \hline
-\texttt{rolebinding\ \_dev} & yaml & 1,0000 & 7 & 0 & 0,6667 & \textbf{0,8333} \\
+\textit{pod\_init\_container\_yaml} & yaml & 0.4505 & 0.1667 & \textbf{0.1667} \\
 \hline
-\texttt{service\ \_nodeport} & yaml & 1,0000 & 42 & 0 & 0,5000 & \textbf{0,7500} \\
+\textit{pod\_resource\_limits} & yaml & 0.4505 & 0.3333 & \textbf{0.3333} \\
 \hline
-\texttt{statefulset\ \_with\ \_pvc} & yaml & 0,0000 & 46 & 2 & 0,5000 & \textbf{0,2500} \\
+\textit{pvc\_dynamic} & yaml & 1.0000 & 0.3000 & \textbf{0.3000} \\
 \hline
-\texttt{yaml\ \_layer3\ \_required\ \_fields} & yaml & 1,0000 & 32 & 0 & 0,6667 & \textbf{0,8333} \\
+\textit{rolebinding\_dev} & yaml & 1.0000 & 0.2000 & \textbf{0.2000} \\
 \hline
-\end{longtable}
-\end{footnotesize}
-
-% ─────────────────────────────────────────────────────────────
-\section{Metrik Domain Kubernetes}
-% ─────────────────────────────────────────────────────────────
-
-\begin{footnotesize}
-\begin{longtable}{|p{3.4cm}|c|c|c|c|c|c|}
-\caption{Metrik Domain Kubernetes per \textit{Fixture} (Path Coverage, Hop Accuracy, RGA, YAML, \textit{Intent})}
-\label{tbl:domain-full} \\
+\textit{secret\_opaque\_yaml} & yaml & --- & 0.1250 & \textbf{0.1250} \\
 \hline
-\textbf{ID Fixture} & \textbf{Tipe} & \textbf{PathCov} & \textbf{HopAcc} & \textbf{RGA} & \textbf{YAML Fail} & \textbf{Intent} \\
+\textit{service\_nodeport} & yaml & 1.0000 & 0.2000 & \textbf{0.2000} \\
 \hline
-\endfirsthead
+\textit{serviceaccount\_yaml} & yaml & 1.0000 & 0.1250 & \textbf{0.1250} \\
 \hline
-\textbf{ID Fixture} & \textbf{Tipe} & \textbf{PathCov} & \textbf{HopAcc} & \textbf{RGA} & \textbf{YAML Fail} & \textbf{Intent} \\
+\textit{statefulset\_with\_pvc} & yaml & 1.0000 & 0.2000 & \textbf{0.2000} \\
 \hline
-\endhead
-\hline
-\endfoot
-\hline
-\endlastfoot
-\texttt{kubectl\ \_export\ \_namespace\ \_res..} & cmd & 1,0000 & 1,0000 & 1.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{kubectl\ \_find\ \_pods\ \_with\ \_env} & cmd & 1,0000 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{kubectl\ \_force\ \_delete\ \_pod} & cmd & 1,0000 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small generate\ \_yaml} \\
-\hline
-\texttt{configmap\ \_usage} & cncpt & 0,0000 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{daemonset\ \_purpose} & cncpt & 1,0000 & 1,0000 & 0.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{deployment\ \_basic} & cncpt & 1,0000 & 0,0000 & 1.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{hpa\ \_target} & cncpt & 1,0000 & 1,0000 & 1.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{ingress\ \_purpose} & cncpt & 0,9286 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small planning} \\
-\hline
-\texttt{job\ \_cronjob} & cncpt & 1,0000 & 1,0000 & 1.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{namespace\ \_quota} & cncpt & 1,0000 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small planning} \\
-\hline
-\texttt{persistent\ \_volume\ \_concept} & cncpt & 1,0000 & 0,0000 & 1.00 & \texttt{---} & \texttt{\small planning} \\
-\hline
-\texttt{pod\ \_spec} & cncpt & 1,0000 & 0,0000 & 1.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{required\ \_fields\ \_container} & cncpt & 0,6333 & 0,0000 & 1.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{scope\ \_accuracy\ \_node} & cncpt & 1,0000 & 1,0000 & 1.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{secret\ \_types} & cncpt & 1,0000 & 1,0000 & 1.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{service\ \_types} & cncpt & 0,8333 & 0,0000 & 1.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{statefulset\ \_storage} & cncpt & 1,0000 & 1,0000 & 1.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{storageclass\ \_concept} & cncpt & 1,0000 & 1,0000 & 1.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{add\ \_env\ \_from\ \_configmap} & fllwp & 0,7500 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small followup} \\
-\hline
-\texttt{add\ \_env\ \_from\ \_secret} & fllwp & 1,0000 & 1,0000 & 0.00 & \texttt{---} & \texttt{\small followup} \\
-\hline
-\texttt{add\ \_hpa\ \_to\ \_deployment} & fllwp & 0,1818 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small followup} \\
-\hline
-\texttt{add\ \_liveness\ \_probe} & fllwp & 0,8182 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small followup} \\
-\hline
-\texttt{add\ \_pvc\ \_to\ \_statefulset} & fllwp & 1,0000 & 1,0000 & 1.00 & \texttt{---} & \texttt{\small followup} \\
-\hline
-\texttt{add\ \_readiness\ \_probe} & fllwp & 1,0000 & 1,0000 & 1.00 & \texttt{---} & \texttt{\small followup} \\
-\hline
-\texttt{add\ \_resource\ \_limits} & fllwp & 1,0000 & 1,0000 & 1.00 & \texttt{---} & \texttt{\small followup} \\
-\hline
-\texttt{add\ \_resource\ \_limits\ \_deployment} & fllwp & 0,9000 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small followup} \\
-\hline
-\texttt{change\ \_service\ \_type} & fllwp & 1,0000 & 1,0000 & 1.00 & \texttt{---} & \texttt{\small followup} \\
-\hline
-\texttt{expose\ \_with\ \_ingress} & fllwp & 1,0000 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small generate\ \_yaml} \\
-\hline
-\texttt{scale\ \_existing\ \_deployment} & fllwp & 1,0000 & 1,0000 & 1.00 & \texttt{---} & \texttt{\small followup} \\
-\hline
-\texttt{update\ \_image\ \_version} & fllwp & 1,0000 & 1,0000 & 0.00 & \texttt{---} & \texttt{\small followup} \\
-\hline
-\texttt{plan\ \_autoscale\ \_ha} & plan & 1,0000 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small planning} \\
-\hline
-\texttt{plan\ \_cronjob\ \_batch} & plan & 1,0000 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small planning} \\
-\hline
-\texttt{plan\ \_namespace\ \_isolation} & plan & 0,9091 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small planning} \\
-\hline
-\texttt{plan\ \_redis\ \_persistent} & plan & 1,0000 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small planning} \\
-\hline
-\texttt{plan\ \_webapp\ \_with\ \_db} & plan & 0,9429 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small planning} \\
-\hline
-\texttt{configmap\ \_volume\ \_mount} & rlwld & 1,0000 & 0,0000 & 1.00 & \texttt{syntactic} & \texttt{\small explain} \\
-\hline
-\texttt{deployment\ \_vs\ \_statefulset\ \_co..} & rlwld & 0,9412 & 0,0000 & 1.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{hpa\ \_custom\ \_metrics\ \_yaml} & rlwld & 1,0000 & 1,0000 & 0.00 & \texttt{schema} & \texttt{\small planning} \\
-\hline
-\texttt{pbased\ \_on\ \_a\ \_hrefhttpsstackov..} & rlwld & 1,0000 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{pcopied\ \_from\ \_here\ \_a\ \_hrefhttp..} & rlwld & 0,0000 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{pheres\ \_a\ \_simplified\ \_version\ \_..} & rlwld & 1,0000 & 1,0000 & 1.00 & \texttt{---} & \texttt{\small generate\ \_yaml} \\
-\hline
-\texttt{pi\ \_am\ \_quite\ \_new\ \_to\ \_tektonp} & rlwld & 0,0000 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small planning} \\
-\hline
-\texttt{pi\ \_am\ \_wondering\ \_if\ \_it\ \_is} & rlwld & 1,0000 & 1,0000 & 1.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{pi\ \_cant\ \_find\ \_documentation\ \_o..} & rlwld & 0,0000 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small planning} \\
-\hline
-\texttt{pi\ \_have\ \_a\ \_command\ \_to\ \_run} & rlwld & 1,0000 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small planning} \\
-\hline
-\texttt{pi\ \_have\ \_a\ \_google\ \_kubernetes\ \_..} & rlwld & 0,0000 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small planning} \\
-\hline
-\texttt{pi\ \_have\ \_a\ \_tekton\ \_codepipelin..} & rlwld & 0,0714 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{pi\ \_want\ \_to\ \_pass\ \_a\ \_certificate} & rlwld & 1,0000 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small generate\ \_yaml} \\
-\hline
-\texttt{pi\ \_want\ \_to\ \_reject\ \_all\ \_docker} & rlwld & 0,0000 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small planning} \\
-\hline
-\texttt{pid\ \_like\ \_to\ \_confirm\ \_informat..} & rlwld & 1,0000 & 0,0000 & 1.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{pim\ \_trying\ \_to\ \_use\ \_a\ \_container} & rlwld & 1,0000 & 1,0000 & 0.00 & \texttt{---} & \texttt{\small planning} \\
-\hline
-\texttt{pim\ \_using\ \_argocd\ \_and\ \_i\ \_want} & rlwld & 0,0000 & 0,0000 & 0.00 & \texttt{schema} & \texttt{\small planning} \\
-\hline
-\texttt{pkubectl\ \_provides\ \_a\ \_nice\ \_way..} & rlwld & 1,0000 & 1,0000 & 0.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{precodespec\ \_containers\ \_image..} & rlwld & 1,0000 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small generate\ \_yaml} \\
-\hline
-\texttt{pthis\ \_eks\ \_cluster\ \_has\ \_a\ \_priv..} & rlwld & 0,0000 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small planning} \\
-\hline
-\texttt{pusing\ \_kubernetes\ \_v1157\ \_in\ \_m..} & rlwld & 1,0000 & 1,0000 & 0.00 & \texttt{---} & \texttt{\small generate\ \_yaml} \\
-\hline
-\texttt{pwhen\ \_using\ \_istio\ \_with\ \_kuber..} & rlwld & 1,0000 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small planning} \\
-\hline
-\texttt{pwith\ \_kubectl\ \_i\ \_know\ \_i\ \_can} & rlwld & 0,0000 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{serviceaccount\ \_pod\ \_binding} & rlwld & 0,6000 & 0,0000 & 0.00 & \texttt{syntactic} & \texttt{\small explain} \\
-\hline
-\texttt{anyof\ \_intorstring} & rel & 1,0000 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{cronjob\ \_job\ \_pod} & rel & 1,0000 & 0,0000 & 1.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{deep\ \_deployment\ \_container\ \_re..} & rel & 0,9697 & 0,0000 & 1.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{deep\ \_statefulset\ \_container\ \_p..} & rel & 0,9787 & 0,0000 & 1.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{deployment\ \_pod\ \_relation} & rel & 1,0000 & 1,0000 & 0.00 & \texttt{---} & \texttt{\small trace\ \_relati..} \\
-\hline
-\texttt{extends\ \_hpa\ \_metric} & rel & 1,0000 & 0,0000 & 1.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{hpa\ \_deployment\ \_pod} & rel & 1,0000 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{ingress\ \_service\ \_pod} & rel & 0,9565 & 0,0000 & 1.00 & \texttt{---} & \texttt{\small trace\ \_relati..} \\
-\hline
-\texttt{namespace\ \_quota\ \_relation} & rel & 0,6000 & 0,0000 & 1.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{networkpolicy\ \_pod\ \_selector} & rel & 1,0000 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{oneof\ \_volume\ \_source} & rel & 0,6102 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small trace\ \_relati..} \\
-\hline
-\texttt{pod\ \_namespace\ \_relation} & rel & 1,0000 & 0,0000 & 1.00 & \texttt{---} & \texttt{\small trace\ \_relati..} \\
-\hline
-\texttt{pvc\ \_storageclass} & rel & 1,0000 & 1,0000 & 1.00 & \texttt{---} & \texttt{\small trace\ \_relati..} \\
-\hline
-\texttt{rbac\ \_binding} & rel & 1,0000 & 1,0000 & 1.00 & \texttt{---} & \texttt{\small trace\ \_relati..} \\
-\hline
-\texttt{secret\ \_usage} & rel & 0,5000 & 0,0000 & 1.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{service\ \_selector} & rel & 1,0000 & 0,0000 & 1.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{serviceaccount\ \_token\ \_binding} & rel & 0,5000 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{statefulset\ \_pvc\ \_pv} & rel & 1,0000 & 0,0000 & 1.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{crashloopbackoff\ \_oomkilled} & trbl & 0,9911 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{deployment\ \_rollout\ \_stuck} & trbl & 1,0000 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{imagepullbackoff\ \_registry\ \_se..} & trbl & 1,0000 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{pod\ \_pending\ \_no\ \_resources} & trbl & 1,0000 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{service\ \_no\ \_endpoints} & trbl & 0,9767 & 0,0000 & 0.00 & \texttt{---} & \texttt{\small explain} \\
-\hline
-\texttt{clusterrole\ \_read\ \_pods} & yaml & 1,0000 & 0,0000 & 1.00 & \texttt{none} & \texttt{\small generate\ \_yaml} \\
-\hline
-\texttt{clusterrolebinding\ \_yaml} & yaml & 1,0000 & 0,0000 & 1.00 & \texttt{none} & \texttt{\small generate\ \_yaml} \\
-\hline
-\texttt{configmap\ \_env} & yaml & 1,0000 & 1,0000 & 1.00 & \texttt{none} & \texttt{\small generate\ \_yaml} \\
-\hline
-\texttt{cronjob\ \_backup} & yaml & 1,0000 & 1,0000 & 0.00 & \texttt{none} & \texttt{\small generate\ \_yaml} \\
-\hline
-\texttt{daemonset\ \_fluentd} & yaml & 1,0000 & 1,0000 & 0.00 & \texttt{none} & \texttt{\small generate\ \_yaml} \\
-\hline
-\texttt{deployment\ \_3\ \_replicas} & yaml & 1,0000 & 1,0000 & 0.00 & \texttt{none} & \texttt{\small generate\ \_yaml} \\
-\hline
-\texttt{deployment\ \_liveness\ \_probe} & yaml & 1,0000 & 1,0000 & 1.00 & \texttt{none} & \texttt{\small generate\ \_yaml} \\
-\hline
-\texttt{ingress\ \_rules} & yaml & 1,0000 & 0,0000 & 0.00 & \texttt{none} & \texttt{\small generate\ \_yaml} \\
-\hline
-\texttt{networkpolicy\ \_deny\ \_all} & yaml & 1,0000 & 1,0000 & 1.00 & \texttt{none} & \texttt{\small generate\ \_yaml} \\
-\hline
-\texttt{pod\ \_configmap\ \_volume} & yaml & 1,0000 & 0,0000 & 1.00 & \texttt{none} & \texttt{\small generate\ \_yaml} \\
-\hline
-\texttt{pvc\ \_dynamic} & yaml & 1,0000 & 1,0000 & 1.00 & \texttt{none} & \texttt{\small generate\ \_yaml} \\
-\hline
-\texttt{rolebinding\ \_dev} & yaml & 1,0000 & 1,0000 & 1.00 & \texttt{none} & \texttt{\small generate\ \_yaml} \\
-\hline
-\texttt{service\ \_nodeport} & yaml & 1,0000 & 1,0000 & 0.00 & \texttt{none} & \texttt{\small generate\ \_yaml} \\
-\hline
-\texttt{statefulset\ \_with\ \_pvc} & yaml & 1,0000 & 0,0000 & 1.00 & \texttt{none} & \texttt{\small generate\ \_yaml} \\
-\hline
-\texttt{yaml\ \_layer3\ \_required\ \_fields} & yaml & 1,0000 & 1,0000 & 1.00 & \texttt{none} & \texttt{\small generate\ \_yaml} \\
+\textit{yaml\_layer3\_required\_fields} & yaml & 1.0000 & 0.0000 & \textbf{0.0000} \\
 \hline
 \end{longtable}
 \end{footnotesize}

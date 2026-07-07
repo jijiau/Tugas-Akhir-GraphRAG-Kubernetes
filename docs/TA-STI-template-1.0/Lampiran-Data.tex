@@ -1,0 +1,94 @@
+\cleardoublepage
+\chapter{SKEMA \textit{KNOWLEDGE GRAPH} DAN CONTOH DATA}
+\label{lampiran:skema-data}
+
+Lampiran ini menyajikan bentuk konkret data yang mengalir dalam \textit{pipeline ingestion} sistem \textit{GraphRAG} Kubernetes: dari definisi \texttt{swagger.json} sebagai masukan, menjadi \textit{node} dan \textit{relationship} di \textit{knowledge graph} Neo4j sebagai keluaran, sebagaimana dibahas pada Bab~\ref{chap:implementasi}. Bagian terakhir merangkum skema graf secara menyeluruh: label \textit{node} dan seluruh 18 tipe \textit{edge} yang digunakan sistem.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Contoh Masukan: Cuplikan \texttt{definitions.json}}
+% ─────────────────────────────────────────────────────────────────────────────
+
+Cuplikan berikut menunjukkan dua entri OpenAPI \textit{definitions} dari \texttt{swagger.json} Kubernetes sebagaimana diproses oleh \textit{SwaggerGraphBuilder} pada Fase 1 (Bab~\ref{chap:implementasi}): \texttt{DeploymentStrategy} dan \texttt{RollingUpdateDeployment}, yang saling terhubung melalui \textit{field} \texttt{rollingUpdate}.
+
+\lstinputlisting[
+    language=json,
+    frame=single,
+    captionpos=t,
+    caption={\textit{Cuplikan definitions.json} — \texttt{DeploymentStrategy} dan \texttt{RollingUpdateDeployment}},
+    label={lst:kg-input-swagger}
+]{listings/kg-input-swagger-snippet.json}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Contoh Keluaran: Node dan Relationship di Neo4j}
+% ─────────────────────────────────────────────────────────────────────────────
+
+Cuplikan di atas, setelah melalui Fase 1 (pembuatan \textit{node}) dan Fase 2 (pembuatan \textit{edge} struktural), menghasilkan dua \textit{node} berlabel \texttt{Definition} beserta satu \textit{relationship} \texttt{HAS\_PROPERTY} yang menghubungkannya. Properti \texttt{embedding} (vektor 1536 dimensi dari \texttt{text-embedding-3-small}, Fase 1.5) dipangkas untuk keterbacaan.
+
+\lstinputlisting[
+    language=json,
+    frame=single,
+    captionpos=t,
+    caption={Representasi \textit{Node} dan \textit{Relationship} Hasil \textit{Ingestion} di Neo4j},
+    label={lst:kg-output-node}
+]{listings/kg-output-node-example.json}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Skema Graf: Label Node dan Tipe Edge}
+% ─────────────────────────────────────────────────────────────────────────────
+
+Seluruh \textit{node} di \textit{knowledge graph} berlabel \texttt{Definition}; \textit{node} yang merepresentasikan \textit{resource} Kubernetes tingkat atas (memiliki \textit{Group-Version-Kind} pada \texttt{x-kubernetes-group-version-kind}) mendapat label tambahan \texttt{K8sResource}. Tabel~\ref{tbl:edge-schema} merangkum seluruh 18 tipe \textit{edge} yang dibangun pada Fase 2 (struktural), Fase 2.5 (\textit{inheritance}/\textit{union type}), dan Fase 3 (semantik) \textit{pipeline ingestion}.
+
+\begin{footnotesize}
+\begin{longtable}{|p{3.6cm}|p{5.2cm}|p{5.4cm}|}
+\caption{Skema 18 Tipe \textit{Edge} \textit{Knowledge Graph}}
+\label{tbl:edge-schema} \\
+\hline
+\textbf{Tipe Edge} & \textbf{Contoh Relasi} & \textbf{Keterangan} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Tipe Edge} & \textbf{Contoh Relasi} & \textbf{Keterangan} \\
+\hline
+\endhead
+\hline
+\endfoot
+\hline
+\endlastfoot
+\textit{HAS\_PROPERTY} & Resource $\rightarrow$ \textit{field}/tipe anak & Relasi struktural utama; setiap \textit{field} objek pada skema OpenAPI \\
+\hline
+\textit{EXTENDS} & Deployment $\rightarrow$ DeploymentSpec & Pola pewarisan implisit \textit{resource} $\rightarrow$ \texttt{*Spec}-nya \\
+\hline
+\textit{ONE\_OF} & \texttt{IntOrString} $\rightarrow$ opsi tipe & Alternatif tipe polimorfik (\textit{union type}) \\
+\hline
+\textit{ANY\_OF} & \texttt{EnvVarSource} $\rightarrow$ opsi tipe & Alternatif tipe polimorfik (\textit{union type}) \\
+\hline
+\textit{SCALES\_RESOURCE} & HPA $\rightarrow$ Deployment/StatefulSet/ReplicaSet & \textit{Horizontal Pod Autoscaler} menyasar target skalanya \\
+\hline
+\textit{CONTAINS\_POD\_TEMPLATE} & Deployment/StatefulSet/DaemonSet/Job $\rightarrow$ PodTemplateSpec & \textit{Workload controller} berisi templat Pod \\
+\hline
+\textit{CONTAINS\_JOB\_TEMPLATE} & CronJob $\rightarrow$ JobTemplateSpec & CronJob berisi templat Job \\
+\hline
+\textit{BINDS\_ROLE} & RoleBinding/ClusterRoleBinding $\rightarrow$ Role/ClusterRole & Relasi RBAC \\
+\hline
+\textit{BINDS\_SERVICE\_ACCOUNT} & RoleBinding/ClusterRoleBinding $\rightarrow$ ServiceAccount & Relasi RBAC \\
+\hline
+\textit{HAS\_CONTAINER} & PodSpec $\rightarrow$ Container & PodSpec berisi satu atau lebih Container \\
+\hline
+\textit{CLAIMS\_VOLUME} & StatefulSet $\rightarrow$ PersistentVolumeClaim & \textit{Volume claim templates} StatefulSet \\
+\hline
+\textit{MOUNTS\_VOLUME} & PodSpec $\rightarrow$ Volume & Volume yang dipasang pada Pod \\
+\hline
+\textit{USES\_STORAGE\_CLASS} & PersistentVolumeClaim $\rightarrow$ StorageClass & PVC menyasar kelas penyimpanan \\
+\hline
+\textit{LOADS\_CONFIGMAP} & Container $\rightarrow$ ConfigMap & Konfigurasi dimuat via \texttt{envFrom}/\texttt{volumeMounts} \\
+\hline
+\textit{USES\_SECRET} & PodSpec $\rightarrow$ Secret & \textit{Secret} digunakan oleh Pod \\
+\hline
+\textit{SELECTS\_POD} & Service $\rightarrow$ Pod & Service memilih Pod melalui \textit{label selector} \\
+\hline
+\textit{ROUTES\_TO\_SERVICE} & Ingress $\rightarrow$ Service & Ingress merutekan \textit{traffic} ke Service \\
+\hline
+\textit{USES\_SERVICE\_ACCOUNT} & PodSpec $\rightarrow$ ServiceAccount & Pod berjalan dengan identitas ServiceAccount \\
+\hline
+\end{longtable}
+\end{footnotesize}

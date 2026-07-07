@@ -1,6 +1,6 @@
-﻿\renewcommand{\arraystretch}{1.3}
+﻿\renewcommand{\arraystretch}{1.1}
 \captionsetup[table]{justification=raggedright,singlelinecheck=false}
-\begin{table}[H]
+\begin{table}[htbp]
 \caption{Dependensi Utama Implementasi Sistem GraphRAG Kubernetes}
 \label{tbl:tech_stack}
 \centering
@@ -10,9 +10,9 @@
 \hline
 LangGraph & 1.0.9 & Orkestrasi lima \textit{AI agent} berbasis \textit{state machine} (lihat Tabel~\ref{tbl:langgraph_nodes}) \\
 \hline
-LangChain-Core & 1.2.15 & Penyimpanan riwayat percakapan dalam sesi yang sama melalui format pesan \textit{BaseMessage}/\textit{AIMessage} \\
+LangChain-Core & 1.2.15 & Format pesan \textit{BaseMessage}/\textit{AIMessage} untuk riwayat percakapan dalam sesi \\
 \hline
-LangChain-OpenAI & 1.1.10 & \textit{ChatOpenAI} untuk node \textit{Thinker} (temp=0,0) dan \textit{Speaker} (temp=0,1); \textit{OpenAIEmbeddings} untuk evaluasi \\
+LangChain-OpenAI & 1.1.10 & \textit{ChatOpenAI} untuk node \textit{Thinker} dan \textit{Speaker}; \textit{OpenAIEmbeddings} untuk evaluasi \\
 \hline
 Neo4j Python Driver & 6.1.0 & Koneksi dan eksekusi \textit{query} Cypher ke \textit{knowledge graph} \\
 \hline

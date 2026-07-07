@@ -1,0 +1,19 @@
+\renewcommand{\arraystretch}{1.3}
+\captionsetup[table]{justification=raggedright,singlelinecheck=false}
+\begin{table}[H]
+\caption{\textit{Hop Accuracy} GraphRAG Terstratifikasi berdasarkan Ukuran \textit{Ground Truth Path}}
+\label{tbl:hop_accuracy_stratified}
+\centering
+\begin{tabular}{| p{0.38\textwidth} | >{\centering\arraybackslash}p{0.12\textwidth} | >{\centering\arraybackslash}p{0.12\textwidth} | p{0.24\textwidth} |}
+\hline
+\textbf{Stratum} & \textbf{\textit{n}} & \textbf{\textit{Hop Accuracy}} & \textbf{Deskripsi} \\
+\hline
+Focused ($\textit{expected\_path} \leq 15$ \textit{edge}) & 50 & \textbf{0,9086} & Subgraf terfokus; sistem berhasil menelusuri hampir seluruh \textit{edge} relevan \\
+\hline
+Closure ($\textit{expected\_path} > 15$ \textit{edge}) & 43 & 0,5791 & Subgraf besar; pencakupan \textit{edge} lebih sulit secara inheren \\
+\hline
+\textbf{Keseluruhan} & \textbf{93} & \textbf{0,7562} & \textit{Fixture} dengan \textit{expected\_path} tak kosong \\
+\hline
+\end{tabular}
+\end{table}
+{\small\noindent Stratifikasi berdasarkan ukuran \textit{expected\_path} pada \textit{ground truth fixture}. \textit{Hop Accuracy} = \textit{edge recall}: $|E_\text{pred} \cap E_\text{gt}| / |E_\text{gt}|$ \parencite{manning_ir_2008}. \textit{Fixture} dengan \textit{expected\_path} kosong (\textit{conceptual}, sebagian \textit{yaml\_gen}) dikecualikan.}

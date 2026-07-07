@@ -1,18 +1,18 @@
 [0] Config.pm:307> INFO - This is Biber 2.19
-[0] Config.pm:310> INFO - Logfile is 'TA.blg'
-[179] biber-MSWIN64:340> INFO - === 
-[230] Biber.pm:419> INFO - Reading 'TA.bcf'
-[494] Biber.pm:979> INFO - Found 27 citekeys in bib section 0
-[512] Biber.pm:4419> INFO - Processing section 0
-[527] Biber.pm:4610> INFO - Looking for bibtex file 'daftar-pustaka.bib' for section 0
-[595] bibtex.pm:1713> INFO - LaTeX decoding ...
-[645] bibtex.pm:1519> INFO - Found BibTeX data source 'daftar-pustaka.bib'
-[1012] UCollate.pm:68> INFO - Overriding locale 'indonesian' defaults 'level = 4' with 'level = 2'
-[1015] UCollate.pm:68> INFO - Overriding locale 'indonesian' defaults 'variable = shifted' with 'variable = non-ignorable'
-[1015] UCollate.pm:68> INFO - Overriding locale 'indonesian' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[1015] Biber.pm:4239> INFO - Sorting list 'cms/global//global/global' of type 'entry' with template 'cms' and locale 'indonesian'
-[1015] Biber.pm:4245> INFO - No sort tailoring available for locale 'indonesian'
-[1073] bbl.pm:660> INFO - Writing 'TA.bbl' with encoding 'UTF-8'
-[1102] bbl.pm:763> INFO - Output to TA.bbl
-[1102] Biber.pm:131> WARN - legacy month field 'oct' in entry 'hsgrag2025acm' is not an integer - this will probably not sort properly.
-[1103] Biber.pm:133> INFO - WARNINGS: 1
+[1] Config.pm:310> INFO - Logfile is 'TA.blg'
+[312] biber-MSWIN64:340> INFO - === 
+[444] Biber.pm:419> INFO - Reading 'TA.bcf'
+[687] Biber.pm:979> INFO - Found 27 citekeys in bib section 0
+[704] Biber.pm:4419> INFO - Processing section 0
+[743] Biber.pm:4610> INFO - Looking for bibtex file 'daftar-pustaka.bib' for section 0
+[809] bibtex.pm:1713> INFO - LaTeX decoding ...
+[859] bibtex.pm:1519> INFO - Found BibTeX data source 'daftar-pustaka.bib'
+[1341] UCollate.pm:68> INFO - Overriding locale 'indonesian' defaults 'variable = shifted' with 'variable = non-ignorable'
+[1341] UCollate.pm:68> INFO - Overriding locale 'indonesian' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[1341] UCollate.pm:68> INFO - Overriding locale 'indonesian' defaults 'level = 4' with 'level = 2'
+[1341] Biber.pm:4239> INFO - Sorting list 'cms/global//global/global' of type 'entry' with template 'cms' and locale 'indonesian'
+[1341] Biber.pm:4245> INFO - No sort tailoring available for locale 'indonesian'
+[1450] bbl.pm:660> INFO - Writing 'TA.bbl' with encoding 'UTF-8'
+[1479] bbl.pm:763> INFO - Output to TA.bbl
+[1479] Biber.pm:131> WARN - legacy month field 'oct' in entry 'hsgrag2025acm' is not an integer - this will probably not sort properly.
+[1480] Biber.pm:133> INFO - WARNINGS: 1

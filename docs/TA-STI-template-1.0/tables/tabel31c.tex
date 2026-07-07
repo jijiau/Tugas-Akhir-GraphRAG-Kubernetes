@@ -1,0 +1,15 @@
+\renewcommand{\arraystretch}{1.3}
+\captionsetup[table]{justification=raggedright,singlelinecheck=false}
+\begin{table}[H]
+\caption{Perbandingan \textit{Faithfulness}: GraphRAG vs.\ Vector RAG}
+\label{tbl:faithfulness_comparison}
+\centering
+\begin{tabular}{| p{0.30\textwidth} | >{\centering\arraybackslash}p{0.14\textwidth} | >{\centering\arraybackslash}p{0.14\textwidth} | >{\centering\arraybackslash}p{0.10\textwidth} | >{\centering\arraybackslash}p{0.14\textwidth} |}
+\hline
+\textbf{Metrik} & \textbf{Vector RAG} & \textbf{Graph RAG} & \textbf{$\Delta$} & \textbf{Sig} \\
+\hline
+\textit{Faithfulness} & 0,1675 & \textbf{0,3055} & $+0{,}127$ & $p<0{,}001$ *** \\
+\hline
+\end{tabular}
+\end{table}
+{\small\noindent Uji Wilcoxon + \textit{paired bootstrap} 1.000 iterasi, $H_1$: GraphRAG $>$ Vector RAG. \textit{Faithfulness} = proporsi klaim dalam jawaban yang dapat dilacak ke \textit{retrieved context} \parencite{es_ragas_2023}. N/A untuk Vanilla LLM (tidak ada \textit{retrieval context}). \textit{Catatan}: nilai absolut mencerminkan desain \textit{open-book} sistem --- 55,6\% klaim bersumber dari pengetahuan parametrik LLM.}

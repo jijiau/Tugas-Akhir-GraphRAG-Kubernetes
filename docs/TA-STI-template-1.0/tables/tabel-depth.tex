@@ -1,0 +1,23 @@
+\renewcommand{\arraystretch}{1.3}
+\captionsetup[table]{justification=raggedright,singlelinecheck=false}
+\begin{table}[H]
+\caption{Sensitivitas Kedalaman Traversal: Skor per Dimensi ($n{=}102$)}
+\label{tbl:depth_sensitivity}
+\centering
+\begin{tabular}{| c | c | c | c | p{0.30\textwidth} |}
+\hline
+\textbf{Kedalaman ($d$)} & \textbf{RetQ F1} & \textbf{AnsQ} & \textbf{\textit{Hop Accuracy}} & \textbf{Catatan} \\
+\hline
+$d=1$ & 0,3666 & 0,7815 & 0,2574 & \textit{Retrieval} dangkal; banyak relasi tidak terjangkau \\
+\hline
+$d=2$ (\textit{default}) & \textbf{0,7089} & \textbf{0,8031} & 0,7562 & Titik optimum RetQ dan AnsQ \\
+\hline
+$d=3$ & 0,6593 & 0,7891 & \textbf{0,9007} & HopAcc tertinggi; RetQ mulai turun \\
+\hline
+$d=4$ & 0,6113 & 0,7828 & 0,9007 & RetQ turun lebih lanjut; presisi berkurang \\
+\hline
+$d=5$ & 0,5838 & 0,7817 & 0,8760 & HopAcc menurun dari $d=3$--$d=4$; \textit{noise} meningkat \\
+\hline
+\end{tabular}
+\end{table}
+{\small\noindent Nilai $d=2$ merupakan \textit{default} adaptif dalam sistem GraphRAG. \textit{Hop Accuracy} meningkat dari $d=1$ ke $d=3$, stabil di $d=4$, lalu turun di $d=5$ (\textit{noise} meningkat). RetQ menurun pada $d>2$ karena \textit{retrieval} lebih dalam menarik \textit{node} tambahan yang menurunkan presisi.}

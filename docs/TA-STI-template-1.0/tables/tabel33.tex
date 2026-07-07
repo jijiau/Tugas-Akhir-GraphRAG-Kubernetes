@@ -1,7 +1,7 @@
 \renewcommand{\arraystretch}{1.3}
 \captionsetup[table]{justification=raggedright,singlelinecheck=false}
 \begin{table}[H]
-\caption{Uji Signifikansi Statistik: GraphRAG vs.\ \textit{Baseline} per Faktor ($n=97$, Holm-Bonferroni)}
+\caption{Uji Signifikansi Statistik: GraphRAG vs.\ \textit{Baseline} per Dimensi ($n{=}102$, Holm-Bonferroni)}
 \label{tbl:statistical_test}
 \centering
 \begin{footnotesize}
@@ -9,29 +9,21 @@
 \setlength{\tabcolsep}{6pt}
 \begin{tabular}{| l | r | c | c | r | c | c |}
 \hline
-\multirow{2}{*}{\textbf{Faktor}}
+\multirow{2}{*}{\textbf{Metrik}}
   & \multicolumn{3}{c|}{\textbf{GraphRAG vs.\ Vector RAG}}
   & \multicolumn{3}{c|}{\textbf{GraphRAG vs.\ Vanilla LLM}} \\
 \cline{2-7}
   & \textbf{$\Delta$} & \textbf{95\% CI} & \textbf{Sig}
   & \textbf{$\Delta$} & \textbf{95\% CI} & \textbf{Sig} \\
 \hline
-AnsQ           & $-0{,}014$ & $[-0{,}05;\ +0{,}01]$ & n.s. & $-0{,}019$ & $[-0{,}06;\ +0{,}02]$ & n.s. \\
+AnsQ & $+0{,}005$ & $[-0{,}016;\ +0{,}025]$ & n.s. & $+0{,}056$ & $[+0{,}030;\ +0{,}088]$ & ***  \\
 \hline
-RetQ           & $+0{,}300$ & $[+0{,}23;\ +0{,}37]$ & ***  & $+0{,}702$ & $[+0{,}63;\ +0{,}77]$ & ***  \\
+RetQ (F1) & $+0{,}465$ & $[+0{,}405;\ +0{,}529]$ & *** & $+0{,}709$ & $[+0{,}652;\ +0{,}765]$ & *** \\
 \hline
-ReaQ           & $+0{,}225$ & $[+0{,}17;\ +0{,}28]$ & ***  & $+0{,}220$ & $[+0{,}17;\ +0{,}27]$ & ***  \\
+\textit{Faithfulness} & $+0{,}127$ & $[+0{,}059;\ +0{,}198]$ & *** & N/A & --- & --- \\
 \hline
-\textit{Path Coverage} & $+0{,}310$ & $[+0{,}23;\ +0{,}40]$ & *** & $+0{,}779$ & $[+0{,}70;\ +0{,}85]$ & *** \\
+\textit{Syntactic Validity} & $+0{,}036$ & $[+0{,}000;\ +0{,}107]$ & n.s. & $+0{,}143$ & $[+0{,}036;\ +0{,}286]$ & * \\
 \hline
-\textit{Hop Accuracy}  & $+0{,}350$ & $[+0{,}26;\ +0{,}45]$ & *** & $+0{,}278$ & $[+0{,}19;\ +0{,}37]$ & *** \\
-\hline
-RGA            & $+0{,}175$ & $[+0{,}08;\ +0{,}28]$ & ***  & $+0{,}433$ & $[+0{,}34;\ +0{,}54]$ & ***  \\
-\hline
-YAML \textit{Syntactic} & $0{,}000$ & $[0{,}00;\ 0{,}00]$ & n.s. & $0{,}000$ & --- & n.s. \\
-\hline
-\multicolumn{7}{l}{\scriptsize *** $p < 0{,}001$ (Wilcoxon \textit{signed-rank} + \textit{paired bootstrap} 1.000 iterasi, $H_1$: GraphRAG $>$ \textit{baseline}).} \\
-\multicolumn{7}{l}{\scriptsize Koreksi Holm-Bonferroni per keluarga uji (7 faktor). n.s. = tidak signifikan.} \\
 \end{tabular}}
 \end{footnotesize}
 \end{table}

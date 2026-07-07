@@ -1,95 +1,52 @@
 \cleardoublepage
-\chapter{KODE PROGRAM}
+\chapter{TEMPLATE QUERY CYPHER}
 
-Lampiran ini menyajikan kode sumber komponen inti sistem \textit{GraphRAG} Kubernetes yang dibahas pada Bab~\ref{chap:implementasi}. Komentar dan \textit{docstring} pada setiap berkas dihilangkan agar \textit{listing} lebih ringkas dan terfokus pada logika program. Kode lengkap beserta riwayat komit tersedia di repositori proyek.
+Lampiran ini menyajikan template \textit{query} Cypher inti yang digunakan sistem \textit{GraphRAG} Kubernetes untuk mengakses \textit{knowledge graph} di Neo4j, sebagaimana dibahas pada Bab~\ref{chap:implementasi}. Query lengkap beserta seluruh varian (\textit{ablation}, \textit{baseline}) tersedia di berkas \texttt{src/graph/queries.py} pada repositori proyek.
 
 % ─────────────────────────────────────────────────────────────────────────────
-\section{Manajemen Memori Percakapan (\textit{ZepMemoryStore})}
+\section{Pencarian Exact Match}
 % ─────────────────────────────────────────────────────────────────────────────
 
-Kelas \textit{ZepMemoryStore} pada berkas \texttt{src/memory/zep\_store.py} menyediakan penyimpanan riwayat percakapan berbasis SQLite lokal sebagai pengganti Zep Cloud.
+Query berikut mencari \textit{root node} berdasarkan kecocokan nama persis, digunakan sebelum \textit{vector search} untuk memastikan presisi saat nama \textit{resource} disebutkan secara eksplisit dalam pertanyaan pengguna.
 
 \lstinputlisting[
-    language=Python,
-    style=pythonstyle,
-    caption={\texttt{src/memory/zep\_store.py} — Manajemen Memori Percakapan},
-    label={lst:zep-store}
-]{listings/zep-store.py}
+    language=Cypher,
+    caption={Pencarian \textit{Exact Match} berdasarkan Nama \textit{Resource}},
+    label={lst:cypher-exact-match}
+]{listings/cypher-exact-match.cypher}
 
 % ─────────────────────────────────────────────────────────────────────────────
-\section{\textit{Pipeline Ingestion} Data (\textit{SwaggerGraphBuilder})}
+\section{Traversal Multi-Hop (Schema Dependencies)}
 % ─────────────────────────────────────────────────────────────────────────────
 
-Kelas \textit{SwaggerGraphBuilder} pada berkas \texttt{src/ingestion/parser.py} mengimplementasikan pipeline 5-fase untuk mengubah \texttt{swagger.json} Kubernetes menjadi \textit{knowledge graph} di Neo4j.
+Query berikut menelusuri dependensi skema dari \textit{root node} yang ditemukan, menggunakan seluruh 18 tipe \textit{edge} dalam \textit{knowledge graph} untuk membangun konteks yang diberikan ke LLM. Tipe \textit{edge} dan kedalaman maksimum disubstitusi saat \textit{call-time} karena Cypher tidak mendukung parameterisasi \texttt{\$}-\textit{param} untuk nama tipe \textit{relationship} maupun batas \textit{variable-length path}.
 
 \lstinputlisting[
-    language=Python,
-    style=pythonstyle,
-    caption={\texttt{src/ingestion/parser.py} — Pipeline Ingestion Data (SwaggerGraphBuilder)},
-    label={lst:parser}
-]{listings/parser.py}
+    language=Cypher,
+    caption={Traversal Multi-Hop untuk Konteks Skema (\textit{Schema Dependencies})},
+    label={lst:cypher-multihop}
+]{listings/cypher-multihop-traversal.cypher}
 
 % ─────────────────────────────────────────────────────────────────────────────
-\section{\textit{LangGraph Agent Pipeline}}
+\section{Pencarian Vektor (Vector Search)}
 % ─────────────────────────────────────────────────────────────────────────────
 
-Berkas \texttt{src/chatbot/graph\_agent.py} mendefinisikan \textit{state machine} LangGraph yang mengorkestrasi lima node pipeline: \textit{memory} $\rightarrow$ \textit{thinker} $\rightarrow$ \textit{retriever} $\rightarrow$ \textit{speaker} $\rightarrow$ \textit{saver}.
+Query berikut adalah jalur \textit{fallback} saat pencarian \textit{exact match} gagal menemukan \textit{root node}. Pencarian memanfaatkan \textit{Native Vector Index} Neo4j dengan fungsi kemiripan \textit{cosine}, kemudian diperluas dengan traversal multi-hop yang sama.
 
 \lstinputlisting[
-    language=Python,
-    style=pythonstyle,
-    caption={\texttt{src/chatbot/graph\_agent.py} — LangGraph Agent Pipeline},
-    label={lst:graph-agent}
-]{listings/graph-agent.py}
+    language=Cypher,
+    caption={Pencarian Hibrida Vektor dan Graf (\textit{Hybrid Vector + Graph Search})},
+    label={lst:cypher-vector-search}
+]{listings/cypher-vector-search.cypher}
 
 % ─────────────────────────────────────────────────────────────────────────────
-\section{Mekanisme \textit{Retrieval} Bertingkat (\textit{StatefulK8sRetriever})}
+\section{Validasi Required Field}
 % ─────────────────────────────────────────────────────────────────────────────
 
-Kelas \textit{StatefulK8sRetriever} pada berkas \texttt{src/chatbot/custom\_retriever.py} mengimplementasikan \textit{cascading retrieval} dengan kontrol kedalaman berbasis \textit{intent}.
+Query berikut mengambil daftar \textit{field} wajib (\textit{required}) suatu \textit{resource} langsung dari \textit{knowledge graph}, digunakan pada Lapisan 3 validasi YAML (\textit{YAMLValidator}).
 
 \lstinputlisting[
-    language=Python,
-    style=pythonstyle,
-    caption={\texttt{src/chatbot/custom\_retriever.py} — Mekanisme Retrieval Bertingkat},
-    label={lst:custom-retriever}
-]{listings/custom-retriever.py}
-
-% ─────────────────────────────────────────────────────────────────────────────
-\section{Validasi YAML Tiga Lapis (\textit{YAMLValidator})}
-% ─────────────────────────────────────────────────────────────────────────────
-
-Kelas \textit{YAMLValidator} pada berkas \texttt{src/validation/yaml\_validator.py} mengimplementasikan validasi YAML tiga lapis: sintaksis PyYAML, kepatuhan skema \textit{kubernetes-validate}, dan verifikasi \textit{required fields} dari \textit{knowledge graph}.
-
-\lstinputlisting[
-    language=Python,
-    style=pythonstyle,
-    caption={\texttt{src/validation/yaml\_validator.py} — Validasi YAML Tiga Lapis},
-    label={lst:yaml-validator}
-]{listings/yaml-validator.py}
-
-% ─────────────────────────────────────────────────────────────────────────────
-\section{Query Cypher Neo4j}
-% ─────────────────────────────────────────────────────────────────────────────
-
-Berkas \texttt{src/graph/queries.py} mendefinisikan seluruh konstanta query Cypher yang digunakan oleh sistem sebagai \textit{single source of truth}. Query ini mencakup \textit{exact match}, traversal multi-hop, \textit{vector search}, dan validasi \textit{required fields}.
-
-\lstinputlisting[
-    language=Python,
-    style=pythonstyle,
-    caption={\texttt{src/graph/queries.py} — Query Cypher Neo4j},
-    label={lst:queries}
-]{listings/queries.py}
-
-% ─────────────────────────────────────────────────────────────────────────────
-\section{Fungsi Metrik Evaluasi}
-% ─────────────────────────────────────────────────────────────────────────────
-
-Potongan berikut dari \texttt{scripts/evaluate.py} menampilkan tiga fungsi komputasi metrik inti: \texttt{compute\_ansq()}, \texttt{compute\_retq()}, dan \texttt{compute\_reaq()}. Bagian \textit{orchestrator} (mode invoker, checkpoint, dan summary printing) dihilangkan untuk singkatnya; implementasi lengkap tersedia di repositori proyek.
-
-\lstinputlisting[
-    language=Python,
-    style=pythonstyle,
-    caption={\texttt{scripts/evaluate.py} — Fungsi Metrik Evaluasi (AnsQ, RetQ, ReaQ)},
-    label={lst:evaluate}
-]{listings/evaluate.py}
+    language=Cypher,
+    caption={Validasi \textit{Required Field} terhadap \textit{Knowledge Graph}},
+    label={lst:cypher-required-fields}
+]{listings/cypher-required-fields.cypher}

@@ -6,16 +6,15 @@
 \centering
 \begin{tabular}{| p{0.32\textwidth} | >{\centering\arraybackslash}p{0.12\textwidth} | >{\centering\arraybackslash}p{0.12\textwidth} | >{\centering\arraybackslash}p{0.12\textwidth} | p{0.16\textwidth} |}
 \hline
-\textbf{Sub-Metrik} & \textbf{Vanilla LLM} & \textbf{Vector RAG} & \textbf{GraphRAG} & \textbf{Keterangan} \\
+\textbf{Sub-Metrik} & \textbf{Vanilla LLM} & \textbf{Vector RAG} & \textbf{Graph RAG} & \textbf{Keterangan} \\
 \hline
-\textit{Answer Semantic Similarity} & 0,7173 & 0,7499 & \textbf{0,7698} & Kemiripan kosinus \textit{embedding} jawaban vs.\ GT \parencite{es_ragas_2023} \\
+\textit{Answer Semantic Similarity} & 0,7175 & 0,7503 & \textbf{0,7698} & Kemiripan kosinus \textit{embedding} jawaban vs.\ GT \parencite{es_ragas_2023} \\
 \hline
-\textit{Syntactic Validity} (YAML)$^\dagger$ & 0,8333 ($n{=}30$) & 0,9333 ($n{=}30$) & \textbf{1,0000} ($n{=}28$) & \texttt{yaml.safe\_load} berhasil (v1.30) \\
+\textit{Syntactic Validity} (YAML) & 0,8333 & 0,9333 & \textbf{1,0000} & \texttt{yaml.safe \_load} berhasil (v1.30) \\
 \hline
-\textit{Schema Compliance} (YAML)$^\dagger$ & 0,7667 ($n{=}30$) & \textbf{0,9333} ($n{=}30$) & 0,8929 ($n{=}28$) & Validasi skema Kubernetes v1.30 \\
+\textit{Schema Compliance} (YAML) & 0,7931 & \textbf{0,9655} & 0,9259 & Validasi skema Kubernetes v1.30 \\
 \hline
-\textbf{AnsQ Komposit} & 0,7464 & 0,7976 & \textbf{0,8031} & Rata-rata sub-metrik berlaku \\
+\textbf{AnsQ Komposit} & 0,7469 & 0,7984 & \textbf{0,8031} & Rata-rata sub-metrik berlaku \\
 \hline
 \end{tabular}
 \end{table}
-{\small\noindent $^\dagger$ Hanya \textit{fixture} \textit{yaml\_gen}. GraphRAG $n{=}28$ vs.\ Vector/LLM $n{=}30$ karena perbedaan \textit{fixture} yang dikerjakan. \textit{Schema Compliance} GraphRAG 0,8929: 2 \textit{fixture} HPA menghasilkan \texttt{apiVersion: autoscaling/v2beta2} (deprecated sejak Kubernetes v1.26); \textit{fixture} \texttt{serviceaccount\_pod\_binding} gagal di ketiga sistem (struktural).}
