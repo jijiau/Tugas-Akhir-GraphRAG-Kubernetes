@@ -107,7 +107,7 @@ Pembangunan \textit{embedding} semantik dilakukan pada proses fase 1.5 yang diek
     \label{fig:pass15-embedding}
 \end{figure}
 
-Vektor disimpan sebagai properti \texttt{embedding} pada setiap \textit{node} di Neo4j dan diindeks menggunakan \textit{Native Vector Index} dengan fungsi kemiripan \textit{cosine}. Pendekatan ini memungkinkan \textit{vector similarity search} dilakukan dalam satu \textit{query} Cypher tanpa kebutuhan \textit{vector store} eksternal terpisah. Implementasi kode lengkap kelas \textit{SwaggerGraphBuilder} (fase 1 hingga fase 3) tersedia pada berkas \texttt{src/ingestion/parser.py} di repositori proyek.
+Vektor disimpan sebagai properti \texttt{embedding} pada setiap \textit{node} di Neo4j dan diindeks menggunakan \textit{Native Vector Index} dengan fungsi kemiripan \textit{cosine}. Pendekatan ini memungkinkan \textit{vector similarity search} dilakukan dalam satu \textit{query} Cypher tanpa kebutuhan \textit{vector store} eksternal terpisah. Implementasi kode lengkap kelas \textit{SwaggerGraphBuilder} (fase 1 hingga fase 3) tersedia pada berkas \texttt{src/ingestion/parser.py} di repositori proyek.\footnote{Kode sumber lengkap sistem tersedia di \url{https://github.com/jijiau/Tugas-Akhir-GraphRAG-Kubernetes}.}
 
 Ketiga subbab di atas secara bersama-sama merealisasikan pembangunan \textit{knowledge graph} Kubernetes. Tabel~\ref{tbl:kg_statistics} merangkum statistik akhir \textit{knowledge graph} yang dihasilkan dan menjadi fondasi mekanisme \textit{GraphRAG} yang diuraikan pada bagian berikutnya.
 
