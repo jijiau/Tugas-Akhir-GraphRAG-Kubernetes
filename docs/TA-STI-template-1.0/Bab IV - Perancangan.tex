@@ -49,10 +49,8 @@ Rancangan tiap kebutuhan fungsional diuraikan secara terperinci pada
 Subbab~\ref{sec:perancangan-kg} hingga Subbab~\ref{sec:perancangan-baseline}.
 
 Gambaran menyeluruh sebelum penjelasan detail tiap komponen dapat dilihat pada
-Gambar~\ref{fig:architecture_diagram} berisi diagram arsitektur yang
-menggambarkan komponen sistem beserta keterhubungannya,
-sedangkan Gambar~\ref{fig:sequence_diagram} menggambarkan alur interaksi antarkomponen
-secara kronologis dari masukan pengguna hingga keluaran akhir.
+Gambar~\ref{fig:architecture_diagram} yang menampilkan diagram arsitektur
+beserta keterhubungan antarkomponen sistem GraphRAG.
 
 \begin{figure}[H]
     \centering
@@ -62,13 +60,11 @@ secara kronologis dari masukan pengguna hingga keluaran akhir.
     \label{fig:architecture_diagram}
 \end{figure}
 
-\begin{figure}[H]
-    \centering
-    \captionsetup{justification=centering}
-    \includegraphics[width=1.00\textwidth]{images/Seq-High.png}
-    \caption{Diagram Urutan (\textit{Sequence Diagram}) Alur Kerja Sistem GraphRAG}
-    \label{fig:sequence_diagram}
-\end{figure}
+Diagram tersebut tersusun atas tiga bagian utama yang saling terhubung secara
+berurutan, yaitu \textit{Knowledge Graph} Kubernetes, Mekanisme GraphRAG, dan
+Sistem Pembanding. Ketiga bagian ini diuraikan secara rinci pada
+Subbab~\ref{sec:perancangan-kg}, Subbab~\ref{sec:perancangan-graphrag}, dan
+Subbab~\ref{sec:perancangan-baseline}.
 
 % ------------------------------------------------------------------
 \section{Perancangan \textit{Knowledge Graph} Kubernetes}
@@ -282,6 +278,31 @@ Ketiga, \textit{Retrieval Trace Expander} yang menyajikan jejak penalaran graf d
     \item referensi resmi \textit{kubernetes.io} untuk setiap entitas yang ditemukan; dan
     \item legenda kedalaman traversal.
 \end{enumerate}
+
+Mekanisme GraphRAG terdiri atas empat komponen yang telah diuraikan pada
+Subbab~\ref{subsec:klasifikasi-intent} hingga Subbab~\ref{subsec:perancangan-antarmuka},
+yaitu klasifikasi \textit{intent}, strategi \textit{retrieval} bertingkat,
+generasi dan validasi YAML, serta antarmuka \textit{web}. Keempat komponen
+tersebut saling berinteraksi seperti yang digambarkan pada
+Gambar~\ref{fig:sequence_diagram}.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{justification=centering}
+    \includegraphics[width=1.00\textwidth]{images/Seq-High.png}
+    \caption{Diagram Urutan (\textit{Sequence Diagram}) Alur Kerja Sistem GraphRAG}
+    \label{fig:sequence_diagram}
+\end{figure}
+
+Kueri pengguna diteruskan bersama riwayat percakapan ke \textit{node thinker}
+untuk klasifikasi \textit{intent} dan ekstraksi entitas. Hasil klasifikasi
+diteruskan ke \textit{node retriever} untuk \textit{retrieval} bertingkat
+berdasarkan \textit{intent} dan kedalaman yang diperoleh, kemudian konteks
+hasil \textit{retrieval} beserta \textit{reasoning path} diteruskan ke
+\textit{node speaker}. \textit{Node speaker} menghasilkan jawaban naratif atau,
+khusus untuk \textit{intent generate\_yaml}, menjalankan validasi YAML tiga
+lapis tambahan sebelum jawaban akhir disimpan ke riwayat percakapan dan
+ditampilkan kepada pengguna beserta visualisasi jejak penalaran.
 
 % ------------------------------------------------------------------
 \section{Perancangan Sistem Pembanding}
