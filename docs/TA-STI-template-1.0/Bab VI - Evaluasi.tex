@@ -255,8 +255,8 @@ Kedalaman $d{=}2$ merupakan titik optimal untuk RetQ F1 (0,7089) dan AnsQ (0,803
     \item \textbf{A3 (\textit{depth=2 fixed}):} Kedalaman traversal ditetapkan tetap 2 untuk semua \textit{intent}, tanpa adaptasi.
     \item \textbf{A4 (\textit{depth=3 fixed}):} Kedalaman traversal ditetapkan tetap 3 untuk semua \textit{intent}, tanpa adaptasi.
     \item \textbf{A5 (\textit{no\_yaml\_layer3}):} Layer~3 validasi YAML (\textit{cross-check} \textit{field} wajib ke Neo4j) dinonaktifkan.
-    \item \textbf{A6 (\textit{no\_multi\_entity}):} \textit{Multi-entity retrieval} dinonaktifkan; sistem hanya menelusuri satu entitas per kueri.
-    \item \textbf{A7 (\textit{HAS\_PROPERTY only}):} Hanya 1 tipe \textit{edge} (\textit{HAS\_PROPERTY}) yang aktif, menggantikan 18 tipe \textit{edge} semantik \textit{baseline}.
+    \item \textbf{A6 (\textit{no\_\allowbreak{}multi\_\allowbreak{}entity}):} \textit{Multi-entity retrieval} dinonaktifkan; sistem hanya menelusuri satu entitas per kueri.
+    \item \textbf{A7 (\textit{HAS\_\allowbreak{}PROPERTY only}):} Hanya 1 tipe \textit{edge} (\textit{HAS\_\allowbreak{}PROPERTY}) yang aktif, menggantikan 18 tipe \textit{edge} semantik \textit{baseline}.
 \end{enumerate}
 
 Tabel~\ref{tbl:ablation_results} menyajikan skor absolut dan selisih terhadap \textit{baseline} (18 jenis \textit{edge}), sedangkan Tabel~\ref{tbl:ablation_significance} menyajikan signifikansi statistiknya.
@@ -281,9 +281,13 @@ Tabel~\ref{tbl:ablation_results} menyajikan skor absolut dan selisih terhadap \t
 
 \textbf{A5 (\textit{no\_yaml\_layer3})} menurunkan RetQ $-0{,}057$ pp (signifikan, $p{=}0{,}004$); dampaknya terletak terutama pada konsistensi \textit{retrieval} struktural, bukan pada validitas sintaksis YAML secara langsung.
 
-\textbf{A6 (\textit{no\_multi\_entity})} menunjukkan selisih kecil yang tidak signifikan ($\Delta$RetQ $-0{,}011$, $p{=}0{,}376$), mengindikasikan bahwa \textit{multi-entity retrieval} memberikan manfaat marginal pada agregat dataset ini.
+\begin{sloppypar}
+\textbf{A6 (\textit{no\_\allowbreak{}multi\_\allowbreak{}entity})} menunjukkan selisih kecil yang tidak signifikan ($\Delta$RetQ $-0{,}011$, $p{=}0{,}376$), mengindikasikan bahwa \textit{multi-entity retrieval} memberikan manfaat marginal pada agregat dataset ini.
+\end{sloppypar}
 
-\textbf{A7 (\textit{HAS\_PROPERTY only})} merupakan konfigurasi dengan hanya 1 tipe \textit{edge} aktif (vs.\ 18 tipe pada \textit{baseline}) sehingga perbandingannya membuktikan kontribusi 18 tipe \textit{edge} semantik secara langsung. Gambar~\ref{fig:eval_t1_has_property_vs_18edge} dan Tabel~\ref{tbl:t1_proof} menunjukkan bahwa 18 tipe \textit{edge} semantik meningkatkan RetQ F1 sebesar $+0{,}152$ pp dan \textit{Hop Accuracy} sebesar $+0{,}232$ pp, keduanya signifikan ($p{<}0{,}001$). Selisih AnsQ ($+0{,}018$ pp) tidak signifikan, mengonfirmasi bahwa 18 tipe \textit{edge} berkontribusi pada kualitas \textit{retrieval} dan penalaran, bukan pada kualitas teks jawaban.
+\begin{sloppypar}
+\textbf{A7 (\textit{HAS\_\allowbreak{}PROPERTY only})} merupakan konfigurasi dengan hanya 1 tipe \textit{edge} aktif (vs.\ 18 tipe pada \textit{baseline}) sehingga perbandingannya membuktikan kontribusi 18 tipe \textit{edge} semantik secara langsung.
+\end{sloppypar} Gambar~\ref{fig:eval_t1_has_property_vs_18edge} dan Tabel~\ref{tbl:t1_proof} menunjukkan bahwa 18 tipe \textit{edge} semantik meningkatkan RetQ F1 sebesar $+0{,}152$ pp dan \textit{Hop Accuracy} sebesar $+0{,}232$ pp, keduanya signifikan ($p{<}0{,}001$). Selisih AnsQ ($+0{,}018$ pp) tidak signifikan, mengonfirmasi bahwa 18 tipe \textit{edge} berkontribusi pada kualitas \textit{retrieval} dan penalaran, bukan pada kualitas teks jawaban.
 
 \begin{figure}[H]
     \centering
@@ -355,7 +359,7 @@ Dua faktor kuantitatif dianalisis menggunakan korelasi Spearman terhadap \textit
     \centering
     \captionsetup{justification=centering}
     \includegraphics[width=0.82\textwidth]{images/boundary_degree_vs_gain.png}
-    \caption{\textit{Scatter plot} derajat node primer vs.\ \textit{RetQ-gain} per \textit{fixture} ($\rho{=}{+}0{,}245$, $p{=}0{,}013$).}
+    \caption{\textit{Scatter plot} derajat node primer vs.\ \textit{RetQ-\allowbreak{}gain} per \textit{fixture} ($\rho{=}{+}0{,}245$, $p{=}0{,}013$).}
     \label{fig:boundary-degree-vs-gain}
 \end{figure}
 
@@ -363,7 +367,7 @@ Dua faktor kuantitatif dianalisis menggunakan korelasi Spearman terhadap \textit
     \centering
     \captionsetup{justification=centering}
     \includegraphics[width=0.82\textwidth]{images/boundary_hops_vs_gain.png}
-    \caption{\textit{Scatter plot} jumlah \textit{hop} yang dilalui vs.\ \textit{RetQ-gain} per \textit{fixture} ($\rho{=}{-}0{,}082$, $p{=}0{,}414$).}
+    \caption{\textit{Scatter plot} jumlah \textit{hop} yang dilalui vs.\ \textit{RetQ-\allowbreak{}gain} per \textit{fixture} ($\rho{=}{-}0{,}082$, $p{=}0{,}414$).}
     \label{fig:boundary-hops-vs-gain}
 \end{figure}
 

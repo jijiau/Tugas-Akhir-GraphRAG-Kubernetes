@@ -14,7 +14,7 @@ Cuplikan berikut menunjukkan dua entri OpenAPI \textit{definitions} dari \texttt
     language=json,
     frame=single,
     captionpos=t,
-    caption={\textit{Cuplikan definitions.json} — \texttt{DeploymentStrategy} dan \texttt{RollingUpdateDeployment}},
+    caption={\textit{Cuplikan definitions.json} — \texttt{Deployment\allowbreak{}Strategy} dan \texttt{Rolling\allowbreak{}Update\allowbreak{}Deployment}},
     label={lst:kg-input-swagger}
 ]{listings/kg-input-swagger-snippet.json}
 
@@ -36,10 +36,12 @@ Cuplikan di atas, setelah melalui Fase 1 (pembuatan \textit{node}) dan Fase 2 (p
 \section{Skema Graf: Label Node dan Tipe Edge}
 % ─────────────────────────────────────────────────────────────────────────────
 
-Seluruh \textit{node} di \textit{knowledge graph} berlabel \texttt{Definition}; \textit{node} yang merepresentasikan \textit{resource} Kubernetes tingkat atas (memiliki \textit{Group-Version-Kind} pada \texttt{x-kubernetes-group-version-kind}) mendapat label tambahan \texttt{K8sResource}. Tabel~\ref{tbl:edge-schema} merangkum seluruh 18 tipe \textit{edge} yang dibangun pada Fase 2 (struktural), Fase 2.5 (\textit{inheritance}/\textit{union type}), dan Fase 3 (semantik) \textit{pipeline ingestion}.
+\begin{sloppypar}
+Seluruh \textit{node} di \textit{knowledge graph} berlabel \texttt{Definition}; \textit{node} yang merepresentasikan \textit{resource} Kubernetes tingkat atas (memiliki \textit{Group-\allowbreak{}Version-\allowbreak{}Kind} pada \texttt{x-kubernetes-group-\allowbreak version-kind}) mendapat label tambahan \texttt{K8sResource}. Tabel~\ref{tbl:edge-schema} merangkum seluruh 18 tipe \textit{edge} yang dibangun pada Fase 2 (struktural), Fase 2.5 (\textit{inheritance}/\textit{union type}), dan Fase 3 (semantik) \textit{pipeline ingestion}.
+\end{sloppypar}
 
 \begin{footnotesize}
-\begin{longtable}{|p{3.6cm}|p{5.2cm}|p{5.4cm}|}
+\begin{longtable}{|p{3.4cm}|p{4.4cm}|p{4.5cm}|}
 \caption{Skema 18 Tipe \textit{Edge} \textit{Knowledge Graph}}
 \label{tbl:edge-schema} \\
 \hline
@@ -47,10 +49,13 @@ Seluruh \textit{node} di \textit{knowledge graph} berlabel \texttt{Definition}; 
 \hline
 \endfirsthead
 \hline
+\multicolumn{3}{l}{Tabel \ref{tbl:edge-schema} Skema 18 Tipe \textit{Edge} \textit{Knowledge Graph} (lanjutan)} \\
+\hline
 \textbf{Tipe Edge} & \textbf{Contoh Relasi} & \textbf{Keterangan} \\
 \hline
 \endhead
 \hline
+\multicolumn{3}{r}{\textit{bersambung ke halaman berikutnya}} \\
 \endfoot
 \hline
 \endlastfoot
@@ -62,15 +67,15 @@ Seluruh \textit{node} di \textit{knowledge graph} berlabel \texttt{Definition}; 
 \hline
 \textit{ANY\_OF} & \texttt{EnvVarSource} $\rightarrow$ opsi tipe & Alternatif tipe polimorfik (\textit{union type}) \\
 \hline
-\textit{SCALES\_RESOURCE} & HPA $\rightarrow$ Deployment/StatefulSet/ReplicaSet & \textit{Horizontal Pod Autoscaler} menyasar target skalanya \\
+\textit{SCALES\_RESOURCE} & HPA $\rightarrow$ Deployment\slash StatefulSet\slash ReplicaSet & \textit{Horizontal Pod Autoscaler} menyasar target skalanya \\
 \hline
-\textit{CONTAINS\_POD\_TEMPLATE} & Deployment/StatefulSet/DaemonSet/Job $\rightarrow$ PodTemplateSpec & \textit{Workload controller} berisi templat Pod \\
+\textit{CONTAINS\_\allowbreak POD\_TEMPLATE} & Deployment\slash StatefulSet\slash DaemonSet\slash Job $\rightarrow$ PodTemplateSpec & \textit{Workload controller} berisi templat Pod \\
 \hline
-\textit{CONTAINS\_JOB\_TEMPLATE} & CronJob $\rightarrow$ JobTemplateSpec & CronJob berisi templat Job \\
+\textit{CONTAINS\_\allowbreak JOB\_TEMPLATE} & CronJob $\rightarrow$ JobTemplateSpec & CronJob berisi templat Job \\
 \hline
-\textit{BINDS\_ROLE} & RoleBinding/ClusterRoleBinding $\rightarrow$ Role/ClusterRole & Relasi RBAC \\
+\textit{BINDS\_ROLE} & RoleBinding\slash ClusterRoleBinding $\rightarrow$ Role\slash ClusterRole & Relasi RBAC \\
 \hline
-\textit{BINDS\_SERVICE\_ACCOUNT} & RoleBinding/ClusterRoleBinding $\rightarrow$ ServiceAccount & Relasi RBAC \\
+\textit{BINDS\_\allowbreak SERVICE\_ACCOUNT} & RoleBinding\slash ClusterRoleBinding $\rightarrow$ ServiceAccount & Relasi RBAC \\
 \hline
 \textit{HAS\_CONTAINER} & PodSpec $\rightarrow$ Container & PodSpec berisi satu atau lebih Container \\
 \hline
@@ -88,7 +93,7 @@ Seluruh \textit{node} di \textit{knowledge graph} berlabel \texttt{Definition}; 
 \hline
 \textit{ROUTES\_TO\_SERVICE} & Ingress $\rightarrow$ Service & Ingress merutekan \textit{traffic} ke Service \\
 \hline
-\textit{USES\_SERVICE\_ACCOUNT} & PodSpec $\rightarrow$ ServiceAccount & Pod berjalan dengan identitas ServiceAccount \\
+\textit{USES\_\allowbreak SERVICE\_ACCOUNT} & PodSpec $\rightarrow$ ServiceAccount & Pod berjalan dengan identitas ServiceAccount \\
 \hline
 \end{longtable}
 \end{footnotesize}

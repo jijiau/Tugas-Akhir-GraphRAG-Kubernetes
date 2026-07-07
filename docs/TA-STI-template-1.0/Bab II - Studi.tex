@@ -279,7 +279,7 @@ Evaluasi dimensi penalaran mengukur sejauh mana jalur \textit{multi-hop} dan ket
 
 \begin{enumerate}
     \item \textbf{\textit{Hop-Accuracy} (Hop-Acc)}\\
-    Mengukur sejauh mana jalur penalaran \textit{multi-hop} yang dieksekusi sistem mencakup relasi yang diharapkan menurut anotasi \textit{ground truth}, dalam bentuk \textit{edge recall} pada subgraf penalaran \parencite{gu_2024}:
+    Mengukur sejauh mana jalur penalaran \textit{multi-hop} yang dieksekusi sistem mencakup relasi yang diharapkan menurut anotasi \textit{ground truth}, dalam bentuk \textit{edge recall} pada subgraf penalaran \parencite{manning_ir_2008}:
     \begin{equation}
     \text{Hop-Acc} = \frac{|\,E_{\text{pred}} \cap E_{\text{expected}}\,|}{|\,E_{\text{expected}}\,|},
     \eqcaption{Metrik \textit{Hop-Accuracy}: \textit{edge recall} jalur penalaran \textit{multi-hop}}
@@ -294,7 +294,9 @@ Evaluasi dimensi penalaran mengukur sejauh mana jalur \textit{multi-hop} dan ket
     \eqcaption{Metrik \textit{Faithfulness}: proporsi klaim jawaban yang didukung konteks}
     \label{eq:faithfulness}
     \end{equation}
-    dengan $C_{\text{total}}$ adalah himpunan semua klaim yang diekstrak dari jawaban sistem dan $C_{\text{supported}} = \{c \in C_{\text{total}} \mid c \text{ dapat diinferensikan dari konteks yang di-\textit{retrieve}}\}$. Metrik ini berlaku untuk mode GraphRAG dan Vector RAG.
+    \begin{sloppypar}
+    dengan $C_{\text{total}}$ adalah himpunan semua klaim yang diekstrak dari jawaban sistem dan $C_{\text{supported}} = \{c \in C_{\text{total}} \mid c \allowbreak\text{ dapat diinferensikan dari konteks yang di-\textit{retrieve}}\}$. Metrik ini berlaku untuk mode GraphRAG dan Vector RAG.
+    \end{sloppypar}
 \end{enumerate}
 
 Dalam penelitian ini, metrik dibedakan berdasarkan cakupan penerapannya: AR (\textit{Answer Semantic Similarity}) berlaku untuk ketiga mode sistem (GraphRAG, Vector, LLM); metrik RetQ (Precision, Recall, F1) hanya bermakna untuk GraphRAG dan Vector; \textit{Hop-Accuracy} bersifat intrinsik graf (GraphRAG); dan \textit{Faithfulness} berlaku untuk GraphRAG dan Vector RAG.

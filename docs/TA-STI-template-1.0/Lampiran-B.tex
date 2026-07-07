@@ -9,7 +9,7 @@ Lampiran ini menyajikan 10 \textit{fixture} evaluasi yang digunakan dalam valida
 \label{tbl:fixture-summary}
 {\small
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{|c|p{3.3cm}|p{2cm}|p{2.6cm}|p{1.6cm}|c|}
+\begin{tabular}{|c|p{3.3cm}|p{2cm}|p{2.6cm}|p{2.3cm}|c|}
 \hline
 \textbf{No} & \textbf{ID} & \textbf{Tipe} & \textbf{Resource Utama} & \textbf{Scope} & \textbf{M-H} \\
 \hline
@@ -17,11 +17,11 @@ Lampiran ini menyajikan 10 \textit{fixture} evaluasi yang digunakan dalam valida
 2 & \textit{service\_types}               & konseptual    & Service                 & Namespaced & Ya \\
 3 & \textit{scale\_existing \_deployment}  & lanjutan      & Deployment              & Namespaced & Tidak \\
 4 & \textit{ingress\_service \_pod}        & relasional    & Ingress                 & Namespaced & Ya \\
-5 & \textit{hpa\_deployment \_pod}         & relasional    & HorizontalPodAutoscaler & Namespaced & Ya \\
+5 & \textit{hpa\_deployment \_pod}         & relasional    & Horizontal\allowbreak{}Pod\allowbreak{}Autoscaler & Namespaced & Ya \\
 6 & \textit{cronjob\_backup}              & generasi YAML & CronJob                 & Namespaced & Ya \\
 7 & \textit{networkpolicy \_deny\_all}     & generasi YAML & NetworkPolicy           & Namespaced & Tidak \\
 8 & \textit{statefulset\_with \_pvc}       & generasi YAML & StatefulSet             & Namespaced & Ya \\
-9 & \textit{deployment\_vs\_statefulset \_comparison} & skenario nyata & Deployment      & Namespaced    & Ya \\
+9 & \textit{deployment\_vs\_\allowbreak{}statefulset \_comparison} & skenario nyata & Deployment      & Namespaced    & Ya \\
 10 & \textit{kubectl\_find \_pods\_with \_env} & perintah     & Pod                    & Namespaced & Tidak \\
 \hline
 \end{tabular}
@@ -38,7 +38,7 @@ Lampiran ini menyajikan 10 \textit{fixture} evaluasi yang digunakan dalam valida
     language=json,
     frame=single,
     captionpos=t,
-    caption={\texttt{fixture-deployment-basic.json} — Konseptual: Pembaruan Image Deployment},
+    caption={\texttt{fixture-\allowbreak{}deployment-\allowbreak{}basic.json} — Konseptual: Pembaruan Image Deployment},
     label={lst:fixture-deployment-basic}
 ]{listings/fixture-deployment-basic.json}
 
@@ -94,7 +94,7 @@ Lampiran ini menyajikan 10 \textit{fixture} evaluasi yang digunakan dalam valida
     language=json,
     frame=single,
     captionpos=t,
-    caption={\texttt{fixture-hpa-deployment-pod.json} — Relasional: HPA dan Penskalaan Otomatis},
+    caption={\texttt{fixture-\allowbreak{}hpa-\allowbreak{}deployment-\allowbreak{}pod.json} — Relasional: HPA dan Penskalaan Otomatis},
     label={lst:fixture-hpa-deployment}
 ]{listings/fixture-hpa-deployment-pod.json}
 
@@ -108,7 +108,7 @@ Lampiran ini menyajikan 10 \textit{fixture} evaluasi yang digunakan dalam valida
     language=json,
     frame=single,
     captionpos=t,
-    caption={\texttt{fixture-cronjob-backup.json} — Generasi YAML: CronJob Backup Database},
+    caption={\texttt{fixture-\allowbreak{}cronjob-\allowbreak{}backup.json} — Generasi YAML: CronJob Backup Database},
     label={lst:fixture-cronjob}
 ]{listings/fixture-cronjob-backup.json}
 
@@ -122,7 +122,7 @@ Lampiran ini menyajikan 10 \textit{fixture} evaluasi yang digunakan dalam valida
     language=json,
     frame=single,
     captionpos=t,
-    caption={\texttt{fixture-networkpolicy-deny-all.json} — Generasi YAML: NetworkPolicy Deny-All},
+    caption={\texttt{fixture-\allowbreak{}networkpolicy-\allowbreak{}deny-\allowbreak{}all.json} — Generasi YAML: NetworkPolicy Deny-All},
     label={lst:fixture-networkpolicy}
 ]{listings/fixture-networkpolicy-deny-all.json}
 
@@ -158,7 +158,7 @@ Lampiran ini menyajikan 10 \textit{fixture} evaluasi yang digunakan dalam valida
 \section{Fixture B.10 — \texttt{kubectl\_find\_pods\_with\_env} (Perintah)}
 % ─────────────────────────────────────────────────────────────────────────────
 
-\textit{Fixture} bertipe \textit{command} ini menguji kemampuan sistem memberikan perintah \texttt{kubectl} yang tepat untuk mencari \textit{environment variable} di seluruh Pod—pertanyaan operasional yang membutuhkan pemahaman struktur \texttt{Container.env} dan \texttt{envFrom}.
+\textit{Fixture} bertipe \textit{command} ini menguji kemampuan sistem memberikan perintah \allowbreak\texttt{kubectl} yang tepat untuk mencari \textit{environment variable} di seluruh Pod—pertanyaan operasional yang membutuhkan pemahaman struktur \texttt{Container.env} dan \texttt{envFrom}.
 
 \lstinputlisting[
     language=json,

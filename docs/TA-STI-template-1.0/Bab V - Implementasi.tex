@@ -37,7 +37,9 @@ Bagian ini menguraikan realisasi teknis pembangunan \textit{knowledge graph} Kub
 \subsection{Implementasi \textit{Pipeline Ingestion} dan Representasi Objek}
 \label{subsec:implementasi-ingestion}
 
-Sistem mengkonstruksi \textit{knowledge graph} dengan mengeksekusi kelas \textit{Swagger\-Graph\-Builder} yang terdefinisi di \texttt{src/ingestion/parser.py} terhadap berkas \texttt{swagger.json} Kubernetes v1.30, sebagaimana dirancang pada Subbab~\ref{subsec:pipeline-ingestion}. Seluruh fase dieksekusi secara berurutan.
+\begin{sloppypar}
+Sistem mengkonstruksi \textit{knowledge graph} dengan mengeksekusi kelas \textit{Swagger\-Graph\-Builder} yang terdefinisi di \texttt{src/\allowbreak{}ingestion/\allowbreak{}parser.py} terhadap berkas \texttt{swagger.json} Kubernetes v1.30, sebagaimana dirancang pada Subbab~\ref{subsec:pipeline-ingestion}. Seluruh fase dieksekusi secara berurutan.
+\end{sloppypar}
 
 Fase 1 membuat \textit{node} dari setiap entri bagian \texttt{definitions} dalam \texttt{swagger.json}. Sistem memeriksa keberadaan \textit{field} \texttt{x-kubernetes-group-version-kind} (GVK) pada setiap definisi untuk mengklasifikasikan \textit{node} sebagai \textit{K8sResource} (sumber daya Kubernetes utama yang memiliki GVK) atau \textit{sub-resource} (tipe pendukung tanpa GVK). Sebanyak 5 tipe generik dikecualikan karena tidak relevan untuk pembuatan konfigurasi YAML.
 
@@ -107,7 +109,7 @@ Pembangunan \textit{embedding} semantik dilakukan pada proses fase 1.5 yang diek
     \label{fig:pass15-embedding}
 \end{figure}
 
-Vektor disimpan sebagai properti \texttt{embedding} pada setiap \textit{node} di Neo4j dan diindeks menggunakan \textit{Native Vector Index} dengan fungsi kemiripan \textit{cosine}. Pendekatan ini memungkinkan \textit{vector similarity search} dilakukan dalam satu \textit{query} Cypher tanpa kebutuhan \textit{vector store} eksternal terpisah. Implementasi kode lengkap kelas \textit{SwaggerGraphBuilder} (fase 1 hingga fase 3) tersedia pada berkas \texttt{src/ingestion/parser.py} di repositori proyek.\footnote{Kode sumber lengkap sistem tersedia di \url{https://github.com/jijiau/Tugas-Akhir-GraphRAG-Kubernetes}.}
+Vektor disimpan sebagai properti \texttt{embedding} pada setiap \textit{node} di Neo4j dan diindeks menggunakan \textit{Native Vector Index} dengan fungsi kemiripan \textit{cosine}. Pendekatan ini memungkinkan \textit{vector similarity search} dilakukan dalam satu \textit{query} Cypher tanpa kebutuhan \textit{vector store} eksternal terpisah. Implementasi kode lengkap kelas \textit{SwaggerGraphBuilder} (fase 1 hingga fase 3) tersedia pada berkas \texttt{src/\allowbreak{}ingestion/\allowbreak{}parser.py} di repositori proyek.\footnote{Kode sumber lengkap sistem tersedia di \url{https://github.com/jijiau/Tugas-Akhir-GraphRAG-Kubernetes}.}
 
 Ketiga subbab di atas secara bersama-sama merealisasikan pembangunan \textit{knowledge graph} Kubernetes. Tabel~\ref{tbl:kg_statistics} merangkum statistik akhir \textit{knowledge graph} yang dihasilkan dan menjadi fondasi mekanisme \textit{GraphRAG} yang diuraikan pada bagian berikutnya.
 
@@ -117,7 +119,9 @@ Ketiga subbab di atas secara bersama-sama merealisasikan pembangunan \textit{kno
 \section{Implementasi Mekanisme \textit{GraphRAG}}
 % ─────────────────────────────────────────────────────────────────────
 
-\textit{Pipeline} \textit{chatbot} diimplementasikan sebagai \textit{directed acyclic graph} (DAG) menggunakan LangGraph pada berkas \texttt{src/chatbot/graph\_agent.py}. \textit{State} yang dipertukarkan antarmodul \textit{agent} didefinisikan sebagai \textit{TypedDict} dengan nama \texttt{Agent State} yang memuat sembilan \textit{field}: \texttt{messages}, \texttt{question}, \texttt{session\_id}, \texttt{chat\_history}, \texttt{extracted\_intent}, \texttt{graph\_context}, \texttt{reasoning\_path}, \texttt{intent\_type}, dan \texttt{error}. Lima modul \textit{agent} yang dieksekusi secara linear sebagaimana ditunjukkan pada Tabel~\ref{tbl:langgraph_nodes} diimplementasikan masing-masing sebagai fungsi Python yang menerima dan mengembalikan \texttt{AgentState}.
+\begin{sloppypar}
+\textit{Pipeline} \textit{chatbot} diimplementasikan sebagai \textit{directed acyclic graph} (DAG) menggunakan LangGraph pada berkas \texttt{src/\allowbreak{}chatbot/\allowbreak{}graph\_agent.py}. \textit{State} yang dipertukarkan antarmodul \textit{agent} didefinisikan sebagai \textit{TypedDict} dengan nama \texttt{Agent State} yang memuat sembilan \textit{field}: \texttt{messages}, \texttt{question}, \texttt{session\_id}, \texttt{chat\_history}, \texttt{extracted\_intent}, \texttt{graph\_context}, \texttt{reasoning\_path}, \texttt{intent\_type}, dan \texttt{error}. Lima modul \textit{agent} yang dieksekusi secara linear sebagaimana ditunjukkan pada Tabel~\ref{tbl:langgraph_nodes} diimplementasikan masing-masing sebagai fungsi Python yang menerima dan mengembalikan \texttt{AgentState}.
+\end{sloppypar}
 
 \input{tables/tabel17.tex}
 
@@ -147,7 +151,9 @@ Untuk penyimpanan percakapan, sistem menggunakan SQLite lokal yang diakses melal
 \subsection{Implementasi Strategi \textit{Retrieval} dan Konstruksi Konteks}
 \label{subsec:implementasi-retrieval}
 
-Mekanisme \textit{retrieval} diimplementasikan dalam kelas \textit{StatefulK8sRetriever} pada berkas \texttt{src/chatbot/custom\_retriever.py} sebagaimana dirancang pada Subbab~\ref{subsec:retrieval-bertingkat}. \textit{Method} utama \texttt{retrieve\_context()} menerima parameter \texttt{intent\_data} (hasil ekstraksi modul \textit{thinker}), \texttt{intent\_type} (string jenis \textit{intent}), dan \texttt{max\_depth} (opsional) untuk menghasilkan pasangan \texttt{(graph\_context\_json, reasoning\_path)}.
+\begin{sloppypar}
+Mekanisme \textit{retrieval} diimplementasikan dalam kelas \textit{StatefulK8sRetriever} pada berkas \texttt{src/\allowbreak{}chatbot/\allowbreak{}custom\_retriever.py} sebagaimana dirancang pada Subbab~\ref{subsec:retrieval-bertingkat}. \textit{Method} utama \texttt{retrieve\_context()} menerima parameter \texttt{intent\_data} (hasil ekstraksi modul \textit{thinker}), \texttt{intent\_type} (string jenis \textit{intent}), dan \texttt{max\_depth} (opsional) untuk menghasilkan pasangan \texttt{(graph\_context\_json, reasoning\_path)}.
+\end{sloppypar}
 
 \begin{figure}[H]
     \centering
@@ -179,10 +185,10 @@ Titik bertanda hitam menunjukkan kedalaman yang digunakan oleh sistem \textit{ad
 
 Untuk \textit{intent} yang melibatkan lebih dari satu \textit{resource}, yaitu \textit{planning}, \textit{trace\_ relationship}, dan \textit{generate\_yaml}, implementasi menambahkan \textit{loop} tambahan yang mengambil konteks dari hingga dua \texttt{related\_concepts} yang diekstraksi modul \textit{thinker} dan menggabungkan hasilnya, baik \textit{graph\_context} maupun \textit{reasoning\_path}, dengan hasil dari \texttt{primary\_resource}. Penanganan ini diperlukan karena pertanyaan relasional dan generasi YAML multi-\textit{resource} membutuhkan konteks skema dari seluruh entitas yang disebutkan. Deduplikasi diterapkan pada \textit{reasoning\_path} agar langkah traversal yang identik antarsumber daya tidak dicatat lebih dari satu kali.
 
-Listing~\ref{lst:graph-context-example} menunjukkan contoh \texttt{graph\_context}
+Listing~\ref{lst:graph-context-example} menunjukkan contoh \texttt{graph\_\allowbreak{}context}
 yang diinjeksikan ke dalam \textit{prompt} modul \textit{speaker} sebagai
-\texttt{retrieved\_data}.
-Listing~\ref{lst:reasoning-path-example} menunjukkan \texttt{reasoning\_path}
+\texttt{retrieved\_\allowbreak{}data}.
+Listing~\ref{lst:reasoning-path-example} menunjukkan \texttt{reasoning\_\allowbreak{}path}
 yang dihasilkan secara paralel dan ditampilkan kepada pengguna melalui komponen
 \textit{Retrieval Trace Expander} pada antarmuka \textit{web}, sesuai rancangan
 pada Subbab~\ref{subsec:retrieval-bertingkat}.
@@ -288,7 +294,9 @@ Implementasi ini secara sengaja meniadakan seluruh komponen augmentasi yang dimi
 \subsection{Implementasi Vector RAG}
 \label{subsec:implementasi-vector-rag}
 
-Vector RAG diaktifkan melalui argumen \texttt{-{}-mode vector} dan mengimplementasikan \textit{retrieval} berbasis kemiripan vektor. \textit{Invoker} menghasilkan \textit{embedding} kueri melalui \texttt{VectorIndexManager.generate\_embedding()} dengan model \textit{text- embedding-3-small} yang sama dengan GraphRAG, kemudian mengeksekusi \texttt{SIMPLE\_GRAPH \_EXPAND\_QUERY} terhadap \textit{native vector index} Neo4j untuk mengambil top-$k$=5 \textit{node} termirip.
+\begin{sloppypar}
+Vector RAG diaktifkan melalui argumen \texttt{-{}-mode vector} dan mengimplementasikan \textit{retrieval} berbasis kemiripan vektor. \textit{Invoker} menghasilkan \textit{embedding} kueri melalui \texttt{VectorIndexManager.\allowbreak{}generate\_embedding()} dengan model \textit{text- embedding-3-small} yang sama dengan GraphRAG, kemudian mengeksekusi \texttt{SIMPLE\_GRAPH \_EXPAND\_QUERY} terhadap \textit{native vector index} Neo4j untuk mengambil top-$k$=5 \textit{node} termirip.
+\end{sloppypar}
 
 Konteks disusun dengan merangkai tiap hasil menjadi \textit{snippet} berlabel \texttt{Resource}, \texttt{Description}, dan \texttt{Related To} yang digabungkan menggunakan pemisah garis, sebagaimana ditampilkan pada Listing~\ref{lst:baseline-invokers}. Nama \textit{node} yang muncul dikumpulkan dengan deduplikasi melalui himpunan \texttt{seen} dan dikembalikan sebagai \texttt{reasoning\_ path} yang menjadi dasar penilaian RetQ. \textit{Invoker} kemudian menyusun \textit{prompt} bertemplat \texttt{Context}, \texttt{Question}, dan \texttt{Answer}, lalu meneruskannya ke modul \textit{speaker} GPT-4o-mini. Implementasi ini tidak menggunakan klasifikasi \textit{intent}, kedalaman \textit{intent-adaptive}, traversal \textit{multi-hop} lebih dari satu lompatan, penggabungan multi-entitas, maupun validasi YAML sehingga merepresentasikan pendekatan RAG konvensional sebagaimana dirancang pada Subbab~\ref{subsec:rancangan-vector-rag}.
 

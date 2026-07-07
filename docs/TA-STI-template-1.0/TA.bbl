@@ -324,56 +324,6 @@
       \field{title}{Gartner Says Cloud Will Be the Centerpiece of New Digital Experiences}
       \field{year}{2021}
     \endentry
-    \entry{gu_2024}{article}{}
-      \name{author}{5}{}{%
-        {{un=0,uniquepart=base,hash=d44a083334abce10800ec774041e67d3}{%
-           family={Gu},
-           familyi={G\bibinitperiod},
-           given={Yi},
-           giveni={Y\bibinitperiod},
-           givenun=0}}%
-        {{un=0,uniquepart=base,hash=7d3a16c28b664a8e3715a4847dbc7bea}{%
-           family={Li},
-           familyi={L\bibinitperiod},
-           given={Junwei},
-           giveni={J\bibinitperiod},
-           givenun=0}}%
-        {{un=0,uniquepart=base,hash=2a35f71d5af3d2306fdb57474b731cda}{%
-           family={Xia},
-           familyi={X\bibinitperiod},
-           given={Yifan},
-           giveni={Y\bibinitperiod},
-           givenun=0}}%
-        {{un=0,uniquepart=base,hash=5b9a54b9d83697231299711961622ab8}{%
-           family={Liu},
-           familyi={L\bibinitperiod},
-           given={Zhiyuan},
-           giveni={Z\bibinitperiod},
-           givenun=0}}%
-        {{un=0,uniquepart=base,hash=5ff29ba5ea8e6fdd73a84f998eec45f2}{%
-           family={Wen},
-           familyi={W\bibinitperiod},
-           given={Ji-Rong},
-           giveni={J\bibinithyphendelim R\bibinitperiod},
-           givenun=0}}%
-      }
-      \strng{namehash}{b4f22f46b99eb30eb08fe815db5c7047}
-      \strng{fullhash}{a5b93828384297111075816e2c5cadd3}
-      \strng{bibnamehash}{a5b93828384297111075816e2c5cadd3}
-      \strng{authorbibnamehash}{a5b93828384297111075816e2c5cadd3}
-      \strng{authornamehash}{b4f22f46b99eb30eb08fe815db5c7047}
-      \strng{authorfullhash}{a5b93828384297111075816e2c5cadd3}
-      \field{sortinit}{G}
-      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
-      \field{extradatescope}{labelyear}
-      \field{labeldatesource}{}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{author}
-      \field{journaltitle}{arXiv preprint}
-      \field{note}{Cited for \textit{Hop-Accuracy} edge-recall formulation; confirm full citation from Ma et al.\ \parencite{ma_llm_kg_2025} reference list}
-      \field{title}{MidMed: Towards Mixed-Type Dialogues for Medical Consultation}
-      \field{year}{2024}
-    \endentry
     \entry{han_graphrag_2024}{article}{}
       \name{author}{10}{}{%
         {{un=0,uniquepart=base,hash=fed5f4462a7695c610dfc99ebdba881f}{%

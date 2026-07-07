@@ -5028,7 +5028,7 @@
     <bcf:citekey order="62" intorder="1">manning_ir_2008</bcf:citekey>
     <bcf:citekey order="63" intorder="1">zhao_rag_survey_2024</bcf:citekey>
     <bcf:citekey order="64" intorder="1">zhao_rag_survey_2024</bcf:citekey>
-    <bcf:citekey order="65" intorder="1">gu_2024</bcf:citekey>
+    <bcf:citekey order="65" intorder="1">manning_ir_2008</bcf:citekey>
     <bcf:citekey order="66" intorder="1">es_ragas_2023</bcf:citekey>
     <bcf:citekey order="67" intorder="1">civiot2025graphrag</bcf:citekey>
     <bcf:citekey order="68" intorder="1">civiot2025graphrag</bcf:citekey>
@@ -5082,7 +5082,6 @@
     <bcf:citekey order="112" intorder="1">es_ragas_2023</bcf:citekey>
     <bcf:citekey order="113" intorder="1">pan2024unifying</bcf:citekey>
     <bcf:citekey order="113" intorder="2">wan2025empowering</bcf:citekey>
-    <bcf:citekey order="114" intorder="1">ma_llm_kg_2025</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="cms">
