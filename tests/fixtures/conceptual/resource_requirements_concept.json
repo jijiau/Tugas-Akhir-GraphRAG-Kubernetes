@@ -1,0 +1,38 @@
+{
+  "id": "resource_requirements_concept",
+  "type": "conceptual",
+  "question": "What fields does ResourceRequirements define, and what is the difference between requests and limits for a Container?",
+  "resource": "io.k8s.api.core.v1.ResourceRequirements",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "lang": "en",
+  "ground_truth": {
+    "answer": "ResourceRequirements defines the compute resource needs of a Container. The requests map specifies the minimum resources the container is guaranteed — the scheduler uses these values when selecting a node for placement. The limits map specifies the maximum resources the container may consume — the runtime enforces these via cgroup: a container that exceeds its memory limit is OOMKilled; one that exceeds its CPU limit is throttled. Both maps key from resource name strings (cpu, memory, hugepages-*) to Quantity values. If requests is omitted for a resource that has a limit, the request defaults to the limit value. The claims field is a list of ResourceClaim references used for dynamic resource allocation.",
+    "context": [
+      "io.k8s.api.core.v1.ResourceRequirements: requests defines scheduler-guaranteed minimums; limits defines runtime-enforced maximums; both map resource names to Quantity values",
+      "io.k8s.apimachinery.pkg.api.resource.Quantity: typed resource quantity; CPU expressed as cores or millicores (m); memory as bytes with Si (Mi, Gi) suffixes"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.ResourceRequirements",
+      "io.k8s.api.resource.v1.ResourceClaim",
+      "io.k8s.apimachinery.pkg.api.resource.Quantity"
+    ],
+    "expected_path": [
+      "ResourceRequirements -[HAS_PROPERTY]-> Quantity",
+      "ResourceRequirements -[HAS_PROPERTY]-> ResourceClaim"
+    ],
+    "key_nodes": [
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.ResourceRequirements",
+      "io.k8s.api.resource.v1.ResourceClaim",
+      "io.k8s.apimachinery.pkg.api.resource.Quantity"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": [],
+    "gt_depth": 2,
+    "n_roots": 1
+  },
+  "source_reference": "https://kubernetes.io/docs/reference/kubernetes-api/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

@@ -1,16 +1,15 @@
 {
   "id": "daemonset_fluentd",
   "type": "yaml_gen",
-  "question": "Buatkan YAML DaemonSet untuk menjalankan fluentd sebagai logging agent di semua node",
+  "question": "Create a YAML DaemonSet to run fluentd as a logging agent on every node",
   "resource": "io.k8s.api.apps.v1.DaemonSet",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
     "answer": "apiVersion: apps/v1\nkind: DaemonSet\nmetadata:\n  name: fluentd\n  labels:\n    app: fluentd\nspec:\n  selector:\n    matchLabels:\n      app: fluentd\n  template:\n    metadata:\n      labels:\n        app: fluentd\n    spec:\n      containers:\n      - name: fluentd\n        image: fluentd:latest",
     "context": [
-      "DaemonSet untuk menjalankan pod di setiap node dalam cluster",
-      "Selector untuk memilih pod dengan label app: fluentd",
-      "Pod template dengan container fluentd menggunakan image fluentd:latest"
+      "io.k8s.api.apps.v1.DaemonSet: ensures one Pod copy runs on each eligible node; spec is DaemonSetSpec with selector and template as required fields",
+      "io.k8s.api.apps.v1.DaemonSetSpec: selector (LabelSelector) matches managed Pods; template (PodTemplateSpec) defines the Pod; no replicas field — one Pod per eligible node"
     ],
     "relevant_nodes": [
       "io.k8s.api.apps.v1.DaemonSet",
@@ -89,10 +88,12 @@
     ],
     "key_nodes": [
       "io.k8s.api.apps.v1.DaemonSet",
-      "io.k8s.api.apps.v1.DaemonSetSpec",
-      "io.k8s.api.core.v1.PodTemplateSpec"
-    ]
+      "io.k8s.api.apps.v1.DaemonSetSpec"
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

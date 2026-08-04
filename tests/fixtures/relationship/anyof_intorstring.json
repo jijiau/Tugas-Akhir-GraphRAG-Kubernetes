@@ -1,33 +1,45 @@
 {
   "id": "anyof_intorstring",
   "type": "relationship",
-  "question": "Mengapa field port pada Container bisa menerima nilai integer maupun string?",
-  "resource": "io.k8s.api.core.v1.ContainerPort",
+  "question": "What types can EnvFromSource reference to bulk-inject environment variables into a Container, and how are these alternatives expressed in the API schema?",
+  "resource": "io.k8s.api.core.v1.EnvFromSource",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
-    "answer": "Field containerPort dan targetPort menggunakan tipe IntOrString yang merupakan anyOf union — bisa berupa integer (nomor port) atau string (nama port). Relasi ANY_OF di knowledge graph merepresentasikan union type ini dari swagger anyOf schema. Ini memungkinkan penulisan port sebagai angka (8080) atau nama (http, https).",
+    "answer": "EnvFromSource defines a bulk source for environment variable injection into a Container. It can reference either a ConfigMapEnvSource (via configMapRef — injects all keys from a ConfigMap as environment variables) or a SecretEnvSource (via secretRef — injects all keys from a Secret). This is an ANY_OF union: the knowledge graph represents it with ANY_OF edges from EnvFromSource to each valid source type. An optional prefix field prepends a string to all injected variable names. The Container.envFrom field is a list of EnvFromSource objects, so multiple sources can be injected simultaneously.",
     "context": [
-      "ContainerPort: represents a network port in a single container",
-      "IntOrString: a type that can hold an int32 or a string",
-      "anyOf: the field accepts any of the listed types"
+      "io.k8s.api.core.v1.EnvFromSource: bulk source for environment variable injection; configMapRef or secretRef selects the data source (ANY_OF union); prefix prepends a string to all injected variable names",
+      "io.k8s.api.core.v1.ConfigMapEnvSource: selects a ConfigMap by name; all key-value pairs are injected as separate environment variables",
+      "io.k8s.api.core.v1.SecretEnvSource: selects a Secret by name; all key-value pairs are injected as separate environment variables"
     ],
     "relevant_nodes": [
+      "io.k8s.api.core.v1.ConfigMap",
+      "io.k8s.api.core.v1.ConfigMapEnvSource",
       "io.k8s.api.core.v1.Container",
-      "io.k8s.api.core.v1.ContainerPort",
-      "io.k8s.apimachinery.pkg.util.intstr.IntOrString"
+      "io.k8s.api.core.v1.EnvFromSource",
+      "io.k8s.api.core.v1.Secret",
+      "io.k8s.api.core.v1.SecretEnvSource"
     ],
     "expected_path": [
-      "Container -[HAS_PROPERTY]-> ContainerPort"
+      "EnvFromSource -[ANY_OF]-> ConfigMapEnvSource",
+      "EnvFromSource -[ANY_OF]-> SecretEnvSource",
+      "EnvFromSource -[HAS_PROPERTY]-> ConfigMapEnvSource",
+      "EnvFromSource -[HAS_PROPERTY]-> SecretEnvSource"
     ],
     "required_fields": [],
     "expected_yaml_keys": [],
     "key_nodes": [
-      "io.k8s.api.core.v1.ContainerPort",
-      "io.k8s.apimachinery.pkg.util.intstr.IntOrString",
-      "io.k8s.api.core.v1.Container"
-    ]
+      "io.k8s.api.core.v1.ConfigMap",
+      "io.k8s.api.core.v1.ConfigMapEnvSource",
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.EnvFromSource",
+      "io.k8s.api.core.v1.Secret",
+      "io.k8s.api.core.v1.SecretEnvSource"
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
-  "source_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#ContainerPort",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "source_reference": "https://kubernetes.io/docs/reference/kubernetes-api/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

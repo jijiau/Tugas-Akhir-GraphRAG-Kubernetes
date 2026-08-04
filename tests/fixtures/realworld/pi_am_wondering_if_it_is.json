@@ -1,10 +1,10 @@
 {
   "id": "pi_am_wondering_if_it_is",
   "type": "realworld",
-  "question": "<p>I am wondering if it is possible to store a key-value pair in Secret.yml. \nI want to be able to store an encryption key as a value and an id as its key which I can use to retrieve the encryption ke",
+  "question": "How does a Kubernetes Secret store sensitive data according to the API schema — what fields does it define and how is data encoded?",
   "resource": "io.k8s.api.core.v1.Secret",
   "scope": "Namespaced",
-  "multi_hop": true,
+  "multi_hop": false,
   "so_question_id": "boringDeveloper",
   "selection_score": 2.6,
   "selection_scores_breakdown": {
@@ -17,8 +17,10 @@
   },
   "selection_rationale": "SO answer score 0. D1=3 D2=3 D3=3 D4=1 D5=2. G4 new coverage.",
   "ground_truth": {
-    "answer": "Ya, secrets adalah pasangan kunci nilai. Anda dapat membuatnya menggunakan kubectl: kubectl create",
-    "context": [],
+    "answer": "Secret stores sensitive data in two fields: data (a map of string keys to base64-encoded byte strings — the standard storage field) and stringData (a map of string keys to plain string values — write-only convenience field, not returned by GET; takes precedence over data for the same key). The type field (string) categorizes the Secret (e.g. Opaque, kubernetes.io/tls, kubernetes.io/service-account-token). A Secret is namespaced — metadata.namespace scopes it to a single namespace.",
+    "context": [
+      "io.k8s.api.core.v1.Secret: stores sensitive data; data maps string keys to base64-encoded byte values; stringData maps string keys to plain text (write-only, merged into data on persist)"
+    ],
     "relevant_nodes": [
       "io.k8s.api.core.v1.Secret"
     ],
@@ -28,10 +30,13 @@
     "answer_lang": "id",
     "key_nodes": [
       "io.k8s.api.core.v1.Secret"
-    ]
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://stackoverflow.com/questions/boringDeveloper",
   "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
   "so_url": "https://stackoverflow.com/questions/boringDeveloper",
-  "so_answer_score": 0
+  "so_answer_score": 0,
+  "lang": "en"
 }

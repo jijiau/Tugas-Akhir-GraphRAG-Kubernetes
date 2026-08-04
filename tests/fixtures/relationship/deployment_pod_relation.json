@@ -1,15 +1,15 @@
 {
   "id": "deployment_pod_relation",
   "type": "relationship",
-  "question": "Bagaimana hubungan antara Deployment, ReplicaSet, dan Pod di Kubernetes?",
+  "question": "How does the Deployment schema reference its Pod template configuration?",
   "resource": "io.k8s.api.apps.v1.Deployment",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
-    "answer": "Deployment mengontrol ReplicaSet melalui spec.selector. ReplicaSet kemudian membuat dan menjaga jumlah Pod sesuai spec.replicas. Deployment mendelegasikan manajemen Pod ke ReplicaSet.",
+    "answer": "A Deployment defines its Pod configuration through DeploymentSpec, which has four key fields: selector (a LabelSelector that links the Deployment to its Pods), template (a PodTemplateSpec representing the Pod definition — the KG uses a CONTAINS_POD_TEMPLATE edge for this relationship), replicas (the desired Pod count), and strategy (a DeploymentStrategy with type RollingUpdate or Recreate). PodTemplateSpec in turn has a spec field of type PodSpec, making the full schema path: Deployment → DeploymentSpec → PodTemplateSpec → PodSpec.",
     "context": [
-      "Deployment -[CONTAINS_POD_TEMPLATE]-> PodTemplateSpec",
-      "DeploymentSpec: selector links Deployment to its ReplicaSets and Pods"
+      "io.k8s.api.apps.v1.DeploymentSpec: selector (LabelSelector), template (PodTemplateSpec), replicas, and strategy (DeploymentStrategy) define the deployment configuration",
+      "io.k8s.api.core.v1.PodTemplateSpec: wraps PodSpec; the spec field defines containers and volumes for Pods created by the Deployment"
     ],
     "relevant_nodes": [
       "io.k8s.api.apps.v1.Deployment",
@@ -81,9 +81,15 @@
     "key_nodes": [
       "io.k8s.api.apps.v1.Deployment",
       "io.k8s.api.apps.v1.DeploymentSpec",
-      "io.k8s.api.core.v1.PodTemplateSpec"
-    ]
+      "io.k8s.api.apps.v1.DeploymentStrategy",
+      "io.k8s.api.core.v1.PodSpec",
+      "io.k8s.api.core.v1.PodTemplateSpec",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

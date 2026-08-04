@@ -1,7 +1,7 @@
 {
   "id": "hpa_custom_metrics_yaml",
   "type": "realworld",
-  "question": "Bagaimana cara membuat HorizontalPodAutoscaler yang scale berdasarkan custom metric dari Prometheus?",
+  "question": "How do you create a HorizontalPodAutoscaler that scales based on a custom external metric?",
   "resource": "io.k8s.api.autoscaling.v2.HorizontalPodAutoscaler",
   "scope": "Namespaced",
   "multi_hop": true,
@@ -17,11 +17,11 @@
   },
   "selection_rationale": "SO answer score 15. HPA yaml_gen not covered in existing fixtures (only conceptual + relationship HPA fixtures exist). Custom metrics type uses autoscaling/v2 HorizontalPodAutoscalerSpec.metrics field which is in graph. New coverage for HPA yaml_gen slot.",
   "ground_truth": {
-    "answer": "apiVersion: autoscaling/v2\nkind: HorizontalPodAutoscaler\nmetadata:\n  name: my-app-hpa\n  namespace: default\nspec:\n  scaleTargetRef:\n    apiVersion: apps/v1\n    kind: Deployment\n    name: my-app\n  minReplicas: 2\n  maxReplicas: 10\n  metrics:\n    - type: Pods\n      pods:\n        metric:\n          name: http_requests_per_second\n        target:\n          type: AverageValue\n          averageValue: 100m",
+    "answer": "apiVersion: autoscaling/v2\nkind: HorizontalPodAutoscaler\nmetadata:\n  name: my-app-hpa\n  namespace: default\nspec:\n  scaleTargetRef:\n    apiVersion: apps/v1\n    kind: Deployment\n    name: my-app\n  minReplicas: 2\n  maxReplicas: 10\n  metrics:\n  - type: External\n    external:\n      metric:\n        name: http_requests_per_second\n        selector:\n          matchLabels:\n            app: my-app\n      target:\n        type: AverageValue\n        averageValue: 100",
     "context": [
-      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscaler: automatically scales the number of Pods based on observed metrics",
-      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerSpec: minReplicas, maxReplicas, and metrics define the scaling behavior",
-      "io.k8s.api.autoscaling.v2.MetricSpec: type can be Resource, Pods, Object, External, or ContainerResource"
+      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscaler: automatically scales the number of Pods based on observed metrics; spec is HorizontalPodAutoscalerSpec",
+      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerSpec: minReplicas, maxReplicas, scaleTargetRef, and metrics define the autoscaling behavior",
+      "io.k8s.api.autoscaling.v2.MetricSpec: type field selects the metric source; External type uses ExternalMetricSource with metric selector and target"
     ],
     "relevant_nodes": [
       "io.k8s.api.apps.v1.Deployment",
@@ -46,15 +46,11 @@
       "io.k8s.api.autoscaling.v1.HorizontalPodAutoscalerStatus",
       "io.k8s.api.autoscaling.v2.ContainerResourceMetricSource",
       "io.k8s.api.autoscaling.v2.ContainerResourceMetricStatus",
-      "io.k8s.api.autoscaling.v2.CrossVersionObjectReference",
       "io.k8s.api.autoscaling.v2.ExternalMetricSource",
       "io.k8s.api.autoscaling.v2.ExternalMetricStatus",
       "io.k8s.api.autoscaling.v2.HPAScalingRules",
-      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscaler",
       "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerBehavior",
       "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerCondition",
-      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerSpec",
-      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerStatus",
       "io.k8s.api.autoscaling.v2.MetricSpec",
       "io.k8s.api.autoscaling.v2.MetricStatus",
       "io.k8s.api.autoscaling.v2.ObjectMetricSource",
@@ -141,14 +137,17 @@
     ],
     "answer_lang": "yaml",
     "key_nodes": [
-      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscaler",
-      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerSpec",
-      "io.k8s.api.autoscaling.v2.MetricSpec",
-      "io.k8s.api.autoscaling.v2.PodsMetricSource"
-    ]
+      "io.k8s.api.apps.v1.Deployment",
+      "io.k8s.api.autoscaling.v1.HorizontalPodAutoscaler",
+      "io.k8s.api.autoscaling.v1.HorizontalPodAutoscalerSpec",
+      "io.k8s.api.autoscaling.v2.MetricSpec"
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://stackoverflow.com/questions/57075577",
   "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
   "so_url": "https://stackoverflow.com/questions/57075577",
-  "so_answer_score": 15
+  "so_answer_score": 15,
+  "lang": "en"
 }

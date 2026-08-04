@@ -1,16 +1,17 @@
 {
   "id": "deployment_rollout_stuck",
   "type": "troubleshooting",
-  "question": "Saya update Deployment ke versi image baru tapi kubectl rollout status menunjukkan 'Waiting for deployment to finish: 1 out of 3 new replicas have been updated' dan tidak berubah selama beberapa menit. Bagaimana cara mendiagnosa dan mengatasi rollout yang stuck?",
+  "question": "What fields in DeploymentSpec control the rolling update strategy, and how does DeploymentStatus expose rollout progress and health via conditions?",
   "resource": "io.k8s.api.apps.v1.Deployment",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
-    "answer": "Rollout stuck berarti Pod baru tidak bisa masuk status Ready sehingga rolling update tidak melanjutkan ke replika berikutnya. Langkah diagnosis: (1) kubectl get pods — lihat status Pod baru (biasanya CrashLoopBackOff atau ImagePullBackOff atau Pending); (2) kubectl describe pod <pod-baru> — cek Events untuk error spesifik; (3) kubectl logs <pod-baru> — cek application logs. Penyebab umum: image baru crash saat startup, readinessProbe gagal, atau resource tidak cukup. Jika tidak bisa diperbaiki segera, rollback dengan kubectl rollout undo deployment/<nama> untuk kembali ke versi sebelumnya.",
+    "answer": "The strategy field in DeploymentSpec is a DeploymentStrategy with a type (RollingUpdate or Recreate). When type is RollingUpdate, the rollingUpdate field (a RollingUpdateDeployment) defines maxUnavailable (maximum number of Pods that can be unavailable during update) and maxSurge (maximum number of Pods that can be created above the desired count). The progressDeadlineSeconds field sets the timeout in seconds before a stalled rollout is declared failed. Rollout health is reflected in the status field (a DeploymentStatus) which contains conditions (a list of DeploymentCondition with type, status, reason, and message), as well as updatedReplicas and unavailableReplicas counters for tracking progress.",
     "context": [
-      "io.k8s.api.apps.v1.DeploymentStatus: conditions dengan type Progressing dan reason ReplicaSetUpdated menunjukkan state rollout",
-      "io.k8s.api.apps.v1.DeploymentCondition: type Available dengan status False berarti Deployment belum ready",
-      "io.k8s.api.apps.v1.DeploymentSpec: progressDeadlineSeconds menentukan berapa lama sebelum rollout dianggap gagal"
+      "io.k8s.api.apps.v1.DeploymentStrategy: type is RollingUpdate or Recreate; rollingUpdate field is a RollingUpdateDeployment",
+      "io.k8s.api.apps.v1.RollingUpdateDeployment: maxUnavailable and maxSurge control the rolling update pace and pod availability during update",
+      "io.k8s.api.apps.v1.DeploymentStatus: conditions is a list of DeploymentCondition; updatedReplicas and unavailableReplicas track rollout progress",
+      "io.k8s.api.apps.v1.DeploymentCondition: type (Available, Progressing), status, and reason fields indicate rollout state and health"
     ],
     "relevant_nodes": [
       "io.k8s.api.apps.v1.Deployment",
@@ -85,32 +86,12 @@
       "io.k8s.api.apps.v1.DeploymentSpec",
       "io.k8s.api.apps.v1.DeploymentStatus",
       "io.k8s.api.apps.v1.DeploymentStrategy",
-      "io.k8s.api.apps.v1.RollingUpdateDeployment",
-      "io.k8s.api.core.v1.Affinity",
-      "io.k8s.api.core.v1.Container",
-      "io.k8s.api.core.v1.EphemeralContainer",
-      "io.k8s.api.core.v1.HostAlias",
-      "io.k8s.api.core.v1.LocalObjectReference",
-      "io.k8s.api.core.v1.PodDNSConfig",
-      "io.k8s.api.core.v1.PodOS",
-      "io.k8s.api.core.v1.PodReadinessGate",
-      "io.k8s.api.core.v1.PodResourceClaim",
-      "io.k8s.api.core.v1.PodSchedulingGate",
-      "io.k8s.api.core.v1.PodSecurityContext",
-      "io.k8s.api.core.v1.PodSpec",
-      "io.k8s.api.core.v1.PodTemplateSpec",
-      "io.k8s.api.core.v1.ResourceRequirements",
-      "io.k8s.api.core.v1.Secret",
-      "io.k8s.api.core.v1.ServiceAccount",
-      "io.k8s.api.core.v1.Toleration",
-      "io.k8s.api.core.v1.TopologySpreadConstraint",
-      "io.k8s.api.core.v1.Volume",
-      "io.k8s.api.core.v1.WorkloadReference",
-      "io.k8s.apimachinery.pkg.api.resource.Quantity",
-      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector",
-      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelectorRequirement"
-    ]
+      "io.k8s.api.apps.v1.RollingUpdateDeployment"
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

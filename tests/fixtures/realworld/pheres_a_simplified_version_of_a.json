@@ -1,7 +1,7 @@
 {
   "id": "pheres_a_simplified_version_of_a",
   "type": "realworld",
-  "question": "<p>Here's a simplified version of a kubernetes job YAML config I use commonly:</p>\n<pre><code>apiVersion: batch/v1\nkind: Job\nmetadata:\n  name: myjob\nspec:\n  template:\n    spec:\n      containers:",
+  "question": "What fields in a Kubernetes Job spec control task execution, retry behavior, and cleanup?",
   "resource": "io.k8s.api.batch.v1.Job",
   "scope": "Namespaced",
   "multi_hop": true,
@@ -17,8 +17,11 @@
   },
   "selection_rationale": "SO answer score 0. D1=3 D2=3 D3=3 D4=1 D5=3. G4 new coverage.",
   "ground_truth": {
-    "answer": "Jika konfigurasi Job dalam bentuk YAML mengandung karakter khusus seperti tanda kutip tunggal, bungkus seluruh baris perintah dengan tanda kutip ganda, atau simpan konfigurasi dalam file YAML terpisah dan gunakan kubectl apply -f job.yaml untuk menghindari masalah escaping argumen di command line.",
-    "context": [],
+    "answer": "Job.spec is a JobSpec. Key fields for execution control: template (PodTemplateSpec — required; defines the Pod that runs the task; restartPolicy must be OnFailure or Never), completions (number of Pods that must succeed; default 1), parallelism (max Pods running simultaneously; default 1), backoffLimit (number of Pod retries before the Job is marked Failed; default 6). For time and cleanup control: activeDeadlineSeconds (total time limit in seconds), ttlSecondsAfterFinished (delay before the Job resource is deleted after completion). The completionMode field (NonIndexed or Indexed) controls how completion is tracked.",
+    "context": [
+      "io.k8s.api.batch.v1.Job: runs a Pod to completion; spec is JobSpec",
+      "io.k8s.api.batch.v1.JobSpec: completions, parallelism, backoffLimit, activeDeadlineSeconds, ttlSecondsAfterFinished, and template are the key fields"
+    ],
     "relevant_nodes": [
       "io.k8s.api.batch.v1.Job",
       "io.k8s.api.batch.v1.JobCondition",
@@ -93,11 +96,16 @@
     "expected_yaml_keys": [],
     "answer_lang": "id",
     "key_nodes": [
-      "io.k8s.api.batch.v1.Job"
-    ]
+      "io.k8s.api.batch.v1.Job",
+      "io.k8s.api.batch.v1.JobSpec",
+      "io.k8s.api.core.v1.PodTemplateSpec"
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://stackoverflow.com/questions/David Parks",
   "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
   "so_url": "https://stackoverflow.com/questions/David Parks",
-  "so_answer_score": 0
+  "so_answer_score": 0,
+  "lang": "en"
 }

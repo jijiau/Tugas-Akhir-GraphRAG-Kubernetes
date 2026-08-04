@@ -1,16 +1,16 @@
 {
   "id": "expose_with_ingress",
   "type": "followup",
-  "context_question": "Buat YAML Service ClusterIP untuk nginx di port 80",
-  "question": "Sekarang buatkan Ingress untuk mengekspos Service ini di domain app.example.com",
+  "context_question": "Create a YAML ClusterIP Service for nginx on port 80",
+  "question": "Now create an Ingress to expose this Service at the domain app.example.com",
   "resource": "io.k8s.api.networking.v1.Ingress",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
     "answer": "apiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: app-ingress\nspec:\n  rules:\n  - host: app.example.com\n    http:\n      paths:\n      - path: /\n        pathType: Prefix\n        backend:\n          service:\n            name: web-service\n            port:\n              number: 80",
     "context": [
-      "Ingress: manages external access to services",
-      "IngressRule: routes traffic based on host and path"
+      "io.k8s.api.networking.v1.Ingress: defines HTTP/HTTPS routing rules that manage external access to Services",
+      "io.k8s.api.networking.v1.IngressRule: routes incoming traffic by hostname and HTTP path to a Service backend"
     ],
     "relevant_nodes": [
       "io.k8s.api.core.v1.Pod",
@@ -45,10 +45,12 @@
     ],
     "key_nodes": [
       "io.k8s.api.networking.v1.Ingress",
-      "io.k8s.api.networking.v1.IngressSpec",
       "io.k8s.api.networking.v1.IngressRule"
-    ]
+    ],
+    "gt_depth": 2,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/services-networking/ingress/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/service-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/service-resources/",
+  "lang": "en"
 }

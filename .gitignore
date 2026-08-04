@@ -13,6 +13,9 @@ venv/
 # SQLite memory database (runtime data, bukan source code)
 data/conversation_memory.db
 
+# Generated artifacts (regenerate with scripts/gen_feedback_form.py)
+data/expert_feedback_form.xlsx
+
 # Files staged for deletion (review before permanently removing)
 _to_delete/
 

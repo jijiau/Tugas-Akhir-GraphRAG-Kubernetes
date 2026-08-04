@@ -1,15 +1,15 @@
 {
   "id": "deployment_liveness_probe",
   "type": "yaml_gen",
-  "question": "Buat YAML Deployment dengan liveness probe HTTP ke /health pada port 8080",
+  "question": "Create a YAML Deployment with an HTTP liveness probe to /health on port 8080",
   "resource": "io.k8s.api.apps.v1.Deployment",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
     "answer": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: my-app\nspec:\n  replicas: 1\n  selector:\n    matchLabels:\n      app: my-app\n  template:\n    metadata:\n      labels:\n        app: my-app\n    spec:\n      containers:\n        - name: my-app\n          image: my-app:latest\n          livenessProbe:\n            httpGet:\n              path: /health\n              port: 8080\n            initialDelaySeconds: 15\n            periodSeconds: 10",
     "context": [
-      "io.k8s.api.core.v1.Container: livenessProbe field defines container health check.",
-      "io.k8s.api.core.v1.Probe: httpGet, tcpSocket, or exec defines the probe action"
+      "io.k8s.api.core.v1.Container: livenessProbe field holds a Probe object that defines the liveness health check configuration",
+      "io.k8s.api.core.v1.Probe: httpGet (HTTPGetAction), tcpSocket (TCPSocketAction), exec (ExecAction), or grpc (GRPCAction) defines the probe action"
     ],
     "relevant_nodes": [
       "io.k8s.api.apps.v1.Deployment",
@@ -93,8 +93,11 @@
       "io.k8s.api.apps.v1.Deployment",
       "io.k8s.api.core.v1.Container",
       "io.k8s.api.core.v1.Probe"
-    ]
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

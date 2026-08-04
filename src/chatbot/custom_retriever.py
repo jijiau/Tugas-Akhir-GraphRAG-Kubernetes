@@ -8,6 +8,7 @@ from src.graph.queries import (
     SCHEMA_DEPS_QUERY,
     PATH_EDGES_QUERY,
     HYBRID_VECTOR_GRAPH_QUERY,
+    _ALL_EDGE_TYPES,
 )
 
 logger = logging.getLogger(__name__)
@@ -58,6 +59,7 @@ class StatefulK8sRetriever:
         intent_type: str = "explain",
         max_depth: int | None = None,
         ablation_mode: str | None = None,
+        question: str = "",
     ) -> tuple[str, list[str]]:
         """
         Two-phase retrieval with intent-aware depth control:
@@ -70,12 +72,23 @@ class StatefulK8sRetriever:
           3. Intent-derived from _DEPTH_BY_INTENT mapping
           4. _DEFAULT_DEPTH fallback
 
+        Context traversal uses ALL 18 edge types by default (F14). The
+        'has_property_only' ablation restricts it to HAS_PROPERTY alone, to
+        isolate the semantic-edge contribution (thesis T1).
+
+        `question` (F15): when provided, the Phase-2 vector fallback embeds the
+        raw user question — symmetric with the Vector baseline — instead of a
+        keyword soup. This locks the embedded-text variable so the only
+        GraphRAG-vs-Vector difference is graph traversal. Phase-1 exact match
+        still uses the extracted intent (ablated separately by A1/no_phase1).
+
         ablation_mode values (ablation study only — None in production):
-          'no_phase1'       A1: skip exact match, go straight to vector
-          'no_multihop'     A2: seed node only, no schema_deps traversal
-          'depth_2'         A3: override all intents to depth=2
-          'depth_3'         A4: override all intents to depth=3
-          'no_multi_entity' A6c: disable multi-entity retrieval for all intents
+          'no_phase1'         A1: skip exact match, go straight to vector
+          'no_multihop'       A2: seed node only, no schema_deps traversal
+          'depth_2'           A3: override all intents to depth=2
+          'depth_3'           A4: override all intents to depth=3
+          'no_multi_entity'   A6c: disable multi-entity retrieval for all intents
+          'has_property_only' A7: restrict context traversal to HAS_PROPERTY (F14)
 
         Returns:
             (graph_context_json, reasoning_path)
@@ -92,7 +105,11 @@ class StatefulK8sRetriever:
         else:
             depth = max_depth if max_depth is not None \
                 else _DEPTH_BY_INTENT.get(intent_type, _DEFAULT_DEPTH)
-        logger.info(f"[Retriever] intent_type='{intent_type}' ablation='{ablation_mode}' → max_depth={depth}")
+
+        # ── Resolve context edge-set (F14) ────────────────────────────────────
+        # Default: all 18 edge types. Ablation A7 isolates HAS_PROPERTY only.
+        edge_types = "HAS_PROPERTY" if ablation_mode == "has_property_only" else _ALL_EDGE_TYPES
+        logger.info(f"[Retriever] intent_type='{intent_type}' ablation='{ablation_mode}' → max_depth={depth} edges={'HAS_PROPERTY' if edge_types=='HAS_PROPERTY' else 'ALL_18'}")
 
         primary = intent_data.get("primary_resource", "")
         related = intent_data.get("related_concepts", [])
@@ -110,13 +127,18 @@ class StatefulK8sRetriever:
                     # A2: seed node only — no multi-hop traversal
                     record = {"RootResource": root_name, "SchemaDependencies": []}
                 else:
-                    record = self._schema_deps(root_name, depth)
+                    record = self._schema_deps(root_name, depth, edge_types)
             else:
                 # ── Phase 2: Vector search ────────────────────────────────────
                 logger.info(f"[Retriever] No exact match for '{primary}', using vector search")
-                search_query = f"{primary} {' '.join(related)} Kubernetes"
+                # F15: embed the raw user question (symmetric with the Vector
+                # baseline) so the only GraphRAG-vs-Vector difference is graph
+                # traversal. Fall back to the entity keyword string only when no
+                # question is supplied (defensive — e.g. legacy callers).
+                search_query = question.strip() if question and question.strip() \
+                    else f"{primary} {' '.join(related)} Kubernetes"
                 embedding    = self.vector_mgr.generate_embedding(search_query)
-                record       = self._vector_deps(embedding, depth)
+                record       = self._vector_deps(embedding, depth, edge_types)
                 if record:
                     root_name = record.get("RootResource", "")
                     if ablation_mode == 'no_multihop':
@@ -127,7 +149,7 @@ class StatefulK8sRetriever:
                         }
 
             if not record:
-                return "Tidak ada skema Kubernetes yang relevan di dalam Knowledge Graph.", []
+                return "No relevant Kubernetes schema found in the Knowledge Graph.", []
 
             # ── Clean SchemaDependencies ──────────────────────────────────────
             deps = record.get("SchemaDependencies") or []
@@ -137,7 +159,7 @@ class StatefulK8sRetriever:
             if ablation_mode == 'no_multihop':
                 reasoning_path = []
             else:
-                reasoning_path = self._build_reasoning_path(root_name, depth)
+                reasoning_path = self._build_reasoning_path(root_name, depth, edge_types)
 
             graph_context = json.dumps(record, indent=2, ensure_ascii=False)
 
@@ -154,12 +176,12 @@ class StatefulK8sRetriever:
                         extra_root = self._exact_match(extra_resource)
                         if not extra_root:
                             continue
-                        extra_record = self._schema_deps(extra_root, depth)
+                        extra_record = self._schema_deps(extra_root, depth, edge_types)
                         if not extra_record:
                             continue
                         extra_deps = extra_record.get("SchemaDependencies") or []
                         extra_record["SchemaDependencies"] = [d for d in extra_deps if d is not None]
-                        extra_path = self._build_reasoning_path(extra_root, depth)
+                        extra_path = self._build_reasoning_path(extra_root, depth, edge_types)
                         graph_context += "\n" + json.dumps(extra_record, indent=2, ensure_ascii=False)
                         seen_steps = set(reasoning_path)
                         for step in extra_path:
@@ -185,19 +207,29 @@ class StatefulK8sRetriever:
         rows = self.db.execute_query(EXACT_MATCH_QUERY, {"primary_resource": primary})
         return rows[0]["name"] if rows else None
 
-    def _schema_deps(self, root_name: str, max_depth: int) -> dict | None:
-        """Fetch schema dependencies for a known root node name."""
-        cypher = SCHEMA_DEPS_QUERY.format(max_depth=max_depth)
+    def _schema_deps(self, root_name: str, max_depth: int,
+                     edge_types: str = _ALL_EDGE_TYPES) -> dict | None:
+        """Fetch schema dependencies for a known root node name.
+
+        edge_types (F14): relationship types to traverse for the LLM context.
+        Defaults to all 18; 'HAS_PROPERTY' under the has_property_only ablation.
+        """
+        cypher = SCHEMA_DEPS_QUERY.format(max_depth=max_depth, all_edges=edge_types)
         rows   = self.db.execute_query(cypher, {"root_name": root_name})
         return dict(rows[0]) if rows else None
 
-    def _vector_deps(self, embedding: list, max_depth: int) -> dict | None:
-        """Fetch schema dependencies via vector similarity."""
-        cypher = HYBRID_VECTOR_GRAPH_QUERY.format(max_depth=max_depth)
+    def _vector_deps(self, embedding: list, max_depth: int,
+                     edge_types: str = _ALL_EDGE_TYPES) -> dict | None:
+        """Fetch schema dependencies via vector similarity.
+
+        edge_types (F14): see _schema_deps.
+        """
+        cypher = HYBRID_VECTOR_GRAPH_QUERY.format(max_depth=max_depth, all_edges=edge_types)
         rows   = self.db.execute_query(cypher, {"embedding": embedding})
         return dict(rows[0]) if rows else None
 
-    def _build_reasoning_path(self, root_name: str, max_depth: int) -> list[str]:
+    def _build_reasoning_path(self, root_name: str, max_depth: int,
+                              edge_types: str = _ALL_EDGE_TYPES) -> list[str]:
         """
         Returns a deduplicated list of actual parent→child edge strings, e.g.:
           "Deployment -[HAS_PROPERTY]-> DeploymentSpec"
@@ -206,11 +238,15 @@ class StatefulK8sRetriever:
 
         Uses PATH_EDGES_QUERY which extracts real intermediate nodes from
         graph paths — not root-to-leaf shortcuts.
+
+        edge_types (F14): edge-set for the path. Defaults to all 18; restricted
+        to 'HAS_PROPERTY' under the has_property_only ablation so RetQ and
+        path_coverage reflect the reduced traversal (T1 retrieval evidence).
         """
         if not root_name:
             return []
         try:
-            cypher = PATH_EDGES_QUERY.format(max_depth=max_depth)
+            cypher = PATH_EDGES_QUERY.format(max_depth=max_depth, all_edges=edge_types)
             rows   = self.db.execute_query(cypher, {"root_name": root_name})
             seen   = set()
             path   = []

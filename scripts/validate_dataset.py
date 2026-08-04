@@ -229,9 +229,44 @@ def _validate_paths(fixture: dict, db) -> dict:
     return results
 
 
+# ── 6. GT node existence + key⊆relevant validation ────────────────────────────
+def _load_valid_fqns() -> set:
+    """Load all FQN keys from data/definitions.json."""
+    defs_path = Path(__file__).parent.parent / "data" / "definitions.json"
+    try:
+        raw = json.loads(defs_path.read_text(encoding="utf-8"))
+        return set(raw.get("definitions", {}).keys())
+    except Exception as e:
+        logger.warning(f"[definitions.json] Cannot load ({e}). Node existence checks skipped.")
+        return set()
+
+
+def _validate_gt_nodes(fixture: dict, valid_fqns: set) -> list:
+    """Return list of violation dicts for phantom nodes and key⊄relevant."""
+    violations = []
+    gt = fixture.get("ground_truth", {})
+    relevant = set(gt.get("relevant_nodes", []))
+    key      = set(gt.get("key_nodes", []))
+
+    if not valid_fqns:
+        return violations
+
+    for node in sorted(relevant):
+        if node not in valid_fqns:
+            violations.append({"field": "relevant_nodes", "node": node, "issue": "PHANTOM"})
+    for node in sorted(key):
+        if node not in valid_fqns:
+            violations.append({"field": "key_nodes", "node": node, "issue": "PHANTOM"})
+    for node in sorted(key - relevant):
+        violations.append({"field": "key_nodes", "node": node, "issue": "KEY_NOT_IN_RELEVANT"})
+    return violations
+
+
 # ── Main ───────────────────────────────────────────────────────────────────────
 def run(dry_run: bool = False, skip_neo4j: bool = False):
     db = None if skip_neo4j else _check_neo4j()
+    valid_fqns = _load_valid_fqns()
+    logger.info(f"[definitions.json] {len(valid_fqns)} valid FQNs loaded.")
 
     all_fixtures = sorted(FIXTURES_DIR.rglob("*.json"))
     logger.info(f"Processing {len(all_fixtures)} fixtures...")
@@ -239,6 +274,7 @@ def run(dry_run: bool = False, skip_neo4j: bool = False):
     traceability_rows = []
     path_rows         = []
     yaml_rows         = []
+    node_rows         = []
     updated_count     = 0
 
     for fpath in all_fixtures:
@@ -299,6 +335,13 @@ def run(dry_run: bool = False, skip_neo4j: bool = False):
                     "edge": edge_str, "status": "PENDING_NEO4J",
                 })
 
+        # ── 6. GT node existence + key⊆relevant ─────────────────────────────
+        for v in _validate_gt_nodes(fixture, valid_fqns):
+            node_rows.append({
+                "fixture_id": fid, "type": ftype,
+                "field": v["field"], "node": v["node"], "issue": v["issue"],
+            })
+
         # ── 4. Traceability row ───────────────────────────────────────────────
         n_paths   = len(path_rows) and len([r for r in path_rows if r["fixture_id"]==fid])
         ep        = fixture.get("ground_truth", {}).get("expected_path", [])
@@ -338,6 +381,7 @@ def run(dry_run: bool = False, skip_neo4j: bool = False):
         _write_csv(DATA_DIR / "traceability_matrix.csv",       traceability_rows)
         _write_csv(DATA_DIR / "fixture_validation_report.csv", path_rows)
         _write_csv(DATA_DIR / "yaml_gt_validation.csv",        yaml_rows)
+        _write_csv(DATA_DIR / "gt_node_validation.csv",        node_rows)
         logger.info("CSV files saved to data/")
 
     # ── Summary ───────────────────────────────────────────────────────────────
@@ -370,6 +414,16 @@ def run(dry_run: bool = False, skip_neo4j: bool = False):
             f"  VALID (in graph)        : {n_valid}  ({n_valid/n_total*100:.1f}%)" if n_total else "  No edges",
             f"  NOT_IN_GRAPH            : {n_invalid}",
         ]
+    n_phantom_rel = sum(1 for r in node_rows if r["issue"] == "PHANTOM" and r["field"] == "relevant_nodes")
+    n_phantom_key = sum(1 for r in node_rows if r["issue"] == "PHANTOM" and r["field"] == "key_nodes")
+    n_key_subset  = sum(1 for r in node_rows if r["issue"] == "KEY_NOT_IN_RELEVANT")
+    lines += [
+        "",
+        "  --- GT Node Validation (B4/B5) ---",
+        f"  Phantom relevant_nodes  : {n_phantom_rel}",
+        f"  Phantom key_nodes       : {n_phantom_key}",
+        f"  key⊄relevant violations : {n_key_subset}",
+    ]
     lines += [
         "",
         "  --- YAML Ground Truth Validation ---",
@@ -414,6 +468,14 @@ def run(dry_run: bool = False, skip_neo4j: bool = False):
         print(f"  {'-'*110}")
         for r in yaml_rows:
             print(f"  {r['fixture_id']:<45} {r['type']:<13} {r['syntactic']:>9} {r['schema']:>7}  {r['error'][:50]}")
+
+    if node_rows:
+        print()
+        print("  GT NODE VALIDATION DETAIL (B4/B5 violations only)")
+        print(f"  {'Fixture ID':<45} {'Type':<13} {'Field':<16} {'Issue':<24} {'Node'}")
+        print(f"  {'-'*130}")
+        for r in node_rows:
+            print(f"  {r['fixture_id']:<45} {r['type']:<13} {r['field']:<16} {r['issue']:<24} {r['node']}")
 
 
 if __name__ == "__main__":

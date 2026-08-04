@@ -1,10 +1,10 @@
 {
   "id": "pi_want_to_pass_a_certificate",
   "type": "realworld",
-  "question": "<p>I want to pass a certificate to the helm chart and currently I am passing using --set-file global.dbValues.dbcacertificate=./server.crt but instead i want to pass the file in values file of helm ch",
+  "question": "How do you create a Kubernetes Secret YAML to store a TLS certificate and private key?",
   "resource": "io.k8s.api.core.v1.Secret",
   "scope": "Namespaced",
-  "multi_hop": true,
+  "multi_hop": false,
   "so_question_id": "Darshil Shah",
   "selection_score": 2.6,
   "selection_scores_breakdown": {
@@ -17,8 +17,10 @@
   },
   "selection_rationale": "SO answer score 0. D1=3 D2=3 D3=3 D4=1 D5=2. G4 new coverage.",
   "ground_truth": {
-    "answer": "Menurut dokumentasi yang relevan, seseorang harus memproses terlebih dahulu sebuah file yang berada di luar chart dalam",
-    "context": [],
+    "answer": "apiVersion: v1\nkind: Secret\nmetadata:\n  name: tls-secret\ntype: kubernetes.io/tls\ndata:\n  tls.crt: <base64-encoded-certificate>\n  tls.key: <base64-encoded-private-key>",
+    "context": [
+      "io.k8s.api.core.v1.Secret: stores sensitive data; type field categorizes the Secret; data maps string keys to base64-encoded byte values"
+    ],
     "relevant_nodes": [
       "io.k8s.api.core.v1.Secret"
     ],
@@ -28,10 +30,13 @@
     "answer_lang": "id",
     "key_nodes": [
       "io.k8s.api.core.v1.Secret"
-    ]
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://stackoverflow.com/questions/Darshil Shah",
   "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
   "so_url": "https://stackoverflow.com/questions/Darshil Shah",
-  "so_answer_score": 0
+  "so_answer_score": 0,
+  "lang": "en"
 }

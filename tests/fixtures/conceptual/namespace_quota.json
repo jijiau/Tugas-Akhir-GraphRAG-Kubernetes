@@ -1,16 +1,16 @@
 {
   "id": "namespace_quota",
   "type": "conceptual",
-  "question": "Bagaimana cara memastikan tim development tidak bisa menggunakan lebih dari 4 CPU dan 8Gi memory di namespace mereka agar tidak mengganggu environment production?",
+  "question": "What fields does ResourceQuota define to enforce aggregate resource limits within a namespace?",
   "resource": "io.k8s.api.core.v1.ResourceQuota",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
-    "answer": "Buat ResourceQuota di namespace tim development dengan spec.hard yang mendefinisikan batas limits.cpu: '4' dan limits.memory: '8Gi'. Setelah ResourceQuota aktif, setiap Pod di namespace tersebut wajib mencantumkan resource requests dan limits — Pod tanpa resource limits akan ditolak. Untuk memastikan Pod selalu punya limits, tambahkan juga LimitRange di namespace yang sama untuk menset nilai default limits jika tidak didefinisikan di PodSpec.",
+    "answer": "ResourceQuota defines namespace-level limits via ResourceQuotaSpec. The hard field is a ResourceList map from resource name to maximum allowed quantity, covering compute resources such as limits.cpu and limits.memory as well as object count quotas. Once active, every Pod in the namespace must declare explicit requests and limits; any creation that would push the namespace total above a hard limit is rejected. ResourceQuotaStatus reports current consumption through its used field (a ResourceList of consumed values) alongside the hard limits from the spec.",
     "context": [
-      "io.k8s.api.core.v1.ResourceQuota: membatasi aggregate resource usage dalam sebuah namespace",
-      "io.k8s.api.core.v1.ResourceQuotaSpec: spec.hard mendefinisikan batas hard untuk setiap named resource",
-      "io.k8s.api.core.v1.ResourceQuotaStatus: status.used melacak penggunaan resource saat ini vs batas"
+      "io.k8s.api.core.v1.ResourceQuota: defines aggregate resource limits for a namespace; enforces hard caps on CPU, memory, and object counts",
+      "io.k8s.api.core.v1.ResourceQuotaSpec: hard field is a ResourceList map from resource name to maximum quantity allowed in the namespace",
+      "io.k8s.api.core.v1.ResourceQuotaStatus: used field is a ResourceList of current consumption; hard mirrors the spec limits"
     ],
     "relevant_nodes": [
       "io.k8s.api.core.v1.ResourceQuota",
@@ -30,9 +30,13 @@
     "expected_yaml_keys": [],
     "key_nodes": [
       "io.k8s.api.core.v1.ResourceQuota",
-      "io.k8s.api.core.v1.ResourceQuotaSpec"
-    ]
+      "io.k8s.api.core.v1.ResourceQuotaSpec",
+      "io.k8s.api.core.v1.ResourceQuotaStatus"
+    ],
+    "gt_depth": 2,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/policy/resource-quotas/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

@@ -1,4 +1,10 @@
 #!/usr/bin/env python3
+# ⚠️  SUPERSEDED — DO NOT RUN.
+# This script is the root cause of bug F2 (gold-standard inflation):
+#   it overwrote relevant_nodes/expected_path/key_nodes with full subgraph dumps,
+#   inflating GT to 86+ nodes and suppressing RetQ/faithfulness artificially.
+# Replaced by: scripts/recurate_fixtures.py (separated-roles, neighborhood GT).
+# Kept for provenance only.
 """
 scripts/expand_relevant_nodes.py
 

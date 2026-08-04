@@ -11,7 +11,8 @@ class YAMLValidator:
     """
     Three-layer YAML validation:
       1. PyYAML   — syntax correctness
-      2. kubernetes-validate — schema compliance against K8s 1.29 spec
+      2. kubernetes-validate — schema compliance against K8s 1.30 spec (F12: matches
+         the swagger-definitions version the KG is built from)
       3. Neo4j graph — required fields cross-check (thesis contribution)
     """
 
@@ -42,7 +43,7 @@ class YAMLValidator:
         # ── Layer 2: kubernetes-validate schema ───────────────────────────────
         try:
             import kubernetes_validate
-            kubernetes_validate.validate(data, "1.29", strict=False)
+            kubernetes_validate.validate(data, "1.30", strict=False)
         except ImportError:
             logger.warning("kubernetes-validate not installed; skipping schema validation layer.")
         except Exception as e:

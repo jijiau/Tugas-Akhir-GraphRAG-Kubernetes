@@ -1,20 +1,17 @@
 {
   "id": "job_cronjob",
   "type": "conceptual",
-  "question": "Apa perbedaan antara Job dan CronJob?",
+  "question": "What is the difference between a Job and a CronJob in Kubernetes, and what does each define in its spec?",
   "resource": "io.k8s.api.batch.v1.Job",
   "scope": "Namespaced",
   "multi_hop": false,
   "ground_truth": {
-    "answer": "Job menjalankan satu atau lebih Pod sampai selesai (completions). CronJob membuat Job secara otomatis berdasarkan jadwal cron. Job cocok untuk tugas batch sekali jalan, CronJob untuk tugas terjadwal berulang.",
+    "answer": "A Job creates one or more Pods and tracks their completion. JobSpec defines parallelism (maximum simultaneous Pods), completions (required successful Pod completions), and backoffLimit (maximum retries before the Job is marked failed). The Job terminates once the required completions are reached. A CronJob creates a new Job on a recurring schedule. CronJobSpec defines a schedule field in standard cron format and a jobTemplate (a JobTemplateSpec) describing the Job to create on each invocation. Jobs suit one-off or parallelized batch work; CronJobs suit periodic recurring tasks.",
     "context": [
-      "Job adalah Kubernetes controller untuk menjalankan satu atau lebih Pod sampai selesai dengan sukses",
-      "JobSpec mendefinisikan parallelism, completions, dan backoff limit",
-      "Job menjalankan Pod sampai mencapai jumlah completions yang ditentukan",
-      "CronJob membuat Job secara otomatis berdasarkan jadwal cron (seperti cron di Linux)",
-      "CronJobSpec mendefinisikan schedule dalam format cron dan jobTemplate",
-      "Job cocok untuk tugas batch sekali jalan atau paralel processing",
-      "CronJob cocok untuk tugas terjadwal berulang seperti backup, cleanup, atau report generation"
+      "io.k8s.api.batch.v1.Job: creates one or more Pods and tracks successful completions; terminates when the completions count is reached",
+      "io.k8s.api.batch.v1.JobSpec: defines parallelism, completions, and backoffLimit for a Job",
+      "io.k8s.api.batch.v1.CronJob: creates a new Job on a recurring schedule defined by a cron expression",
+      "io.k8s.api.batch.v1.CronJobSpec: defines schedule in cron format and jobTemplate (JobTemplateSpec) for each invocation"
     ],
     "relevant_nodes": [
       "io.k8s.api.batch.v1.CronJob",
@@ -23,6 +20,7 @@
       "io.k8s.api.batch.v1.JobCondition",
       "io.k8s.api.batch.v1.JobSpec",
       "io.k8s.api.batch.v1.JobStatus",
+      "io.k8s.api.batch.v1.JobTemplateSpec",
       "io.k8s.api.batch.v1.PodFailurePolicy",
       "io.k8s.api.batch.v1.SuccessPolicy",
       "io.k8s.api.batch.v1.UncountedTerminatedPods",
@@ -45,13 +43,16 @@
     "required_fields": [],
     "expected_yaml_keys": [],
     "key_nodes": [
-      "io.k8s.api.batch.v1.Job",
-      "io.k8s.api.batch.v1.JobSpec",
       "io.k8s.api.batch.v1.CronJob",
       "io.k8s.api.batch.v1.CronJobSpec",
-      "io.k8s.api.core.v1.PodTemplateSpec"
-    ]
+      "io.k8s.api.batch.v1.Job",
+      "io.k8s.api.batch.v1.JobSpec",
+      "io.k8s.api.batch.v1.JobTemplateSpec"
+    ],
+    "gt_depth": 2,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/job/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

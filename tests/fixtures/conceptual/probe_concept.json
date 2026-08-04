@@ -1,0 +1,51 @@
+{
+  "id": "probe_concept",
+  "type": "conceptual",
+  "question": "What fields does a Kubernetes Probe define, and what action types are supported for container health checks?",
+  "resource": "io.k8s.api.core.v1.Probe",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "lang": "en",
+  "ground_truth": {
+    "answer": "A Probe is used for liveness, readiness, and startup health checks on a Container. It embeds one of four mutually exclusive action types: exec (ExecAction — runs a command; exit code 0 = success), httpGet (HTTPGetAction — HTTP GET to host/port/path; 2xx or 3xx = success), tcpSocket (TCPSocketAction — opens a TCP connection; success = port is open), grpc (GRPCAction — gRPC health check). Timing fields: initialDelaySeconds (delay before first probe after container start), periodSeconds (interval between probes, default 10), timeoutSeconds (probe timeout, default 1), successThreshold (consecutive successes to mark healthy after failure, default 1), failureThreshold (consecutive failures to mark unhealthy, default 3). terminationGracePeriodSeconds overrides the Pod-level grace period for this probe.",
+    "context": [
+      "io.k8s.api.core.v1.Probe: health check handler (exec/httpGet/tcpSocket/grpc) plus timing fields initialDelaySeconds, periodSeconds, timeoutSeconds, successThreshold, failureThreshold",
+      "io.k8s.api.core.v1.ExecAction: command (string list argv) executed inside the container",
+      "io.k8s.api.core.v1.HTTPGetAction: host, port, path, scheme, httpHeaders fields",
+      "io.k8s.api.core.v1.TCPSocketAction: host and port fields for TCP liveness check"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.ExecAction",
+      "io.k8s.api.core.v1.GRPCAction",
+      "io.k8s.api.core.v1.HTTPGetAction",
+      "io.k8s.api.core.v1.HTTPHeader",
+      "io.k8s.api.core.v1.Probe",
+      "io.k8s.api.core.v1.TCPSocketAction",
+      "io.k8s.apimachinery.pkg.util.intstr.IntOrString"
+    ],
+    "expected_path": [
+      "HTTPGetAction -[HAS_PROPERTY]-> HTTPHeader",
+      "HTTPGetAction -[HAS_PROPERTY]-> IntOrString",
+      "Probe -[HAS_PROPERTY]-> ExecAction",
+      "Probe -[HAS_PROPERTY]-> GRPCAction",
+      "Probe -[HAS_PROPERTY]-> HTTPGetAction",
+      "Probe -[HAS_PROPERTY]-> TCPSocketAction",
+      "TCPSocketAction -[HAS_PROPERTY]-> IntOrString"
+    ],
+    "key_nodes": [
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.ExecAction",
+      "io.k8s.api.core.v1.GRPCAction",
+      "io.k8s.api.core.v1.HTTPGetAction",
+      "io.k8s.api.core.v1.Probe",
+      "io.k8s.api.core.v1.TCPSocketAction"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": [],
+    "gt_depth": 2,
+    "n_roots": 1
+  },
+  "source_reference": "https://kubernetes.io/docs/reference/kubernetes-api/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

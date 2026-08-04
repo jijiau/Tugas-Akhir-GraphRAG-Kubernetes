@@ -1,0 +1,22 @@
+\begin{table*}[t]
+\caption{Three-System Score Comparison per Evaluation Dimension ($n=102$)}
+\label{tbl:perbandingan}
+\centering
+\begin{tabular}{|l|c|c|c|c|c|}
+\hline
+\textbf{Metric} & \textbf{Vanilla LLM} & \textbf{Vector RAG} & \textbf{GraphRAG} & \textbf{$\Delta$ vs.\ Vector RAG} & \textbf{$\Delta$ vs.\ Vanilla LLM} \\
+\hline
+AnsQ & 0.7469 & 0.7984 & 0.8031 & $+0.005$ (n.s.) & $+0.056$ (***) \\
+\hline
+RetQ (F1) & N/A & 0.2437 & 0.7089 & $+0.465$ (***) & $+0.709$ (***) \\
+\hline
+Hop Accuracy & N/A & N/A & 0.7562 & N/A & N/A \\
+\hline
+Faithfulness & N/A & 0.1675 & 0.3055 & $+0.127$ (***) & N/A \\
+\hline
+Syntactic Validity & 0.8333 & 0.9333 & 1.0000 & $+0.036$ (n.s.) & $+0.143$ (*) \\
+\hline
+\end{tabular}
+\\[4pt]
+{\footnotesize \raggedright N/A = not applicable or not computable (no retrieval or graph traversal for that system/metric pairing). *** $p<0.001$; * $p<0.05$; n.s.\ = not significant (Wilcoxon + paired bootstrap, 1{,}000 iterations, Holm-Bonferroni correction).\par}
+\end{table*}

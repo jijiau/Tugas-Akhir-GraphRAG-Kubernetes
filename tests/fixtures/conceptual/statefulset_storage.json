@@ -1,17 +1,18 @@
 {
   "id": "statefulset_storage",
   "type": "conceptual",
-  "question": "Apa perbedaan StatefulSet dengan Deployment untuk aplikasi yang membutuhkan penyimpanan persisten?",
+  "question": "How does StatefulSet differ from Deployment for workloads that require persistent storage, and what does StatefulSetSpec define for storage?",
   "resource": "io.k8s.api.apps.v1.StatefulSet",
   "scope": "Namespaced",
   "multi_hop": false,
   "ground_truth": {
-    "answer": "StatefulSet memberikan identitas jaringan yang stabil dan persistent storage per Pod melalui volumeClaimTemplates, cocok untuk database. Deployment tidak menjamin urutan atau identitas Pod.",
+    "answer": "StatefulSet provides stable, unique Pod identities and persistent per-Pod storage through the volumeClaimTemplates field in StatefulSetSpec. Each entry in volumeClaimTemplates is a PersistentVolumeClaim template; Kubernetes creates one PVC per replica named <template-name>-<statefulset-name>-<ordinal>. These PVCs are not deleted when the Pod is rescheduled, giving each replica durable, exclusive storage. StatefulSet also guarantees ordered, sequential Pod creation and deletion (controlled by podManagementPolicy in StatefulSetSpec). Deployment, by contrast, provides no storage identity guarantees — all replicas share the same volumes and Pods are interchangeable.",
     "context": [
-      "io.k8s.api.apps.v1.StatefulSet: StatefulSet maintains sticky identity for Pods and persistent storage.",
-      "io.k8s.api.apps.v1.StatefulSetSpec: volumeClaimTemplates defines per-pod PVC"
+      "io.k8s.api.apps.v1.StatefulSet: maintains stable network identity and per-Pod persistent storage; suited for stateful workloads like databases",
+      "io.k8s.api.apps.v1.StatefulSetSpec: volumeClaimTemplates defines PVC templates; one PVC per replica is created and persists across rescheduling"
     ],
     "relevant_nodes": [
+      "io.k8s.api.apps.v1.Deployment",
       "io.k8s.api.apps.v1.StatefulSet",
       "io.k8s.api.apps.v1.StatefulSetCondition",
       "io.k8s.api.apps.v1.StatefulSetOrdinals",
@@ -47,10 +48,15 @@
     "required_fields": [],
     "expected_yaml_keys": [],
     "key_nodes": [
+      "io.k8s.api.apps.v1.Deployment",
       "io.k8s.api.apps.v1.StatefulSet",
-      "io.k8s.api.apps.v1.StatefulSetSpec"
-    ]
+      "io.k8s.api.apps.v1.StatefulSetSpec",
+      "io.k8s.api.core.v1.PersistentVolumeClaim"
+    ],
+    "gt_depth": 2,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

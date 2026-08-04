@@ -1,15 +1,15 @@
 {
   "id": "statefulset_with_pvc",
   "type": "yaml_gen",
-  "question": "Buat YAML StatefulSet untuk database MySQL dengan PersistentVolumeClaim 10Gi",
+  "question": "Create a YAML StatefulSet for a MySQL database with a 10Gi PersistentVolumeClaim",
   "resource": "io.k8s.api.apps.v1.StatefulSet",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
     "answer": "apiVersion: apps/v1\nkind: StatefulSet\nmetadata:\n  name: mysql\nspec:\n  serviceName: mysql\n  replicas: 1\n  selector:\n    matchLabels:\n      app: mysql\n  template:\n    metadata:\n      labels:\n        app: mysql\n    spec:\n      containers:\n        - name: mysql\n          image: mysql:8.0\n          env:\n            - name: MYSQL_ROOT_PASSWORD\n              value: password\n          volumeMounts:\n            - name: mysql-data\n              mountPath: /var/lib/mysql\n  volumeClaimTemplates:\n    - metadata:\n        name: mysql-data\n      spec:\n        accessModes: [\"ReadWriteOnce\"]\n        storageClassName: standard\n        resources:\n          requests:\n            storage: 10Gi",
     "context": [
-      "io.k8s.api.apps.v1.StatefulSetSpec: volumeClaimTemplates defines PVC per pod.",
-      "io.k8s.api.core.v1.PersistentVolumeClaim: spec.resources.requests.storage defines size"
+      "io.k8s.api.apps.v1.StatefulSetSpec: volumeClaimTemplates defines PVC templates; one PVC is created per Pod replica and persists across rescheduling",
+      "io.k8s.api.core.v1.PersistentVolumeClaimSpec: accessModes, storageClassName, and resources.requests.storage define the storage size and class for each Pod PVC"
     ],
     "relevant_nodes": [
       "io.k8s.api.apps.v1.RollingUpdateStatefulSetStrategy",
@@ -118,9 +118,12 @@
     "key_nodes": [
       "io.k8s.api.apps.v1.StatefulSet",
       "io.k8s.api.apps.v1.StatefulSetSpec",
-      "io.k8s.api.core.v1.PersistentVolumeClaim"
-    ]
+      "io.k8s.api.core.v1.PersistentVolumeClaimSpec"
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

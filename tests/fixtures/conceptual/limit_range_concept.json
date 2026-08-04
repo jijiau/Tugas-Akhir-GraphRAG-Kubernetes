@@ -1,0 +1,43 @@
+{
+  "id": "limit_range_concept",
+  "type": "conceptual",
+  "question": "What does a LimitRange define, and how do its items constrain resource allocation per namespace?",
+  "resource": "io.k8s.api.core.v1.LimitRange",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "lang": "en",
+  "ground_truth": {
+    "answer": "LimitRange is a namespaced policy that constrains resource allocations (CPU, memory) for individual objects within a namespace. Its spec is a LimitRangeSpec containing a limits list of LimitRangeItem objects. Each LimitRangeItem has a type field (Container, Pod, or PersistentVolumeClaim) identifying what is constrained, and maps from resource name to Quantity: max (upper bound), min (lower bound), default (injected limit when unset), defaultRequest (injected request when unset), and maxLimitRequestRatio (maximum ratio between limit and request). When a Container omits resource limits, the LimitRange default values are automatically applied by the admission controller.",
+    "context": [
+      "io.k8s.api.core.v1.LimitRange: namespaced policy constraining resource allocations; spec is LimitRangeSpec containing a list of LimitRangeItem",
+      "io.k8s.api.core.v1.LimitRangeItem: type (Container/Pod/PVC); max, min, default, defaultRequest, and maxLimitRequestRatio map resource names to Quantity values",
+      "io.k8s.apimachinery.pkg.api.resource.Quantity: typed resource quantity (CPU, memory); used in all resource constraint and capacity fields"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.LimitRange",
+      "io.k8s.api.core.v1.LimitRangeItem",
+      "io.k8s.api.core.v1.LimitRangeSpec",
+      "io.k8s.api.core.v1.PersistentVolumeClaim",
+      "io.k8s.apimachinery.pkg.api.resource.Quantity"
+    ],
+    "expected_path": [
+      "LimitRange -[HAS_PROPERTY]-> LimitRangeSpec",
+      "LimitRangeSpec -[HAS_PROPERTY]-> LimitRangeItem"
+    ],
+    "key_nodes": [
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.LimitRange",
+      "io.k8s.api.core.v1.LimitRangeItem",
+      "io.k8s.api.core.v1.LimitRangeSpec",
+      "io.k8s.api.core.v1.PersistentVolumeClaim",
+      "io.k8s.apimachinery.pkg.api.resource.Quantity"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": [],
+    "gt_depth": 2,
+    "n_roots": 1
+  },
+  "source_reference": "https://kubernetes.io/docs/reference/kubernetes-api/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

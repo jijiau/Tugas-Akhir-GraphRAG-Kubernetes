@@ -1,0 +1,43 @@
+{
+  "id": "node_affinity_concept",
+  "type": "conceptual",
+  "question": "What is the structure of NodeAffinity in the Kubernetes API, and how do required versus preferred scheduling rules differ?",
+  "resource": "io.k8s.api.core.v1.NodeAffinity",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "lang": "en",
+  "ground_truth": {
+    "answer": "NodeAffinity defines node label-based scheduling constraints for a Pod. requiredDuringSchedulingIgnoredDuringExecution is a NodeSelector (hard constraint) — the Pod is not scheduled if no matching node exists. preferredDuringSchedulingIgnoredDuringExecution is a list of PreferredSchedulingTerm (soft preference) — the scheduler tries to satisfy them but schedules elsewhere if not met. A NodeSelector contains nodeSelectorTerms (list of NodeSelectorTerm, OR-combined); each NodeSelectorTerm has matchExpressions (list of NodeSelectorRequirement, AND-combined) with key, operator (In, NotIn, Exists, DoesNotExist, Gt, Lt), and values fields. Each PreferredSchedulingTerm has weight (1–100) and preference (NodeSelectorTerm).",
+    "context": [
+      "io.k8s.api.core.v1.NodeAffinity: requiredDuringSchedulingIgnoredDuringExecution (NodeSelector, hard) and preferredDuringSchedulingIgnoredDuringExecution (list of PreferredSchedulingTerm, soft)",
+      "io.k8s.api.core.v1.NodeSelector: nodeSelectorTerms is a list of NodeSelectorTerm (OR-combined)",
+      "io.k8s.api.core.v1.NodeSelectorRequirement: key, operator (In/NotIn/Exists/DoesNotExist/Gt/Lt), and values define a single label constraint within a term"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.core.v1.NodeAffinity",
+      "io.k8s.api.core.v1.NodeSelector",
+      "io.k8s.api.core.v1.NodeSelectorRequirement",
+      "io.k8s.api.core.v1.NodeSelectorTerm",
+      "io.k8s.api.core.v1.PreferredSchedulingTerm"
+    ],
+    "expected_path": [
+      "NodeAffinity -[HAS_PROPERTY]-> NodeSelector",
+      "NodeAffinity -[HAS_PROPERTY]-> PreferredSchedulingTerm",
+      "NodeSelector -[HAS_PROPERTY]-> NodeSelectorTerm",
+      "PreferredSchedulingTerm -[HAS_PROPERTY]-> NodeSelectorTerm"
+    ],
+    "key_nodes": [
+      "io.k8s.api.core.v1.NodeAffinity",
+      "io.k8s.api.core.v1.NodeSelector",
+      "io.k8s.api.core.v1.NodeSelectorRequirement",
+      "io.k8s.api.core.v1.NodeSelectorTerm",
+      "io.k8s.api.core.v1.PreferredSchedulingTerm"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": [],
+    "gt_depth": 2,
+    "n_roots": 1
+  },
+  "source_reference": "https://kubernetes.io/docs/reference/kubernetes-api/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

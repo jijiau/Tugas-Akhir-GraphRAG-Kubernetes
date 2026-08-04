@@ -1,19 +1,21 @@
 {
   "id": "ingress_service_pod",
   "type": "relationship",
-  "question": "Saya punya Ingress dengan host app.example.com yang diarahkan ke Service frontend-svc port 80. Pod saya statusnya Running tapi request dari luar masih dapat response 502 Bad Gateway. Bagaimana alur traffic dari Ingress sampai ke Pod dan di mana biasanya masalah terjadi?",
+  "question": "How do Ingress, Service, and Pod connect in the Kubernetes API schema — what fields define the routing chain from an IngressRule to a container port?",
   "resource": "io.k8s.api.networking.v1.Ingress",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
-    "answer": "Alur traffic: Ingress Controller menerima request → mencocokkan host/path dengan IngressRule → meneruskan ke Service (frontend-svc:80) → Service memilih Pod via selector matchLabels → request sampai ke container. Error 502 biasanya berarti Ingress Controller bisa menjangkau Service, tapi Service tidak bisa menjangkau Pod. Cek: (1) apakah selector di Service cocok dengan labels di Pod; (2) apakah targetPort di Service cocok dengan containerPort di Pod; (3) apakah Pod benar-benar Ready (bukan hanya Running) — Pod harus melewati readinessProbe dulu sebelum Service mengarahkan traffic ke sana.",
+    "answer": "The schema chain from an Ingress to a container port spans four types. An IngressRule defines the host and an HTTPIngressRuleValue listing HTTPIngressPath entries, each containing a backend field of type IngressServiceBackend. IngressServiceBackend references a Service by name and port (via IngressServiceBackendPort, which has a number and a name field). On the Service side, ServiceSpec.selector is a label map that identifies which Pods belong to this Service. ServiceSpec.ports maps the Service's port to a targetPort, which must match a ContainerPort value declared in the Container. ContainerPort.containerPort is the numeric port the container listens on; ContainerPort.name provides the named reference. The complete schema chain is: IngressRule → IngressServiceBackend (service name + port) → ServiceSpec (selector label map) → ContainerPort (containerPort or name matching targetPort).",
     "context": [
-      "io.k8s.api.networking.v1.IngressRule: mendefinisikan host dan HTTP path rules ke backend Service",
-      "io.k8s.api.networking.v1.IngressServiceBackend: referensi ke Service name dan port",
-      "io.k8s.api.core.v1.ServiceSpec: selector menentukan Pod mana yang menjadi backend Service",
-      "io.k8s.api.core.v1.ContainerPort: port yang di-expose container — harus cocok dengan targetPort Service"
+      "io.k8s.api.networking.v1.IngressRule: defines host and HTTP path rules; http field is HTTPIngressRuleValue containing a list of HTTPIngressPath with backend IngressServiceBackend",
+      "io.k8s.api.networking.v1.IngressServiceBackend: references a Service by name and port (IngressServiceBackendPort with number or name fields)",
+      "io.k8s.api.core.v1.ServiceSpec: selector field is a label map that identifies which Pods receive traffic; ports maps Service port to targetPort",
+      "io.k8s.api.core.v1.ContainerPort: containerPort is the numeric port the container listens on; name provides the string alias referenced by ServiceSpec.ports.targetPort"
     ],
     "relevant_nodes": [
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.ContainerPort",
       "io.k8s.api.core.v1.LoadBalancerStatus",
       "io.k8s.api.core.v1.Pod",
       "io.k8s.api.core.v1.PodSpec",
@@ -38,8 +40,6 @@
       "io.k8s.apimachinery.pkg.apis.meta.v1.Condition"
     ],
     "expected_path": [
-      "HTTPIngressPath -[HAS_PROPERTY]-> IngressBackend",
-      "HTTPIngressRuleValue -[HAS_PROPERTY]-> HTTPIngressPath",
       "Ingress -[HAS_PROPERTY]-> IngressSpec",
       "Ingress -[HAS_PROPERTY]-> IngressStatus",
       "Ingress -[ROUTES_TO_SERVICE]-> Service",
@@ -65,12 +65,20 @@
     "required_fields": [],
     "expected_yaml_keys": [],
     "key_nodes": [
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.ContainerPort",
+      "io.k8s.api.core.v1.Service",
+      "io.k8s.api.core.v1.ServiceSpec",
+      "io.k8s.api.networking.v1.HTTPIngressPath",
+      "io.k8s.api.networking.v1.HTTPIngressRuleValue",
       "io.k8s.api.networking.v1.Ingress",
-      "io.k8s.api.networking.v1.IngressSpec",
       "io.k8s.api.networking.v1.IngressRule",
-      "io.k8s.api.core.v1.Service"
-    ]
+      "io.k8s.api.networking.v1.IngressServiceBackend"
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/services-networking/ingress/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/service-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/service-resources/",
+  "lang": "en"
 }

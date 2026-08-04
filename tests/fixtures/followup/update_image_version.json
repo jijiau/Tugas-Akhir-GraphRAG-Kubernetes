@@ -1,16 +1,16 @@
 {
   "id": "update_image_version",
   "type": "followup",
-  "context_question": "Buat YAML Deployment nginx:1.24 dengan 2 replika",
-  "question": "Sekarang ubah image container-nya ke versi nginx:1.25.3",
+  "context_question": "Create a YAML Deployment for nginx:1.24 with 2 replicas",
+  "question": "Now change the container image to nginx:1.25.3",
   "resource": "io.k8s.api.apps.v1.Deployment",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
-    "answer": "Update field image pada container spec:\n```yaml\nspec:\n  template:\n    spec:\n      containers:\n      - name: nginx\n        image: nginx:1.25.3\n```\nAtau via kubectl: `kubectl set image deployment/<nama> nginx=nginx:1.25.3`",
+    "answer": "Update the container's image field in the spec:\n```yaml\nspec:\n  template:\n    spec:\n      containers:\n      - name: nginx\n        image: nginx:1.25.3\n```\nOr via kubectl: `kubectl set image deployment/<name> nginx=nginx:1.25.3`",
     "context": [
-      "io.k8s.api.core.v1.Container: image field menentukan container image dan tag versi",
-      "io.k8s.api.apps.v1.DeploymentSpec: perubahan pada template.spec.containers memicu rolling update"
+      "io.k8s.api.core.v1.Container: image field specifies the container image and version tag to run",
+      "io.k8s.api.apps.v1.DeploymentSpec: changes to template.spec.containers trigger a rolling update via DeploymentStrategy"
     ],
     "relevant_nodes": [
       "io.k8s.api.apps.v1.Deployment",
@@ -40,16 +40,13 @@
     ],
     "key_nodes": [
       "io.k8s.api.apps.v1.Deployment",
-      "io.k8s.api.apps.v1.DeploymentCondition",
       "io.k8s.api.apps.v1.DeploymentSpec",
-      "io.k8s.api.apps.v1.DeploymentStatus",
-      "io.k8s.api.apps.v1.DeploymentStrategy",
-      "io.k8s.api.core.v1.Container",
-      "io.k8s.api.core.v1.PodSpec",
-      "io.k8s.api.core.v1.PodTemplateSpec",
-      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
-    ]
+      "io.k8s.api.core.v1.Container"
+    ],
+    "gt_depth": 2,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

@@ -1,16 +1,15 @@
 {
   "id": "daemonset_purpose",
   "type": "conceptual",
-  "question": "Apa fungsi DaemonSet dan kapan sebaiknya digunakan?",
+  "question": "What is the purpose of a DaemonSet in Kubernetes, and what does DaemonSetSpec define?",
   "resource": "io.k8s.api.apps.v1.DaemonSet",
   "scope": "Namespaced",
   "multi_hop": false,
   "ground_truth": {
-    "answer": "DaemonSet memastikan setiap Node menjalankan satu salinan Pod tertentu. Berguna untuk logging agents, monitoring daemons, dan network plugins.",
+    "answer": "A DaemonSet ensures that one copy of a specific Pod runs on every Node in the cluster, or on a subset of Nodes matching a node selector. When a new Node joins, the controller automatically schedules the Pod on it; when a Node is removed, the Pod is garbage-collected. DaemonSetSpec defines the Pod template (the template field) and a label selector that must match the template labels. DaemonSets are suited for infrastructure-level workloads that must run on every Node, such as log collectors, monitoring agents, and network plugins.",
     "context": [
-      "DaemonSet adalah Kubernetes controller yang memastikan setiap Node menjalankan satu salinan Pod",
-      "DaemonSetSpec mendefinisikan spesifikasi Pod yang akan dijalankan di setiap Node",
-      "Cocok digunakan untuk menjalankan daemon services seperti log collectors, monitoring agents, dan network plugins"
+      "io.k8s.api.apps.v1.DaemonSet: controller ensuring one copy of a Pod runs on all (or selected) Nodes",
+      "io.k8s.api.apps.v1.DaemonSetSpec: defines the Pod template and the label selector identifying managed Pods"
     ],
     "relevant_nodes": [
       "io.k8s.api.apps.v1.DaemonSet",
@@ -18,6 +17,7 @@
       "io.k8s.api.apps.v1.DaemonSetSpec",
       "io.k8s.api.apps.v1.DaemonSetStatus",
       "io.k8s.api.apps.v1.DaemonSetUpdateStrategy",
+      "io.k8s.api.core.v1.Node",
       "io.k8s.api.core.v1.PodSpec",
       "io.k8s.api.core.v1.PodTemplateSpec",
       "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
@@ -37,9 +37,12 @@
     "key_nodes": [
       "io.k8s.api.apps.v1.DaemonSet",
       "io.k8s.api.apps.v1.DaemonSetSpec",
-      "io.k8s.api.core.v1.PodTemplateSpec"
-    ]
+      "io.k8s.api.core.v1.Node"
+    ],
+    "gt_depth": 2,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

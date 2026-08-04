@@ -1,17 +1,17 @@
 {
   "id": "oneof_volume_source",
   "type": "relationship",
-  "question": "Apa saja jenis sumber volume yang bisa digunakan oleh Pod, dan bagaimana relasinya di graph?",
+  "question": "What volume source types can a Pod use, and how is this represented in the schema?",
   "resource": "io.k8s.api.core.v1.Volume",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
-    "answer": "Volume di Kubernetes mendukung banyak jenis sumber (source) yang bersifat ONE_OF — hanya satu yang bisa digunakan per volume. Jenis-jenis utama: ConfigMapVolumeSource, SecretVolumeSource, EmptyDirVolumeSource, PersistentVolumeClaimVolumeSource, dan HostPathVolumeSource. Relasi ONE_OF ini merupakan union type yang direpresentasikan sebagai edge khusus di knowledge graph.",
+    "answer": "A Volume in Kubernetes supports many source types — exactly one source field may be set per Volume instance (a ONE_OF union in the schema). The main source types are: ConfigMapVolumeSource (maps a ConfigMap into a volume), SecretVolumeSource (maps a Secret into a volume), EmptyDirVolumeSource (ephemeral scratch space), PersistentVolumeClaimVolumeSource (mounts a PVC), and HostPathVolumeSource (mounts a path from the host node). In the knowledge graph this union is represented with ONE_OF edges from Volume to each valid source type.",
     "context": [
-      "Volume: represents a named volume in a pod that may be accessed by any container in the pod",
-      "ConfigMapVolumeSource: adapts a ConfigMap into a volume",
-      "SecretVolumeSource: adapts a Secret into a volume",
-      "oneOf relationship: a Volume can use exactly one source type"
+      "io.k8s.api.core.v1.Volume: represents a named volume in a Pod; exactly one source type field must be set; name field is required and must be unique within the Pod",
+      "io.k8s.api.core.v1.ConfigMapVolumeSource: adapts a ConfigMap into a volume; items field selects specific keys to project as files",
+      "io.k8s.api.core.v1.SecretVolumeSource: adapts a Secret into a volume; secretName identifies the Secret to mount",
+      "io.k8s.api.core.v1.EmptyDirVolumeSource: creates a temporary directory that exists for the lifetime of the Pod; sizeLimit constrains its size"
     ],
     "relevant_nodes": [
       "io.k8s.api.core.v1.AWSElasticBlockStoreVolumeSource",
@@ -21,6 +21,7 @@
       "io.k8s.api.core.v1.CephFSVolumeSource",
       "io.k8s.api.core.v1.CinderVolumeSource",
       "io.k8s.api.core.v1.ClusterTrustBundleProjection",
+      "io.k8s.api.core.v1.ConfigMap",
       "io.k8s.api.core.v1.ConfigMapProjection",
       "io.k8s.api.core.v1.ConfigMapVolumeSource",
       "io.k8s.api.core.v1.DownwardAPIProjection",
@@ -52,6 +53,7 @@
       "io.k8s.api.core.v1.RBDVolumeSource",
       "io.k8s.api.core.v1.ResourceFieldSelector",
       "io.k8s.api.core.v1.ScaleIOVolumeSource",
+      "io.k8s.api.core.v1.Secret",
       "io.k8s.api.core.v1.SecretProjection",
       "io.k8s.api.core.v1.SecretVolumeSource",
       "io.k8s.api.core.v1.ServiceAccountTokenProjection",
@@ -74,7 +76,6 @@
       "FlexVolumeSource -[HAS_PROPERTY]-> LocalObjectReference",
       "ISCSIVolumeSource -[HAS_PROPERTY]-> LocalObjectReference",
       "PersistentVolumeClaimTemplate -[HAS_PROPERTY]-> PersistentVolumeClaimSpec",
-      "PodSpec -[HAS_PROPERTY]-> Volume",
       "ProjectedVolumeSource -[HAS_PROPERTY]-> VolumeProjection",
       "RBDVolumeSource -[HAS_PROPERTY]-> LocalObjectReference",
       "ScaleIOVolumeSource -[HAS_PROPERTY]-> LocalObjectReference",
@@ -125,13 +126,19 @@
     "required_fields": [],
     "expected_yaml_keys": [],
     "key_nodes": [
-      "io.k8s.api.core.v1.Volume",
+      "io.k8s.api.core.v1.ConfigMap",
       "io.k8s.api.core.v1.ConfigMapVolumeSource",
-      "io.k8s.api.core.v1.SecretVolumeSource",
       "io.k8s.api.core.v1.EmptyDirVolumeSource",
-      "io.k8s.api.core.v1.PersistentVolumeClaimVolumeSource"
-    ]
+      "io.k8s.api.core.v1.HostPathVolumeSource",
+      "io.k8s.api.core.v1.PersistentVolumeClaimVolumeSource",
+      "io.k8s.api.core.v1.Secret",
+      "io.k8s.api.core.v1.SecretVolumeSource",
+      "io.k8s.api.core.v1.Volume"
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/storage/volumes/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

@@ -1,15 +1,17 @@
 {
   "id": "pod_namespace_relation",
   "type": "relationship",
-  "question": "Bagaimana Pod terikat dengan Namespace di Kubernetes?",
+  "question": "What schema path in the Kubernetes API connects a Pod to the resource requirements of its containers?",
   "resource": "io.k8s.api.core.v1.Pod",
   "scope": "Namespaced",
   "multi_hop": false,
   "ground_truth": {
-    "answer": "Pod terikat langsung ke Namespace melalui field metadata.namespace. Setiap Pod harus berada dalam satu Namespace, dan Namespace berfungsi sebagai boundary isolasi untuk resource Pod tersebut.",
+    "answer": "The schema path from a Pod to container resource definitions traverses four types: Pod has a spec field of type PodSpec; PodSpec has a containers field (a list of Container objects) — the KG uses a HAS_CONTAINER edge for this relationship; each Container has a resources field of type ResourceRequirements. ResourceRequirements defines the requests and limits maps, both keyed by resource name with Quantity values. The complete KG path is: Pod -[HAS_PROPERTY]-> PodSpec -[HAS_CONTAINER]-> Container -[HAS_PROPERTY]-> ResourceRequirements. The same Container node also links to Probe (livenessProbe and readinessProbe), EnvVar (environment variables), and VolumeMount (volume mount paths).",
     "context": [
-      "io.k8s.api.core.v1.Pod: metadata.namespace menentukan Namespace tempat Pod berjalan.",
-      "Pod -[BELONGS_TO]-> Namespace via metadata.namespace"
+      "io.k8s.api.core.v1.Pod: top-level workload resource; spec field is PodSpec which defines the desired state of all containers",
+      "io.k8s.api.core.v1.PodSpec: containers field (required) is a list of Container objects defining each application process; also holds volumes, initContainers, and tolerations",
+      "io.k8s.api.core.v1.Container: resources field holds a ResourceRequirements object; also has livenessProbe, readinessProbe, env (EnvVar list), and volumeMounts",
+      "io.k8s.api.core.v1.ResourceRequirements: requests and limits fields are maps from resource name to Quantity; defines CPU and memory allocation for the container"
     ],
     "relevant_nodes": [
       "io.k8s.api.core.v1.AWSElasticBlockStoreVolumeSource",
@@ -50,7 +52,6 @@
       "io.k8s.api.core.v1.Lifecycle",
       "io.k8s.api.core.v1.LocalObjectReference",
       "io.k8s.api.core.v1.NFSVolumeSource",
-      "io.k8s.api.core.v1.Namespace",
       "io.k8s.api.core.v1.NodeAffinity",
       "io.k8s.api.core.v1.ObjectReference",
       "io.k8s.api.core.v1.PersistentVolumeClaimVolumeSource",
@@ -76,7 +77,6 @@
       "io.k8s.api.core.v1.ProjectedVolumeSource",
       "io.k8s.api.core.v1.QuobyteVolumeSource",
       "io.k8s.api.core.v1.RBDVolumeSource",
-      "io.k8s.api.core.v1.ResourceClaim",
       "io.k8s.api.core.v1.ResourceRequirements",
       "io.k8s.api.core.v1.ResourceStatus",
       "io.k8s.api.core.v1.SELinuxOptions",
@@ -97,6 +97,7 @@
       "io.k8s.api.core.v1.VsphereVirtualDiskVolumeSource",
       "io.k8s.api.core.v1.WindowsSecurityContextOptions",
       "io.k8s.api.core.v1.WorkloadReference",
+      "io.k8s.api.resource.v1.ResourceClaim",
       "io.k8s.apimachinery.pkg.api.resource.Quantity",
       "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
     ],
@@ -216,10 +217,19 @@
     "required_fields": [],
     "expected_yaml_keys": [],
     "key_nodes": [
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.EnvVar",
       "io.k8s.api.core.v1.Pod",
-      "io.k8s.api.core.v1.Namespace"
-    ]
+      "io.k8s.api.core.v1.PodSpec",
+      "io.k8s.api.core.v1.Probe",
+      "io.k8s.api.core.v1.ResourceRequirements",
+      "io.k8s.api.core.v1.VolumeMount",
+      "io.k8s.apimachinery.pkg.api.resource.Quantity"
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/workloads/pods/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

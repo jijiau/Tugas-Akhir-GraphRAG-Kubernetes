@@ -1,17 +1,17 @@
 {
   "id": "deep_statefulset_container_probe",
   "type": "relationship",
-  "question": "Bagaimana mendefinisikan liveness probe pada container di dalam StatefulSet?",
+  "question": "How is a liveness probe on a container inside a StatefulSet defined in the API schema?",
   "resource": "io.k8s.api.apps.v1.StatefulSet",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
-    "answer": "Path graph untuk liveness probe pada StatefulSet melewati 4 hop: StatefulSet → StatefulSetSpec → PodTemplateSpec → Container → Probe (livenessProbe). Probe mendefinisikan cara Kubernetes mendeteksi apakah container masih berjalan. Tipe probe yang tersedia: httpGet, tcpSocket, exec, dan grpc. Probe dengan httpGet memerlukan path dan port.",
+    "answer": "Defining a liveness probe in a StatefulSet requires a four-hop schema traversal: StatefulSet → StatefulSetSpec → PodTemplateSpec → Container → Probe (livenessProbe). The Probe type defines how Kubernetes checks whether the container is still alive. Available probe types are httpGet (HTTPGetAction), tcpSocket (TCPSocketAction), exec (ExecAction), and grpc (GRPCAction). An httpGet probe requires a path and port field.",
     "context": [
-      "StatefulSetSpec: spec of the desired behavior of the StatefulSet",
-      "PodTemplateSpec: describes the data a pod should have when created",
-      "Container: a single application container",
-      "Probe: describes a health check to be performed against a container to determine whether it is alive or ready"
+      "io.k8s.api.apps.v1.StatefulSetSpec: template field (PodTemplateSpec) defines the Pod configuration for each StatefulSet replica",
+      "io.k8s.api.core.v1.PodTemplateSpec: spec field is PodSpec, which holds the containers list",
+      "io.k8s.api.core.v1.Container: livenessProbe field is a Probe object that defines the liveness health check configuration",
+      "io.k8s.api.core.v1.Probe: describes a health check; action is one of httpGet (HTTPGetAction), tcpSocket (TCPSocketAction), exec (ExecAction), or grpc (GRPCAction)"
     ],
     "relevant_nodes": [
       "io.k8s.api.apps.v1.RollingUpdateStatefulSetStrategy",
@@ -25,6 +25,9 @@
       "io.k8s.api.core.v1.Affinity",
       "io.k8s.api.core.v1.Container",
       "io.k8s.api.core.v1.EphemeralContainer",
+      "io.k8s.api.core.v1.ExecAction",
+      "io.k8s.api.core.v1.GRPCAction",
+      "io.k8s.api.core.v1.HTTPGetAction",
       "io.k8s.api.core.v1.HostAlias",
       "io.k8s.api.core.v1.LocalObjectReference",
       "io.k8s.api.core.v1.ModifyVolumeStatus",
@@ -44,6 +47,7 @@
       "io.k8s.api.core.v1.ResourceRequirements",
       "io.k8s.api.core.v1.Secret",
       "io.k8s.api.core.v1.ServiceAccount",
+      "io.k8s.api.core.v1.TCPSocketAction",
       "io.k8s.api.core.v1.Toleration",
       "io.k8s.api.core.v1.TopologySelectorTerm",
       "io.k8s.api.core.v1.TopologySpreadConstraint",
@@ -58,7 +62,6 @@
       "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelectorRequirement"
     ],
     "expected_path": [
-      "Container -[HAS_PROPERTY]-> Probe",
       "LabelSelector -[HAS_PROPERTY]-> LabelSelectorRequirement",
       "PersistentVolumeClaim -[HAS_PROPERTY]-> PersistentVolumeClaimSpec",
       "PersistentVolumeClaim -[HAS_PROPERTY]-> PersistentVolumeClaimStatus",
@@ -114,11 +117,18 @@
     "key_nodes": [
       "io.k8s.api.apps.v1.StatefulSet",
       "io.k8s.api.apps.v1.StatefulSetSpec",
-      "io.k8s.api.core.v1.PodTemplateSpec",
       "io.k8s.api.core.v1.Container",
-      "io.k8s.api.core.v1.Probe"
-    ]
+      "io.k8s.api.core.v1.ExecAction",
+      "io.k8s.api.core.v1.GRPCAction",
+      "io.k8s.api.core.v1.HTTPGetAction",
+      "io.k8s.api.core.v1.PodTemplateSpec",
+      "io.k8s.api.core.v1.Probe",
+      "io.k8s.api.core.v1.TCPSocketAction"
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

@@ -1,15 +1,16 @@
 {
   "id": "networkpolicy_pod_selector",
   "type": "relationship",
-  "question": "Bagaimana NetworkPolicy memilih Pod mana yang dilindungi?",
+  "question": "How does a NetworkPolicy select which Pods are governed by its rules?",
   "resource": "io.k8s.api.networking.v1.NetworkPolicy",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
-    "answer": "NetworkPolicy menggunakan podSelector untuk memilih Pod target berdasarkan label. Ingress rules menentukan sumber traffic yang diizinkan, sementara egress rules menentukan tujuan yang dibolehkan. Jika podSelector kosong ({}), policy berlaku untuk semua Pod di namespace.",
+    "answer": "NetworkPolicy uses podSelector in NetworkPolicySpec to select the target Pods based on labels. The podSelector is a LabelSelector — if left empty ({}), the policy applies to all Pods in the namespace. The ingress field is a list of NetworkPolicyIngressRule objects that define allowed inbound traffic sources, while the egress field lists NetworkPolicyEgressRule objects defining allowed outbound traffic destinations.",
     "context": [
-      "NetworkPolicy: defines network traffic rules for pods",
-      "NetworkPolicySpec: podSelector selects pods to apply policy"
+      "io.k8s.api.networking.v1.NetworkPolicy: defines network traffic rules for Pods in a namespace; spec field is NetworkPolicySpec",
+      "io.k8s.api.networking.v1.NetworkPolicySpec: podSelector (LabelSelector) identifies which Pods the policy governs; ingress and egress fields list allowed traffic rules",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector: selector used by podSelector; empty selector matches all Pods in the namespace"
     ],
     "relevant_nodes": [
       "io.k8s.api.networking.v1.NetworkPolicy",
@@ -36,10 +37,15 @@
     "expected_yaml_keys": [],
     "key_nodes": [
       "io.k8s.api.networking.v1.NetworkPolicy",
+      "io.k8s.api.networking.v1.NetworkPolicyEgressRule",
+      "io.k8s.api.networking.v1.NetworkPolicyIngressRule",
       "io.k8s.api.networking.v1.NetworkPolicySpec",
-      "io.k8s.api.networking.v1.NetworkPolicyIngressRule"
-    ]
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/services-networking/network-policies/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/service-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/service-resources/",
+  "lang": "en"
 }

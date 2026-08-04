@@ -1,26 +1,26 @@
 {
   "id": "rolebinding_dev",
   "type": "yaml_gen",
-  "question": "Buatkan YAML RoleBinding untuk memberikan akses role 'developer' ke ServiceAccount 'dev-sa' di namespace development",
+  "question": "Create a YAML RoleBinding that grants the 'developer' role to ServiceAccount 'dev-sa' in namespace development",
   "resource": "io.k8s.api.rbac.v1.RoleBinding",
   "scope": "Namespaced",
   "multi_hop": false,
   "ground_truth": {
     "answer": "apiVersion: rbac.authorization.k8s.io/v1\nkind: RoleBinding\nmetadata:\n  name: dev-binding\n  namespace: development\nsubjects:\n- kind: ServiceAccount\n  name: dev-sa\n  namespace: development\nroleRef:\n  kind: Role\n  name: developer\n  apiGroup: rbac.authorization.k8s.io",
     "context": [
-      "RoleBinding untuk menghubungkan ServiceAccount dengan Role",
-      "Subjects berisi ServiceAccount 'dev-sa' di namespace development",
-      "RoleRef menunjuk ke Role 'developer' dengan apiGroup rbac.authorization.k8s.io"
+      "io.k8s.api.rbac.v1.RoleBinding: grants permissions defined in a Role to subjects within a single namespace; subjects and roleRef are both required",
+      "io.k8s.api.rbac.v1.Subject: kind (ServiceAccount/User/Group), name, and apiGroup identify the subject being granted permissions",
+      "io.k8s.api.rbac.v1.RoleRef: references the Role or ClusterRole to bind; apiGroup, kind, and name are all required and immutable after creation"
     ],
     "relevant_nodes": [
       "io.k8s.api.core.v1.LocalObjectReference",
       "io.k8s.api.core.v1.ObjectReference",
       "io.k8s.api.core.v1.ServiceAccount",
+      "io.k8s.api.flowcontrol.v1.Subject",
       "io.k8s.api.rbac.v1.PolicyRule",
       "io.k8s.api.rbac.v1.Role",
       "io.k8s.api.rbac.v1.RoleBinding",
-      "io.k8s.api.rbac.v1.RoleRef",
-      "io.k8s.api.rbac.v1.Subject"
+      "io.k8s.api.rbac.v1.RoleRef"
     ],
     "expected_path": [
       "Role -[HAS_PROPERTY]-> PolicyRule",
@@ -44,10 +44,16 @@
       "roleRef.name"
     ],
     "key_nodes": [
+      "io.k8s.api.core.v1.ServiceAccount",
+      "io.k8s.api.flowcontrol.v1.Subject",
+      "io.k8s.api.rbac.v1.Role",
       "io.k8s.api.rbac.v1.RoleBinding",
-      "io.k8s.api.rbac.v1.Role"
-    ]
+      "io.k8s.api.rbac.v1.RoleRef"
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/reference/access-authn-authz/rbac/#rolebinding-and-clusterrolebinding",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/authorization-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/authorization-resources/",
+  "lang": "en"
 }

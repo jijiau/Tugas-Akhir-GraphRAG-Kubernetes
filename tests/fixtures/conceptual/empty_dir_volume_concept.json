@@ -1,0 +1,33 @@
+{
+  "id": "empty_dir_volume_concept",
+  "type": "conceptual",
+  "question": "What does EmptyDirVolumeSource define, and what fields control its storage medium and size?",
+  "resource": "io.k8s.api.core.v1.EmptyDirVolumeSource",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "lang": "en",
+  "ground_truth": {
+    "answer": "EmptyDirVolumeSource is a temporary directory created when a Pod is assigned to a node and deleted when the Pod leaves. medium controls the storage backend: an empty string uses the node default filesystem (disk); the value \"Memory\" creates a RAM-backed tmpfs (data counts against the container's memory limit). sizeLimit is a Quantity capping total storage for the directory — enforced for both disk and memory-backed volumes. EmptyDir is suitable for scratch space, caches, or sharing files between containers in the same Pod across container restarts.",
+    "context": [
+      "io.k8s.api.core.v1.EmptyDirVolumeSource: temporary directory tied to Pod lifetime; medium (empty=disk, \"Memory\"=tmpfs) and sizeLimit (Quantity) are the configurable fields",
+      "io.k8s.apimachinery.pkg.api.resource.Quantity: typed storage size; used in sizeLimit to cap EmptyDir storage"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.core.v1.EmptyDirVolumeSource",
+      "io.k8s.apimachinery.pkg.api.resource.Quantity"
+    ],
+    "expected_path": [
+      "EmptyDirVolumeSource -[HAS_PROPERTY]-> Quantity"
+    ],
+    "key_nodes": [
+      "io.k8s.api.core.v1.EmptyDirVolumeSource",
+      "io.k8s.apimachinery.pkg.api.resource.Quantity"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": [],
+    "gt_depth": 2,
+    "n_roots": 1
+  },
+  "source_reference": "https://kubernetes.io/docs/reference/kubernetes-api/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

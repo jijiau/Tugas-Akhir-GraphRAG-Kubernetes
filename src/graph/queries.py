@@ -19,11 +19,14 @@ LIMIT 1
 # ---------------------------------------------------------------------------
 # Schema dependencies (flat list) — untuk LLM context.
 # Dipanggil setelah root ditemukan (exact match atau vector).
-# Parameter: $root_name (str), $max_depth (int)
+# Traversal memakai SEMUA 18 tipe edge (default; F14) — caller mensubstitusi
+# {all_edges} via .format(). Ablation 'has_property_only' menggantinya dengan
+# "HAS_PROPERTY" saja untuk membuktikan kontribusi edge semantik (T1).
+# Parameter: $root_name (str); {all_edges} + {max_depth} via .format()
 # ---------------------------------------------------------------------------
 SCHEMA_DEPS_QUERY = """
 MATCH (root:Definition {{name: $root_name}})
-OPTIONAL MATCH (root)-[r:HAS_PROPERTY*1..{max_depth}]->(child:Definition)
+OPTIONAL MATCH (root)-[r:{all_edges}*1..{max_depth}]->(child:Definition)
 
 WITH root, r, child
 
@@ -48,8 +51,12 @@ RETURN root.name        AS RootResource,
 """
 
 # ---------------------------------------------------------------------------
-# All semantic relationship types in the K8s graph.
-# Used in PATH_EDGES_QUERY and SCHEMA_DEPS_QUERY to traverse the full graph.
+# All 18 relationship types in the K8s graph (default edge-set).
+# Substituted at call time via .format(all_edges=...) into SCHEMA_DEPS_QUERY /
+# HYBRID_VECTOR_GRAPH_QUERY (LLM context) and PATH_EDGES_QUERY (reasoning path
+# → RetQ + path_coverage metrics). The 'has_property_only' ablation overrides
+# this with "HAS_PROPERTY" alone to isolate the semantic-edge contribution
+# (thesis T1, F14) on BOTH generation (context) and retrieval (path) metrics.
 # Expanding beyond HAS_PROPERTY captures cross-resource relationships:
 #   SCALES_RESOURCE      — HPA → Deployment/StatefulSet/ReplicaSet
 #   CONTAINS_POD_TEMPLATE— Deployment/StatefulSet/DaemonSet/Job → PodTemplateSpec
@@ -77,10 +84,12 @@ _ALL_EDGE_TYPES = (
 )
 
 # ---------------------------------------------------------------------------
-# Path edges — untuk reasoning path (Explainable AI).
+# Path edges — untuk reasoning path (Explainable AI) + metrik RetQ/path_coverage.
 # Mengembalikan pasangan parent->child yang sebenarnya di setiap hop,
-# bukan root->leaf. Digunakan untuk display trace di Streamlit.
-# Parameter: $root_name (str), max_depth via .format()
+# bukan root->leaf. Digunakan untuk display trace di Streamlit & evaluasi.
+# Edge-set disubstitusi saat call-time (F14): default 18 edge; ablation
+# 'has_property_only' → "HAS_PROPERTY" saja.
+# Parameter: $root_name (str); {all_edges} + {max_depth} via .format()
 # ---------------------------------------------------------------------------
 PATH_EDGES_QUERY = """
 MATCH p = (root:Definition {{name: $root_name}})
@@ -100,17 +109,20 @@ RETURN DISTINCT edge.parent   AS parent,
                 edge.depth    AS depth
 ORDER BY edge.depth ASC, edge.parent ASC
 LIMIT 50
-""".replace("{all_edges}", _ALL_EDGE_TYPES)
+"""
 
 # ---------------------------------------------------------------------------
 # Primary retrieval (vector fallback) — digunakan saat exact match gagal.
-# Parameter: $embedding (list[float]), max_depth via .format()
+# Traversal memakai SEMUA 18 tipe edge (default; F14) via {all_edges} substitusi
+# .format(); ablation 'has_property_only' → "HAS_PROPERTY" saja.
+# Seed vektor LIMIT 1 (consumer custom_retriever ambil rows[0]); lihat F7'.
+# Parameter: $embedding (list[float]); {all_edges} + {max_depth} via .format()
 # ---------------------------------------------------------------------------
 HYBRID_VECTOR_GRAPH_QUERY = """
 CALL db.index.vector.queryNodes('definition_description_vector', 1, $embedding)
 YIELD node AS root, score
 
-OPTIONAL MATCH (root)-[r:HAS_PROPERTY*1..{max_depth}]->(child:Definition)
+OPTIONAL MATCH (root)-[r:{all_edges}*1..{max_depth}]->(child:Definition)
 
 WITH root, score, r, child
 
@@ -135,14 +147,32 @@ RETURN root.name        AS RootResource,
 """
 
 # ---------------------------------------------------------------------------
-# Simple vector search with 1-hop expansion (baseline / GraphRetriever)
+# Simple vector search with 1-hop expansion (production GraphRetriever)
 # Used by: src/retrieval/graph_retriever.py, scripts/run_baseline.py
+# NOTE (F1): NOT a fair eval baseline — the OPTIONAL MATCH already augments the
+# pure-vector result with 1-hop graph context. The evaluation Vector baseline
+# must use SIMPLE_VECTOR_QUERY (below) instead.
 # ---------------------------------------------------------------------------
 SIMPLE_GRAPH_EXPAND_QUERY = """
 CALL db.index.vector.queryNodes('definition_description_vector', $top_k, $embedding)
 YIELD node, score
 OPTIONAL MATCH (node)-[r:HAS_PROPERTY|EXTENDS|CONTAINS_POD_TEMPLATE]-(related)
 RETURN node.fullName, node.description, related.fullName, r, score
+ORDER BY score DESC
+"""
+
+# ---------------------------------------------------------------------------
+# Pure dense vector search (NO graph expansion) — fair Vector RAG baseline (F1).
+# Returns only the top-k nodes by cosine similarity; the consumer's
+# `related.fullName` lookup resolves to None (no expansion), so the same
+# row-parsing code path works unchanged.
+# Used by: scripts/evaluate.py (mode="vector")
+# Parameter: $embedding (list[float]), $top_k (int)
+# ---------------------------------------------------------------------------
+SIMPLE_VECTOR_QUERY = """
+CALL db.index.vector.queryNodes('definition_description_vector', $top_k, $embedding)
+YIELD node, score
+RETURN node.fullName, node.description, score
 ORDER BY score DESC
 """
 

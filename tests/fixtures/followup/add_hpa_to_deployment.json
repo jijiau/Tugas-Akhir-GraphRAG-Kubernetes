@@ -1,17 +1,17 @@
 {
   "id": "add_hpa_to_deployment",
   "type": "followup",
-  "context_question": "Buat YAML Deployment nginx dengan 3 replika",
-  "question": "Sekarang tambahkan HPA untuk Deployment itu dengan minimum 2 replika, maksimum 10 replika, dan trigger scale-up saat CPU mencapai 60%",
+  "context_question": "Create a YAML Deployment for nginx with 3 replicas",
+  "question": "Now add an HPA for that Deployment with a minimum of 2 replicas, a maximum of 10, and a scale-up trigger when CPU utilization reaches 60%",
   "resource": "io.k8s.api.autoscaling.v2.HorizontalPodAutoscaler",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
     "answer": "apiVersion: autoscaling/v2\nkind: HorizontalPodAutoscaler\nmetadata:\n  name: app-hpa\nspec:\n  scaleTargetRef:\n    apiVersion: apps/v1\n    kind: Deployment\n    name: my-deployment\n  minReplicas: 2\n  maxReplicas: 10\n  metrics:\n  - type: Resource\n    resource:\n      name: cpu\n      target:\n        type: Utilization\n        averageUtilization: 60",
     "context": [
-      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerSpec: scaleTargetRef, minReplicas, maxReplicas, metrics",
-      "io.k8s.api.autoscaling.v2.MetricSpec: type Resource dengan resource.name cpu dan target.averageUtilization",
-      "io.k8s.api.autoscaling.v2.CrossVersionObjectReference: referensi ke Deployment target via kind dan name"
+      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerSpec: scaleTargetRef identifies the target workload; minReplicas and maxReplicas bound the replica count; metrics lists metric sources",
+      "io.k8s.api.autoscaling.v2.MetricSpec: type Resource with resource.name cpu and target.averageUtilization for CPU-based scaling",
+      "io.k8s.api.autoscaling.v2.CrossVersionObjectReference: references the target Deployment by API version, kind, and name"
     ],
     "relevant_nodes": [
       "io.k8s.api.apps.v1.Deployment",
@@ -27,15 +27,10 @@
       "io.k8s.api.autoscaling.v1.HorizontalPodAutoscaler",
       "io.k8s.api.autoscaling.v1.HorizontalPodAutoscalerSpec",
       "io.k8s.api.autoscaling.v1.HorizontalPodAutoscalerStatus",
-      "io.k8s.api.autoscaling.v2.CrossVersionObjectReference",
-      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscaler",
       "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerBehavior",
       "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerCondition",
-      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerSpec",
-      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerStatus",
       "io.k8s.api.autoscaling.v2.MetricSpec",
       "io.k8s.api.autoscaling.v2.MetricStatus",
-      "io.k8s.api.autoscaling.v2.ResourceMetricSource",
       "io.k8s.api.core.v1.PersistentVolumeClaim",
       "io.k8s.api.core.v1.PodTemplateSpec"
     ],
@@ -54,7 +49,6 @@
       "HorizontalPodAutoscalerSpec -[HAS_PROPERTY]-> MetricSpec",
       "HorizontalPodAutoscalerStatus -[HAS_PROPERTY]-> HorizontalPodAutoscalerCondition",
       "HorizontalPodAutoscalerStatus -[HAS_PROPERTY]-> MetricStatus",
-      "MetricSpec -[HAS_PROPERTY]-> ResourceMetricSource",
       "ReplicaSet -[CONTAINS_POD_TEMPLATE]-> PodTemplateSpec",
       "ReplicaSet -[HAS_PROPERTY]-> ReplicaSetSpec",
       "ReplicaSet -[HAS_PROPERTY]-> ReplicaSetStatus",
@@ -82,31 +76,15 @@
     ],
     "key_nodes": [
       "io.k8s.api.apps.v1.Deployment",
-      "io.k8s.api.apps.v1.DeploymentSpec",
-      "io.k8s.api.apps.v1.DeploymentStatus",
-      "io.k8s.api.apps.v1.ReplicaSet",
-      "io.k8s.api.apps.v1.ReplicaSetSpec",
-      "io.k8s.api.apps.v1.ReplicaSetStatus",
-      "io.k8s.api.apps.v1.StatefulSet",
-      "io.k8s.api.apps.v1.StatefulSetSpec",
-      "io.k8s.api.apps.v1.StatefulSetStatus",
       "io.k8s.api.autoscaling.v1.CrossVersionObjectReference",
       "io.k8s.api.autoscaling.v1.HorizontalPodAutoscaler",
       "io.k8s.api.autoscaling.v1.HorizontalPodAutoscalerSpec",
-      "io.k8s.api.autoscaling.v1.HorizontalPodAutoscalerStatus",
-      "io.k8s.api.autoscaling.v2.CrossVersionObjectReference",
-      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscaler",
-      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerBehavior",
-      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerCondition",
-      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerSpec",
-      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerStatus",
-      "io.k8s.api.autoscaling.v2.MetricSpec",
-      "io.k8s.api.autoscaling.v2.MetricStatus",
-      "io.k8s.api.autoscaling.v2.ResourceMetricSource",
-      "io.k8s.api.core.v1.PersistentVolumeClaim",
-      "io.k8s.api.core.v1.PodTemplateSpec"
-    ]
+      "io.k8s.api.autoscaling.v2.MetricSpec"
+    ],
+    "gt_depth": 2,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

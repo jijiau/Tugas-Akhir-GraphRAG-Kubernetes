@@ -1,34 +1,24 @@
 {
-  "id": "pim_trying_to_use_a_container",
-  "type": "realworld",
-  "question": "<p>I'm trying to use a container that contains a Java tool to do some DB migrations on a MySQL database in a Kubernetes Job.</p>\n<p>When I run the container locally in Docker (using a MySQL container",
-  "resource": "io.k8s.api.batch.v1.Job",
+  "id": "deployment_node_selector",
+  "type": "yaml_gen",
+  "question": "Create a Kubernetes Deployment YAML that uses nodeSelector to schedule Pods only on nodes labeled accelerator=nvidia-gpu.",
+  "resource": "io.k8s.api.apps.v1.Deployment",
   "scope": "Namespaced",
   "multi_hop": true,
-  "so_question_id": "wtfc63",
-  "selection_score": 2.45,
-  "selection_scores_breakdown": {
-    "d1_graph_answerability": 3,
-    "d2_path_annotability": 2,
-    "d3_type_fit": 3,
-    "d4_so_quality": 1,
-    "d5_representativeness": 3,
-    "g4_penalty": -0.0
-  },
-  "selection_rationale": "SO answer score 0. D1=3 D2=2 D3=3 D4=1 D5=3. G4 new coverage.",
+  "lang": "en",
   "ground_truth": {
-    "answer": "Masalahnya adalah Istio tidak berfungsi dengan baik dengan Kubernetes Jobs (saya lupa menyebutkan bahwa Istio aktif di Namespace, maaf). Setelah saya menambahkan sedikit penundaan (sleep 5 sebelum",
-    "context": [],
+    "answer": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: gpu-app\nspec:\n  replicas: 2\n  selector:\n    matchLabels:\n      app: gpu-app\n  template:\n    metadata:\n      labels:\n        app: gpu-app\n    spec:\n      nodeSelector:\n        accelerator: nvidia-gpu\n      containers:\n      - name: app\n        image: gpu-app:latest",
+    "context": [
+      "io.k8s.api.apps.v1.Deployment: manages stateless Pods; spec is DeploymentSpec",
+      "io.k8s.api.core.v1.PodSpec: nodeSelector is a map of label key-value pairs; Pod is scheduled only onto nodes that have all specified labels"
+    ],
     "relevant_nodes": [
-      "io.k8s.api.batch.v1.Job",
-      "io.k8s.api.batch.v1.JobCondition",
-      "io.k8s.api.batch.v1.JobSpec",
-      "io.k8s.api.batch.v1.JobStatus",
-      "io.k8s.api.batch.v1.PodFailurePolicy",
-      "io.k8s.api.batch.v1.PodFailurePolicyRule",
-      "io.k8s.api.batch.v1.SuccessPolicy",
-      "io.k8s.api.batch.v1.SuccessPolicyRule",
-      "io.k8s.api.batch.v1.UncountedTerminatedPods",
+      "io.k8s.api.apps.v1.Deployment",
+      "io.k8s.api.apps.v1.DeploymentCondition",
+      "io.k8s.api.apps.v1.DeploymentSpec",
+      "io.k8s.api.apps.v1.DeploymentStatus",
+      "io.k8s.api.apps.v1.DeploymentStrategy",
+      "io.k8s.api.apps.v1.RollingUpdateDeployment",
       "io.k8s.api.core.v1.Affinity",
       "io.k8s.api.core.v1.Container",
       "io.k8s.api.core.v1.EphemeralContainer",
@@ -54,17 +44,16 @@
       "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelectorRequirement"
     ],
     "expected_path": [
-      "Job -[CONTAINS_POD_TEMPLATE]-> PodTemplateSpec",
-      "Job -[HAS_PROPERTY]-> JobSpec",
-      "Job -[HAS_PROPERTY]-> JobStatus",
-      "JobSpec -[HAS_PROPERTY]-> LabelSelector",
-      "JobSpec -[HAS_PROPERTY]-> PodFailurePolicy",
-      "JobSpec -[HAS_PROPERTY]-> PodTemplateSpec",
-      "JobSpec -[HAS_PROPERTY]-> SuccessPolicy",
-      "JobStatus -[HAS_PROPERTY]-> JobCondition",
-      "JobStatus -[HAS_PROPERTY]-> UncountedTerminatedPods",
+      "Deployment -[CONTAINS_POD_TEMPLATE]-> PodTemplateSpec",
+      "Deployment -[EXTENDS]-> DeploymentSpec",
+      "Deployment -[HAS_PROPERTY]-> DeploymentSpec",
+      "Deployment -[HAS_PROPERTY]-> DeploymentStatus",
+      "DeploymentSpec -[HAS_PROPERTY]-> DeploymentStrategy",
+      "DeploymentSpec -[HAS_PROPERTY]-> LabelSelector",
+      "DeploymentSpec -[HAS_PROPERTY]-> PodTemplateSpec",
+      "DeploymentStatus -[HAS_PROPERTY]-> DeploymentCondition",
+      "DeploymentStrategy -[HAS_PROPERTY]-> RollingUpdateDeployment",
       "LabelSelector -[HAS_PROPERTY]-> LabelSelectorRequirement",
-      "PodFailurePolicy -[HAS_PROPERTY]-> PodFailurePolicyRule",
       "PodSpec -[HAS_CONTAINER]-> Container",
       "PodSpec -[HAS_PROPERTY]-> Affinity",
       "PodSpec -[HAS_PROPERTY]-> Container",
@@ -86,18 +75,24 @@
       "PodSpec -[MOUNTS_VOLUME]-> Volume",
       "PodSpec -[USES_SECRET]-> Secret",
       "PodSpec -[USES_SERVICE_ACCOUNT]-> ServiceAccount",
-      "PodTemplateSpec -[HAS_PROPERTY]-> PodSpec",
-      "SuccessPolicy -[HAS_PROPERTY]-> SuccessPolicyRule"
+      "PodTemplateSpec -[HAS_PROPERTY]-> PodSpec"
     ],
-    "required_fields": [],
-    "expected_yaml_keys": [],
-    "answer_lang": "id",
     "key_nodes": [
-      "io.k8s.api.batch.v1.Job"
-    ]
+      "io.k8s.api.apps.v1.Deployment",
+      "io.k8s.api.core.v1.PodSpec"
+    ],
+    "required_fields": [
+      "apiVersion",
+      "kind",
+      "metadata",
+      "spec"
+    ],
+    "expected_yaml_keys": [
+      "spec.template.spec.nodeSelector"
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
-  "source_reference": "https://stackoverflow.com/questions/wtfc63",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
-  "so_url": "https://stackoverflow.com/questions/wtfc63",
-  "so_answer_score": 0
+  "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
 }

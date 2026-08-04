@@ -1,15 +1,16 @@
 {
   "id": "scope_accuracy_node",
   "type": "conceptual",
-  "question": "Apa perbedaan scope antara Node dan Pod di Kubernetes, dan mengapa penting untuk dipahami?",
+  "question": "What does NodeSpec define in the Kubernetes API, and what key fields does NodeStatus expose about the state of a Node?",
   "resource": "io.k8s.api.core.v1.Node",
   "scope": "Cluster",
   "multi_hop": false,
   "ground_truth": {
-    "answer": "Node adalah resource cluster-scoped — ada di tingkat cluster dan tidak terikat ke namespace tertentu. Pod adalah resource namespaced — harus berada di dalam namespace tertentu. Perbedaan ini penting karena: (1) RBAC permissions berbeda untuk cluster-scoped vs namespaced resources; (2) kubectl commands memerlukan -n <namespace> untuk namespaced resources; (3) ClusterRole bisa mengakses keduanya, sementara Role hanya bisa mengakses namespaced resources dalam satu namespace.",
+    "answer": "NodeSpec defines the desired configuration of a Node. Key fields include providerID (a string identifying the Node in the cloud provider), podCIDR (the CIDR range assigned to Pods scheduled on this Node), taints (a list of Taint objects, each with key, value, and effect fields that influence Pod scheduling), and configSource (a NodeConfigSource referencing dynamic kubelet configuration). NodeStatus exposes the observed state of the Node. Its conditions field is a list of NodeCondition objects, each recording a condition type such as Ready, MemoryPressure, or DiskPressure with a status and reason. The addresses field is a list of NodeAddress objects mapping address types (InternalIP, ExternalIP, Hostname) to their values. The nodeInfo field (a NodeSystemInfo) records OS image, kernel version, and container runtime details. The daemonEndpoints field (a NodeDaemonEndpoints) exposes the port on which the kubelet listens.",
     "context": [
-      "Node: represents a worker machine in Kubernetes — cluster-scoped resource",
-      "Pod: the smallest deployable units — namespaced resource"
+      "io.k8s.api.core.v1.Node: represents a worker machine in Kubernetes; desired state defined by NodeSpec, observed state by NodeStatus",
+      "io.k8s.api.core.v1.NodeSpec: defines desired Node configuration; key fields include providerID, podCIDR, taints (list of Taint), and configSource (NodeConfigSource)",
+      "io.k8s.api.core.v1.NodeStatus: exposes observed Node state; key fields include conditions (NodeCondition list), addresses (NodeAddress list), nodeInfo (NodeSystemInfo), and daemonEndpoints (NodeDaemonEndpoints)"
     ],
     "relevant_nodes": [
       "io.k8s.api.core.v1.AttachedVolume",
@@ -25,7 +26,6 @@
       "io.k8s.api.core.v1.NodeSpec",
       "io.k8s.api.core.v1.NodeStatus",
       "io.k8s.api.core.v1.NodeSystemInfo",
-      "io.k8s.api.core.v1.Pod",
       "io.k8s.api.core.v1.Taint",
       "io.k8s.apimachinery.pkg.api.resource.Quantity"
     ],
@@ -49,10 +49,19 @@
     "expected_yaml_keys": [],
     "key_nodes": [
       "io.k8s.api.core.v1.Node",
-      "io.k8s.api.core.v1.Pod",
-      "io.k8s.api.core.v1.NodeSpec"
-    ]
+      "io.k8s.api.core.v1.NodeAddress",
+      "io.k8s.api.core.v1.NodeCondition",
+      "io.k8s.api.core.v1.NodeConfigSource",
+      "io.k8s.api.core.v1.NodeDaemonEndpoints",
+      "io.k8s.api.core.v1.NodeSpec",
+      "io.k8s.api.core.v1.NodeStatus",
+      "io.k8s.api.core.v1.NodeSystemInfo",
+      "io.k8s.api.core.v1.Taint"
+    ],
+    "gt_depth": 2,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/architecture/nodes/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

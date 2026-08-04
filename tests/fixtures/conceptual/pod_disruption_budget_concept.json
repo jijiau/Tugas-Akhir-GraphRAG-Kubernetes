@@ -1,0 +1,45 @@
+{
+  "id": "pod_disruption_budget_concept",
+  "type": "conceptual",
+  "question": "What does PodDisruptionBudget define, and what fields protect application availability during voluntary disruptions?",
+  "resource": "io.k8s.api.policy.v1.PodDisruptionBudget",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "lang": "en",
+  "ground_truth": {
+    "answer": "PodDisruptionBudget (PDB) protects application availability during voluntary disruptions such as node drains or cluster upgrades. Its spec is PodDisruptionBudgetSpec with: selector (LabelSelector) identifying the Pods the PDB protects; minAvailable (IntOrString) specifying the minimum number or percentage of Pods that must remain available — a disruption is blocked if it would drop the count below this; maxUnavailable (IntOrString) specifying the maximum Pods that may be simultaneously unavailable — mutually exclusive with minAvailable. PodDisruptionBudgetStatus exposes disruptionsAllowed (current permitted disruption count), currentHealthy, desiredHealthy, and expectedPods.",
+    "context": [
+      "io.k8s.api.policy.v1.PodDisruptionBudget: protects Pods from voluntary disruptions; spec is PodDisruptionBudgetSpec; status is PodDisruptionBudgetStatus",
+      "io.k8s.api.policy.v1.PodDisruptionBudgetSpec: selector (LabelSelector) targets Pods; minAvailable or maxUnavailable (IntOrString) sets the availability constraint",
+      "io.k8s.apimachinery.pkg.util.intstr.IntOrString: integer or percentage string; used in minAvailable and maxUnavailable to allow absolute counts or percentages"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.policy.v1.PodDisruptionBudget",
+      "io.k8s.api.policy.v1.PodDisruptionBudgetSpec",
+      "io.k8s.api.policy.v1.PodDisruptionBudgetStatus",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.Condition",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector",
+      "io.k8s.apimachinery.pkg.util.intstr.IntOrString"
+    ],
+    "expected_path": [
+      "PodDisruptionBudget -[HAS_PROPERTY]-> PodDisruptionBudgetSpec",
+      "PodDisruptionBudget -[HAS_PROPERTY]-> PodDisruptionBudgetStatus",
+      "PodDisruptionBudgetSpec -[HAS_PROPERTY]-> IntOrString",
+      "PodDisruptionBudgetSpec -[HAS_PROPERTY]-> LabelSelector",
+      "PodDisruptionBudgetStatus -[HAS_PROPERTY]-> Condition"
+    ],
+    "key_nodes": [
+      "io.k8s.api.policy.v1.PodDisruptionBudget",
+      "io.k8s.api.policy.v1.PodDisruptionBudgetSpec",
+      "io.k8s.api.policy.v1.PodDisruptionBudgetStatus",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector",
+      "io.k8s.apimachinery.pkg.util.intstr.IntOrString"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": [],
+    "gt_depth": 2,
+    "n_roots": 1
+  },
+  "source_reference": "https://kubernetes.io/docs/reference/kubernetes-api/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

@@ -1,18 +1,18 @@
 {
   "id": "networkpolicy_deny_all",
   "type": "yaml_gen",
-  "question": "Buatkan YAML NetworkPolicy untuk memblokir semua traffic masuk ke namespace production",
+  "question": "Create a YAML NetworkPolicy to block all inbound traffic to the production namespace",
   "resource": "io.k8s.api.networking.v1.NetworkPolicy",
   "scope": "Namespaced",
   "multi_hop": false,
   "ground_truth": {
     "answer": "apiVersion: networking.k8s.io/v1\nkind: NetworkPolicy\nmetadata:\n  name: deny-all-ingress\n  namespace: production\nspec:\n  podSelector: {}\n  policyTypes:\n  - Ingress",
     "context": [
-      "NetworkPolicy untuk mengontrol traffic jaringan ke pod",
-      "Empty podSelector untuk menerapkan kebijakan ke semua pod di namespace",
-      "Policy type Ingress untuk memblokir semua traffic masuk"
+      "io.k8s.api.networking.v1.NetworkPolicy: defines network traffic rules for Pods; spec is NetworkPolicySpec",
+      "io.k8s.api.networking.v1.NetworkPolicySpec: podSelector (empty LabelSelector matches all Pods); policyTypes lists Ingress and/or Egress; no ingress rules = deny all inbound traffic"
     ],
     "relevant_nodes": [
+      "io.k8s.api.networking.v1.Ingress",
       "io.k8s.api.networking.v1.NetworkPolicy",
       "io.k8s.api.networking.v1.NetworkPolicyEgressRule",
       "io.k8s.api.networking.v1.NetworkPolicyIngressRule",
@@ -44,10 +44,14 @@
       "spec.policyTypes"
     ],
     "key_nodes": [
+      "io.k8s.api.networking.v1.Ingress",
       "io.k8s.api.networking.v1.NetworkPolicy",
       "io.k8s.api.networking.v1.NetworkPolicySpec"
-    ]
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/services-networking/network-policies/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/service-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/service-resources/",
+  "lang": "en"
 }

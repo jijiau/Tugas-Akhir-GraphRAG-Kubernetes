@@ -1,0 +1,49 @@
+{
+  "id": "container_lifecycle_concept",
+  "type": "conceptual",
+  "question": "What lifecycle hooks does the Kubernetes Container API define, and what handler types are supported?",
+  "resource": "io.k8s.api.core.v1.Lifecycle",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "lang": "en",
+  "ground_truth": {
+    "answer": "The Lifecycle object defines two optional hooks attached to a Container. postStart executes immediately after the container is created; if it fails, the container is killed and restarted. preStop executes just before the container is terminated, blocking termination until it completes or terminationGracePeriodSeconds expires. Each hook is a LifecycleHandler that supports one of three mutually exclusive types: exec (ExecAction — runs a command; exit code 0 = success), httpGet (HTTPGetAction — HTTP GET on a port/path; 2xx or 3xx = success), tcpSocket (TCPSocketAction — opens a TCP socket to verify the port is open). A sleep (SleepAction) handler is also available in v1.30 to introduce a fixed delay.",
+    "context": [
+      "io.k8s.api.core.v1.Lifecycle: postStart and preStop hooks for a Container; each hook is a LifecycleHandler specifying an action at the lifecycle event",
+      "io.k8s.api.core.v1.LifecycleHandler: exec (ExecAction), httpGet (HTTPGetAction), or tcpSocket (TCPSocketAction) mutually exclusive handler types",
+      "io.k8s.api.core.v1.ExecAction: runs a command inside the container; command is the argv string list",
+      "io.k8s.api.core.v1.HTTPGetAction: HTTP GET health action; host, port, path, scheme, and httpHeaders fields"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.ExecAction",
+      "io.k8s.api.core.v1.HTTPGetAction",
+      "io.k8s.api.core.v1.Lifecycle",
+      "io.k8s.api.core.v1.LifecycleHandler",
+      "io.k8s.api.core.v1.SleepAction",
+      "io.k8s.api.core.v1.TCPSocketAction"
+    ],
+    "expected_path": [
+      "Lifecycle -[HAS_PROPERTY]-> LifecycleHandler",
+      "LifecycleHandler -[HAS_PROPERTY]-> ExecAction",
+      "LifecycleHandler -[HAS_PROPERTY]-> HTTPGetAction",
+      "LifecycleHandler -[HAS_PROPERTY]-> SleepAction",
+      "LifecycleHandler -[HAS_PROPERTY]-> TCPSocketAction"
+    ],
+    "key_nodes": [
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.ExecAction",
+      "io.k8s.api.core.v1.HTTPGetAction",
+      "io.k8s.api.core.v1.Lifecycle",
+      "io.k8s.api.core.v1.LifecycleHandler",
+      "io.k8s.api.core.v1.SleepAction",
+      "io.k8s.api.core.v1.TCPSocketAction"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": [],
+    "gt_depth": 2,
+    "n_roots": 1
+  },
+  "source_reference": "https://kubernetes.io/docs/reference/kubernetes-api/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

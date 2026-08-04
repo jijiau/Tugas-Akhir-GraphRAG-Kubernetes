@@ -1,25 +1,22 @@
 {
   "id": "kubectl_export_namespace_resources",
   "type": "command",
-  "question": "Bagaimana cara mengekspor semua manifest resource (Deployment, Service, ConfigMap, dll.) dari sebuah namespace ke file YAML untuk keperluan backup atau migrasi ke cluster lain?",
+  "question": "How do the NamespaceSpec and NamespaceStatus fields govern a Namespace deletion lifecycle and health reporting in Kubernetes?",
   "resource": "io.k8s.api.core.v1.Namespace",
   "scope": "Cluster",
-  "multi_hop": false,
+  "multi_hop": true,
   "ground_truth": {
-    "answer": "Gunakan kubectl get dengan output yaml dan redirect ke file: `kubectl get all,configmap,secret,ingress,pvc -n <namespace> -o yaml > namespace-backup.yaml`. Flag `all` mencakup Pod, Deployment, ReplicaSet, Service, Job, CronJob. Tambahkan resource types lain yang dibutuhkan (configmap, secret, ingress, pvc). Catatan: Secret akan ter-export dalam format base64 — pastikan file disimpan secara aman. Untuk migrasi ke cluster lain, hapus dulu field status, resourceVersion, uid, dan creationTimestamp dari hasil export karena itu adalah runtime metadata yang tidak relevan di cluster tujuan. Tools seperti `velero` atau `kubectl-neat` membantu membersihkan metadata ini secara otomatis.",
+    "answer": "A Namespace resource in Kubernetes has two main schema components. NamespaceSpec contains the finalizers field, which is an array of string identifiers that must all be removed before Kubernetes permanently deletes the namespace from the API; this enables namespace-level lifecycle hooks. NamespaceStatus exposes the phase field (Active or Terminating) and a conditions array of NamespaceCondition objects, each with a type, status, and message describing the current state. When a Namespace is deleted, it enters the Terminating phase and waits for all finalizers to clear before removal.",
     "context": [
-      "io.k8s.api.core.v1.Namespace: resource cluster-scoped yang mengkelompokkan resource namespaced",
-      "io.k8s.api.apps.v1.Deployment: resource workload yang bisa di-export dan di-apply ke cluster lain",
-      "io.k8s.api.core.v1.ObjectMeta: metadata.resourceVersion dan metadata.uid adalah cluster-specific dan harus dihapus sebelum migrasi"
+      "io.k8s.api.core.v1.Namespace: top-level cluster-scoped resource that defines an isolation boundary for namespaced Kubernetes objects",
+      "io.k8s.api.core.v1.NamespaceSpec: finalizers is an array of string identifiers that must be empty before the namespace can be removed from storage",
+      "io.k8s.api.core.v1.NamespaceStatus: phase indicates Active or Terminating state; conditions is a list of NamespaceCondition objects describing namespace health"
     ],
     "relevant_nodes": [
-      "io.k8s.api.apps.v1.Deployment",
-      "io.k8s.api.core.v1.ConfigMap",
       "io.k8s.api.core.v1.Namespace",
       "io.k8s.api.core.v1.NamespaceCondition",
       "io.k8s.api.core.v1.NamespaceSpec",
-      "io.k8s.api.core.v1.NamespaceStatus",
-      "io.k8s.api.core.v1.Service"
+      "io.k8s.api.core.v1.NamespaceStatus"
     ],
     "expected_path": [
       "Namespace -[HAS_PROPERTY]-> NamespaceSpec",
@@ -29,15 +26,15 @@
     "required_fields": [],
     "expected_yaml_keys": [],
     "key_nodes": [
-      "io.k8s.api.apps.v1.Deployment",
-      "io.k8s.api.core.v1.ConfigMap",
       "io.k8s.api.core.v1.Namespace",
       "io.k8s.api.core.v1.NamespaceCondition",
       "io.k8s.api.core.v1.NamespaceSpec",
-      "io.k8s.api.core.v1.NamespaceStatus",
-      "io.k8s.api.core.v1.Service"
-    ]
+      "io.k8s.api.core.v1.NamespaceStatus"
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

@@ -1,15 +1,15 @@
 {
   "id": "pod_spec",
   "type": "conceptual",
-  "question": "Apa saja field penting dalam PodSpec?",
+  "question": "What are the key fields in PodSpec, and which field is the only required one?",
   "resource": "io.k8s.api.core.v1.PodSpec",
   "scope": "Namespaced",
   "multi_hop": false,
   "ground_truth": {
-    "answer": "PodSpec mendefinisikan containers (wajib), volumes, initContainers, restartPolicy, serviceAccountName, dan tolerations. Field containers adalah satu-satunya field yang wajib ada.",
+    "answer": "PodSpec defines the desired behavior of a Pod. The containers field is a list of Container objects and is the only required field — every PodSpec must have at least one container. Other commonly used fields include volumes (a list of Volume sources available to containers), initContainers (containers that run to completion before app containers start), restartPolicy (Always, OnFailure, or Never), serviceAccountName (the ServiceAccount to use for API access), and tolerations (rules that allow the Pod to be scheduled on tainted Nodes). All fields other than containers are optional.",
     "context": [
-      "io.k8s.api.core.v1.PodSpec: PodSpec is the specification of the desired behavior of the pod.",
-      "containers: List of containers belonging to the pod. Required."
+      "io.k8s.api.core.v1.PodSpec: specification of the desired behavior of a Pod; containers is the only required field",
+      "io.k8s.api.core.v1.Container: defines a single application container within the Pod; name is the only required sub-field"
     ],
     "relevant_nodes": [
       "io.k8s.api.core.v1.AWSElasticBlockStoreVolumeSource",
@@ -64,7 +64,6 @@
       "io.k8s.api.core.v1.ProjectedVolumeSource",
       "io.k8s.api.core.v1.QuobyteVolumeSource",
       "io.k8s.api.core.v1.RBDVolumeSource",
-      "io.k8s.api.core.v1.ResourceClaim",
       "io.k8s.api.core.v1.ResourceRequirements",
       "io.k8s.api.core.v1.SELinuxOptions",
       "io.k8s.api.core.v1.ScaleIOVolumeSource",
@@ -83,6 +82,7 @@
       "io.k8s.api.core.v1.VsphereVirtualDiskVolumeSource",
       "io.k8s.api.core.v1.WindowsSecurityContextOptions",
       "io.k8s.api.core.v1.WorkloadReference",
+      "io.k8s.api.resource.v1.ResourceClaim",
       "io.k8s.apimachinery.pkg.api.resource.Quantity",
       "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
     ],
@@ -186,10 +186,15 @@
     ],
     "expected_yaml_keys": [],
     "key_nodes": [
+      "io.k8s.api.core.v1.Container",
       "io.k8s.api.core.v1.PodSpec",
-      "io.k8s.api.core.v1.Container"
-    ]
+      "io.k8s.api.core.v1.ServiceAccount",
+      "io.k8s.api.core.v1.Volume"
+    ],
+    "gt_depth": 2,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#PodSpec",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

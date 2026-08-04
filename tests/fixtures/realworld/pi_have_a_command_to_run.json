@@ -1,7 +1,7 @@
 {
   "id": "pi_have_a_command_to_run",
   "type": "realworld",
-  "question": "<p>I have a command to run docker,</p>\n\n<pre><code>docker run --name pre-core -itdp 8086:80 -v /opt/docker/datalook-pre-core:/usr/application app\n</code></pre>\n\n<p>In above command, /opt/docker/datalo",
+  "question": "How do you define a hostPath volume in a Kubernetes Pod YAML to mount a directory from the host node into a container?",
   "resource": "io.k8s.api.core.v1.Pod",
   "scope": "Namespaced",
   "multi_hop": true,
@@ -17,8 +17,11 @@
   },
   "selection_rationale": "SO answer score 0. D1=3 D2=3 D3=2 D4=1 D5=3. G4 new coverage.",
   "ground_truth": {
-    "answer": "Ini akan menjadi volume hostPath: https://kubernetes.io/docs/concepts/storage/volumes/",
-    "context": [],
+    "answer": "To define a hostPath volume in a Kubernetes Pod, add an entry to spec.volumes with the hostPath field, specifying path as the directory or file on the host node and optionally type to control behavior (Directory, DirectoryOrCreate, File, FileOrCreate, etc.). Then add a volumeMount in the container spec referencing the volume name and the desired mountPath inside the container.",
+    "context": [
+      "io.k8s.api.core.v1.HostPathVolumeSource: mounts a file or directory from the host node; path is the host path; type field controls creation behavior (DirectoryOrCreate, Directory, FileOrCreate, File, Socket, BlockDevice)",
+      "io.k8s.api.core.v1.VolumeMount: name references the Volume; mountPath is the path inside the container where the volume is mounted"
+    ],
     "relevant_nodes": [
       "io.k8s.api.core.v1.AWSElasticBlockStoreVolumeSource",
       "io.k8s.api.core.v1.Affinity",
@@ -83,7 +86,6 @@
       "io.k8s.api.core.v1.ProjectedVolumeSource",
       "io.k8s.api.core.v1.QuobyteVolumeSource",
       "io.k8s.api.core.v1.RBDVolumeSource",
-      "io.k8s.api.core.v1.ResourceClaim",
       "io.k8s.api.core.v1.ResourceRequirements",
       "io.k8s.api.core.v1.ResourceStatus",
       "io.k8s.api.core.v1.SELinuxOptions",
@@ -104,6 +106,7 @@
       "io.k8s.api.core.v1.VsphereVirtualDiskVolumeSource",
       "io.k8s.api.core.v1.WindowsSecurityContextOptions",
       "io.k8s.api.core.v1.WorkloadReference",
+      "io.k8s.api.resource.v1.ResourceClaim",
       "io.k8s.apimachinery.pkg.api.resource.Quantity",
       "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
     ],
@@ -222,13 +225,18 @@
     ],
     "required_fields": [],
     "expected_yaml_keys": [],
-    "answer_lang": "id",
+    "answer_lang": "en",
     "key_nodes": [
-      "io.k8s.api.core.v1.Pod"
-    ]
+      "io.k8s.api.core.v1.HostPathVolumeSource",
+      "io.k8s.api.core.v1.Pod",
+      "io.k8s.api.core.v1.VolumeMount"
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://stackoverflow.com/questions/user84592",
   "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
   "so_url": "https://stackoverflow.com/questions/user84592",
-  "so_answer_score": 0
+  "so_answer_score": 0,
+  "lang": "en"
 }

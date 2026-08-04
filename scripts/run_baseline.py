@@ -38,16 +38,34 @@ def run_llm_baseline(question: str) -> tuple[str, list]:
 
 
 def run_vector_baseline(question: str) -> tuple[str, list]:
-    """Mode 2: Vector-RAG — cosine similarity only, no graph traversal."""
-    from src.retrieval.graph_retriever import GraphRetriever
+    """Mode 2: Vector-RAG — pure dense top-k, no graph traversal.
+
+    Uses SIMPLE_VECTOR_QUERY (k=5), identical to evaluate.py --mode vector.
+    GraphRetriever was removed here because it uses SIMPLE_GRAPH_EXPAND_QUERY
+    which does a 1-hop OPTIONAL MATCH — making it a partial graph baseline,
+    not a pure vector baseline. That would conflate the graph contribution with
+    the vector contribution, invalidating the GraphRAG-vs-Vector delta (T1).
+    """
+    from src.graph.neo4j_client import Neo4jClient
+    from src.graph.vector_index import VectorIndexManager
+    from src.graph.queries import SIMPLE_VECTOR_QUERY
     from src.chatbot.llm_factory import get_speaker_llm
     from langchain_core.messages import HumanMessage
 
-    retriever = GraphRetriever()
-    context   = retriever.search_knowledge(question, top_k=3)
-    prompt    = f"Context:\n{context}\n\nQuestion: {question}\n\nAnswer:"
-    llm       = get_speaker_llm()
-    response  = llm.invoke([HumanMessage(content=prompt)])
+    db        = Neo4jClient()
+    vector_mgr = VectorIndexManager()
+    embedding = vector_mgr.generate_embedding(question)
+    results   = db.execute_query(SIMPLE_VECTOR_QUERY, {"embedding": embedding, "top_k": 5})
+
+    parts = []
+    for r in results:
+        fn   = r.get("node.fullName", "")
+        desc = r.get("node.description", "")
+        parts.append(f"Resource: {fn}\nDescription: {desc}\n")
+    context  = "\n---\n".join(parts)
+    prompt   = f"Context:\n{context}\n\nQuestion: {question}\n\nAnswer:"
+    llm      = get_speaker_llm()
+    response = llm.invoke([HumanMessage(content=prompt)])
     return response.content, []
 
 

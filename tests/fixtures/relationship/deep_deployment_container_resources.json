@@ -1,17 +1,17 @@
 {
   "id": "deep_deployment_container_resources",
   "type": "relationship",
-  "question": "Bagaimana cara mendefinisikan resource limits dan requests untuk container di dalam sebuah Deployment?",
+  "question": "How are resource limits and requests for a container inside a Deployment defined in the API schema?",
   "resource": "io.k8s.api.apps.v1.Deployment",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
-    "answer": "Untuk mendefinisikan resource limits/requests, traversal graph melewati 4 hop: Deployment → DeploymentSpec → PodTemplateSpec → Container → ResourceRequirements. Field resources pada Container memiliki dua sub-field: limits (batas maksimum CPU/memory) dan requests (kebutuhan minimum yang dijamin oleh scheduler). Contoh: resources.limits.cpu: '500m', resources.requests.memory: '128Mi'.",
+    "answer": "Defining resource limits and requests requires a four-hop traversal through the schema: Deployment → DeploymentSpec → PodTemplateSpec → Container → ResourceRequirements. The resources field on Container is of type ResourceRequirements, which has two sub-fields: limits (the maximum CPU/memory the container may use) and requests (the minimum CPU/memory reserved for the container). Both limits and requests are maps from resource name to Quantity. Example values: resources.limits.cpu: \"500m\", resources.requests.memory: \"128Mi\".",
     "context": [
-      "DeploymentSpec: specification of the desired behavior of the Deployment",
-      "PodTemplateSpec: describes the data a pod should have when created",
-      "Container: a single application container that you want to run within a pod",
-      "ResourceRequirements: describes the compute resource requirements"
+      "io.k8s.api.apps.v1.DeploymentSpec: template field (PodTemplateSpec) defines the Pod configuration; the path to container resources begins here",
+      "io.k8s.api.core.v1.PodTemplateSpec: spec field is PodSpec, which holds the containers list",
+      "io.k8s.api.core.v1.Container: resources field is a ResourceRequirements object defining CPU and memory requests and limits",
+      "io.k8s.api.core.v1.ResourceRequirements: limits and requests fields are maps from resource name string to Quantity; defines the container's CPU and memory allocation"
     ],
     "relevant_nodes": [
       "io.k8s.api.apps.v1.Deployment",
@@ -45,7 +45,6 @@
       "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelectorRequirement"
     ],
     "expected_path": [
-      "Container -[HAS_PROPERTY]-> ResourceRequirements",
       "Deployment -[CONTAINS_POD_TEMPLATE]-> PodTemplateSpec",
       "Deployment -[EXTENDS]-> DeploymentSpec",
       "Deployment -[HAS_PROPERTY]-> DeploymentSpec",
@@ -88,11 +87,15 @@
     "key_nodes": [
       "io.k8s.api.apps.v1.Deployment",
       "io.k8s.api.apps.v1.DeploymentSpec",
-      "io.k8s.api.core.v1.PodTemplateSpec",
       "io.k8s.api.core.v1.Container",
-      "io.k8s.api.core.v1.ResourceRequirements"
-    ]
+      "io.k8s.api.core.v1.PodTemplateSpec",
+      "io.k8s.api.core.v1.ResourceRequirements",
+      "io.k8s.apimachinery.pkg.api.resource.Quantity"
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

@@ -1,15 +1,15 @@
 {
   "id": "change_service_type",
   "type": "followup",
-  "context_question": "Buat YAML Service ClusterIP untuk nginx di port 80",
-  "question": "Ubah tipe service itu menjadi LoadBalancer",
+  "context_question": "Create a YAML ClusterIP Service for nginx on port 80",
+  "question": "Change the service type to LoadBalancer",
   "resource": "io.k8s.api.core.v1.Service",
   "scope": "Namespaced",
   "multi_hop": false,
   "ground_truth": {
-    "answer": "Ubah spec.type menjadi LoadBalancer pada YAML Service. Cloud provider akan mengalokasikan external IP secara otomatis.",
+    "answer": "Set spec.type to LoadBalancer in the Service YAML. The cloud provider will allocate an external IP automatically.",
     "context": [
-      "ServiceSpec.type: LoadBalancer builds on NodePort and additionally assigns an external IP"
+      "io.k8s.api.core.v1.ServiceSpec: type field controls how the Service is exposed; LoadBalancer builds on NodePort and provisions an external IP via the cloud provider"
     ],
     "relevant_nodes": [
       "io.k8s.api.core.v1.LoadBalancerStatus",
@@ -42,8 +42,11 @@
     "key_nodes": [
       "io.k8s.api.core.v1.Service",
       "io.k8s.api.core.v1.ServiceSpec"
-    ]
+    ],
+    "gt_depth": 2,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/services-networking/service/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

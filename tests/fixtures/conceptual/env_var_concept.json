@@ -1,0 +1,55 @@
+{
+  "id": "env_var_concept",
+  "type": "conceptual",
+  "question": "What are the different ways to set an environment variable value in a Kubernetes Container according to the API schema?",
+  "resource": "io.k8s.api.core.v1.EnvVar",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "lang": "en",
+  "ground_truth": {
+    "answer": "EnvVar defines a single environment variable for a Container. The name field (required) is the variable name. A value can be supplied in two mutually exclusive ways: value is a plain string literal (supports $(VAR_NAME) substitution); valueFrom is an EnvVarSource referencing an external source: fieldRef (ObjectFieldSelector — downward API: Pod metadata, spec.nodeName, status.podIP); resourceFieldRef (ResourceFieldSelector — container resource requests/limits); configMapKeyRef (ConfigMapKeySelector — reads a key from a ConfigMap); secretKeyRef (SecretKeySelector — reads a key from a Secret). If both value and valueFrom are absent the variable is set to an empty string.",
+    "context": [
+      "io.k8s.api.core.v1.EnvVar: name (required) and value (string) or valueFrom (EnvVarSource) define a single environment variable for a Container",
+      "io.k8s.api.core.v1.EnvVarSource: fieldRef, resourceFieldRef, configMapKeyRef, and secretKeyRef are the four mutually exclusive source types",
+      "io.k8s.api.core.v1.ConfigMapKeySelector: selects a key from a ConfigMap by name and key",
+      "io.k8s.api.core.v1.SecretKeySelector: selects a key from a Secret by name and key"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.core.v1.ConfigMap",
+      "io.k8s.api.core.v1.ConfigMapKeySelector",
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.EnvVar",
+      "io.k8s.api.core.v1.EnvVarSource",
+      "io.k8s.api.core.v1.FileKeySelector",
+      "io.k8s.api.core.v1.ObjectFieldSelector",
+      "io.k8s.api.core.v1.ResourceFieldSelector",
+      "io.k8s.api.core.v1.Secret",
+      "io.k8s.api.core.v1.SecretKeySelector"
+    ],
+    "expected_path": [
+      "EnvVar -[HAS_PROPERTY]-> EnvVarSource",
+      "EnvVarSource -[HAS_PROPERTY]-> ConfigMapKeySelector",
+      "EnvVarSource -[HAS_PROPERTY]-> FileKeySelector",
+      "EnvVarSource -[HAS_PROPERTY]-> ObjectFieldSelector",
+      "EnvVarSource -[HAS_PROPERTY]-> ResourceFieldSelector",
+      "EnvVarSource -[HAS_PROPERTY]-> SecretKeySelector"
+    ],
+    "key_nodes": [
+      "io.k8s.api.core.v1.ConfigMap",
+      "io.k8s.api.core.v1.ConfigMapKeySelector",
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.EnvVar",
+      "io.k8s.api.core.v1.EnvVarSource",
+      "io.k8s.api.core.v1.ObjectFieldSelector",
+      "io.k8s.api.core.v1.ResourceFieldSelector",
+      "io.k8s.api.core.v1.Secret",
+      "io.k8s.api.core.v1.SecretKeySelector"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": [],
+    "gt_depth": 2,
+    "n_roots": 1
+  },
+  "source_reference": "https://kubernetes.io/docs/reference/kubernetes-api/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

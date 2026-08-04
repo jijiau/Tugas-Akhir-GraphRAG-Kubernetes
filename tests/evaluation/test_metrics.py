@@ -18,7 +18,7 @@ import pytest
 # Make project root importable regardless of working directory
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from scripts.evaluate import compute_ansq, compute_retq, compute_reaq, _token_f1
+from scripts.evaluate import compute_ansq, compute_retq, compute_reaq, _token_f1, _effective_type
 
 # Minimum score a realworld fixture must carry to be included in tests.
 # Mirrors SCORE_ACCEPT in scripts/select_realworld_fixtures.py.
@@ -182,8 +182,9 @@ class TestComputeAnsq:
 
     def test_returns_required_keys(self, deployment_ground_truth):
         result = compute_ansq("Some answer about Deployment", deployment_ground_truth, "conceptual")
-        for key in ("syntactic_validity", "schema_compliance", "answer_relevance", "faithfulness", "ansq_score"):
+        for key in ("syntactic_validity", "schema_compliance", "answer_relevance", "ansq_score"):
             assert key in result, f"Missing key: {key}"
+        assert "faithfulness" not in result, "faithfulness (node-mention) was dropped from AnsQ"
 
     def test_ansq_score_bounded(self, deployment_ground_truth):
         result = compute_ansq("Some answer about Deployment", deployment_ground_truth, "conceptual")
@@ -234,29 +235,6 @@ class TestComputeAnsq:
         result = compute_ansq("I don't know what you're asking", deployment_ground_truth, "conceptual")
         assert result["answer_relevance"] < 0.3
 
-    # ── Faithfulness ──────────────────────────────────────────────────────────
-
-    def test_answer_mentioning_all_nodes_gets_full_faithfulness(self, deployment_ground_truth):
-        # Ground truth nodes: Deployment, DeploymentSpec
-        answer = "Deployment uses DeploymentSpec to control the cluster."
-        result = compute_ansq(answer, deployment_ground_truth, "conceptual")
-        assert result["faithfulness"] == pytest.approx(1.0)
-
-    def test_answer_mentioning_no_nodes_gets_zero_faithfulness(self, deployment_ground_truth):
-        answer = "this text has nothing relevant"
-        result = compute_ansq(answer, deployment_ground_truth, "conceptual")
-        assert result["faithfulness"] == pytest.approx(0.0)
-
-    def test_empty_relevant_nodes_gives_full_faithfulness(self):
-        gt = {
-            "answer": "some answer",
-            "relevant_nodes": [],
-            "multi_hop": False,
-            "scope": "",
-        }
-        result = compute_ansq("anything", gt, "conceptual")
-        assert result["faithfulness"] == pytest.approx(1.0)
-
     # ── Edge: yaml_gen with list YAML should score 0 schema ──────────────────
 
     def test_yaml_gen_list_yaml_scores_zero_schema(self, yaml_gen_ground_truth):
@@ -280,8 +258,13 @@ class TestComputeRetq:
     def test_returns_required_keys(self, deployment_ground_truth):
         path = ["Deployment -[HAS_PROPERTY]-> DeploymentSpec"]
         result = compute_retq(path, deployment_ground_truth)
-        for key in ("precision_at_k", "recall_at_k", "f1_at_k", "graph_coverage", "retq_score"):
+        for key in ("precision", "recall", "f1", "retq_score",
+                    "n_retrieved_nodes", "n_relevant_nodes", "n_node_intersection"):
             assert key in result, f"Missing key: {key}"
+        # Dropped metrics must not appear
+        for dropped in ("path_coverage", "ndcg_at_k", "precision_at_k",
+                        "recall_at_k", "f1_at_k", "n_expected_edges", "n_matched_edges"):
+            assert dropped not in result, f"Dropped metric still present: {dropped}"
 
     def test_retq_score_bounded(self, deployment_ground_truth):
         path = ["Deployment -[HAS_PROPERTY]-> DeploymentSpec"]
@@ -291,22 +274,20 @@ class TestComputeRetq:
     # ── Perfect retrieval ─────────────────────────────────────────────────────
 
     def test_perfect_path_match_high_score(self, deployment_ground_truth):
-        # The reasoning path contains exactly the expected source node
         path = ["Deployment -[HAS_PROPERTY]-> DeploymentSpec"]
         result = compute_retq(path, deployment_ground_truth)
         # Both relevant nodes (Deployment, DeploymentSpec) appear in the path
-        assert result["recall_at_k"] == pytest.approx(1.0)
-        assert result["graph_coverage"] == pytest.approx(1.0)
+        assert result["recall"] == pytest.approx(1.0)
 
     # ── Empty reasoning path ──────────────────────────────────────────────────
 
     def test_empty_path_gives_zero_precision(self, deployment_ground_truth):
         result = compute_retq([], deployment_ground_truth)
-        assert result["precision_at_k"] == pytest.approx(0.0)
+        assert result["precision"] == pytest.approx(0.0)
 
     def test_empty_path_gives_zero_recall_when_nodes_expected(self, deployment_ground_truth):
         result = compute_retq([], deployment_ground_truth)
-        assert result["recall_at_k"] == pytest.approx(0.0)
+        assert result["recall"] == pytest.approx(0.0)
 
     def test_empty_path_empty_nodes_gives_full_recall(self):
         gt = {
@@ -315,39 +296,19 @@ class TestComputeRetq:
             "multi_hop": False,
         }
         result = compute_retq([], gt)
-        # No expected nodes → recall is 1.0 by convention
-        assert result["recall_at_k"] == pytest.approx(1.0)
+        # No expected nodes → recall is 1.0 by convention (Manning 2008)
+        assert result["recall"] == pytest.approx(1.0)
 
     # ── Multi-hop path ────────────────────────────────────────────────────────
 
-    def test_multi_hop_path_coverage(self, relationship_ground_truth):
+    def test_multi_hop_high_recall(self, relationship_ground_truth):
         path = [
             "Deployment -[HAS_PROPERTY]-> DeploymentSpec",
             "DeploymentSpec -[CONTAINS_POD_TEMPLATE]-> PodTemplateSpec",
         ]
         result = compute_retq(path, relationship_ground_truth)
-        assert result["graph_coverage"] == pytest.approx(1.0)
+        assert result["recall"] == pytest.approx(1.0)
         assert result["retq_score"] > 0.5
-
-    def test_partial_path_coverage_less_than_one(self):
-        # Use custom ground_truth where the second hop source ("Service") is
-        # completely absent from the single-hop retrieved path string, so the
-        # substring match in graph_coverage cannot accidentally fire.
-        gt = {
-            "relevant_nodes": [
-                "io.k8s.api.apps.v1.Deployment",
-                "io.k8s.api.core.v1.Service",
-            ],
-            "expected_path": [
-                "Deployment -[HAS_PROPERTY]-> DeploymentSpec",
-                "Service -[SELECTS_POD]-> Pod",   # "Service" not in first-hop string
-            ],
-            "multi_hop": True,
-        }
-        path = ["Deployment -[HAS_PROPERTY]-> DeploymentSpec"]
-        result = compute_retq(path, gt)
-        # "Service" is absent from the retrieved path → second hop not covered
-        assert result["graph_coverage"] < 1.0
 
     # ── Irrelevant path ───────────────────────────────────────────────────────
 
@@ -355,18 +316,18 @@ class TestComputeRetq:
         path = ["Service -[SELECTS_POD]-> Pod"]
         result = compute_retq(path, deployment_ground_truth)
         # "Service", "SELECTS_POD", "Pod" don't match Deployment or DeploymentSpec
-        assert result["recall_at_k"] == pytest.approx(0.0)
+        assert result["recall"] == pytest.approx(0.0)
 
     # ── F1 consistency ────────────────────────────────────────────────────────
 
     def test_f1_is_harmonic_mean_of_precision_recall(self, deployment_ground_truth):
         path = ["Deployment -[HAS_PROPERTY]-> DeploymentSpec"]
         result = compute_retq(path, deployment_ground_truth)
-        p = result["precision_at_k"]
-        r = result["recall_at_k"]
+        p = result["precision"]
+        r = result["recall"]
         if p + r > 0:
             expected_f1 = 2 * p * r / (p + r)
-            assert result["f1_at_k"] == pytest.approx(expected_f1, abs=1e-6)
+            assert result["f1"] == pytest.approx(expected_f1, abs=1e-6)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -381,109 +342,87 @@ class TestComputeReaq:
 
     def test_returns_required_keys(self, deployment_ground_truth):
         result = compute_reaq([], "some answer", deployment_ground_truth, "conceptual")
-        for key in ("hop_accuracy", "multi_hop_success", "scope_accuracy", "reaq_score"):
+        for key in ("hop_accuracy", "reaq_score", "depth_gt", "depth_pred", "gt_depth", "n_roots"):
             assert key in result, f"Missing key: {key}"
+        # Dropped metrics must not appear
+        for dropped in ("grounding_score", "hallucination_rate", "n_answer_terms", "n_grounded_terms"):
+            assert dropped not in result, f"Dropped metric still present: {dropped}"
 
-    def test_reaq_score_bounded(self, deployment_ground_truth):
+    def test_reaq_score_is_none_placeholder(self, deployment_ground_truth):
         result = compute_reaq(
             ["Deployment -[HAS_PROPERTY]-> DeploymentSpec"],
             "Deployment adalah controller yang mengelola Namespaced resource.",
             deployment_ground_truth,
             "conceptual",
         )
-        assert 0.0 <= result["reaq_score"] <= 1.0
+        # reaq_score is None here — filled by RAGAS join (recompute_ragas.py)
+        assert result["reaq_score"] is None
 
-    # ── Single-hop: no expected_path, no multi_hop ────────────────────────────
+    # ── Hop Accuracy (F3): edge-recall = |reasoning ∩ expected| / |expected| ──
 
-    def test_single_hop_with_path_gets_full_hop_accuracy(self, deployment_ground_truth):
-        # single_hop + non-empty path → hop_accuracy=1.0
-        path = ["Deployment -[HAS_PROPERTY]-> DeploymentSpec"]
-        result = compute_reaq(path, "some answer", deployment_ground_truth, "conceptual")
-        assert result["hop_accuracy"] == pytest.approx(1.0)
-
-    def test_single_hop_no_path_gets_zero_hop_accuracy(self, deployment_ground_truth):
-        result = compute_reaq([], "some answer", deployment_ground_truth, "conceptual")
-        assert result["hop_accuracy"] == pytest.approx(0.0)
-
-    def test_single_hop_multi_hop_success_always_one(self, deployment_ground_truth):
-        # For non-multi_hop fixtures, multi_hop_success should be 1.0
-        result = compute_reaq([], "some answer", deployment_ground_truth, "conceptual")
-        assert result["multi_hop_success"] == pytest.approx(1.0)
-
-    # ── Multi-hop ─────────────────────────────────────────────────────────────
-
-    def test_multi_hop_perfect_path_gets_full_accuracy(self, relationship_ground_truth):
+    def test_hop_accuracy_full_recall_returns_one(self, relationship_ground_truth):
+        # Both GT edges traversed → recall 2/2 = 1.0
         path = [
             "Deployment -[HAS_PROPERTY]-> DeploymentSpec",
             "DeploymentSpec -[CONTAINS_POD_TEMPLATE]-> PodTemplateSpec",
         ]
-        result = compute_reaq(path, "Deployment controls ReplicaSet", relationship_ground_truth, "relationship")
+        result = compute_reaq(path, "some answer", relationship_ground_truth, "relationship")
         assert result["hop_accuracy"] == pytest.approx(1.0)
-        assert result["multi_hop_success"] == pytest.approx(1.0)
 
-    def test_multi_hop_missing_path_gets_zero_success(self, relationship_ground_truth):
-        result = compute_reaq([], "Deployment controls ReplicaSet", relationship_ground_truth, "relationship")
-        assert result["multi_hop_success"] == pytest.approx(0.0)
-
-    def test_multi_hop_partial_path_less_than_one_accuracy(self):
-        # Use custom ground_truth where the second hop source ("Service") is
-        # completely absent from the single-hop retrieved path string, preventing
-        # the substring match from accidentally marking it as covered.
-        gt = {
-            "answer": "Deployment controls Pods. Service selects Pods via label selector.",
-            "relevant_nodes": [
-                "io.k8s.api.apps.v1.Deployment",
-                "io.k8s.api.core.v1.Service",
-            ],
-            "expected_path": [
-                "Deployment -[HAS_PROPERTY]-> DeploymentSpec",
-                "Service -[SELECTS_POD]-> Pod",   # "Service" not in first-hop string
-            ],
-            "multi_hop": True,
-            "scope": "Namespaced",
-        }
+    def test_hop_accuracy_partial_recall(self, relationship_ground_truth):
+        # 1 of 2 GT edges traversed → recall 1/2 = 0.5
         path = ["Deployment -[HAS_PROPERTY]-> DeploymentSpec"]
-        result = compute_reaq(path, "some answer", gt, "relationship")
-        # Only 1 of 2 expected hops matched → hop_accuracy = 0.5
-        assert result["hop_accuracy"] < 1.0
+        result = compute_reaq(path, "some answer", relationship_ground_truth, "relationship")
+        assert result["hop_accuracy"] == pytest.approx(0.5)
 
-    # ── Scope accuracy ────────────────────────────────────────────────────────
+    def test_hop_accuracy_no_overlap_returns_zero(self, relationship_ground_truth):
+        # Wrong edges traversed → 0/2 = 0.0
+        path = ["Service -[SELECTS_POD]-> Pod"]
+        result = compute_reaq(path, "some answer", relationship_ground_truth, "relationship")
+        assert result["hop_accuracy"] == pytest.approx(0.0)
 
-    def test_namespaced_answer_mentioning_namespace_gets_full_scope(self, deployment_ground_truth):
-        answer = "Deployment berjalan dalam namespace tertentu (Namespaced resource)."
-        result = compute_reaq(["path"], answer, deployment_ground_truth, "conceptual")
-        assert result["scope_accuracy"] == pytest.approx(1.0)
+    def test_hop_accuracy_over_retrieval_not_penalized(self, deployment_ground_truth):
+        # KEY change vs the old count-match: extra edges do NOT lower recall.
+        # GT has 1 edge; path = that edge + 2 extras → recall still 1/1 = 1.0.
+        path = [
+            "Deployment -[HAS_PROPERTY]-> DeploymentSpec",
+            "DeploymentSpec -[HAS_PROPERTY]-> PodTemplateSpec",
+            "Service -[SELECTS_POD]-> Pod",
+        ]
+        result = compute_reaq(path, "some answer", deployment_ground_truth, "conceptual")
+        assert result["hop_accuracy"] == pytest.approx(1.0)
 
-    def test_cluster_answer_mentioning_cluster_gets_full_scope(self, cluster_ground_truth):
-        answer = "ClusterRole berlaku untuk seluruh cluster, tidak terikat namespace."
-        result = compute_reaq([], answer, cluster_ground_truth, "conceptual")
-        assert result["scope_accuracy"] == pytest.approx(1.0)
+    def test_hop_accuracy_case_insensitive(self, deployment_ground_truth):
+        # Formula lowercases+strips before set intersection.
+        path = ["  deployment -[has_property]-> deploymentspec  "]
+        result = compute_reaq(path, "some answer", deployment_ground_truth, "conceptual")
+        assert result["hop_accuracy"] == pytest.approx(1.0)
 
-    def test_wrong_scope_mention_gets_partial_credit(self, deployment_ground_truth):
-        # Answer completely ignores namespace keywords → partial credit (0.5)
-        answer = "This is a generic answer with no scope keywords."
-        result = compute_reaq([], answer, deployment_ground_truth, "conceptual")
-        assert result["scope_accuracy"] == pytest.approx(0.5)
-
-    def test_no_expected_scope_returns_one(self):
-        gt = {
-            "answer": "some answer",
-            "relevant_nodes": [],
-            "expected_path": [],
-            "multi_hop": False,
-            "scope": "",
-        }
+    def test_hop_accuracy_empty_expected_returns_none(self):
+        # B.4: fixtures with empty expected_path (conceptual, yaml_gen) → N/A, NOT 1.0.
+        # These fixture types have no GT traversal path to evaluate hop recall against.
+        gt = {"answer": "", "relevant_nodes": [], "expected_path": [], "multi_hop": False}
         result = compute_reaq([], "some answer", gt, "conceptual")
-        assert result["scope_accuracy"] == pytest.approx(1.0)
+        assert result["hop_accuracy"] is None, (
+            "hop_accuracy must be None for path-empty fixtures, not 1.0 (would inflate average)"
+        )
 
-    # ── reaq_score is average of three components ─────────────────────────────
+    # ── Depth diagnostics (reported, NOT the score) — F3 consumes gt_depth ─────
 
-    def test_reaq_score_is_average_of_three(self, deployment_ground_truth):
-        path = ["Deployment -[HAS_PROPERTY]-> DeploymentSpec"]
-        answer = "Deployment adalah controller yang mengelola resource dalam namespace."
-        result = compute_reaq(path, answer, deployment_ground_truth, "conceptual")
-        expected = (result["hop_accuracy"] + result["multi_hop_success"] + result["scope_accuracy"]) / 3
-        assert result["reaq_score"] == pytest.approx(expected, abs=1e-9)
+    def test_reaq_includes_depth_diagnostics(self, relationship_ground_truth):
+        gt = dict(relationship_ground_truth, gt_depth=3, n_roots=2)
+        result = compute_reaq([], "some answer", gt, "relationship")
+        assert result["gt_depth"]   == 3       # passthrough from fixture
+        assert result["n_roots"]    == 2
+        assert result["depth_gt"]   == 2       # |expected_path| edges
+        assert result["depth_pred"] == 0       # |reasoning_path| edges
+
+    def test_gt_depth_defaults_when_absent(self, deployment_ground_truth):
+        # No gt_depth/n_roots in the fixture → None / 1 (no crash).
+        result = compute_reaq([], "some answer", deployment_ground_truth, "conceptual")
+        assert result["gt_depth"] is None
+        assert result["n_roots"] == 1
+
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -491,42 +430,13 @@ class TestComputeReaq:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 @pytest.mark.evaluation
-class TestWeightedTotal:
+class TestPerFactorConsistency:
     """
-    Verify that the weighted total formula holds for known inputs.
-    This mirrors the calculation done in scripts/evaluate.py:run_evaluation().
+    Cross-dimension sanity: all per-factor scores are in [0,1] and
+    computed independently (no weighted total).
     """
 
-    ANSQ_W = 0.40
-    RETQ_W = 0.35
-    REAQ_W = 0.25
-
-    def _weighted_total(self, ansq_score, retq_score, reaq_score):
-        return ansq_score * self.ANSQ_W + retq_score * self.RETQ_W + reaq_score * self.REAQ_W
-
-    def test_all_perfect_gives_one(self):
-        assert self._weighted_total(1.0, 1.0, 1.0) == pytest.approx(1.0)
-
-    def test_all_zero_gives_zero(self):
-        assert self._weighted_total(0.0, 0.0, 0.0) == pytest.approx(0.0)
-
-    def test_weights_sum_to_one(self):
-        assert self.ANSQ_W + self.RETQ_W + self.REAQ_W == pytest.approx(1.0)
-
-    def test_ansq_dominates_when_others_zero(self):
-        total = self._weighted_total(1.0, 0.0, 0.0)
-        assert total == pytest.approx(self.ANSQ_W)
-
-    def test_retq_dominates_when_others_zero(self):
-        total = self._weighted_total(0.0, 1.0, 0.0)
-        assert total == pytest.approx(self.RETQ_W)
-
-    def test_reaq_dominates_when_others_zero(self):
-        total = self._weighted_total(0.0, 0.0, 1.0)
-        assert total == pytest.approx(self.REAQ_W)
-
-    def test_real_world_scenario(self, deployment_ground_truth):
-        """End-to-end sanity: a decent answer on a simple conceptual question."""
+    def test_all_scores_bounded(self, deployment_ground_truth):
         answer = "Deployment adalah controller yang mengelola ReplicaSet dalam namespace."
         path = ["Deployment -[HAS_PROPERTY]-> DeploymentSpec"]
 
@@ -534,8 +444,22 @@ class TestWeightedTotal:
         retq = compute_retq(path, deployment_ground_truth)
         reaq = compute_reaq(path, answer, deployment_ground_truth, "conceptual")
 
-        total = self._weighted_total(ansq["ansq_score"], retq["retq_score"], reaq["reaq_score"])
-        assert 0.0 <= total <= 1.0
+        assert 0.0 <= ansq["ansq_score"] <= 1.0
+        assert 0.0 <= retq["retq_score"] <= 1.0
+        # reaq_score = None (placeholder; filled by RAGAS join). hop_accuracy is the diagnostic.
+        assert reaq["reaq_score"] is None
+        if reaq["hop_accuracy"] is not None:
+            assert 0.0 <= reaq["hop_accuracy"] <= 1.0
+
+    def test_no_total_score_key(self, deployment_ground_truth):
+        """Weighted total must NOT be returned from any compute_* function."""
+        answer = "some answer"
+        path = ["Deployment -[HAS_PROPERTY]-> DeploymentSpec"]
+        ansq = compute_ansq(answer, deployment_ground_truth, "conceptual")
+        retq = compute_retq(path, deployment_ground_truth)
+        reaq = compute_reaq(path, answer, deployment_ground_truth, "conceptual")
+        for d in (ansq, retq, reaq):
+            assert "total_score" not in d, "total_score should not appear in metric dicts"
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -585,7 +509,10 @@ class TestFixtureDataIntegrity:
 
         assert 0.0 <= ansq["ansq_score"] <= 1.0
         assert 0.0 <= retq["retq_score"] <= 1.0
-        assert 0.0 <= reaq["reaq_score"] <= 1.0
+        # reaq_score is None (placeholder); hop_accuracy may be None for path-empty fixtures
+        assert reaq["reaq_score"] is None
+        if reaq["hop_accuracy"] is not None:
+            assert 0.0 <= reaq["hop_accuracy"] <= 1.0
 
     def test_metrics_dont_raise_on_perfect_answer(self, fixture_path):
         """Metric functions must be robust when given the ground truth answer verbatim."""
@@ -602,7 +529,9 @@ class TestFixtureDataIntegrity:
 
         assert 0.0 <= ansq["ansq_score"] <= 1.0
         assert 0.0 <= retq["retq_score"] <= 1.0
-        assert 0.0 <= reaq["reaq_score"] <= 1.0
+        assert reaq["reaq_score"] is None
+        if reaq["hop_accuracy"] is not None:
+            assert 0.0 <= reaq["hop_accuracy"] <= 1.0
 
     def test_multi_hop_flag_matches_expected_path_length(self, fixture_path):
         """
@@ -739,8 +668,6 @@ class TestRealworldFixtures:
         """Metric functions must handle realworld type without raising."""
         for data in self._load_realworld():
             gt = data["ground_truth"]
-            # realworld maps to the sub-type closest to its content;
-            # for metric purposes we treat it as "conceptual" (safest default)
             ftype = "conceptual"
             perfect = gt["answer"]
             path = gt.get("expected_path", [])
@@ -751,7 +678,9 @@ class TestRealworldFixtures:
 
             assert 0.0 <= ansq["ansq_score"] <= 1.0
             assert 0.0 <= retq["retq_score"] <= 1.0
-            assert 0.0 <= reaq["reaq_score"] <= 1.0
+            assert reaq["reaq_score"] is None
+            if reaq["hop_accuracy"] is not None:
+                assert 0.0 <= reaq["hop_accuracy"] <= 1.0
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

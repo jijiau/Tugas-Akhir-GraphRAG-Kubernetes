@@ -13,16 +13,141 @@
 | 3 | Re-run evaluasi penuh | ✅ DONE (2026-06-14) | `phases/FASE_3.md` | `_final` CSV baru, 13 figur, stat-test, boundary |
 | 4 | Update angka + Bab VI evaluasi | 🔶 IN-PROGRESS (Bab VI ✅) | `phases/FASE_4.md` | Bab VI rewrite selesai; Bab II metrik belum |
 | 5 | Alignment Bab I & konsistensi | ✅ DONE (2026-06-28) | `phases/FASE_5.md` | Bab VII/Abstrak/tabel23/Bab V/Bab VI figur/Daftar Singkatan/Lampiran-C |
-| 6 | Audit bahasa | ⬜ TODO | `phases/FASE_6.md` | `language_violations.md` |
-| 7 | Whitespace & keterbacaan PDF | ⬜ TODO | `phases/FASE_7.md` | — |
-| 8 | Compile final & verifikasi | ⬜ TODO | `phases/FASE_8.md` | — |
+| 6 | Audit bahasa | ✅ DONE (2026-06-28) | `phases/FASE_6.md` | `language_violations.md` |
+| 7 | Whitespace & keterbacaan PDF | ✅ DONE (2026-07-07) | `phases/FASE_7.md` | — |
+| 8 | Compile final & verifikasi | ✅ DONE (2026-07-07) | `phases/FASE_8.md` | `mock_defense.md`, `verify_thesis_numbers.py` |
 
 Legend: ✅ done · 🔶 in-progress · ⬜ todo
 
 ## Urutan disarankan
 0 → **2** → **1** → 3 → 4 → 5 → 6 → 7 → 8. (Urutan dikoreksi: Fase 2 dulu, lalu Fase 1). Fase 1 & 2 sama-sama prasyarat Fase 3 (re-run). Fase 4–7 setelah angka final stabil.
 
+**AUDIT E2E SELESAI (Fase 0–8 semua DONE) per 2026-07-07.**
+
 ## Handoff notes (terbaru di atas)
+
+### 2026-07-07 — Fase 8 selesai: compile final & verifikasi (FASE PENUTUP AUDIT E2E)
+
+**Urutan eksekusi:** Pilar A (compile) → Pilar B (cross-check) → Pilar C (mock penguji),
+gerbang berjenjang — C baru dimulai setelah A+B pass; setiap temuan B yang dikonfirmasi
+sebagai defect nyata di-fix lalu loop-back ke A. Pilar D (temuan git) di luar gerbang, murni
+pelaporan. Detail lengkap: `phases/FASE_8.md`, `mock_defense.md`.
+
+**Pilar A — Compile:** 192 halaman, exit 0, 0 fatal, 0 undefined ref/citation (stabil,
+identik baseline Fase 7). PATH scrub perlu 2 entri sekarang (`supabase` + `heroku-x64.exe`
+baru ditemukan). Koreksi memory: frontmatter pakai romawi (bukan "arabic kontinu" seperti
+tercatat sebelumnya) — `reference_latex_compile.md` diperbarui.
+
+**Temuan A-1 (KRITIS, FIXED):** entri bibliografi `gu_2024` (MidMed, paper dialog medis —
+sudah ditolak Charter sejak Fase 0/1) masih tersitasi di `Bab II - Studi.tex:282` untuk
+definisi Hop-Accuracy (seharusnya `manning_ir_2008`, seperti 4 lokasi lain yang memakai
+rumus identik) — 1 instance terlewat saat penggantian sitasi massal dulu. Konsekuensi lebih
+serius: field `note={}` di `.bib` berisi catatan editorial internal ("confirm full citation
+from Ma et al...") yang **tercetak verbatim di Daftar Pustaka PDF final** (gaya
+chicago-authordate merender `note` apa adanya). Fix: Bab II §282 diganti ke
+`manning_ir_2008`; entri `gu_2024` dihapus dari `.bib`. Recompile bersih, verifikasi visual
+render PNG mengonfirmasi entri hilang total dari Daftar Pustaka.
+
+**Pilar B — Cross-check:** `scripts/verify_thesis_numbers.py` (baru, ad hoc, tidak
+di-commit) memverifikasi 63 klaim numerik (headline AnsQ/RetQ/Faithfulness/HopAcc per
+sistem, depth sensitivity d=1/3/4/5, ablation A1–A7, boundary gain per kategori + Spearman,
+fixture counts) terhadap CSV sumber. **Hasil akhir: 63/63 MATCH** setelah 2 iterasi (2 bug
+skrip-sendiri dikoreksi: kolom stratifikasi HopAcc yang salah — `depth_gt` bukan `gt_depth`;
+filter Spearman degree yang tak mengecualikan `graph_degree=0` sesuai
+`boundary_condition.py:366`).
+
+**Temuan B-2 (KRITIS, FIXED):** `tables/tabel32.tex:23`, kolom ΔHopAcc ablasi A5 tercetak
+`−0,0037`, padahal HopAcc absolut A5 (0,7599, benar) > baseline (0,7562, benar) — delta
+secara matematis harus positif. Diverifikasi 3 jalur independen presisi penuh atas
+permintaan user (pandas/numpy/manual): A5−Baseline = +0,0036956696 → **+0,0037**. Kontrol
+silang A4 (skenario sama, tercetak benar +0,1445) mengonfirmasi anomali eksklusif di A5.
+Fix diterapkan + footnote formula tabel32 (baris 32) diperbaiki dari "Baseline−Ablasi" yang
+terbalik ke "Ablasi−Baseline" (label saja, sudah cocok dengan 20 sel lain). Tidak ada
+narasi Bab VI/VII yang perlu diubah (hanya membahas ΔRetQ A5, tidak pernah mengklaim arah
+ΔHopAcc).
+
+**Verifikasi struktural tambahan:** 18 tipe edge dihitung ulang langsung dari
+`src/graph/queries.py` (bukan hanya cross-check LaTeX-ke-LaTeX) — cocok persis.
+
+**Pilar C — Mock penguji:** `mock_defense.md`, 5 tema dibobot ke domain/konseptual (arahan
+user: penguji STI, bukan CS murni) — judul & scope, domain Kubernetes, konsep GraphRAG,
+audit sitasi (27 entri `.bib` dibaca penuh — kredibel, 1 orphan `li_cotrag_2025` tak
+berdampak PDF karena biblatex citation-driven, tidak digate sebagai fix wajib), kontribusi
+& positioning. Titik lemah paling perlu latihan lisan: T3.2 (14/18 edge hand-coded — jangan
+klaim "auto-derived") dan T1.1 (RetQ headline GT-sensitive, arah kokoh tapi magnitudo
+GT-dependent).
+
+**Pilar D — Temuan git (flag saja, keputusan user: tidak disentuh):** working tree masih
+besar sejak commit `8a46a21` (2026-07-07 sesi ke-2) — 164 modified + 89 untracked + 2
+deleted, termasuk LaTeX Fase 7+8, `evaluate.py`, dan **semua CSV `_final` sumber angka
+tesis** (`eval_results_graphrag_final.csv` dkk.) masih untracked. File baru sesi ini:
+`FASE_8.md`, `mock_defense.md`, `verify_thesis_numbers.py` (juga untracked). Tidak ada
+operasi git dilakukan — commit adalah keputusan terpisah milik user.
+
+**Status Audit E2E: SEMUA FASE (0–8) SELESAI.** Next: user memutuskan strategi commit/push,
+lalu latihan lisan mock_defense.md sebelum sidang.
+
+### 2026-07-07 — Fase 7 selesai: whitespace & keterbacaan PDF
+
+**Cakupan:** perbaikan lokal murni tata letak (overflow margin, penempatan float, header "(lanjutan)"). Nol perubahan konten/angka/klaim — diverifikasi via `git diff` per-file (setiap baris berubah hanya berupa `\allowbreak`/`\slash`/`sloppypar`/lebar kolom/spesifier float).
+
+**Jalur A+C (overflow tabel/listing + header lanjutan):** atribusi log `Overfull \hbox` >10pt dari 111 → 13 kasus tersisa (semua overfull dari 242 → 96 total). Root cause dominan: identifier/path teknis panjang (`\texttt{}`/`\textit{}` dengan `_` atau `/`) yang tidak punya titik potong bawaan LaTeX, dan dua kasus lebar kolom tabel melebihi textwidth efektif. Fix: `\allowbreak{}` setelah underscore/hyphen bermakna, `\slash` untuk "/", pelebaran/penyempitan kolom `p{}`, `sloppypar` untuk paragraf yang tetap overflow meski sudah ada titik potong (kasus Knuth-Plass memilih overflow atas alternatif lain). File tersentuh: `13/14 Daftar Simbol/Singkatan`, `4 Pernyataan Penggunaan AI`, `5 Abstrak`, `Bab II/III/V/VI`, `Lampiran-B/C/Data`, `tables/tabel33.tex`, `tables/tabel33b.tex`. `Lampiran-Data.tex` (tabel edge-schema) dilengkapi header "(lanjutan)" yang sebelumnya hilang (satu-satunya longtable multi-halaman tanpa itu; Daftar Simbol/Singkatan diverifikasi muat 1 halaman, tak perlu).
+
+**13 residual overflow TIDAK diperbaiki** (didokumentasikan, bukan diabaikan diam-diam): 5 di daftar pustaka (biblatex, `TA.tex` read-only mencegah fix bersih + edit `.bib` untuk alasan tipografi dianggap berisiko tanpa konfirmasi terpisah), 3 caption di List-of-Figures/Tables/Listings (lebar kolom daftar diatur `TA.tex`, read-only), 2+2 artefak "blank content" di `tabel27.tex`/`tabel29b.tex`/`Lampiran-E.tex` (rounding batas tabel, tak berdampak visual).
+
+**Jalur B (gap whitespace dari float `[H]`):** inspeksi visual ~90/192 halaman (render via `pdftoppm` bundel MiKTeX, bukan poppler — catatan lama soal "tak perlu poppler" ternyata keliru untuk environment ini). Cakupan penuh Bab IV–VI (paling padat figur/tabel) + sampel Bab II/III. 5 kandidat gap ditemukan dan diajukan ke user; **hanya 1 disetujui** (Gambar IV.5 `Seq-High.png`, `Bab IV - Perancangan.tex:289`, `[H]`→`[htbp]`). Efek samping: gap kedua (Tabel IV.5) yang tadinya diusulkan terpisah ikut hilang otomatis dari reflow satu perubahan itu — dikonfirmasi via render ulang. 3 kandidat lain (Tabel VI.3/VI.8, Gambar VI.6) sengaja TIDAK diubah atas keputusan user.
+
+**Item ke-6 susulan (ditemukan user setelah laporan awal, DIBATALKAN):** halaman 59 (tercetak) gap ~55% — sudah teridentifikasi saat inspeksi visual awal tapi kelewat masuk ke tabel 5-kandidat (oversight rangkuman). Root cause sama: Gambar V.2 (`Pass1.png`, `Bab V - Implementasi.tex:46`) terdorong ke halaman berikutnya. Diajukan → disetujui → `[H]`→`[htbp]` diterapkan → gap hilang, **TAPI memunculkan regresi**: Tabel V.2 (`tabel-kategori-edge.tex`, `table[H]` biasa, tak bisa pecah halaman) yang mengikuti kehabisan ruang dan overflow melewati margin bawah (nomor halaman tertindih teks, baris terakhir terpotong — dikonfirmasi via render PNG). User diberi pilihan (ubah tabel itu juga ke `[htbp]`, atau revert) → **user pilih revert**. Gambar V.2 dikembalikan ke `[H]` (bersih, nol diff net). Gap halaman 59 diterima sebagai residual (sama seperti item #3–5) demi menghindari risiko regresi lanjutan.
+
+**Hasil compile akhir:** 192 halaman, exit 0, nol `! ` fatal, nol regresi konten. Net: hanya item #1 (Gambar IV.5) yang benar-benar diterapkan dari Jalur B; item #2 ikut membaik sebagai efek samping; item #3–6 dibiarkan `[H]` (3 atas keputusan user, 1 karena revert setelah regresi).
+
+**Next: Fase 8** (compile final & verifikasi — xelatex→biber→xelatex→xelatex, mock penguji, cross-check angka tesis vs CSV final).
+
+### 2026-06-28 — Tracing konsistensi lintas-bab (pra-Fase 7)
+
+**Cakupan:** Bab I–VII, tabel, listings → cross-check angka ke CSV ground-truth + konsistensi antar-bab + kesesuaian klaim dengan kode.
+
+**Temuan:** 4 MISMATCH (fix diterapkan), 1 CLARIFY (diputuskan: pertahankan), 34 CONSISTENT.
+
+**Fix diterapkan:**
+- G1 (tabel-depth.tex): AnsQ d=1 0,7602→0,7815; d=4 0,7548→0,7828; d=5 0,7611→0,7817 (sumber: `eval_results_depth_{1,4,5}.csv`)
+- G2 (Bab V §38): +1 kalimat penjelas gap 730→725 node (5 tipe utilitas apimachinery di IGNORE_LIST: FieldsV1, OwnerReference, Patch, StatusCause, Info)
+- G3 (Bab I §61): `\textit{follow-up}` → `\textit{followup}` (konsisten dengan kode + semua bab lain)
+
+**CLARIFY diputuskan:** Faithfulness 0,3055 (n=95) dipertahankan — nilai saat komputasi dilakukan; perbedaan 0.0016 dari CSV saat ini tidak material.
+
+**Angka headline semua terverifikasi CONSISTENT** (RetQ 0,7089; AnsQ 0,8031; HopAcc 0,7562/0,9086/0,5791; ablation A1–A7; boundary; Spearman ρ).
+
+**Artefak:** `docs/AUDIT_E2E/consistency_trace.md`
+
+**Next: Fase 7** (whitespace & keterbacaan PDF).
+
+---
+
+### 2026-06-28 — Fase 6 selesai: audit bahasa
+
+**Cakupan:** Bab I–VII, Abstrak, Daftar Singkatan/Simbol, frontmatter prosa, tables/*.tex, listings/*.tex. Lampiran dikecualikan.
+
+**Total temuan & fix (per file):**
+- Abstrak: 2 fix (skalar→nilai atribut ×2)
+- Bab I: minor (versi v1.30 alignment, dari Fase 5)
+- Bab II: 6 fix (II1–II6: sehingga/tetapi/antar-Pod/subjek/hallucination/presisi)
+- Bab III: 8 fix (III1–III8: yaitu/spasi URL/bisa→dapat/duplikat/redundan/per-empat-bulan/spasi-sebelum-titik-dua)
+- Bab IV: 4 fix (IV1–IV4: CRISP-DM/mencerminkan/dua arah/misalnya)
+- Bab V: 1 fix (V1: swagger.json + v1.30); spasi `\texttt{}` panjang dikecualikan (intentional)
+- Bab VI: 11 fix (VI1–VI11: em-dash ×7/inheren/urutan prosa/DAN→dan/mengonfirmasi ×3)
+- Bab VII: 7 fix (VII1,VII3–VII8: swagger.json/klaster/diekspektasikan/field italic/sehingga/mengonfirmasi/antarversi)
+- Daftar Simbol: 1 fix (antarsistem)
+- Daftar Singkatan: bersih
+- Frontmatter prosa (Kata Pengantar, Orisinalitas, Penggunaan AI, Lembar Pengesahan): bersih
+- tables/: 7 fix (T1–T7: sehingga ×5/antarobjek/em-dash→karena di footnote tabel36)
+- listings/: bersih (no captions in files)
+
+**Kelas pelanggaran dominan:** B.3 (koma sebelum sehingga), C4 (em-dash), EYD antar- serangkai, mengkonfirmasi→mengonfirmasi, klaster/inheren ejaan.
+
+**Guardrail:** nol perubahan angka, nol perubahan klaim teknis — dikonfirmasi per-temuan.
+
+**Next: Fase 7** (whitespace & keterbacaan PDF) atau langsung Fase 8 (compile final).
 
 ### 2026-06-28 — Fase 5 selesai: alignment lintas dokumen
 

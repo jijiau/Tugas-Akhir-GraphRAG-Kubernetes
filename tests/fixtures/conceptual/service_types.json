@@ -1,19 +1,20 @@
 {
   "id": "service_types",
   "type": "conceptual",
-  "question": "Kapan sebaiknya menggunakan Service tipe LoadBalancer dibanding Ingress untuk expose aplikasi ke internet? Apa perbedaan dan trade-off-nya?",
+  "question": "What values does the type field in ServiceSpec accept, and how does an Ingress differ from a Service in handling external HTTP traffic?",
   "resource": "io.k8s.api.core.v1.Service",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
-    "answer": "LoadBalancer membuat satu cloud load balancer per Service — cocok untuk satu service yang butuh IP publik sendiri, tapi mahal jika ada banyak service karena setiap service membayar satu load balancer. Ingress menggunakan satu load balancer untuk banyak service sekaligus dengan routing berbasis host atau path, jauh lebih hemat biaya. Gunakan LoadBalancer jika service membutuhkan protokol non-HTTP (seperti TCP/UDP) atau butuh IP publik dedicated. Gunakan Ingress untuk aplikasi web HTTP/HTTPS dengan banyak service di belakang satu domain.",
+    "answer": "The type field in ServiceSpec controls how a Service is exposed. ClusterIP (the default) makes the Service reachable only within the cluster. NodePort additionally opens a static port on every Node. LoadBalancer provisions a cloud load balancer and assigns an external IP (available in cloud environments). ExternalName maps the Service to an external DNS name. An Ingress, defined in IngressSpec, is a separate resource type that manages HTTP and HTTPS routing at layer 7, multiplexing multiple Services under a single IP or hostname using IngressRule entries. Unlike a Service of type LoadBalancer (one external IP per Service), a single Ingress can route to many Services based on hostname or path.",
     "context": [
-      "io.k8s.api.core.v1.ServiceSpec: type field menentukan cara Service di-expose — ClusterIP, NodePort, LoadBalancer, ExternalName",
-      "io.k8s.api.networking.v1.Ingress: mengelola akses HTTP/HTTPS eksternal ke banyak Service sekaligus dengan path-based routing",
-      "io.k8s.api.networking.v1.IngressRule: routing rules berdasarkan hostname dan HTTP path"
+      "io.k8s.api.core.v1.ServiceSpec: type field accepts ClusterIP, NodePort, LoadBalancer, or ExternalName to control Service exposure",
+      "io.k8s.api.networking.v1.IngressSpec: defines HTTP/HTTPS routing rules; multiplexes many Services under one entrypoint via IngressRule entries",
+      "io.k8s.api.networking.v1.IngressRule: routes requests by hostname and HTTP path to a specific Service backend"
     ],
     "relevant_nodes": [
       "io.k8s.api.core.v1.LoadBalancerStatus",
+      "io.k8s.api.core.v1.Node",
       "io.k8s.api.core.v1.Pod",
       "io.k8s.api.core.v1.PodSpec",
       "io.k8s.api.core.v1.PodStatus",
@@ -28,8 +29,6 @@
       "io.k8s.apimachinery.pkg.apis.meta.v1.Condition"
     ],
     "expected_path": [
-      "Ingress -[HAS_PROPERTY]-> IngressSpec",
-      "IngressSpec -[HAS_PROPERTY]-> IngressRule",
       "Pod -[EXTENDS]-> PodSpec",
       "Pod -[HAS_PROPERTY]-> PodSpec",
       "Pod -[HAS_PROPERTY]-> PodStatus",
@@ -44,10 +43,17 @@
     "required_fields": [],
     "expected_yaml_keys": [],
     "key_nodes": [
+      "io.k8s.api.core.v1.Node",
       "io.k8s.api.core.v1.Service",
-      "io.k8s.api.core.v1.ServiceSpec"
-    ]
+      "io.k8s.api.core.v1.ServiceSpec",
+      "io.k8s.api.networking.v1.Ingress",
+      "io.k8s.api.networking.v1.IngressRule",
+      "io.k8s.api.networking.v1.IngressSpec"
+    ],
+    "gt_depth": 2,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/services-networking/service/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

@@ -1,0 +1,34 @@
+{
+  "id": "volume_mount_concept",
+  "type": "conceptual",
+  "question": "What fields does VolumeMount define to control how a Volume is attached inside a Container?",
+  "resource": "io.k8s.api.core.v1.VolumeMount",
+  "scope": "Namespaced",
+  "multi_hop": false,
+  "lang": "en",
+  "ground_truth": {
+    "answer": "VolumeMount connects a named Volume (declared in PodSpec.volumes) into a Container. Required: name must match a Volume.name in the same Pod; mountPath is the absolute path inside the container. Optional: readOnly (boolean, default false); subPath mounts a specific subdirectory of the volume instead of its root; subPathExpr is like subPath but supports $(ENV_VAR) expansion via the downward API; mountPropagation controls mount propagation: None (default, no propagation), HostToContainer (host mounts become visible inside the container), Bidirectional (container mounts also propagate to the host).",
+    "context": [
+      "io.k8s.api.core.v1.VolumeMount: mounts a named Volume into a Container; name and mountPath are required; readOnly, subPath, subPathExpr, and mountPropagation are optional"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.PodSpec",
+      "io.k8s.api.core.v1.Volume",
+      "io.k8s.api.core.v1.VolumeMount"
+    ],
+    "expected_path": [],
+    "key_nodes": [
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.PodSpec",
+      "io.k8s.api.core.v1.Volume",
+      "io.k8s.api.core.v1.VolumeMount"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": [],
+    "gt_depth": 2,
+    "n_roots": 1
+  },
+  "source_reference": "https://kubernetes.io/docs/reference/kubernetes-api/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

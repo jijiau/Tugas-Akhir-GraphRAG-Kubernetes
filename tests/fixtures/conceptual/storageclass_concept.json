@@ -1,22 +1,21 @@
 {
   "id": "storageclass_concept",
   "type": "conceptual",
-  "question": "Apa itu StorageClass dan bagaimana perannya dalam dynamic provisioning?",
+  "question": "What does a StorageClass define in Kubernetes, and what fields describe its provisioning behavior?",
   "resource": "io.k8s.storage.v1.StorageClass",
   "scope": "Cluster",
   "multi_hop": false,
   "ground_truth": {
-    "answer": "StorageClass adalah resource cluster-scoped yang mendefinisikan 'class' penyimpanan yang ditawarkan oleh administrator. Setiap StorageClass memiliki provisioner (misalnya kubernetes.io/aws-ebs), parameters, dan reclaimPolicy. Ketika PVC dibuat dengan storageClassName tertentu, StorageClass menginstruksikan provisioner untuk membuat PersistentVolume secara otomatis (dynamic provisioning). StorageClass adalah resource tingkat cluster — tidak terikat ke namespace.",
+    "answer": "A StorageClass is a cluster-scoped resource that describes a class of storage available in the cluster, enabling dynamic provisioning of PersistentVolumes. The provisioner field identifies the volume plugin responsible for creating the storage (for example, a cloud provider block storage driver). The parameters field is a string map passed to the provisioner to configure storage-specific behavior such as disk type or IOPS tier. The reclaimPolicy field specifies what happens to a dynamically provisioned PV when its PersistentVolumeClaim is deleted (Retain or Delete). When a PVC names a StorageClass in its storageClassName field, Kubernetes uses that StorageClass to provision a matching PV automatically.",
     "context": [
-      "StorageClass: describes the parameters for a class of storage for which PersistentVolumes can be dynamically provisioned",
-      "provisioner: indicates the type of provisioner"
+      "io.k8s.api.storage.v1.StorageClass: cluster-scoped resource describing storage parameters for dynamic PersistentVolume provisioning",
+      "io.k8s.api.storage.v1.StorageClass: provisioner field identifies the volume plugin; parameters is a string map for provisioner-specific config; reclaimPolicy controls PV lifecycle after PVC deletion"
     ],
     "relevant_nodes": [
       "io.k8s.api.core.v1.PersistentVolumeClaim",
       "io.k8s.api.core.v1.TopologySelectorLabelRequirement",
       "io.k8s.api.core.v1.TopologySelectorTerm",
-      "io.k8s.api.storage.v1.StorageClass",
-      "io.k8s.storage.v1.StorageClass"
+      "io.k8s.api.storage.v1.StorageClass"
     ],
     "expected_path": [
       "StorageClass -[HAS_PROPERTY]-> TopologySelectorTerm",
@@ -25,10 +24,13 @@
     "required_fields": [],
     "expected_yaml_keys": [],
     "key_nodes": [
-      "io.k8s.storage.v1.StorageClass",
-      "io.k8s.api.core.v1.PersistentVolumeClaim"
-    ]
+      "io.k8s.api.core.v1.PersistentVolumeClaim",
+      "io.k8s.api.storage.v1.StorageClass"
+    ],
+    "gt_depth": 2,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/storage/storage-classes/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/",
+  "lang": "en"
 }

@@ -1,15 +1,16 @@
 {
   "id": "required_fields_container",
   "type": "conceptual",
-  "question": "Field apa yang wajib (required) ada saat mendefinisikan Container di dalam PodSpec?",
+  "question": "What is the only required field when defining a Container inside a PodSpec, and what does the Container schema allow optionally?",
   "resource": "io.k8s.api.core.v1.Container",
   "scope": "Namespaced",
   "multi_hop": false,
   "ground_truth": {
-    "answer": "Berdasarkan Kubernetes API definition graph, satu-satunya field yang ditandai is_required=true pada Container adalah 'name'. Field lain seperti image, ports, env, resources, volumeMounts bersifat opsional menurut API spec — meskipun image sangat dianjurkan. Ini adalah pengetahuan struktural yang hanya bisa diperoleh dari graph traversal pada edge HAS_PROPERTY {is_required: true}, bukan dari generalisasi LLM.",
+    "answer": "Based on the Kubernetes API definition, the name field is the only field marked as required on a Container. All other fields are optional: image (the container image to run), ports (a list of ContainerPort objects declaring listened ports), env and envFrom (environment variable injection), resources (a ResourceRequirements object for CPU and memory allocation), volumeMounts (a list of VolumeMount objects), livenessProbe and readinessProbe (Probe objects for health checking), and lifecycle (a Lifecycle object for preStop/postStart hooks). Only name is strictly required by the API schema.",
     "context": [
-      "Container: a single application container — 'name' is the only required field per API spec",
-      "HAS_PROPERTY edge with is_required=true marks mandatory fields in the knowledge graph"
+      "io.k8s.api.core.v1.Container: defines a single application container; name is the only required field per the API schema",
+      "io.k8s.api.core.v1.ResourceRequirements: optional resources field on Container defining CPU and memory requests and limits",
+      "io.k8s.api.core.v1.Probe: optional livenessProbe, readinessProbe, and startupProbe fields on Container for health checking"
     ],
     "relevant_nodes": [
       "io.k8s.api.core.v1.AppArmorProfile",
@@ -29,9 +30,7 @@
       "io.k8s.api.core.v1.HTTPGetAction",
       "io.k8s.api.core.v1.Lifecycle",
       "io.k8s.api.core.v1.LifecycleHandler",
-      "io.k8s.api.core.v1.PodSpec",
       "io.k8s.api.core.v1.Probe",
-      "io.k8s.api.core.v1.ResourceClaim",
       "io.k8s.api.core.v1.ResourceRequirements",
       "io.k8s.api.core.v1.SELinuxOptions",
       "io.k8s.api.core.v1.SeccompProfile",
@@ -41,6 +40,7 @@
       "io.k8s.api.core.v1.VolumeDevice",
       "io.k8s.api.core.v1.VolumeMount",
       "io.k8s.api.core.v1.WindowsSecurityContextOptions",
+      "io.k8s.api.resource.v1.ResourceClaim",
       "io.k8s.apimachinery.pkg.api.resource.Quantity"
     ],
     "expected_path": [
@@ -79,9 +79,16 @@
     "expected_yaml_keys": [],
     "key_nodes": [
       "io.k8s.api.core.v1.Container",
-      "io.k8s.api.core.v1.PodSpec"
-    ]
+      "io.k8s.api.core.v1.ContainerPort",
+      "io.k8s.api.core.v1.Lifecycle",
+      "io.k8s.api.core.v1.Probe",
+      "io.k8s.api.core.v1.ResourceRequirements",
+      "io.k8s.api.core.v1.VolumeMount"
+    ],
+    "gt_depth": 2,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#Container",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

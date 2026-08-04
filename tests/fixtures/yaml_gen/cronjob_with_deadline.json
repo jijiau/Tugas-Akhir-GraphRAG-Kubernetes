@@ -1,0 +1,60 @@
+{
+  "id": "cronjob_with_deadline",
+  "type": "yaml_gen",
+  "question": "Create a Kubernetes CronJob YAML that runs daily at 02:00, with a starting deadline of 300 seconds, retaining 3 successful and 1 failed job histories.",
+  "resource": "io.k8s.api.batch.v1.CronJob",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "lang": "en",
+  "ground_truth": {
+    "answer": "apiVersion: batch/v1\nkind: CronJob\nmetadata:\n  name: daily-report\nspec:\n  schedule: \"0 2 * * *\"\n  startingDeadlineSeconds: 300\n  successfulJobsHistoryLimit: 3\n  failedJobsHistoryLimit: 1\n  jobTemplate:\n    spec:\n      template:\n        spec:\n          restartPolicy: OnFailure\n          containers:\n          - name: reporter\n            image: report-tool:latest",
+    "context": [
+      "io.k8s.api.batch.v1.CronJob: runs Jobs on a schedule; spec is CronJobSpec",
+      "io.k8s.api.batch.v1.CronJobSpec: schedule (cron expression), startingDeadlineSeconds (seconds after missed schedule to still start), successfulJobsHistoryLimit and failedJobsHistoryLimit (retained Job counts), and jobTemplate (JobTemplateSpec) are key fields"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.batch.v1.CronJob",
+      "io.k8s.api.batch.v1.CronJobSpec",
+      "io.k8s.api.batch.v1.CronJobStatus",
+      "io.k8s.api.batch.v1.JobSpec",
+      "io.k8s.api.batch.v1.JobTemplateSpec",
+      "io.k8s.api.batch.v1.PodFailurePolicy",
+      "io.k8s.api.batch.v1.SuccessPolicy",
+      "io.k8s.api.core.v1.ObjectReference",
+      "io.k8s.api.core.v1.PodTemplateSpec",
+      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
+    ],
+    "expected_path": [
+      "CronJob -[CONTAINS_JOB_TEMPLATE]-> JobTemplateSpec",
+      "CronJob -[HAS_PROPERTY]-> CronJobSpec",
+      "CronJob -[HAS_PROPERTY]-> CronJobStatus",
+      "CronJobSpec -[HAS_PROPERTY]-> JobTemplateSpec",
+      "CronJobStatus -[HAS_PROPERTY]-> ObjectReference",
+      "JobSpec -[HAS_PROPERTY]-> LabelSelector",
+      "JobSpec -[HAS_PROPERTY]-> PodFailurePolicy",
+      "JobSpec -[HAS_PROPERTY]-> PodTemplateSpec",
+      "JobSpec -[HAS_PROPERTY]-> SuccessPolicy",
+      "JobTemplateSpec -[HAS_PROPERTY]-> JobSpec"
+    ],
+    "key_nodes": [
+      "io.k8s.api.batch.v1.CronJob",
+      "io.k8s.api.batch.v1.CronJobSpec"
+    ],
+    "required_fields": [
+      "apiVersion",
+      "kind",
+      "metadata",
+      "spec"
+    ],
+    "expected_yaml_keys": [
+      "spec.schedule",
+      "spec.startingDeadlineSeconds",
+      "spec.successfulJobsHistoryLimit",
+      "spec.jobTemplate"
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
+  },
+  "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

@@ -1,0 +1,4 @@
+mode,n,ragas_faithfulness_mean,ragas_answer_relevancy_mean,ragas_context_precision_mean,ragas_context_recall_mean,reaq_hop_accuracy_corrected_mean,ragas_faithfulness_n,ragas_answer_relevancy_n,ragas_context_precision_n,ragas_context_recall_n,reaq_hop_accuracy_corrected_n
+graphrag,97,0.21253636363636358,0.5118435670103093,0.31689100000000003,0.3799214845360825,0.638889952975339,88,97,97,97,90
+vector,97,0.15505398305084747,0.6847550219780218,0.3210405333333334,0.382626912087912,,59,91,90,91,0
+llm,97,,0.6608265360824744,,,,0,97,0,0,0

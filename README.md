@@ -244,8 +244,10 @@ python scripts/validate_dataset.py --skip-neo4j  # offline mode
 
 Three modes via `--mode` flag:
 - `llm` — GPT-4o-mini only, no retrieval
-- `vector` — `GraphRetriever.search_knowledge()` (cosine similarity only)
+- `vector` — pure dense top-k vector retrieval via `SIMPLE_VECTOR_QUERY` (k=5, no graph expansion); see `docs/AUDIT_E2E/topk_selection.md`
 - `graphrag` — full `create_agent_graph()` pipeline with multi-hop
+
+> **Note:** `run_baseline.py` uses `GraphRetriever.search_knowledge()` (k=3) for interactive testing only. The evaluation pipeline (`scripts/evaluate.py`) uses a separate `SIMPLE_VECTOR_QUERY` path (k=5, pure dense). These are distinct — see `docs/AUDIT_E2E/topk_selection.md` for details.
 
 ## Infrastructure
 

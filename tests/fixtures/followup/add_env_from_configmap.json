@@ -1,17 +1,17 @@
 {
   "id": "add_env_from_configmap",
   "type": "followup",
-  "context_question": "Buat YAML Deployment nginx",
-  "question": "Sekarang tambahkan environment variable DB_HOST yang nilainya diambil dari key database-host di ConfigMap bernama app-config",
+  "context_question": "Create a YAML Deployment for nginx",
+  "question": "Now add an environment variable DB_HOST whose value is taken from the key database-host in the ConfigMap named app-config",
   "resource": "io.k8s.api.apps.v1.Deployment",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
-    "answer": "Tambahkan env pada container spec dengan configMapKeyRef:\n```yaml\nspec:\n  template:\n    spec:\n      containers:\n      - name: app\n        env:\n        - name: DB_HOST\n          valueFrom:\n            configMapKeyRef:\n              name: app-config\n              key: database-host\n```",
+    "answer": "Add an env entry to the container spec using configMapKeyRef:\n```yaml\nspec:\n  template:\n    spec:\n      containers:\n      - name: app\n        env:\n        - name: DB_HOST\n          valueFrom:\n            configMapKeyRef:\n              name: app-config\n              key: database-host\n```",
     "context": [
-      "io.k8s.api.core.v1.EnvVar: environment variable yang di-inject ke container",
-      "io.k8s.api.core.v1.EnvVarSource: sumber nilai env var — bisa dari ConfigMap, Secret, atau field Pod",
-      "io.k8s.api.core.v1.ConfigMapKeySelector: referensi ke key tertentu dalam sebuah ConfigMap"
+      "io.k8s.api.core.v1.EnvVar: environment variable injected into a container; name is required, value or valueFrom provides the data",
+      "io.k8s.api.core.v1.EnvVarSource: source of an environment variable value — references a ConfigMap key, Secret key, or Pod field via Downward API",
+      "io.k8s.api.core.v1.ConfigMapKeySelector: selects a specific key from a named ConfigMap; key is the map key, name is the ConfigMap name"
     ],
     "relevant_nodes": [
       "io.k8s.api.apps.v1.Deployment",
@@ -20,7 +20,6 @@
       "io.k8s.api.apps.v1.DeploymentStatus",
       "io.k8s.api.apps.v1.DeploymentStrategy",
       "io.k8s.api.core.v1.ConfigMapKeySelector",
-      "io.k8s.api.core.v1.Container",
       "io.k8s.api.core.v1.EnvVar",
       "io.k8s.api.core.v1.EnvVarSource",
       "io.k8s.api.core.v1.PodSpec",
@@ -28,7 +27,6 @@
       "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
     ],
     "expected_path": [
-      "Container -[HAS_PROPERTY]-> EnvVar",
       "Deployment -[CONTAINS_POD_TEMPLATE]-> PodTemplateSpec",
       "Deployment -[EXTENDS]-> DeploymentSpec",
       "Deployment -[HAS_PROPERTY]-> DeploymentSpec",
@@ -37,8 +35,6 @@
       "DeploymentSpec -[HAS_PROPERTY]-> LabelSelector",
       "DeploymentSpec -[HAS_PROPERTY]-> PodTemplateSpec",
       "DeploymentStatus -[HAS_PROPERTY]-> DeploymentCondition",
-      "EnvVar -[HAS_PROPERTY]-> EnvVarSource",
-      "EnvVarSource -[HAS_PROPERTY]-> ConfigMapKeySelector",
       "PodTemplateSpec -[HAS_PROPERTY]-> PodSpec"
     ],
     "required_fields": [],
@@ -49,19 +45,14 @@
     ],
     "key_nodes": [
       "io.k8s.api.apps.v1.Deployment",
-      "io.k8s.api.apps.v1.DeploymentCondition",
-      "io.k8s.api.apps.v1.DeploymentSpec",
-      "io.k8s.api.apps.v1.DeploymentStatus",
-      "io.k8s.api.apps.v1.DeploymentStrategy",
       "io.k8s.api.core.v1.ConfigMapKeySelector",
-      "io.k8s.api.core.v1.Container",
       "io.k8s.api.core.v1.EnvVar",
-      "io.k8s.api.core.v1.EnvVarSource",
-      "io.k8s.api.core.v1.PodSpec",
-      "io.k8s.api.core.v1.PodTemplateSpec",
-      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
-    ]
+      "io.k8s.api.core.v1.EnvVarSource"
+    ],
+    "gt_depth": 2,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

@@ -1,19 +1,20 @@
 {
   "id": "plan_namespace_isolation",
   "type": "planning",
-  "question": "Saya perlu isolasi antara tim frontend dan backend di cluster yang sama — mereka tidak boleh saling mengakses Pod satu sama lain secara langsung, dan masing-masing tim ada batas penggunaan resource. Apa saja yang perlu dikonfigurasi di Kubernetes?",
+  "question": "I need isolation between the frontend and backend teams on the same cluster — they must not be able to directly access each other's Pods, and each team must have resource usage limits. What needs to be configured in Kubernetes?",
   "resource": "io.k8s.api.networking.v1.NetworkPolicy",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
-    "answer": "Buat dua namespace terpisah (frontend, backend) lalu konfigurasi: (1) ResourceQuota di masing-masing namespace — set batas CPU, memory, dan jumlah Pod per tim; (2) LimitRange di masing-masing namespace — set default resource requests/limits agar Pod tanpa definisi resource tetap punya batas; (3) NetworkPolicy deny-all di masing-masing namespace — blokir semua ingress dan egress secara default; (4) NetworkPolicy allow selektif — izinkan hanya traffic yang memang dibutuhkan (misalnya backend boleh menerima dari frontend, keduanya boleh mengakses database namespace); (5) RBAC (Role + RoleBinding) — batasi kubectl access masing-masing tim hanya ke namespace mereka sendiri.",
+    "answer": "Create two separate namespaces (frontend, backend) then configure: (1) ResourceQuota in each namespace — set limits on CPU, memory, and Pod count per team; (2) LimitRange in each namespace — set default resource requests and limits so Pods without explicit resource definitions still have bounds; (3) NetworkPolicy deny-all in each namespace — block all ingress and egress traffic by default; (4) Selective allow NetworkPolicy — permit only required traffic (for example, backend may accept traffic from frontend; both may access a shared database namespace); (5) RBAC (Role + RoleBinding) — restrict kubectl access for each team to their own namespace only.",
     "context": [
-      "io.k8s.api.networking.v1.NetworkPolicy: mengontrol traffic masuk dan keluar Pod berdasarkan selector dan namespace",
-      "io.k8s.api.core.v1.ResourceQuota: membatasi aggregate resource usage per namespace",
-      "io.k8s.api.rbac.v1.Role: mendefinisikan permission dalam satu namespace",
-      "io.k8s.api.rbac.v1.RoleBinding: mengikat Role ke user atau ServiceAccount"
+      "io.k8s.api.networking.v1.NetworkPolicy: controls inbound and outbound Pod traffic using label selectors and namespace selectors defined in NetworkPolicySpec",
+      "io.k8s.api.core.v1.ResourceQuota: enforces aggregate resource usage limits within a namespace via a ResourceList hard map",
+      "io.k8s.api.rbac.v1.Role: defines a set of permissions within a single namespace",
+      "io.k8s.api.rbac.v1.RoleBinding: binds a Role to a user or ServiceAccount within a namespace"
     ],
     "relevant_nodes": [
+      "io.k8s.api.core.v1.LimitRange",
       "io.k8s.api.core.v1.ResourceQuota",
       "io.k8s.api.networking.v1.NetworkPolicy",
       "io.k8s.api.networking.v1.NetworkPolicyEgressRule",
@@ -35,26 +36,21 @@
       "NetworkPolicyIngressRule -[HAS_PROPERTY]-> NetworkPolicyPort",
       "NetworkPolicySpec -[HAS_PROPERTY]-> LabelSelector",
       "NetworkPolicySpec -[HAS_PROPERTY]-> NetworkPolicyEgressRule",
-      "NetworkPolicySpec -[HAS_PROPERTY]-> NetworkPolicyIngressRule",
-      "ResourceQuota -[HAS_PROPERTY]-> ResourceQuotaSpec",
-      "RoleBinding -[HAS_PROPERTY]-> RoleRef"
+      "NetworkPolicySpec -[HAS_PROPERTY]-> NetworkPolicyIngressRule"
     ],
     "required_fields": [],
     "expected_yaml_keys": [],
     "key_nodes": [
+      "io.k8s.api.core.v1.LimitRange",
       "io.k8s.api.core.v1.ResourceQuota",
       "io.k8s.api.networking.v1.NetworkPolicy",
-      "io.k8s.api.networking.v1.NetworkPolicyEgressRule",
-      "io.k8s.api.networking.v1.NetworkPolicyIngressRule",
-      "io.k8s.api.networking.v1.NetworkPolicyPeer",
-      "io.k8s.api.networking.v1.NetworkPolicyPort",
-      "io.k8s.api.networking.v1.NetworkPolicySpec",
       "io.k8s.api.rbac.v1.Role",
-      "io.k8s.api.rbac.v1.RoleBinding",
-      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector",
-      "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelectorRequirement"
-    ]
+      "io.k8s.api.rbac.v1.RoleBinding"
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/services-networking/network-policies/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/service-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/service-resources/",
+  "lang": "en"
 }

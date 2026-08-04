@@ -1,20 +1,21 @@
 {
   "id": "service_selector",
   "type": "relationship",
-  "question": "Bagaimana Service menemukan Pod yang harus dilayani?",
+  "question": "What field in ServiceSpec identifies which Pods a Service targets, and how are port forwarding rules defined in the schema?",
   "resource": "io.k8s.api.core.v1.Service",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
-    "answer": "Service menggunakan spec.selector untuk mencocokkan label Pod. Kube-proxy kemudian merutekan traffic ke Pod yang memiliki label yang cocok. Service tidak langsung terhubung ke Pod, melainkan melalui Endpoints object.",
+    "answer": "Service uses the selector field in ServiceSpec to match Pod labels. The selector is a map of key-value string pairs — a Pod is selected when its labels contain all entries in the selector map. ServiceSpec.ports defines the port forwarding rules: the port field is the Service's exposed port, and targetPort identifies the corresponding Container port (by number or by the name declared in ContainerPort.name).",
     "context": [
-      "io.k8s.api.core.v1.ServiceSpec: selector maps to Pod labels.",
-      "Service -[SELECTS_POD]-> Pod via label matching"
+      "io.k8s.api.core.v1.ServiceSpec: selector field is a label map identifying Pods that belong to this Service; ports defines the Service's port-to-targetPort forwarding rules",
+      "io.k8s.api.core.v1.ContainerPort: name or number of this port is referenced by ServiceSpec.ports.targetPort to route Service traffic to the correct container port"
     ],
     "relevant_nodes": [
       "io.k8s.api.core.v1.Affinity",
       "io.k8s.api.core.v1.ClientIPConfig",
       "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.ContainerPort",
       "io.k8s.api.core.v1.ContainerStatus",
       "io.k8s.api.core.v1.EphemeralContainer",
       "io.k8s.api.core.v1.HostAlias",
@@ -98,10 +99,15 @@
     "required_fields": [],
     "expected_yaml_keys": [],
     "key_nodes": [
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.ContainerPort",
       "io.k8s.api.core.v1.Service",
       "io.k8s.api.core.v1.ServiceSpec"
-    ]
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/services-networking/service/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

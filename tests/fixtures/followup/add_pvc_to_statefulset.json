@@ -1,16 +1,16 @@
 {
   "id": "add_pvc_to_statefulset",
   "type": "followup",
-  "context_question": "Buat YAML StatefulSet MySQL",
-  "question": "Tambahkan PVC 5Gi ke StatefulSet tadi",
+  "context_question": "Create a YAML StatefulSet for MySQL",
+  "question": "Add a 5Gi PVC to that StatefulSet",
   "resource": "io.k8s.api.apps.v1.StatefulSet",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
-    "answer": "Tambahkan volumeClaimTemplates ke spec StatefulSet dengan PVC berkapasitas 5Gi. Mount volume di container menggunakan volumeMounts.",
+    "answer": "Add a volumeClaimTemplates entry to the StatefulSet spec with a 5Gi PVC. Mount the volume in the container using volumeMounts.",
     "context": [
-      "StatefulSetSpec.volumeClaimTemplates: list of PVCs to create per pod",
-      "Container.volumeMounts: mount path in the container"
+      "io.k8s.api.apps.v1.StatefulSetSpec: volumeClaimTemplates is a list of PVC templates; one PVC per replica is created automatically and persists across rescheduling",
+      "io.k8s.api.core.v1.Container: volumeMounts field is a list of VolumeMount objects specifying the paths inside the container at which volumes are mounted"
     ],
     "relevant_nodes": [
       "io.k8s.api.apps.v1.StatefulSet",
@@ -20,6 +20,7 @@
       "io.k8s.api.apps.v1.StatefulSetSpec",
       "io.k8s.api.apps.v1.StatefulSetStatus",
       "io.k8s.api.apps.v1.StatefulSetUpdateStrategy",
+      "io.k8s.api.core.v1.Container",
       "io.k8s.api.core.v1.PersistentVolumeClaim",
       "io.k8s.api.core.v1.PersistentVolumeClaimSpec",
       "io.k8s.api.core.v1.PersistentVolumeClaimStatus",
@@ -52,9 +53,12 @@
     "key_nodes": [
       "io.k8s.api.apps.v1.StatefulSet",
       "io.k8s.api.apps.v1.StatefulSetSpec",
-      "io.k8s.api.core.v1.PersistentVolumeClaim"
-    ]
+      "io.k8s.api.core.v1.Container"
+    ],
+    "gt_depth": 2,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

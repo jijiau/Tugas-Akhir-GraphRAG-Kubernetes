@@ -1,16 +1,16 @@
 {
   "id": "deployment_basic",
   "type": "conceptual",
-  "question": "Apa yang terjadi pada Pod yang sedang berjalan ketika saya update image Deployment ke versi baru? Apakah ada downtime?",
+  "question": "What happens to running Pods when a Deployment image is updated, and how does DeploymentStrategy control the transition?",
   "resource": "io.k8s.api.apps.v1.Deployment",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
-    "answer": "Secara default Deployment menggunakan strategi RollingUpdate: Pod baru dengan image baru dibuat bertahap sambil Pod lama dihentikan satu per satu. Selama proses ini selalu ada Pod lama yang masih melayani traffic sehingga tidak ada downtime. Parameter maxUnavailable mengontrol berapa Pod boleh mati sekaligus, dan maxSurge mengontrol berapa Pod baru boleh dibuat melebihi jumlah replika yang diinginkan. Jika Pod baru gagal start (misalnya image tidak ditemukan atau crash), rollout otomatis berhenti dan bisa dikembalikan dengan kubectl rollout undo.",
+    "answer": "A Deployment uses the strategy field in DeploymentSpec to manage the transition. DeploymentStrategy has a type of RollingUpdate (default) or Recreate. With RollingUpdate, new Pods with the updated image are created incrementally while old Pods are terminated, keeping the application continuously available. The rollingUpdate field, a RollingUpdateDeployment, exposes maxUnavailable and maxSurge to control how many Pods can be unavailable or created above the desired count at any point. With Recreate, all existing Pods are terminated before new ones start, causing a brief downtime. progressDeadlineSeconds in DeploymentSpec bounds how long a rollout may stall before being declared failed.",
     "context": [
-      "io.k8s.api.apps.v1.DeploymentStrategy: type RollingUpdate (default) atau Recreate",
-      "io.k8s.api.apps.v1.RollingUpdateDeployment: maxUnavailable dan maxSurge mengontrol laju rolling update",
-      "io.k8s.api.apps.v1.DeploymentSpec: progressDeadlineSeconds menentukan batas waktu sebelum rollout dianggap gagal"
+      "io.k8s.api.apps.v1.DeploymentStrategy: type is RollingUpdate (default) or Recreate; rollingUpdate field is a RollingUpdateDeployment",
+      "io.k8s.api.apps.v1.RollingUpdateDeployment: maxUnavailable and maxSurge control rolling update pace and availability",
+      "io.k8s.api.apps.v1.DeploymentSpec: progressDeadlineSeconds sets the timeout before a stalled rollout is declared failed"
     ],
     "relevant_nodes": [
       "io.k8s.api.apps.v1.Deployment",
@@ -32,16 +32,20 @@
       "DeploymentSpec -[HAS_PROPERTY]-> LabelSelector",
       "DeploymentSpec -[HAS_PROPERTY]-> PodTemplateSpec",
       "DeploymentStatus -[HAS_PROPERTY]-> DeploymentCondition",
-      "DeploymentStrategy -[HAS_PROPERTY]-> RollingUpdateDeployment",
       "PodTemplateSpec -[HAS_PROPERTY]-> PodSpec"
     ],
     "required_fields": [],
     "expected_yaml_keys": [],
     "key_nodes": [
       "io.k8s.api.apps.v1.Deployment",
-      "io.k8s.api.apps.v1.DeploymentSpec"
-    ]
+      "io.k8s.api.apps.v1.DeploymentSpec",
+      "io.k8s.api.apps.v1.DeploymentStrategy",
+      "io.k8s.api.apps.v1.RollingUpdateDeployment"
+    ],
+    "gt_depth": 2,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

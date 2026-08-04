@@ -1,0 +1,6 @@
+comparison,metric,mean_graphrag,mean_baseline,delta,wilcoxon_p,bootstrap_p,ci_low,ci_high,p_holm,sig_holm_0.05,n_pairs
+GraphRAG_vs_VectorRAG,Faithfulness (FS),0.203,0.1634,0.0397,0.2231,0.2,-0.052,0.1258,0.6,no,56
+GraphRAG_vs_VectorRAG,Answer Relevancy (AR),0.535,0.6848,-0.1498,0.0,0.0,-0.1953,-0.1042,0.0,yes,91
+GraphRAG_vs_VectorRAG,Context Precision (CP),0.3304,0.321,0.0094,0.7309,0.447,-0.1076,0.1231,0.728,no,90
+GraphRAG_vs_VectorRAG,Context Recall (CR),0.3995,0.3826,0.0168,0.5692,0.364,-0.0683,0.0991,0.728,no,91
+GraphRAG_vs_VanillaLLM,Answer Relevancy (AR),0.5118,0.6608,-0.149,0.0,0.0,-0.1966,-0.1036,0.0,yes,97

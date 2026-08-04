@@ -1,0 +1,28 @@
+\begin{table}[t]
+\caption{Ablation Study: Difference from the GraphRAG Baseline ($n=102$)}
+\label{tbl:ablasi}
+\centering
+\begin{footnotesize}
+\begin{tabular}{|p{0.36\linewidth}|c|c|c|}
+\hline
+\textbf{Configuration} & \textbf{$\Delta$AnsQ} & \textbf{$\Delta$RetQ} & \textbf{$\Delta$HopAcc} \\
+\hline
+A1 \textit{no\_exact\_match} & $-0.020$ & $-0.309^{***}$ & $-0.340^{***}$ \\
+\hline
+A2 \textit{no\_multihop} & $-0.030$ & $-0.656^{***}$ & $-0.700^{***}$ \\
+\hline
+A3 \textit{depth=2 fixed} & $-0.014$ & $-0.123^{***}$ & $-0.147^{***}$ \\
+\hline
+A4 \textit{depth=3 fixed} & $-0.014$ & $-0.050$ & $+0.145$ \\
+\hline
+A5 \textit{no\_yaml\_layer3} & $-0.017$ & $-0.057^{**}$ & $+0.004$ \\
+\hline
+A6 \textit{no\_multi\_entity} & $-0.016$ & $-0.011$ & $-0.007$ \\
+\hline
+A7 \textit{1 edge type} & $-0.018$ & $-0.152^{***}$ & $-0.232^{***}$ \\
+\hline
+\end{tabular}
+\\[4pt]
+{\footnotesize \raggedright $\Delta$ = Ablated $-$ baseline; negative values indicate the component contributes positively. *** $p<0.001$; ** $p<0.01$ (Wilcoxon + bootstrap, $n=102$); remaining rows not significant.\par}
+\end{footnotesize}
+\end{table}

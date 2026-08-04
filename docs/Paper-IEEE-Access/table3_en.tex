@@ -1,0 +1,22 @@
+\begin{table}[t]
+\caption{Traversal Depth Sensitivity ($n=102$)}
+\label{tbl:depth}
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Depth ($d$)} & \textbf{RetQ F1} & \textbf{AnsQ} & \textbf{Hop Accuracy} \\
+\hline
+1 & 0.3666 & 0.7815 & 0.2574 \\
+\hline
+2 (default) & \textbf{0.7089} & \textbf{0.8031} & 0.7562 \\
+\hline
+3 & 0.6593 & 0.7891 & \textbf{0.9007} \\
+\hline
+4 & 0.6113 & 0.7828 & 0.9007 \\
+\hline
+5 & 0.5838 & 0.7817 & 0.8760 \\
+\hline
+\end{tabular}
+\\[4pt]
+{\footnotesize \raggedright $d=2$ is the adaptive default for the \textit{explain} and \textit{followup} intents; $d=3$ is the adaptive default for \textit{generate\_yaml}, \textit{trace\_relationship}, and \textit{planning}.\par}
+\end{table}

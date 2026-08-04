@@ -1,8 +1,8 @@
-comparison,metric,mean_graphrag,mean_baseline,delta,wilcoxon_p,bootstrap_p,ci_low,ci_high,significant_0.05
-GraphRAG_vs_VectorRAG,Precision@k,0.6705,0.3606,0.3099,0.0,0.0,0.2353,0.3816,yes
-GraphRAG_vs_VectorRAG,Recall@k,0.5907,0.3431,0.2476,0.0,0.0,0.1564,0.3332,yes
-GraphRAG_vs_VectorRAG,NDCG@k,0.7503,0.4443,0.306,0.0,0.0,0.2184,0.38,yes
-GraphRAG_vs_VectorRAG,RetQ,0.6851,0.4249,0.2601,0.0,0.0,0.1854,0.3279,yes
-GraphRAG_vs_VectorRAG,AnsQ,0.5743,0.5979,-0.0236,0.3902,0.885,-0.0612,0.0124,no
-GraphRAG_vs_VectorRAG,ReaQ,0.8994,0.893,0.0064,0.0429,0.229,-0.0118,0.0232,yes
-GraphRAG_vs_VectorRAG,Total,0.6943,0.6111,0.0832,0.0,0.0,0.0513,0.1126,yes
+comparison,metric,mean_graphrag,mean_baseline,delta,wilcoxon_p,bootstrap_p,ci_low,ci_high,p_holm,sig_holm_0.05
+GraphRAG_vs_VectorRAG,AnsQ,0.8031,0.7984,0.0047,0.0333,0.331,-0.0162,0.0245,0.0666,no
+GraphRAG_vs_VectorRAG,RetQ,0.7089,0.2437,0.4652,0.0,0.0,0.4054,0.5286,0.0,yes
+GraphRAG_vs_VectorRAG,ReaQ (Faithful.),0.2948,0.1678,0.127,0.0002,0.0,0.059,0.1975,0.0,yes
+GraphRAG_vs_VectorRAG,Syntactic Valid.,1.0,0.9643,0.0357,0.1587,0.357,0.0,0.1071,0.1587,no
+GraphRAG_vs_VanillaLLM,AnsQ,0.8031,0.7469,0.0562,0.0,0.0,0.0296,0.0877,0.0,yes
+GraphRAG_vs_VanillaLLM,RetQ,0.7089,0.0,0.7089,0.0,0.0,0.6518,0.7648,0.0,yes
+GraphRAG_vs_VanillaLLM,Syntactic Valid.,1.0,0.8571,0.1429,0.0228,0.017,0.0357,0.2857,0.034,yes

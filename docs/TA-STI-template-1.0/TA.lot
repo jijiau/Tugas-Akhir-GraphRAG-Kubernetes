@@ -222,12 +222,12 @@
 \contentsline {table}{\numberline {V.2}{\ignorespaces Tujuh Kategori Relasi dalam \textit {Knowledge Graph} Kubernetes}}{61}{table.caption.34}%
 \contentsline {table}{\numberline {V.3}{\ignorespaces Taksonomi 18 Jenis \textit {Edge} dalam \textit {Knowledge Graph} Kubernetes}}{64}{table.5.3}%
 \contentsline {table}{\numberline {V.4}{\ignorespaces Statistik \textit {Knowledge Graph} Kubernetes Hasil Konstruksi}}{67}{table.caption.39}%
-\contentsline {table}{\numberline {V.5}{\ignorespaces Lima Modul \textit {Agent} LangGraph Pipeline}}{68}{table.caption.40}%
-\contentsline {table}{\numberline {V.6}{\ignorespaces Definisi Tipe \textit {Intent} beserta Contoh Pertanyaan}}{70}{table.caption.42}%
-\contentsline {table}{\numberline {V.7}{\ignorespaces Pemetaan \textit {Intent Type} terhadap Kedalaman Traversal Graf}}{72}{table.caption.44}%
+\contentsline {table}{\numberline {V.5}{\ignorespaces Lima Modul \textit {Agent} LangGraph Pipeline}}{68}{table.caption.41}%
+\contentsline {table}{\numberline {V.6}{\ignorespaces Definisi Tipe \textit {Intent} beserta Contoh Pertanyaan}}{70}{table.caption.43}%
+\contentsline {table}{\numberline {V.7}{\ignorespaces Pemetaan \textit {Intent Type} terhadap Kedalaman Traversal Graf}}{72}{table.caption.45}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {VI.1}{\ignorespaces Profil Narasumber Wawancara Validasi Dataset}}{82}{table.caption.50}%
-\contentsline {table}{\numberline {VI.2}{\ignorespaces Penilaian Realisme Sampel \textit {Fixture} oleh Pakar (Skala 1--5)}}{82}{table.caption.51}%
+\contentsline {table}{\numberline {VI.1}{\ignorespaces Profil Narasumber Wawancara Validasi Dataset}}{82}{table.caption.51}%
+\contentsline {table}{\numberline {VI.2}{\ignorespaces Penilaian Realisme Sampel \textit {Fixture} oleh Pakar (Skala 1--5)}}{82}{table.caption.52}%
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
@@ -236,38 +236,38 @@
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
-\contentsline {table}{\numberline {VI.3}{\ignorespaces Perbandingan Skor per Dimensi: Vanilla LLM vs.\ Vector RAG vs.\ Graph RAG}}{85}{table.caption.53}%
-\contentsline {table}{\numberline {VI.4}{\ignorespaces Sub-Metrik \textit {Answer Quality} (AnsQ): Perbandingan Tiga Sistem}}{87}{table.caption.55}%
+\contentsline {table}{\numberline {VI.3}{\ignorespaces Perbandingan Skor per Dimensi: Vanilla LLM vs.\ Vector RAG vs.\ Graph RAG}}{85}{table.caption.54}%
+\contentsline {table}{\numberline {VI.4}{\ignorespaces Sub-Metrik \textit {Answer Quality} (AnsQ): Perbandingan Tiga Sistem}}{87}{table.caption.56}%
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
-\contentsline {table}{\numberline {VI.5}{\ignorespaces Sub-Metrik \textit {Retrieval Quality} (RetQ): Perbandingan Tiga Sistem}}{88}{table.caption.57}%
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\contentsline {table}{\numberline {VI.6}{\ignorespaces \textit {Hop Accuracy} GraphRAG Terstratifikasi berdasarkan Ukuran \textit {Ground Truth Path}}}{89}{table.caption.58}%
+\contentsline {table}{\numberline {VI.5}{\ignorespaces Sub-Metrik \textit {Retrieval Quality} (RetQ): Perbandingan Tiga Sistem}}{88}{table.caption.58}%
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
-\contentsline {table}{\numberline {VI.7}{\ignorespaces Perbandingan \textit {Faithfulness}: GraphRAG vs.\ Vector RAG}}{90}{table.caption.60}%
-\babel@toc {english}{}\relax 
-\babel@toc {indonesian}{}\relax 
-\contentsline {table}{\numberline {VI.8}{\ignorespaces Sub-Metrik \textit {Reasoning Quality} (ReaQ) Sistem GraphRAG}}{91}{table.caption.61}%
+\contentsline {table}{\numberline {VI.6}{\ignorespaces \textit {Hop Accuracy} GraphRAG Terstratifikasi berdasarkan Ukuran \textit {Ground Truth Path}}}{89}{table.caption.59}%
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
-\contentsline {table}{\numberline {VI.9}{\ignorespaces Skor Evaluasi Sistem GraphRAG per Kategori \textit {Fixture} ($n{=}102$)}}{92}{table.caption.63}%
-\contentsline {table}{\numberline {VI.10}{\ignorespaces Dekomposisi Klaim Jawaban GraphRAG: Sumber Pengetahuan DOCUMENT vs.\ PARAMETRIC}}{94}{table.caption.64}%
-\contentsline {table}{\numberline {VI.11}{\ignorespaces Sensitivitas Kedalaman Traversal: Skor per Dimensi ($n{=}102$)}}{96}{table.caption.66}%
-\contentsline {table}{\numberline {VI.12}{\ignorespaces \textit {Ablation Study}: Skor Absolut dan Selisih terhadap \textit {Baseline} GraphRAG ($n{=}102$)}}{98}{table.caption.69}%
-\contentsline {table}{\numberline {VI.13}{\ignorespaces Signifikansi Statistik \textit {Ablation Study} per Metrik (\textit {p}-\textit {value})}}{99}{table.caption.70}%
-\contentsline {table}{\numberline {VI.14}{\ignorespaces Bukti T1: \textit {Baseline} 18-\textit {edge} vs.\ Ablasi A7 (\textit {HAS\_ PROPERTY}-\textit {only})}}{100}{table.caption.72}%
-\contentsline {table}{\numberline {VI.15}{\ignorespaces Uji Signifikansi Statistik: GraphRAG vs.\ \textit {Baseline} per Dimensi ($n{=}102$, Holm-\allowbreak {}Bonferroni)}}{101}{table.caption.74}%
-\contentsline {table}{\numberline {VI.16}{\ignorespaces Rata-rata \textit {RetQ-gain} GraphRAG dibanding Vector RAG per Kategori \textit {Fixture}}}{103}{table.caption.76}%
-\contentsline {table}{\numberline {VI.17}{\ignorespaces Korelasi Spearman: Faktor Struktural vs.\ \textit {RetQ-gain} GraphRAG}}{105}{table.caption.79}%
-\contentsline {table}{\numberline {VI.18}{\ignorespaces Penilaian Kualitatif Pakar atas Jawaban Sistem GraphRAG (Skala 1--5, $n{=}4$ Pakar)}}{107}{table.caption.80}%
+\contentsline {table}{\numberline {VI.7}{\ignorespaces Perbandingan \textit {Faithfulness}: GraphRAG vs.\ Vector RAG}}{90}{table.caption.61}%
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\contentsline {table}{\numberline {VI.8}{\ignorespaces Sub-Metrik \textit {Reasoning Quality} (ReaQ) Sistem GraphRAG}}{91}{table.caption.62}%
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {indonesian}{}\relax 
+\contentsline {table}{\numberline {VI.9}{\ignorespaces Skor Evaluasi Sistem GraphRAG per Kategori \textit {Fixture} ($n{=}102$)}}{92}{table.caption.64}%
+\contentsline {table}{\numberline {VI.10}{\ignorespaces Dekomposisi Klaim Jawaban GraphRAG: Sumber Pengetahuan DOCUMENT vs.\ PARAMETRIC}}{94}{table.caption.65}%
+\contentsline {table}{\numberline {VI.11}{\ignorespaces Sensitivitas Kedalaman Traversal: Skor per Dimensi ($n{=}102$)}}{96}{table.caption.67}%
+\contentsline {table}{\numberline {VI.12}{\ignorespaces \textit {Ablation Study}: Skor Absolut dan Selisih terhadap \textit {Baseline} GraphRAG ($n{=}102$)}}{98}{table.caption.70}%
+\contentsline {table}{\numberline {VI.13}{\ignorespaces Signifikansi Statistik \textit {Ablation Study} per Metrik (\textit {p}-\textit {value})}}{99}{table.caption.71}%
+\contentsline {table}{\numberline {VI.14}{\ignorespaces Bukti T1: \textit {Baseline} 18-\textit {edge} vs.\ Ablasi A7 (\textit {HAS\_ PROPERTY}-\textit {only})}}{100}{table.caption.73}%
+\contentsline {table}{\numberline {VI.15}{\ignorespaces Uji Signifikansi Statistik: GraphRAG vs.\ \textit {Baseline} per Dimensi ($n{=}102$, Holm-\allowbreak {}Bonferroni)}}{101}{table.caption.75}%
+\contentsline {table}{\numberline {VI.16}{\ignorespaces Rata-rata \textit {RetQ-gain} GraphRAG dibanding Vector RAG per Kategori \textit {Fixture}}}{103}{table.caption.77}%
+\contentsline {table}{\numberline {VI.17}{\ignorespaces Korelasi Spearman: Faktor Struktural vs.\ \textit {RetQ-gain} GraphRAG}}{105}{table.caption.80}%
+\contentsline {table}{\numberline {VI.18}{\ignorespaces Penilaian Kualitatif Pakar atas Jawaban Sistem GraphRAG (Skala 1--5, $n{=}4$ Pakar)}}{107}{table.caption.81}%
 \addvspace {10\p@ }
 \babel@toc {english}{}\relax 
 \babel@toc {indonesian}{}\relax 
@@ -329,11 +329,11 @@
 \contentsline {table}{\numberline {A.1}{\ignorespaces Skema 18 Tipe \textit {Edge} \textit {Knowledge Graph}}}{119}{table.a.A.1}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {C.1}{\ignorespaces Ringkasan 10 Fixture Evaluasi Pakar}}{125}{table.caption.82}%
+\contentsline {table}{\numberline {C.1}{\ignorespaces Ringkasan 10 Fixture Evaluasi Pakar}}{125}{table.caption.83}%
 \addvspace {10\p@ }
 \contentsline {table}{\numberline {D.1}{\ignorespaces Nilai Metrik AnsQ per \textit {Fixture} (102 \textit {Fixture})}}{141}{table.a.D.1}%
 \contentsline {table}{\numberline {D.2}{\ignorespaces Nilai Metrik RetQ per \textit {Fixture} (102 \textit {Fixture})}}{145}{table.a.D.2}%
 \contentsline {table}{\numberline {D.3}{\ignorespaces Nilai Metrik ReaQ per \textit {Fixture} (102 \textit {Fixture})}}{149}{table.a.D.3}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {F.1}{\ignorespaces Peran Lima Pakar dalam Proses Validasi}}{157}{table.caption.83}%
+\contentsline {table}{\numberline {F.1}{\ignorespaces Peran Lima Pakar dalam Proses Validasi}}{157}{table.caption.84}%

@@ -1,15 +1,14 @@
 {
   "id": "configmap_env",
   "type": "yaml_gen",
-  "question": "Buat YAML ConfigMap yang menyimpan konfigurasi database host dan port",
+  "question": "Create a YAML ConfigMap that stores database host and port configuration",
   "resource": "io.k8s.api.core.v1.ConfigMap",
   "scope": "Namespaced",
   "multi_hop": false,
   "ground_truth": {
-    "answer": "ConfigMap YAML dengan data berisi DB_HOST dan DB_PORT sebagai key-value pairs.",
+    "answer": "apiVersion: v1\nkind: ConfigMap\nmetadata:\n  name: db-config\ndata:\n  DB_HOST: \"localhost\"\n  DB_PORT: \"5432\"",
     "context": [
-      "io.k8s.api.core.v1.ConfigMap: ConfigMap holds configuration data as key-value pairs.",
-      "data field contains the configuration data"
+      "io.k8s.api.core.v1.ConfigMap: holds configuration data as key-value pairs; data field maps string keys to string values; binaryData field maps string keys to base64-encoded byte sequences"
     ],
     "relevant_nodes": [
       "io.k8s.api.core.v1.ConfigMap"
@@ -28,8 +27,11 @@
     ],
     "key_nodes": [
       "io.k8s.api.core.v1.ConfigMap"
-    ]
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/configuration/configmap/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

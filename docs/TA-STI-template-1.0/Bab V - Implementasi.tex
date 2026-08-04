@@ -111,9 +111,17 @@ Pembangunan \textit{embedding} semantik dilakukan pada proses fase 1.5 yang diek
 
 Vektor disimpan sebagai properti \texttt{embedding} pada setiap \textit{node} di Neo4j dan diindeks menggunakan \textit{Native Vector Index} dengan fungsi kemiripan \textit{cosine}. Pendekatan ini memungkinkan \textit{vector similarity search} dilakukan dalam satu \textit{query} Cypher tanpa kebutuhan \textit{vector store} eksternal terpisah. Implementasi kode lengkap kelas \textit{SwaggerGraphBuilder} (fase 1 hingga fase 3) tersedia pada berkas \texttt{src/\allowbreak{}ingestion/\allowbreak{}parser.py} di repositori proyek.\footnote{Kode sumber lengkap sistem tersedia di \url{https://github.com/jijiau/Tugas-Akhir-GraphRAG-Kubernetes}.}
 
-Ketiga subbab di atas secara bersama-sama merealisasikan pembangunan \textit{knowledge graph} Kubernetes. Tabel~\ref{tbl:kg_statistics} merangkum statistik akhir \textit{knowledge graph} yang dihasilkan dan menjadi fondasi mekanisme \textit{GraphRAG} yang diuraikan pada bagian berikutnya.
+Ketiga subbab di atas secara bersama-sama merealisasikan pembangunan \textit{knowledge graph} Kubernetes. Tabel~\ref{tbl:kg_statistics} merangkum statistik akhir \textit{knowledge graph} yang dihasilkan, sedangkan Gambar~\ref{fig:kg-neo4j-visualization} menampilkan visualisasi keseluruhan graf yang terbentuk di Neo4j Browser. \textit{Knowledge graph} inilah yang menjadi fondasi mekanisme \textit{GraphRAG} yang diuraikan pada bagian berikutnya.
 
 \input{tables/tabel26.tex}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{justification=centering}
+    \includegraphics[width=1.00\textwidth]{images/visualisation.png}
+    \caption{Visualisasi \textit{Knowledge Graph} Kubernetes Hasil Konstruksi di Neo4j Browser}
+    \label{fig:kg-neo4j-visualization}
+\end{figure}
 
 % ─────────────────────────────────────────────────────────────────────
 \section{Implementasi Mekanisme \textit{GraphRAG}}

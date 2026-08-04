@@ -1,0 +1,9 @@
+{
+  "mode": "llm",
+  "ablation": null,
+  "run_id": "98281bc3",
+  "n_fixtures": 103,
+  "output_csv": "data\\eval_results_llm.csv",
+  "git_commit": "9f847cb",
+  "timestamp": "2026-06-14T18:02:55.475151"
+}

@@ -1,16 +1,16 @@
 {
   "id": "pod_configmap_volume",
   "type": "yaml_gen",
-  "question": "Buatkan YAML Pod yang me-mount ConfigMap bernama 'app-config' sebagai volume di path /etc/config",
+  "question": "Create a YAML Pod that mounts the ConfigMap named 'app-config' as a volume at /etc/config",
   "resource": "io.k8s.api.core.v1.Pod",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
     "answer": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: app-pod\nspec:\n  volumes:\n  - name: config-volume\n    configMap:\n      name: app-config\n  containers:\n  - name: app\n    image: nginx:latest\n    volumeMounts:\n    - name: config-volume\n      mountPath: /etc/config",
     "context": [
-      "Volume: represents a named volume in a pod",
-      "ConfigMapVolumeSource: adapts a ConfigMap into a volume",
-      "VolumeMount: describes a mounting of a Volume within a container"
+      "io.k8s.api.core.v1.Volume: named volume available to containers in a Pod; configMap field (ConfigMapVolumeSource) mounts a ConfigMap as a directory",
+      "io.k8s.api.core.v1.ConfigMapVolumeSource: adapts a ConfigMap into a volume; name identifies the ConfigMap; items selects specific keys to project as files",
+      "io.k8s.api.core.v1.VolumeMount: mounts a named Volume into a container; name must match a Volume in the Pod, mountPath is the path inside the container"
     ],
     "relevant_nodes": [
       "io.k8s.api.core.v1.AWSElasticBlockStoreVolumeSource",
@@ -76,7 +76,6 @@
       "io.k8s.api.core.v1.ProjectedVolumeSource",
       "io.k8s.api.core.v1.QuobyteVolumeSource",
       "io.k8s.api.core.v1.RBDVolumeSource",
-      "io.k8s.api.core.v1.ResourceClaim",
       "io.k8s.api.core.v1.ResourceRequirements",
       "io.k8s.api.core.v1.ResourceStatus",
       "io.k8s.api.core.v1.SELinuxOptions",
@@ -97,6 +96,7 @@
       "io.k8s.api.core.v1.VsphereVirtualDiskVolumeSource",
       "io.k8s.api.core.v1.WindowsSecurityContextOptions",
       "io.k8s.api.core.v1.WorkloadReference",
+      "io.k8s.api.resource.v1.ResourceClaim",
       "io.k8s.apimachinery.pkg.api.resource.Quantity",
       "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
     ],
@@ -226,13 +226,15 @@
       "spec.containers[0].volumeMounts[0].mountPath"
     ],
     "key_nodes": [
-      "io.k8s.api.core.v1.Pod",
-      "io.k8s.api.core.v1.PodSpec",
-      "io.k8s.api.core.v1.Volume",
       "io.k8s.api.core.v1.ConfigMapVolumeSource",
+      "io.k8s.api.core.v1.Pod",
+      "io.k8s.api.core.v1.Volume",
       "io.k8s.api.core.v1.VolumeMount"
-    ]
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/workloads/pods/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

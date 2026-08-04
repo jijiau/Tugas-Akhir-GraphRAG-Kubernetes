@@ -27,7 +27,7 @@ except ImportError:
     sys.exit("[ERROR] matplotlib tidak terinstal. Jalankan: pip install matplotlib")
 
 ROOT = Path(__file__).parent.parent
-FIGURES_DIR = ROOT / "docs" / "figures"
+FIGURES_DIR = ROOT / "docs" / "TA-STI-template-1.0" / "images"
 FIGURES_DIR.mkdir(parents=True, exist_ok=True)
 
 # ── Path ke CSV per depth ─────────────────────────────────────────────────────

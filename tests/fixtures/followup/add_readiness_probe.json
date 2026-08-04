@@ -1,15 +1,15 @@
 {
   "id": "add_readiness_probe",
   "type": "followup",
-  "context_question": "Buat YAML Deployment nginx",
-  "question": "Tambahkan readiness probe HTTP di path /ready port 8080 pada konfigurasi tadi",
+  "context_question": "Create a YAML Deployment for nginx",
+  "question": "Add an HTTP readiness probe at path /ready port 8080 to the existing configuration",
   "resource": "io.k8s.api.apps.v1.Deployment",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
-    "answer": "Tambahkan readinessProbe pada container:\nreadinessProbe:\n  httpGet:\n    path: /ready\n    port: 8080\n  initialDelaySeconds: 5\n  periodSeconds: 10",
+    "answer": "Add readinessProbe to the container:\nreadinessProbe:\n  httpGet:\n    path: /ready\n    port: 8080\n  initialDelaySeconds: 5\n  periodSeconds: 10",
     "context": [
-      "Probe: describes a health check to be performed against a container"
+      "io.k8s.api.core.v1.Probe: describes a health check performed against a container; readinessProbe gates Pod traffic until the check passes"
     ],
     "relevant_nodes": [
       "io.k8s.api.apps.v1.Deployment",
@@ -17,7 +17,6 @@
       "io.k8s.api.apps.v1.DeploymentSpec",
       "io.k8s.api.apps.v1.DeploymentStatus",
       "io.k8s.api.apps.v1.DeploymentStrategy",
-      "io.k8s.api.core.v1.Container",
       "io.k8s.api.core.v1.PodSpec",
       "io.k8s.api.core.v1.PodTemplateSpec",
       "io.k8s.api.core.v1.Probe",
@@ -40,10 +39,12 @@
     ],
     "key_nodes": [
       "io.k8s.api.apps.v1.Deployment",
-      "io.k8s.api.core.v1.Container",
       "io.k8s.api.core.v1.Probe"
-    ]
+    ],
+    "gt_depth": 2,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

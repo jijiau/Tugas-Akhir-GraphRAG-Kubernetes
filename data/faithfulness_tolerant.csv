@@ -1,0 +1,16 @@
+id,type,ctx_kind,multi_hop,n_claims,supported,modality_equivalent,partial,absent,other,faithfulness_tolerant,faithfulness_strict_equiv,pilot_group
+pod_disruption_budget_concept,conceptual,schema,True,10,4,0,1,5,0,0.4,0.4,modality_group
+precodespec_containers_image_nginx_imagepul,realworld,schema,True,10,8,1,1,0,0,0.9,0.8,modality_group
+limitrange_yaml,yaml_gen,freetext,True,8,1,5,0,2,0,0.75,0.125,modality_group
+deployment_pod_relation,relationship,schema,True,6,2,0,3,1,0,0.3333,0.3333,modality_group
+service_nodeport,yaml_gen,schema,True,9,3,0,1,5,0,0.3333,0.3333,modality_group
+add_pvc_to_statefulset,followup,schema,True,3,0,0,2,1,0,0.0,0.0,modality_group
+add_resource_limits,followup,schema,True,3,0,0,0,3,0,0.0,0.0,modality_group
+plan_redis_persistent,planning,freetext,True,12,4,2,0,6,0,0.5,0.3333,modality_group
+pod_init_container_yaml,yaml_gen,schema,True,3,0,0,2,1,0,0.0,0.0,modality_group
+limit_range_concept,conceptual,schema,True,5,2,0,0,3,0,0.4,0.4,modality_group
+add_readiness_probe,followup,schema,True,24,1,0,0,23,0,0.0417,0.0417,control_group
+add_liveness_probe,followup,schema,True,18,1,0,0,17,0,0.0556,0.0556,control_group
+service_types,conceptual,schema,True,16,0,0,0,16,0,0.0,0.0,control_group
+scale_existing_deployment,followup,schema,False,15,1,1,0,13,0,0.1333,0.0667,control_group
+update_image_version,followup,schema,True,14,1,0,0,13,0,0.0714,0.0714,control_group

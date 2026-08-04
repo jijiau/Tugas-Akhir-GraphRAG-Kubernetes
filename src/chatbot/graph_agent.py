@@ -10,24 +10,24 @@ from langchain_core.messages import AIMessage, BaseMessage
 from src.chatbot.llm_factory import get_thinker_llm, get_speaker_llm
 from src.chatbot.prompts import INTENT_PROMPT, RESPONSE_PROMPT
 from src.chatbot.custom_retriever import StatefulK8sRetriever
-from src.memory.zep_store import ZepMemoryStore
+from src.memory.zep_store import SQLiteMemoryStore
 
 logger = logging.getLogger(__name__)
 
-# Groq free-tier limit: 6,000 tokens/minute.
-# Template overhead (~500 tokens) + question (~100) + response budget (~1,500)
-# leaves ~3,900 tokens for retrieved_data.  At ~4 chars/token → 15,600 chars.
-# Use 12,000 chars to stay comfortably under the hard per-request limit.
-GROQ_MAX_CONTEXT_CHARS = 12_000
+# Speaker context budget. GPT-4o-mini supports 128k tokens, so this is no longer
+# an API hard limit — it's a cost/quality knob. Set to 12,000 chars based on
+# empirical context-cap selection: this value maximizes answer quality without
+# incurring extra latency (see Bab V Gambar context_cap_selection).
+SPEAKER_MAX_CONTEXT_CHARS = 12_000
 
-# Singleton ZepMemoryStore
-_zep_store = None
+# Singleton SQLiteMemoryStore
+_sqlite_store = None
 
-def get_zep() -> ZepMemoryStore:
-    global _zep_store
-    if _zep_store is None:
-        _zep_store = ZepMemoryStore()
-    return _zep_store
+def get_memory_store() -> SQLiteMemoryStore:
+    global _sqlite_store
+    if _sqlite_store is None:
+        _sqlite_store = SQLiteMemoryStore()
+    return _sqlite_store
 
 
 # --- State Definition ---
@@ -38,22 +38,22 @@ class AgentState(TypedDict):
     chat_history: str
     extracted_intent: dict
     graph_context: str
-    reasoning_path: Optional[List[str]]   # ← hop-by-hop traversal trace
-    intent_type: Optional[str]            # ← "explain"|"generate_yaml"|"trace_relationship"|"followup"
+    reasoning_path: Optional[List[str]]   # hop-by-hop traversal trace
+    intent_type: Optional[str]            # "explain"|"generate_yaml"|"trace_relationship"|"followup"
     error: Optional[str]
 
 
 # --- Nodes ---
 
 def retrieve_memory_node(state: AgentState):
-    """Fetches conversation history from Zep."""
+    """Fetches conversation history from SQLite memory store."""
     session_id = state.get("session_id", "default_session")
     try:
-        history = get_zep().get_history(session_id=session_id, limit=5)
-        return {"chat_history": history or "Belum ada riwayat percakapan."}
+        history = get_memory_store().get_history(session_id=session_id, limit=5)
+        return {"chat_history": history or "No conversation history yet."}
     except Exception as e:
-        logger.warning(f"Zep memory failed: {e}")
-        return {"chat_history": "Belum ada riwayat percakapan."}
+        logger.warning(f"SQLite memory failed: {e}")
+        return {"chat_history": "No conversation history yet."}
 
 
 def extract_intent_node(state: AgentState):
@@ -105,6 +105,7 @@ def _make_retrieval_node(ablation_mode: str | None = None):
                 state["extracted_intent"],
                 intent_type=intent_type,
                 ablation_mode=ablation_mode,
+                question=state.get("question", ""),   # F15: symmetric vector seed
             )
             return {"graph_context": graph_context, "reasoning_path": reasoning_path}
         except Exception as e:
@@ -137,16 +138,18 @@ def generate_response_node(state: AgentState):
         llm = get_speaker_llm()
         chain = RESPONSE_PROMPT | llm
 
-        # Truncate graph_context to avoid 413 Payload Too Large on Groq free tier.
+        # Truncate graph_context to control cost/latency and preserve eval v12 reproducibility.
         raw_context = raw_ctx  # reuse value computed above
-        if len(raw_context) > GROQ_MAX_CONTEXT_CHARS:
-            raw_context = raw_context[:GROQ_MAX_CONTEXT_CHARS] + "\n... [context truncated]"
-            logger.debug(f"graph_context truncated to {GROQ_MAX_CONTEXT_CHARS} chars")
+        with open("context_audit.log", "a", encoding="utf-8") as _af:
+            print(f"CONTEXT_LEN_AUDIT raw_context_len={len(raw_context)} cap={SPEAKER_MAX_CONTEXT_CHARS} truncated={len(raw_context) > SPEAKER_MAX_CONTEXT_CHARS}", file=_af, flush=True)
+        if len(raw_context) > SPEAKER_MAX_CONTEXT_CHARS:
+            raw_context = raw_context[:SPEAKER_MAX_CONTEXT_CHARS] + "\n... [context truncated]"
+            logger.debug(f"graph_context truncated to {SPEAKER_MAX_CONTEXT_CHARS} chars")
 
         # Fix 5: Prevent false "followup" context note in new sessions with no real history.
         chat_history = state["chat_history"]
         intent_type = state.get("intent_type") or "explain"
-        _EMPTY_HISTORY = ("", "Belum ada riwayat percakapan.")
+        _EMPTY_HISTORY = ("", "No conversation history yet.")
         history_is_empty = chat_history.strip() in _EMPTY_HISTORY
         if intent_type == "followup" and history_is_empty:
             intent_type = "explain"
@@ -163,8 +166,10 @@ def generate_response_node(state: AgentState):
         # tightened prompt. Strip it deterministically when history is empty.
         final_content = response.content
         if history_is_empty:
+            # Note text is English (D5). Keep the Indonesian variant too so any
+            # cached/legacy responses are still stripped.
             note_pattern = re.compile(
-                r"\n*>\s*\*?\s*Jawaban ini menggunakan konteks[^\n]*\*?\s*\n*",
+                r"\n*>\s*\*?\s*(This answer uses context|Jawaban ini menggunakan konteks)[^\n]*\*?\s*\n*",
                 flags=re.IGNORECASE,
             )
             final_content = note_pattern.sub("\n", final_content).rstrip()
@@ -172,17 +177,17 @@ def generate_response_node(state: AgentState):
         return {"messages": [AIMessage(content=final_content)]}
     except Exception as e:
         logger.error(f"Response Gen failed: {e}")
-        return {"messages": [AIMessage(content="Terjadi error saat membuat respons.")]}
+        return {"messages": [AIMessage(content="An error occurred while generating the response.")]}
 
 
 def save_memory_node(state: AgentState):
-    """Saves the completed conversation turn to Zep."""
+    """Saves the completed conversation turn to SQLite memory store."""
     session_id = state.get("session_id", "default_session")
     try:
         user_msg = state["question"]
         ai_msg = state["messages"][-1].content if state["messages"] else ""
         if user_msg and ai_msg:
-            get_zep().add_message(
+            get_memory_store().add_message(
                 session_id=session_id,
                 user_msg=user_msg,
                 ai_msg=ai_msg

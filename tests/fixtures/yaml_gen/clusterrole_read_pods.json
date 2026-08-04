@@ -1,15 +1,15 @@
 {
   "id": "clusterrole_read_pods",
   "type": "yaml_gen",
-  "question": "Buat YAML ClusterRole yang mengizinkan read-only akses ke Pods",
+  "question": "Create a YAML ClusterRole that grants read-only access to Pods",
   "resource": "io.k8s.api.rbac.v1.ClusterRole",
   "scope": "Cluster",
   "multi_hop": false,
   "ground_truth": {
-    "answer": "ClusterRole YAML dengan rules yang berisi apiGroups: [''], resources: ['pods'], verbs: ['get','list','watch'].",
+    "answer": "apiVersion: rbac.authorization.k8s.io/v1\nkind: ClusterRole\nmetadata:\n  name: pod-reader\nrules:\n- apiGroups: [\"\"]\n  resources: [\"pods\"]\n  verbs: [\"get\", \"list\", \"watch\"]",
     "context": [
-      "io.k8s.api.rbac.v1.ClusterRole: ClusterRole contains rules representing a set of permissions.",
-      "io.k8s.api.rbac.v1.PolicyRule: verbs, apiGroups, resources define permissions"
+      "io.k8s.api.rbac.v1.ClusterRole: cluster-scoped role that contains rules representing a set of permissions; rules field is a list of PolicyRule",
+      "io.k8s.api.rbac.v1.PolicyRule: verbs, apiGroups, and resources fields define the allowed actions; empty string apiGroup targets the core API group"
     ],
     "relevant_nodes": [
       "io.k8s.api.rbac.v1.AggregationRule",
@@ -38,8 +38,11 @@
     "key_nodes": [
       "io.k8s.api.rbac.v1.ClusterRole",
       "io.k8s.api.rbac.v1.PolicyRule"
-    ]
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/reference/access-authn-authz/rbac/#role-and-clusterrole",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/authorization-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/authorization-resources/",
+  "lang": "en"
 }

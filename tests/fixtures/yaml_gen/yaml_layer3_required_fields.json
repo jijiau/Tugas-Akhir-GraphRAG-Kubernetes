@@ -1,15 +1,15 @@
 {
   "id": "yaml_layer3_required_fields",
   "type": "yaml_gen",
-  "question": "Buatkan YAML minimal Deployment yang hanya berisi field-field yang wajib (required) menurut API spec Kubernetes",
+  "question": "Create a minimal Deployment YAML containing only the fields that are required according to the Kubernetes API spec",
   "resource": "io.k8s.api.apps.v1.Deployment",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
     "answer": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: minimal-deployment\nspec:\n  selector:\n    matchLabels:\n      app: minimal\n  template:\n    metadata:\n      labels:\n        app: minimal\n    spec:\n      containers:\n      - name: app\n        image: nginx:latest",
     "context": [
-      "DeploymentSpec: selector and template are required fields per graph HAS_PROPERTY {is_required: true} edges",
-      "Container: name is the only required field"
+      "io.k8s.api.apps.v1.DeploymentSpec: selector (LabelSelector) and template (PodTemplateSpec) are the required fields per the API schema; replicas is optional",
+      "io.k8s.api.core.v1.Container: name is the only required field; all other fields (image, ports, env, resources, livenessProbe) are optional"
     ],
     "relevant_nodes": [
       "io.k8s.api.apps.v1.Deployment",
@@ -92,10 +92,12 @@
     "key_nodes": [
       "io.k8s.api.apps.v1.Deployment",
       "io.k8s.api.apps.v1.DeploymentSpec",
-      "io.k8s.api.core.v1.PodTemplateSpec",
       "io.k8s.api.core.v1.Container"
-    ]
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

@@ -6,7 +6,7 @@
   "scope": "Namespaced",
   "multi_hop": true,
   "so_question_id": "Shresth Suman",
-  "selection_score": 2.5,
+  "selection_score": 0.0,
   "selection_scores_breakdown": {
     "d1_graph_answerability": 3,
     "d2_path_annotability": 3,
@@ -83,7 +83,6 @@
       "io.k8s.api.core.v1.ProjectedVolumeSource",
       "io.k8s.api.core.v1.QuobyteVolumeSource",
       "io.k8s.api.core.v1.RBDVolumeSource",
-      "io.k8s.api.core.v1.ResourceClaim",
       "io.k8s.api.core.v1.ResourceRequirements",
       "io.k8s.api.core.v1.ResourceStatus",
       "io.k8s.api.core.v1.SELinuxOptions",
@@ -104,6 +103,7 @@
       "io.k8s.api.core.v1.VsphereVirtualDiskVolumeSource",
       "io.k8s.api.core.v1.WindowsSecurityContextOptions",
       "io.k8s.api.core.v1.WorkloadReference",
+      "io.k8s.api.resource.v1.ResourceClaim",
       "io.k8s.apimachinery.pkg.api.resource.Quantity",
       "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
     ],
@@ -225,10 +225,13 @@
     "answer_lang": "id",
     "key_nodes": [
       "io.k8s.api.core.v1.Pod"
-    ]
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://stackoverflow.com/questions/Shresth Suman",
   "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
   "so_url": "https://stackoverflow.com/questions/Shresth Suman",
-  "so_answer_score": 0
+  "so_answer_score": 0,
+  "oos_reason": "Tekton Pipelines — not K8s core swagger scope"
 }

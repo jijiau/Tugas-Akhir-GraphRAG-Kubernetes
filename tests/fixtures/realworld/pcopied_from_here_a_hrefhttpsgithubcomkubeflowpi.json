@@ -6,7 +6,7 @@
   "scope": "Cluster",
   "multi_hop": true,
   "so_question_id": "aronchick",
-  "selection_score": 2.5,
+  "selection_score": 0.0,
   "selection_scores_breakdown": {
     "d1_graph_answerability": 3,
     "d2_path_annotability": 3,
@@ -35,10 +35,13 @@
     "answer_lang": "id",
     "key_nodes": [
       "io.k8s.api.core.v1.Namespace"
-    ]
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://stackoverflow.com/questions/aronchick",
   "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
   "so_url": "https://stackoverflow.com/questions/aronchick",
-  "so_answer_score": 0
+  "so_answer_score": 0,
+  "oos_reason": "Kubeflow Pipelines Python mode — not K8s swagger scope"
 }

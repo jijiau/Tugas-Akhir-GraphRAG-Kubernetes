@@ -1,15 +1,16 @@
 {
   "id": "statefulset_pvc_pv",
   "type": "relationship",
-  "question": "Bagaimana StatefulSet mengelola penyimpanan persisten untuk setiap Pod?",
+  "question": "How does a StatefulSet manage persistent storage for each of its Pods?",
   "resource": "io.k8s.api.apps.v1.StatefulSet",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
-    "answer": "StatefulSet menggunakan volumeClaimTemplates untuk membuat PVC unik bagi setiap Pod replica. Setiap PVC kemudian mengikat ke PersistentVolume yang tersedia. Saat Pod di-reschedule, PVC yang sama tetap terikat sehingga data persisten.",
+    "answer": "StatefulSet uses the volumeClaimTemplates field in StatefulSetSpec to create a unique PersistentVolumeClaim for each Pod replica. Each entry in volumeClaimTemplates is a PersistentVolumeClaimTemplate (with embedded PersistentVolumeClaimSpec defining storageClassName, accessModes, and storage request). When a Pod is rescheduled, its PVC retains the same name and binding, so the data persists across Pod restarts.",
     "context": [
-      "StatefulSet: manages stateful applications with unique network identities",
-      "volumeClaimTemplates: list of PVC templates for each pod"
+      "io.k8s.api.apps.v1.StatefulSet: manages stateful applications with stable network identities and per-Pod persistent storage; spec field is StatefulSetSpec",
+      "io.k8s.api.apps.v1.StatefulSetSpec: volumeClaimTemplates is a list of PersistentVolumeClaimTemplates; one PVC is created per Pod replica and persists independently",
+      "io.k8s.api.core.v1.PersistentVolumeClaimSpec: storageClassName, accessModes, and resources.requests.storage define the storage requirements for each StatefulSet Pod"
     ],
     "relevant_nodes": [
       "io.k8s.api.apps.v1.RollingUpdateStatefulSetStrategy",
@@ -30,6 +31,7 @@
       "io.k8s.api.core.v1.PersistentVolumeClaimCondition",
       "io.k8s.api.core.v1.PersistentVolumeClaimSpec",
       "io.k8s.api.core.v1.PersistentVolumeClaimStatus",
+      "io.k8s.api.core.v1.PersistentVolumeClaimTemplate",
       "io.k8s.api.core.v1.PodDNSConfig",
       "io.k8s.api.core.v1.PodOS",
       "io.k8s.api.core.v1.PodReadinessGate",
@@ -107,9 +109,14 @@
     "key_nodes": [
       "io.k8s.api.apps.v1.StatefulSet",
       "io.k8s.api.apps.v1.StatefulSetSpec",
-      "io.k8s.api.core.v1.PersistentVolumeClaim"
-    ]
+      "io.k8s.api.core.v1.PersistentVolumeClaim",
+      "io.k8s.api.core.v1.PersistentVolumeClaimSpec",
+      "io.k8s.api.core.v1.PersistentVolumeClaimTemplate"
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

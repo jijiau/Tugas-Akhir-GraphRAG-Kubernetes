@@ -1,0 +1,47 @@
+{
+  "whole": {
+    "n_fixtures": 102,
+    "n_claims": 818,
+    "supported": 258,
+    "modality": 81,
+    "partial": 24,
+    "absent": 455,
+    "other": 0,
+    "document_pct_A_micro": 44.4,
+    "parametric_pct_A_micro": 55.6,
+    "document_pct_B_micro": 41.4,
+    "macro_document_pct_A": 48.8,
+    "macro_document_pct_B": 45.9,
+    "faithfulness_micro": 0.3154
+  },
+  "schema": {
+    "n_fixtures": 86,
+    "n_claims": 698,
+    "supported": 219,
+    "modality": 70,
+    "partial": 21,
+    "absent": 388,
+    "other": 0,
+    "document_pct_A_micro": 44.4,
+    "parametric_pct_A_micro": 55.6,
+    "document_pct_B_micro": 41.4,
+    "macro_document_pct_A": 48.2,
+    "macro_document_pct_B": 45.1,
+    "faithfulness_micro": 0.3138
+  },
+  "freetext": {
+    "n_fixtures": 16,
+    "n_claims": 120,
+    "supported": 39,
+    "modality": 11,
+    "partial": 3,
+    "absent": 67,
+    "other": 0,
+    "document_pct_A_micro": 44.2,
+    "parametric_pct_A_micro": 55.8,
+    "document_pct_B_micro": 41.7,
+    "macro_document_pct_A": 52.4,
+    "macro_document_pct_B": 49.8,
+    "faithfulness_micro": 0.325
+  }
+}

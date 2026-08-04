@@ -1,15 +1,15 @@
 {
   "id": "scale_existing_deployment",
   "type": "followup",
-  "context_question": "Buat YAML Deployment nginx dengan 3 replika",
-  "question": "Sekarang ubah jumlah replikanya menjadi 5",
+  "context_question": "Create a YAML Deployment for nginx with 3 replicas",
+  "question": "Now change the replica count to 5",
   "resource": "io.k8s.api.apps.v1.Deployment",
   "scope": "Namespaced",
   "multi_hop": false,
   "ground_truth": {
-    "answer": "Ubah spec.replicas menjadi 5 pada YAML Deployment yang sudah ada, atau gunakan kubectl scale deployment <nama> --replicas=5.",
+    "answer": "Set spec.replicas to 5 in the existing Deployment YAML, or use: kubectl scale deployment <name> --replicas=5.",
     "context": [
-      "DeploymentSpec.replicas: number of desired pods, defaults to 1"
+      "io.k8s.api.apps.v1.DeploymentSpec: replicas field specifies the desired number of Pod replicas; defaults to 1 if not set"
     ],
     "relevant_nodes": [
       "io.k8s.api.apps.v1.Deployment",
@@ -39,8 +39,11 @@
     "key_nodes": [
       "io.k8s.api.apps.v1.Deployment",
       "io.k8s.api.apps.v1.DeploymentSpec"
-    ]
+    ],
+    "gt_depth": 2,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

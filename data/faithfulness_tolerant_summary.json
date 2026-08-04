@@ -1,0 +1,37 @@
+{
+  "whole": {
+    "n_fixtures": 15,
+    "n_claims": 156,
+    "supported": 28,
+    "modality_equivalent": 9,
+    "partial": 10,
+    "absent": 109,
+    "other": 0,
+    "faithfulness_tolerant_micro": 0.2372,
+    "faithfulness_strict_equiv_micro": 0.1795
+  },
+  "n_failed": 0,
+  "failed_ids": [],
+  "pilot_modality_group": {
+    "n_fixtures": 10,
+    "n_claims": 69,
+    "supported": 24,
+    "modality_equivalent": 8,
+    "partial": 10,
+    "absent": 27,
+    "other": 0,
+    "faithfulness_tolerant_micro": 0.4638,
+    "faithfulness_strict_equiv_micro": 0.3478
+  },
+  "pilot_control_group": {
+    "n_fixtures": 5,
+    "n_claims": 87,
+    "supported": 4,
+    "modality_equivalent": 1,
+    "partial": 0,
+    "absent": 82,
+    "other": 0,
+    "faithfulness_tolerant_micro": 0.0575,
+    "faithfulness_strict_equiv_micro": 0.046
+  }
+}

@@ -1,15 +1,15 @@
 {
   "id": "deployment_3_replicas",
   "type": "yaml_gen",
-  "question": "Buat YAML untuk Deployment nginx dengan 3 replika menggunakan image nginx:latest",
+  "question": "Create a YAML Deployment for nginx with 3 replicas using image nginx:latest",
   "resource": "io.k8s.api.apps.v1.Deployment",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
     "answer": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: nginx-deployment\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: nginx\n  template:\n    metadata:\n      labels:\n        app: nginx\n    spec:\n      containers:\n      - name: nginx\n        image: nginx:latest",
     "context": [
-      "io.k8s.api.apps.v1.Deployment: Deployment enables declarative updates for Pods and ReplicaSets.",
-      "io.k8s.api.apps.v1.DeploymentSpec: replicas, selector, and template are core fields"
+      "io.k8s.api.apps.v1.Deployment: enables declarative updates for Pods and ReplicaSets; spec is DeploymentSpec",
+      "io.k8s.api.apps.v1.DeploymentSpec: replicas (desired Pod count), selector (LabelSelector), and template (PodTemplateSpec) are the core fields"
     ],
     "relevant_nodes": [
       "io.k8s.api.apps.v1.Deployment",
@@ -93,10 +93,12 @@
     ],
     "key_nodes": [
       "io.k8s.api.apps.v1.Deployment",
-      "io.k8s.api.apps.v1.DeploymentSpec",
-      "io.k8s.api.core.v1.PodTemplateSpec"
-    ]
+      "io.k8s.api.apps.v1.DeploymentSpec"
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

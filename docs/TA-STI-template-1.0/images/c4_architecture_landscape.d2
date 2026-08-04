@@ -1,0 +1,244 @@
+vars: {
+  d2-config: {
+    layout-engine: elk
+  }
+}
+
+direction: right
+
+classes: {
+  external: {
+    shape: rectangle
+    style.fill: "#eceef2"
+    style.font-color: "#33415c"
+    style.stroke: "#9aa5b1"
+    style.stroke-dash: 4
+    style.font-size: 18
+  }
+  container: {
+    shape: rectangle
+    style.fill: "#5b7fdb"
+    style.font-color: "#ffffff"
+    style.stroke: "#2c4a8f"
+    style.border-radius: 6
+    style.font-size: 18
+  }
+  datastore: {
+    shape: cylinder
+    style.fill: "#3d5a80"
+    style.font-color: "#ffffff"
+    style.stroke: "#22344d"
+    style.font-size: 18
+  }
+  rel: {
+    style.font-size: 18
+  }
+}
+
+title: "Arsitektur Implementasi" {
+  shape: text
+  style.font-size: 22
+  style.bold: true
+  near: top-center
+}
+
+# ── Aktor (icon + caption dipisah agar label person-shape tidak hilang) ──
+pengguna: "" {
+  style.fill: transparent
+  style.stroke: transparent
+  direction: right
+  sym: "" {
+    shape: person
+    style.fill: "#33415c"
+    style.stroke: "#1b2430"
+    width: 90
+    height: 90
+  }
+  caption: "Pengguna\nPraktisi DevOps / Pengembang Kubernetes" {
+    shape: text
+    style.font-size: 18
+    style.bold: true
+    style.font-color: "#1b2430"
+  }
+}
+
+k8s_spec: "Kubernetes OpenAPI Spec\nswagger.json" {
+  class: external
+  width: 229
+  height: 82
+}
+
+openai: "OpenAI API\nChat (GPT-4o-mini) & Embeddings" {
+  class: external
+  width: 285
+  height: 82
+}
+
+sistem: "Sistem GraphRAG Kubernetes" {
+  style.stroke-dash: 4
+  style.fill: "#f7f9fc"
+  style.stroke: "#5b6785"
+  direction: down
+
+  konstruksi: "Zona Konstruksi (offline)" {
+    style.fill: transparent
+    style.stroke: "#c9cdd4"
+
+    ingestion: "Ingestion Pipeline\n5 tahap: node → embedding →\nstruktural → hierarki → semantik" {
+      class: container
+      width: 275
+      height: 98
+    }
+  }
+
+  kueri: "Zona Kueri (runtime)" {
+    style.fill: transparent
+    style.stroke: "#c9cdd4"
+    direction: down
+
+    baris_atas: "" {
+      style.fill: transparent
+      style.stroke: transparent
+      direction: right
+
+      ui: "Streamlit\nWeb UI" {
+        class: container
+        width: 112
+        height: 82
+      }
+      pipeline: "LangGraph Agent Pipeline\nmemory → thinker → retriever → speaker → saver" {
+        class: container
+        width: 384
+        height: 82
+      }
+
+      ui -> pipeline: "invoke" { class: rel }
+    }
+    baris_bawah: "" {
+      style.fill: transparent
+      style.stroke: transparent
+      direction: right
+
+      retriever: "Hybrid Retriever\nTahap 1 exact match → Tahap 2\nvector similarity → Tahap 3 multi-hop" {
+        class: container
+        width: 309
+        height: 98
+      }
+      validator: "YAML Validator\n3 lapis: sintaks → skema → graf" {
+        class: container
+        width: 262
+        height: 82
+      }
+    }
+  }
+
+  penyimpanan: "Penyimpanan" {
+    style.fill: transparent
+    style.stroke: "#c9cdd4"
+    direction: down
+
+    neo4j: "Neo4j Knowledge Graph\nDefinition + 18 relasi / 7 kategori\n+ index vektor" {
+      class: datastore
+      width: 273
+      height: 150
+    }
+    sqlite: "SQLite\nConversation Memory" {
+      class: datastore
+      width: 202
+      height: 134
+    }
+  }
+}
+
+# ── Relasi lintas-zona ──────────────────────────────────────────────
+pengguna -> sistem.kueri.baris_atas.ui: "pertanyaan (bahasa alami)" { class: rel }
+
+sistem.kueri.baris_atas.pipeline -> sistem.kueri.baris_bawah.retriever: "retrieve_context()" { class: rel }
+sistem.kueri.baris_bawah.retriever -> sistem.penyimpanan.neo4j: "Tahap 1–3: exact match →\nvector search → multi-hop" { class: rel }
+sistem.kueri.baris_bawah.retriever -> openai: "embed query" { class: rel }
+
+sistem.kueri.baris_atas.pipeline -> sistem.kueri.baris_bawah.validator: "validasi YAML\n(intent generate_yaml)" { class: rel }
+sistem.kueri.baris_bawah.validator -> sistem.penyimpanan.neo4j: "cek required fields" { class: rel }
+
+sistem.kueri.baris_atas.pipeline <-> sistem.penyimpanan.sqlite: "riwayat percakapan" { class: rel }
+sistem.kueri.baris_atas.pipeline -> openai: "ekstraksi intent (thinker) &\ngenerasi jawaban open-book (speaker)" { class: rel }
+
+sistem.konstruksi.ingestion -> k8s_spec: "baca definitions" { class: rel }
+sistem.konstruksi.ingestion -> sistem.penyimpanan.neo4j: "tulis node & edge" { class: rel }
+sistem.konstruksi.ingestion -> openai: "buat embeddings" { class: rel }
+
+# ── Legenda (icon + caption terpisah per baris) ──────────────────────
+legenda: "Legenda" {
+  near: bottom-center
+  grid-columns: 4
+  horizontal-gap: 40
+  style.fill: "#ffffff"
+  style.stroke: "#c9cdd4"
+
+  row_actor: "" {
+    direction: right
+    style.fill: transparent
+    style.stroke: transparent
+    swatch: "" {
+      shape: person
+      style.fill: "#33415c"
+      style.stroke: "#1b2430"
+      width: 50
+      height: 50
+    }
+    caption: "Aktor" {
+      shape: text
+      style.font-size: 18
+    }
+  }
+  row_external: "" {
+    direction: right
+    style.fill: transparent
+    style.stroke: transparent
+    swatch: "" {
+      shape: rectangle
+      style.fill: "#eceef2"
+      style.stroke: "#9aa5b1"
+      style.stroke-dash: 4
+      width: 60
+      height: 40
+    }
+    caption: "Sistem Eksternal" {
+      shape: text
+      style.font-size: 18
+    }
+  }
+  row_container: "" {
+    direction: right
+    style.fill: transparent
+    style.stroke: transparent
+    swatch: "" {
+      shape: rectangle
+      style.fill: "#5b7fdb"
+      style.stroke: "#2c4a8f"
+      style.border-radius: 6
+      width: 60
+      height: 40
+    }
+    caption: "Container Aplikasi" {
+      shape: text
+      style.font-size: 18
+    }
+  }
+  row_datastore: "" {
+    direction: right
+    style.fill: transparent
+    style.stroke: transparent
+    swatch: "" {
+      shape: cylinder
+      style.fill: "#3d5a80"
+      style.stroke: "#22344d"
+      width: 50
+      height: 45
+    }
+    caption: "Datastore" {
+      shape: text
+      style.font-size: 18
+    }
+  }
+}

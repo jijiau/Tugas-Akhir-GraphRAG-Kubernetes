@@ -1,17 +1,17 @@
 {
   "id": "hpa_deployment_pod",
   "type": "relationship",
-  "question": "Saya sudah set HPA dengan targetCPUUtilizationPercentage 50% untuk Deployment saya, tapi meskipun CPU usage sudah di atas 80% selama beberapa menit, jumlah Pod tidak bertambah. Bagaimana HPA seharusnya mengatur jumlah Pod dan apa yang mungkin menyebabkan HPA tidak bekerja?",
+  "question": "What schema fields does HorizontalPodAutoscaler define to control auto-scaling, and how does the spec reference the target workload and define scaling metrics?",
   "resource": "io.k8s.api.autoscaling.v2.HorizontalPodAutoscaler",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
-    "answer": "HPA bekerja dengan cara: membaca metrik CPU dari Metrics Server setiap 15 detik → membandingkan dengan targetCPUUtilizationPercentage → menghitung jumlah replika baru → mengupdate spec.replicas di Deployment → Deployment membuat Pod baru via ReplicaSet. Jika HPA tidak scale, kemungkinan penyebab: (1) Metrics Server tidak terinstall atau tidak berjalan — HPA tidak bisa membaca metrik; (2) Pod tidak mendefinisikan resource requests CPU — HPA tidak bisa menghitung persentase penggunaan tanpa baseline requests; (3) HPA sudah mencapai maxReplicas; (4) ada cooldown period (default 5 menit setelah scale-up terakhir). Cek dengan: kubectl describe hpa <nama>.",
+    "answer": "HorizontalPodAutoscaler auto-scaling is defined entirely by schema fields in HorizontalPodAutoscalerSpec. The scaleTargetRef field (type CrossVersionObjectReference with apiVersion, kind, and name) identifies the workload to scale. The minReplicas and maxReplicas fields bound the replica range. The metrics field is a list of MetricSpec objects — each MetricSpec has a type field (Resource, Pods, Object, External, or ContainerResource) and a corresponding source sub-schema. For CPU-based scaling, MetricSpec uses type Resource with a ResourceMetricSource that specifies a MetricTarget with averageUtilization. For CPU utilization percentages to be computable, the containers must declare ResourceRequirements.requests.cpu — without a requests baseline, the percentage cannot be derived. The status field (HorizontalPodAutoscalerStatus) exposes currentReplicas and a conditions list of HorizontalPodAutoscalerCondition objects that describe whether scaling is active.",
     "context": [
-      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerSpec: scaleTargetRef, minReplicas, maxReplicas, metrics",
-      "io.k8s.api.autoscaling.v2.MetricSpec: mendefinisikan metrik yang digunakan untuk scaling decision",
-      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerStatus: currentReplicas dan conditions menunjukkan state HPA",
-      "io.k8s.api.autoscaling.v2.CrossVersionObjectReference: referensi ke Deployment target"
+      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerSpec: scaleTargetRef, minReplicas, maxReplicas, and metrics fields define the autoscaling configuration",
+      "io.k8s.api.autoscaling.v2.CrossVersionObjectReference: identifies the target workload by apiVersion, kind, and name",
+      "io.k8s.api.autoscaling.v2.MetricSpec: type field selects the metric variant; Resource type uses ResourceMetricSource with a MetricTarget specifying averageUtilization",
+      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerStatus: currentReplicas and conditions (HorizontalPodAutoscalerCondition list) expose the current scaling state"
     ],
     "relevant_nodes": [
       "io.k8s.api.apps.v1.Deployment",
@@ -36,17 +36,14 @@
       "io.k8s.api.autoscaling.v1.HorizontalPodAutoscalerStatus",
       "io.k8s.api.autoscaling.v2.ContainerResourceMetricSource",
       "io.k8s.api.autoscaling.v2.ContainerResourceMetricStatus",
-      "io.k8s.api.autoscaling.v2.CrossVersionObjectReference",
       "io.k8s.api.autoscaling.v2.ExternalMetricSource",
       "io.k8s.api.autoscaling.v2.ExternalMetricStatus",
       "io.k8s.api.autoscaling.v2.HPAScalingRules",
-      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscaler",
       "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerBehavior",
       "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerCondition",
-      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerSpec",
-      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerStatus",
       "io.k8s.api.autoscaling.v2.MetricSpec",
       "io.k8s.api.autoscaling.v2.MetricStatus",
+      "io.k8s.api.autoscaling.v2.MetricTarget",
       "io.k8s.api.autoscaling.v2.ObjectMetricSource",
       "io.k8s.api.autoscaling.v2.ObjectMetricStatus",
       "io.k8s.api.autoscaling.v2.PodsMetricSource",
@@ -58,6 +55,7 @@
       "io.k8s.api.core.v1.PersistentVolumeClaimStatus",
       "io.k8s.api.core.v1.PodSpec",
       "io.k8s.api.core.v1.PodTemplateSpec",
+      "io.k8s.api.core.v1.ResourceRequirements",
       "io.k8s.api.storage.v1.StorageClass",
       "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
     ],
@@ -116,12 +114,20 @@
     "required_fields": [],
     "expected_yaml_keys": [],
     "key_nodes": [
-      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscaler",
-      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerSpec",
-      "io.k8s.api.autoscaling.v2.CrossVersionObjectReference",
-      "io.k8s.api.apps.v1.Deployment"
-    ]
+      "io.k8s.api.autoscaling.v1.CrossVersionObjectReference",
+      "io.k8s.api.autoscaling.v1.HorizontalPodAutoscaler",
+      "io.k8s.api.autoscaling.v1.HorizontalPodAutoscalerSpec",
+      "io.k8s.api.autoscaling.v1.HorizontalPodAutoscalerStatus",
+      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerCondition",
+      "io.k8s.api.autoscaling.v2.MetricSpec",
+      "io.k8s.api.autoscaling.v2.MetricTarget",
+      "io.k8s.api.autoscaling.v2.ResourceMetricSource",
+      "io.k8s.api.core.v1.ResourceRequirements"
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

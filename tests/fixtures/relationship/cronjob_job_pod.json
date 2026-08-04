@@ -1,15 +1,16 @@
 {
   "id": "cronjob_job_pod",
   "type": "relationship",
-  "question": "Bagaimana CronJob membuat dan mengelola Pod?",
+  "question": "What schema chain in the CronJob API connects a CronJob definition to the Pod spec it will eventually run?",
   "resource": "io.k8s.api.batch.v1.CronJob",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
-    "answer": "CronJob membuat Job baru berdasarkan jadwal cron yang ditentukan. Setiap Job yang dibuat kemudian membuat Pod untuk menjalankan tugas. Rantai: CronJob → JobTemplate → Job → Pod.",
+    "answer": "CronJob creates a new Job according to the cron schedule defined in its spec. Each Job then creates a Pod to run the task to completion. The schema chain is: CronJob → CronJobSpec.jobTemplate (JobTemplateSpec) → JobSpec → Pod template.",
     "context": [
-      "CronJob: manages time-based Jobs",
-      "JobSpec: describes how the job execution will look like"
+      "io.k8s.api.batch.v1.CronJob: manages time-based Job creation using a cron schedule; spec field is CronJobSpec",
+      "io.k8s.api.batch.v1.CronJobSpec: schedule (cron expression), jobTemplate (JobTemplateSpec), and concurrencyPolicy fields control recurring Job creation",
+      "io.k8s.api.batch.v1.JobSpec: template field (PodTemplateSpec) defines the Pod that runs the task; completions and backoffLimit control completion and retry behavior"
     ],
     "relevant_nodes": [
       "io.k8s.api.batch.v1.CronJob",
@@ -40,10 +41,13 @@
     "key_nodes": [
       "io.k8s.api.batch.v1.CronJob",
       "io.k8s.api.batch.v1.CronJobSpec",
-      "io.k8s.api.batch.v1.JobTemplateSpec",
-      "io.k8s.api.batch.v1.JobSpec"
-    ]
+      "io.k8s.api.batch.v1.JobSpec",
+      "io.k8s.api.batch.v1.JobTemplateSpec"
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

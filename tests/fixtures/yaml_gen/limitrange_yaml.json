@@ -1,0 +1,49 @@
+{
+  "id": "limitrange_yaml",
+  "type": "yaml_gen",
+  "question": "Create a Kubernetes LimitRange YAML that sets default CPU and memory limits and requests for Containers in a namespace.",
+  "resource": "io.k8s.api.core.v1.LimitRange",
+  "scope": "Namespaced",
+  "multi_hop": true,
+  "lang": "en",
+  "ground_truth": {
+    "answer": "apiVersion: v1\nkind: LimitRange\nmetadata:\n  name: resource-limits\n  namespace: default\nspec:\n  limits:\n  - type: Container\n    default:\n      cpu: \"500m\"\n      memory: \"256Mi\"\n    defaultRequest:\n      cpu: \"100m\"\n      memory: \"64Mi\"\n    max:\n      cpu: \"2\"\n      memory: \"1Gi\"",
+    "context": [
+      "io.k8s.api.core.v1.LimitRange: namespaced resource constraint policy; spec.limits is LimitRangeItem list",
+      "io.k8s.api.core.v1.LimitRangeItem: type Container; default (injected limit), defaultRequest (injected request), and max (upper bound) map resource names to Quantity"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.LimitRange",
+      "io.k8s.api.core.v1.LimitRangeItem",
+      "io.k8s.api.core.v1.LimitRangeSpec",
+      "io.k8s.apimachinery.pkg.api.resource.Quantity"
+    ],
+    "expected_path": [
+      "LimitRange -[HAS_PROPERTY]-> LimitRangeSpec",
+      "LimitRangeItem -[HAS_PROPERTY]-> Quantity",
+      "LimitRangeSpec -[HAS_PROPERTY]-> LimitRangeItem"
+    ],
+    "key_nodes": [
+      "io.k8s.api.core.v1.Container",
+      "io.k8s.api.core.v1.LimitRange",
+      "io.k8s.api.core.v1.LimitRangeItem"
+    ],
+    "required_fields": [
+      "apiVersion",
+      "kind",
+      "metadata",
+      "spec"
+    ],
+    "expected_yaml_keys": [
+      "spec.limits",
+      "spec.limits[].type",
+      "spec.limits[].default",
+      "spec.limits[].defaultRequest"
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
+  },
+  "source_reference": "https://kubernetes.io/docs/reference/kubernetes-api/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

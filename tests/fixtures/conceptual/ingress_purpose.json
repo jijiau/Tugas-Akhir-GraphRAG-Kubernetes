@@ -1,18 +1,17 @@
 {
   "id": "ingress_purpose",
   "type": "conceptual",
-  "question": "Saya punya tiga Service berbeda — frontend, backend API, dan docs — dan ingin expose semuanya ke internet di bawah satu domain dengan path yang berbeda (/api, /docs). Apa yang harus dibuat di Kubernetes?",
+  "question": "How does an Ingress resource route external HTTP traffic to multiple Services under a single domain using different URL paths?",
   "resource": "io.k8s.api.networking.v1.Ingress",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
-    "answer": "Buat satu resource Ingress dengan rules yang mendefinisikan routing berdasarkan path. Dalam IngressSpec, definisikan satu IngressRule dengan host domain, lalu setiap path (/api, /docs, /) diarahkan ke backend Service yang berbeda via HTTPIngressPath. Satu Ingress Controller (misal NGINX) yang sudah terinstall akan menangani semua routing ini dengan hanya satu cloud load balancer — jauh lebih hemat daripada satu LoadBalancer per Service. Pastikan juga menginstall Ingress Controller terlebih dahulu karena resource Ingress sendiri tidak otomatis membuat load balancer.",
+    "answer": "An Ingress defines HTTP routing rules in its IngressSpec. The rules field is a list of IngressRule objects, each optionally scoped to a hostname. Within each rule, the http field contains an HTTPIngressRuleValue with a paths list of HTTPIngressPath entries, each mapping a URL path and a pathType (Prefix or Exact) to a backend defined by an IngressServiceBackend specifying the target Service name and port. A defaultBackend in IngressSpec handles requests that match no path rule. An Ingress controller (a separate component) reads these schema-defined rules and configures the underlying proxy.",
     "context": [
-      "io.k8s.api.networking.v1.Ingress: resource untuk mengelola routing HTTP/HTTPS eksternal ke banyak Service",
-      "io.k8s.api.networking.v1.IngressSpec: mendefinisikan rules dan defaultBackend",
-      "io.k8s.api.networking.v1.IngressRule: routing berdasarkan host dan HTTP paths",
-      "io.k8s.api.networking.v1.HTTPIngressPath: memetakan path tertentu ke satu Service backend",
-      "io.k8s.api.networking.v1.IngressServiceBackend: referensi ke Service dan port tujuan"
+      "io.k8s.api.networking.v1.IngressSpec: rules is a list of IngressRule objects; defaultBackend handles unmatched requests",
+      "io.k8s.api.networking.v1.IngressRule: optional host scopes the rule to a hostname; http contains the path routing rules",
+      "io.k8s.api.networking.v1.HTTPIngressPath: maps a path string and pathType to an IngressServiceBackend",
+      "io.k8s.api.networking.v1.IngressServiceBackend: specifies the target Service name and port for a routing rule"
     ],
     "relevant_nodes": [
       "io.k8s.api.core.v1.Pod",
@@ -31,13 +30,9 @@
       "io.k8s.api.networking.v1.IngressTLS"
     ],
     "expected_path": [
-      "HTTPIngressPath -[HAS_PROPERTY]-> IngressBackend",
-      "HTTPIngressRuleValue -[HAS_PROPERTY]-> HTTPIngressPath",
       "Ingress -[HAS_PROPERTY]-> IngressSpec",
       "Ingress -[HAS_PROPERTY]-> IngressStatus",
       "Ingress -[ROUTES_TO_SERVICE]-> Service",
-      "IngressBackend -[HAS_PROPERTY]-> IngressServiceBackend",
-      "IngressRule -[HAS_PROPERTY]-> HTTPIngressRuleValue",
       "IngressSpec -[HAS_PROPERTY]-> IngressBackend",
       "IngressSpec -[HAS_PROPERTY]-> IngressRule",
       "IngressSpec -[HAS_PROPERTY]-> IngressTLS",
@@ -49,12 +44,18 @@
     "required_fields": [],
     "expected_yaml_keys": [],
     "key_nodes": [
+      "io.k8s.api.core.v1.Service",
+      "io.k8s.api.networking.v1.HTTPIngressPath",
+      "io.k8s.api.networking.v1.HTTPIngressRuleValue",
       "io.k8s.api.networking.v1.Ingress",
-      "io.k8s.api.networking.v1.IngressSpec",
       "io.k8s.api.networking.v1.IngressRule",
-      "io.k8s.api.networking.v1.HTTPIngressPath"
-    ]
+      "io.k8s.api.networking.v1.IngressServiceBackend",
+      "io.k8s.api.networking.v1.IngressSpec"
+    ],
+    "gt_depth": 2,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/services-networking/ingress/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/service-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/service-resources/",
+  "lang": "en"
 }

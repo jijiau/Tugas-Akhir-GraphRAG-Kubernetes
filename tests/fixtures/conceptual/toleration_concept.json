@@ -1,0 +1,28 @@
+{
+  "id": "toleration_concept",
+  "type": "conceptual",
+  "question": "What fields define a Kubernetes Toleration, and how do they match node taints?",
+  "resource": "io.k8s.api.core.v1.Toleration",
+  "scope": "Namespaced",
+  "multi_hop": false,
+  "lang": "en",
+  "ground_truth": {
+    "answer": "A Toleration allows a Pod to be scheduled onto a node that has a matching taint. key names the taint key; operator is Exists (tolerates any value for the key) or Equal (value must match); value is the taint value matched when operator is Equal; effect specifies which taint effect to tolerate: NoSchedule (prevents scheduling), PreferNoSchedule (discourages scheduling), or NoExecute (evicts running Pods); an empty effect tolerates all effects. tolerationSeconds applies only to NoExecute and specifies how long the Pod may remain on the tainted node before being evicted. A Toleration with an empty key and operator Exists tolerates all taints.",
+    "context": [
+      "io.k8s.api.core.v1.Toleration: key, operator (Exists/Equal), value, effect (NoSchedule/PreferNoSchedule/NoExecute), and tolerationSeconds fields define taint-toleration matching and eviction behavior"
+    ],
+    "relevant_nodes": [
+      "io.k8s.api.core.v1.Toleration"
+    ],
+    "expected_path": [],
+    "key_nodes": [
+      "io.k8s.api.core.v1.Toleration"
+    ],
+    "required_fields": [],
+    "expected_yaml_keys": [],
+    "gt_depth": 2,
+    "n_roots": 1
+  },
+  "source_reference": "https://kubernetes.io/docs/reference/kubernetes-api/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+}

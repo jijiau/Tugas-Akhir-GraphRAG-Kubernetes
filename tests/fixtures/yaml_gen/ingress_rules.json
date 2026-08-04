@@ -1,15 +1,15 @@
 {
   "id": "ingress_rules",
   "type": "yaml_gen",
-  "question": "Buat YAML Ingress yang merutekan traffic dari domain app.example.com ke service my-service port 80",
+  "question": "Create a YAML Ingress that routes traffic from domain app.example.com to service my-service on port 80",
   "resource": "io.k8s.api.networking.v1.Ingress",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
     "answer": "apiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: example-ingress\nspec:\n  rules:\n    - host: app.example.com\n      http:\n        paths:\n          - path: /\n            pathType: Prefix\n            backend:\n              service:\n                name: my-service\n                port:\n                  number: 80",
     "context": [
-      "io.k8s.api.networking.v1.Ingress: Ingress manages external access to services in a cluster.",
-      "io.k8s.api.networking.v1.IngressRule: host and http define routing rules"
+      "io.k8s.api.networking.v1.Ingress: manages external HTTP/HTTPS access to Services in a cluster; spec is IngressSpec",
+      "io.k8s.api.networking.v1.IngressRule: host and http (HTTPIngressRuleValue) define routing rules; http contains a list of HTTPIngressPath with backend IngressServiceBackend"
     ],
     "relevant_nodes": [
       "io.k8s.api.core.v1.LoadBalancerStatus",
@@ -72,10 +72,12 @@
     ],
     "key_nodes": [
       "io.k8s.api.networking.v1.Ingress",
-      "io.k8s.api.networking.v1.IngressSpec",
       "io.k8s.api.networking.v1.IngressRule"
-    ]
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/services-networking/ingress/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/service-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/service-resources/",
+  "lang": "en"
 }

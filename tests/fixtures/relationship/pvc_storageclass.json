@@ -1,18 +1,19 @@
 {
   "id": "pvc_storageclass",
   "type": "relationship",
-  "question": "Bagaimana PersistentVolumeClaim berhubungan dengan StorageClass?",
+  "question": "How does a PersistentVolumeClaim reference a StorageClass in the Kubernetes API schema?",
   "resource": "io.k8s.api.core.v1.PersistentVolumeClaim",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
-    "answer": "PVC menggunakan spec.storageClassName untuk meminta StorageClass tertentu. StorageClass kemudian melakukan dynamic provisioning PersistentVolume sesuai permintaan PVC.",
+    "answer": "PersistentVolumeClaimSpec contains a storageClassName field (string) that names the StorageClass the PVC requests. The KG represents this with a USES_STORAGE_CLASS edge from PersistentVolumeClaim to StorageClass. StorageClass defines the provisioner, reclaimPolicy, and parameters fields that describe how a PersistentVolume should be created for matching PVCs. PersistentVolumeClaimSpec also specifies accessModes (the access pattern required) and resources.requests.storage (the Quantity of storage requested).",
     "context": [
-      "io.k8s.api.core.v1.PersistentVolumeClaimSpec: storageClassName references a StorageClass.",
-      "PVC -[USES_STORAGE_CLASS]-> StorageClass"
+      "io.k8s.api.core.v1.PersistentVolumeClaimSpec: storageClassName references a StorageClass by name; accessModes and resources.requests.storage define the storage requirements",
+      "io.k8s.api.storage.v1.StorageClass: defines provisioner, reclaimPolicy, volumeBindingMode, and parameters fields that control how PersistentVolumes are provisioned for matching PVCs"
     ],
     "relevant_nodes": [
       "io.k8s.api.core.v1.ModifyVolumeStatus",
+      "io.k8s.api.core.v1.PersistentVolume",
       "io.k8s.api.core.v1.PersistentVolumeClaim",
       "io.k8s.api.core.v1.PersistentVolumeClaimCondition",
       "io.k8s.api.core.v1.PersistentVolumeClaimSpec",
@@ -46,11 +47,16 @@
     "required_fields": [],
     "expected_yaml_keys": [],
     "key_nodes": [
+      "io.k8s.api.core.v1.PersistentVolume",
       "io.k8s.api.core.v1.PersistentVolumeClaim",
       "io.k8s.api.core.v1.PersistentVolumeClaimSpec",
-      "io.k8s.api.storage.v1.StorageClass"
-    ]
+      "io.k8s.api.storage.v1.StorageClass",
+      "io.k8s.apimachinery.pkg.api.resource.Quantity"
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

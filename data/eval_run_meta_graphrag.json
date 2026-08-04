@@ -1,0 +1,9 @@
+{
+  "mode": "graphrag",
+  "ablation": null,
+  "run_id": "730915f0",
+  "n_fixtures": 103,
+  "output_csv": "data\\eval_results_graphrag.csv",
+  "git_commit": "9f847cb",
+  "timestamp": "2026-06-14T17:34:06.589441"
+}

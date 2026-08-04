@@ -11,7 +11,6 @@
 
 import sqlite3
 import logging
-import os
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
@@ -49,22 +48,15 @@ def _db() -> sqlite3.Connection:
     return _conn
 
 
-# ---------------------------------------------------------------------------
-# Public store class — API identik dengan ZepMemoryStore sebelumnya
-# ---------------------------------------------------------------------------
-class ZepMemoryStore:
-    """
-    Conversation memory berbasis SQLite.
-    Nama kelas dipertahankan 'ZepMemoryStore' agar tidak ada perubahan
-    di graph_agent.py atau file lain yang mengimpornya.
-    """
+# Public store class
+class SQLiteMemoryStore:
+    """Conversation memory berbasis SQLite."""
 
     def __init__(self):
-        # Inisialisasi DB saat pertama kali diinstansiasi
         _db()
-        logger.info("ZepMemoryStore: menggunakan SQLite lokal (tanpa Zep server).")
+        logger.info("SQLiteMemoryStore: menggunakan SQLite lokal.")
 
-    # ── internal save ───────────────────────────────────────────────────────
+    # internal save
 
     def save_memory(self, session_id: str, role: str, content: str):
         role = "user" if role.lower() in ("user", "human") else "assistant"
@@ -77,7 +69,7 @@ class ZepMemoryStore:
         except Exception as e:
             logger.warning(f"SQLiteMemory: gagal menyimpan pesan: {e}")
 
-    # ── internal get ────────────────────────────────────────────────────────
+    # internal get
 
     def get_memory(self, session_id: str, limit: int = 5) -> str:
         try:
@@ -97,7 +89,7 @@ class ZepMemoryStore:
             logger.warning(f"SQLiteMemory: gagal mengambil riwayat: {e}")
             return ""
 
-    # ── public aliases (semua calling convention didukung) ──────────────────
+    # public aliases (semua calling convention didukung)
 
     def add_message(self, session_id: str = None, role: str = None,
                     content: str = None, user_msg: str = None,
@@ -127,3 +119,7 @@ class ZepMemoryStore:
 
     def get_context(self, session_id: str, limit: int = 5) -> str:
         return self.get_memory(session_id=session_id, limit=limit)
+
+
+# Backward-compat alias — kode lama yang masih mengimport ZepMemoryStore tidak perlu diubah
+ZepMemoryStore = SQLiteMemoryStore

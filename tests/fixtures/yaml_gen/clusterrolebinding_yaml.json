@@ -1,26 +1,26 @@
 {
   "id": "clusterrolebinding_yaml",
   "type": "yaml_gen",
-  "question": "Buatkan YAML ClusterRoleBinding untuk memberikan akses ClusterRole 'cluster-admin' ke ServiceAccount 'admin-sa' di namespace kube-system",
+  "question": "Create a YAML ClusterRoleBinding that grants the 'cluster-admin' ClusterRole to ServiceAccount 'admin-sa' in namespace kube-system",
   "resource": "io.k8s.api.rbac.v1.ClusterRoleBinding",
   "scope": "Cluster",
   "multi_hop": true,
   "ground_truth": {
     "answer": "apiVersion: rbac.authorization.k8s.io/v1\nkind: ClusterRoleBinding\nmetadata:\n  name: admin-binding\nsubjects:\n- kind: ServiceAccount\n  name: admin-sa\n  namespace: kube-system\nroleRef:\n  kind: ClusterRole\n  name: cluster-admin\n  apiGroup: rbac.authorization.k8s.io",
     "context": [
-      "ClusterRoleBinding: grants cluster-wide permissions defined in a ClusterRole to subjects",
-      "ClusterRole: cluster-scoped role that can be referenced by ClusterRoleBinding"
+      "io.k8s.api.rbac.v1.ClusterRoleBinding: grants cluster-wide permissions defined in a ClusterRole to a set of subjects; subjects and roleRef are both required",
+      "io.k8s.api.rbac.v1.ClusterRole: cluster-scoped role that can be referenced by a ClusterRoleBinding; rules field lists PolicyRule objects"
     ],
     "relevant_nodes": [
       "io.k8s.api.core.v1.LocalObjectReference",
       "io.k8s.api.core.v1.ObjectReference",
       "io.k8s.api.core.v1.ServiceAccount",
+      "io.k8s.api.flowcontrol.v1.Subject",
       "io.k8s.api.rbac.v1.AggregationRule",
       "io.k8s.api.rbac.v1.ClusterRole",
       "io.k8s.api.rbac.v1.ClusterRoleBinding",
       "io.k8s.api.rbac.v1.PolicyRule",
       "io.k8s.api.rbac.v1.RoleRef",
-      "io.k8s.api.rbac.v1.Subject",
       "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
     ],
     "expected_path": [
@@ -48,11 +48,14 @@
       "roleRef.name"
     ],
     "key_nodes": [
-      "io.k8s.api.rbac.v1.ClusterRoleBinding",
+      "io.k8s.api.core.v1.ServiceAccount",
       "io.k8s.api.rbac.v1.ClusterRole",
-      "io.k8s.api.core.v1.ServiceAccount"
-    ]
+      "io.k8s.api.rbac.v1.ClusterRoleBinding"
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/reference/access-authn-authz/rbac/#rolebinding-and-clusterrolebinding",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/authorization-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/authorization-resources/",
+  "lang": "en"
 }

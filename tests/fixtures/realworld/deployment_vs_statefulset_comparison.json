@@ -1,7 +1,7 @@
 {
   "id": "deployment_vs_statefulset_comparison",
   "type": "realworld",
-  "question": "Apa perbedaan antara Deployment dan StatefulSet? Kapan sebaiknya menggunakan masing-masing?",
+  "question": "What are the schema-level differences between a Deployment and a StatefulSet in Kubernetes?",
   "resource": "io.k8s.api.apps.v1.Deployment",
   "scope": "Namespaced",
   "multi_hop": true,
@@ -17,11 +17,11 @@
   },
   "selection_rationale": "SO answer score 89. Both Deployment and StatefulSet exist in graph. Cross-resource conceptual comparison is a new pattern (all existing conceptual fixtures cover single resources in isolation). D2=2 because expected_path spans two separate root nodes. G4 penalty applied (StatefulSet covered individually) but comparison angle is new.",
   "ground_truth": {
-    "answer": "Deployment cocok untuk aplikasi stateless yang semua Pod-nya identik dan dapat dibuat ulang kapan saja. StatefulSet digunakan untuk aplikasi stateful yang membutuhkan identitas Pod yang stabil, urutan deployment/termination, dan penyimpanan persisten per-Pod. Contoh: gunakan Deployment untuk web server, gunakan StatefulSet untuk database seperti MySQL atau Cassandra.",
+    "answer": "Deployment is suited for stateless applications where all Pods are identical and can be recreated at any time. StatefulSet is used for stateful applications that need stable Pod identities, ordered deployment/termination, and per-Pod persistent storage via volumeClaimTemplates.",
     "context": [
-      "io.k8s.api.apps.v1.Deployment: enables declarative updates for stateless Pods and ReplicaSets; Pods are interchangeable",
-      "io.k8s.api.apps.v1.StatefulSet: manages stateful applications with stable network IDs and persistent storage per Pod",
-      "io.k8s.api.apps.v1.StatefulSetSpec: volumeClaimTemplates provides stable per-Pod PersistentVolumeClaims"
+      "io.k8s.api.apps.v1.Deployment: enables declarative updates for stateless Pods and ReplicaSets; Pods are interchangeable — any can be replaced or rescheduled freely",
+      "io.k8s.api.apps.v1.StatefulSet: manages stateful applications with stable network identities and per-Pod persistent storage; Pods are not interchangeable",
+      "io.k8s.api.apps.v1.StatefulSetSpec: volumeClaimTemplates provides stable per-Pod PersistentVolumeClaims that persist across rescheduling"
     ],
     "relevant_nodes": [
       "io.k8s.api.apps.v1.Deployment",
@@ -88,22 +88,22 @@
       "PodSpec -[MOUNTS_VOLUME]-> Volume",
       "PodSpec -[USES_SECRET]-> Secret",
       "PodSpec -[USES_SERVICE_ACCOUNT]-> ServiceAccount",
-      "PodTemplateSpec -[HAS_PROPERTY]-> PodSpec",
-      "StatefulSet -[HAS_PROPERTY]-> StatefulSetSpec",
-      "StatefulSetSpec -[HAS_PROPERTY]-> PersistentVolumeClaim"
+      "PodTemplateSpec -[HAS_PROPERTY]-> PodSpec"
     ],
     "required_fields": [],
     "expected_yaml_keys": [],
     "answer_lang": "id",
     "key_nodes": [
       "io.k8s.api.apps.v1.Deployment",
-      "io.k8s.api.apps.v1.DeploymentSpec",
       "io.k8s.api.apps.v1.StatefulSet",
       "io.k8s.api.apps.v1.StatefulSetSpec"
-    ]
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://stackoverflow.com/questions/48072461",
   "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
   "so_url": "https://stackoverflow.com/questions/48072461",
-  "so_answer_score": 89
+  "so_answer_score": 89,
+  "lang": "en"
 }

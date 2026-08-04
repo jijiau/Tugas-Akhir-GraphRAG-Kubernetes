@@ -1,16 +1,15 @@
 {
   "id": "extends_hpa_metric",
   "type": "relationship",
-  "question": "Bagaimana HorizontalPodAutoscaler mewarisi definisi MetricSpec dari tipe dasar autoscaling?",
+  "question": "How does HorizontalPodAutoscalerSpec define its metric sources, and what types does MetricSpec support?",
   "resource": "io.k8s.api.autoscaling.v2.HorizontalPodAutoscaler",
   "scope": "Namespaced",
   "multi_hop": true,
   "ground_truth": {
-    "answer": "HorizontalPodAutoscalerSpec mewarisi (extends) struktur MetricSpec melalui relasi allOf. MetricSpec mendefinisikan tipe metrik (Resource, Pods, Object, External, ContainerResource) yang digunakan HPA untuk menentukan threshold scaling. Relasi EXTENDS ini tidak bisa diketahui hanya dari pencarian vektor — hanya tersedia di knowledge graph.",
+    "answer": "HorizontalPodAutoscalerSpec includes a metrics field that is a list of MetricSpec objects. The EXTENDS relationship in the KG represents the allOf composition between HPA and its metric type hierarchy. MetricSpec has a type field that selects the metric variant: Resource, Pods, Object, External, or ContainerResource. Each variant has a corresponding source sub-schema (ResourceMetricSource, PodsMetricSource, ObjectMetricSource, etc.). This relationship is only visible through the knowledge graph — a vector search alone cannot reveal the allOf composition structure.",
     "context": [
-      "HorizontalPodAutoscalerSpec: defines desired behavior of autoscaler",
-      "MetricSpec: defines monitoring of a particular metric — type field selects the variant",
-      "allOf inheritance: HPA metrics extend from a base spec structure"
+      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerSpec: metrics field is a list of MetricSpec objects defining the scaling criteria; also contains scaleTargetRef, minReplicas, maxReplicas",
+      "io.k8s.api.autoscaling.v2.MetricSpec: type field selects the metric variant among Resource, Pods, Object, External, and ContainerResource; each variant has a dedicated source sub-schema"
     ],
     "relevant_nodes": [
       "io.k8s.api.apps.v1.Deployment",
@@ -35,15 +34,11 @@
       "io.k8s.api.autoscaling.v1.HorizontalPodAutoscalerStatus",
       "io.k8s.api.autoscaling.v2.ContainerResourceMetricSource",
       "io.k8s.api.autoscaling.v2.ContainerResourceMetricStatus",
-      "io.k8s.api.autoscaling.v2.CrossVersionObjectReference",
       "io.k8s.api.autoscaling.v2.ExternalMetricSource",
       "io.k8s.api.autoscaling.v2.ExternalMetricStatus",
       "io.k8s.api.autoscaling.v2.HPAScalingRules",
-      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscaler",
       "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerBehavior",
       "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerCondition",
-      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerSpec",
-      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerStatus",
       "io.k8s.api.autoscaling.v2.MetricSpec",
       "io.k8s.api.autoscaling.v2.MetricStatus",
       "io.k8s.api.autoscaling.v2.ObjectMetricSource",
@@ -115,11 +110,17 @@
     "required_fields": [],
     "expected_yaml_keys": [],
     "key_nodes": [
-      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscaler",
-      "io.k8s.api.autoscaling.v2.HorizontalPodAutoscalerSpec",
-      "io.k8s.api.autoscaling.v2.MetricSpec"
-    ]
+      "io.k8s.api.autoscaling.v1.HorizontalPodAutoscaler",
+      "io.k8s.api.autoscaling.v1.HorizontalPodAutoscalerSpec",
+      "io.k8s.api.autoscaling.v2.MetricSpec",
+      "io.k8s.api.autoscaling.v2.ObjectMetricSource",
+      "io.k8s.api.autoscaling.v2.PodsMetricSource",
+      "io.k8s.api.autoscaling.v2.ResourceMetricSource"
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
   "source_reference": "https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }

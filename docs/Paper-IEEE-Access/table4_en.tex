@@ -1,0 +1,30 @@
+\begin{table}[t]
+\caption{Mean RetQ Gain over Vector RAG per Fixture Category}
+\label{tbl:boundary}
+\centering
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Category} & \textbf{$n$} & \textbf{Mean Gain} \\
+\hline
+followup & 12 & \textbf{$+0.6642$} \\
+\hline
+yaml\_gen & 25 & $+0.5450$ \\
+\hline
+planning & 5 & $+0.5406$ \\
+\hline
+command & 3 & $+0.4614$ \\
+\hline
+troubleshooting & 5 & $+0.4219$ \\
+\hline
+realworld & 9 & $+0.4014$ \\
+\hline
+conceptual & 25 & $+0.3870$ \\
+\hline
+relationship & 18 & $+0.3540$ \\
+\hline
+\textbf{Overall} & \textbf{102} & \textbf{$+0.467$} \\
+\hline
+\end{tabular}
+\\[4pt]
+{\footnotesize \raggedright Spearman correlation between graph node degree and RetQ gain: $\rho=+0.245$, $p=0.013$ ($n=101$), weak but significant. Between hops retrieved and RetQ gain: $\rho=-0.082$, $p=0.414$ ($n=102$), not significant.\par}
+\end{table}

@@ -37,12 +37,12 @@ except ImportError:
 ROOT         = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT))   # ensure src.* imports resolve from project root
 
-FIGURES_DIR  = ROOT / "docs" / "figures"
+FIGURES_DIR  = ROOT / "docs" / "TA-STI-template-1.0" / "images"
 FIGURES_DIR.mkdir(parents=True, exist_ok=True)
 FIXTURES_DIR = ROOT / "tests" / "fixtures"
 
-GRAPHRAG_CSV = ROOT / "data" / "eval_results_v12.csv"
-VECTOR_CSV   = ROOT / "data" / "eval_results_vector_v2.csv"
+GRAPHRAG_CSV = ROOT / "data" / "eval_results_graphrag_final.csv"
+VECTOR_CSV   = ROOT / "data" / "eval_results_vector_final.csv"
 
 FIXTURE_TYPES = [
     "conceptual", "followup", "yaml_gen", "relationship",

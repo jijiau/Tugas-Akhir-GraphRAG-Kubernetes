@@ -1,0 +1,97 @@
+vars: {
+  d2-config: {
+    layout-engine: elk
+  }
+}
+
+classes: {
+  external: {
+    shape: rectangle
+    style.fill: "#eceef2"
+    style.font-color: "#33415c"
+    style.stroke: "#9aa5b1"
+    style.stroke-dash: 4
+    style.font-size: 20
+  }
+  container: {
+    shape: rectangle
+    style.fill: "#5b7fdb"
+    style.font-color: "#ffffff"
+    style.stroke: "#2c4a8f"
+    style.border-radius: 6
+    style.font-size: 20
+  }
+  datastore: {
+    shape: cylinder
+    style.fill: "#3d5a80"
+    style.font-color: "#ffffff"
+    style.stroke: "#22344d"
+    style.font-size: 20
+  }
+  blank: {
+    style.fill: transparent
+    style.stroke: transparent
+  }
+  rel: {
+    style.font-size: 18
+  }
+}
+
+arch: "" {
+  grid-columns: 5
+  grid-gap: 60
+  style.fill: transparent
+  style.stroke: transparent
+
+  spec: "OpenAPI\nswagger.json v1.30" {
+    class: external
+    width: 210
+    height: 100
+  }
+  ekstraksi: "Deterministic\nExtraction" {
+    class: container
+    width: 200
+    height: 100
+  }
+  kg: "Neo4j KG\n725 nodes, 18 edge types,\n7 relation categories" {
+    class: datastore
+    width: 260
+    height: 130
+  }
+  sp1: "" { class: blank; width: 10; height: 10 }
+  sp2: "" { class: blank; width: 10; height: 10 }
+
+  query: "User\nQuery" {
+    class: external
+    width: 160
+    height: 100
+  }
+  retriever: "Hybrid Retriever\nexact match -> vector\nfallback -> multi-hop (d=2/3)" {
+    class: container
+    width: 300
+    height: 130
+  }
+  agent: "LangGraph Agent\nGPT-4o-mini\nthinker + speaker" {
+    class: container
+    width: 230
+    height: 130
+  }
+  validator: "YAML Validator\n3 layers: syntax ->\nschema -> KG graph" {
+    class: container
+    width: 230
+    height: 130
+  }
+  jawaban: "Answer + YAML\n+ Reasoning Path" {
+    class: external
+    width: 210
+    height: 130
+  }
+}
+
+arch.spec -> arch.ekstraksi: "" { class: rel }
+arch.ekstraksi -> arch.kg: "write nodes,\nedges" { class: rel }
+arch.query -> arch.retriever: "intent + query" { class: rel }
+arch.kg -> arch.retriever: "graph traversal" { class: rel }
+arch.retriever -> arch.agent: "reasoning path" { class: rel }
+arch.agent -> arch.validator: "YAML manifest" { class: rel }
+arch.validator -> arch.jawaban: "" { class: rel }

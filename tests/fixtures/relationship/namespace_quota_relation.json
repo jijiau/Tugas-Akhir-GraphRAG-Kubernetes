@@ -1,39 +1,45 @@
 {
   "id": "namespace_quota_relation",
   "type": "relationship",
-  "question": "Bagaimana Namespace membatasi penggunaan resource melalui ResourceQuota?",
-  "resource": "io.k8s.api.core.v1.Namespace",
+  "question": "What fields does ResourceQuota define to cap resource consumption within a namespace, and what schema does ResourceQuotaSpec use to express those limits?",
+  "resource": "io.k8s.api.core.v1.ResourceQuota",
   "scope": "Cluster",
   "multi_hop": true,
   "ground_truth": {
-    "answer": "Namespace adalah resource cluster-scoped yang menyediakan isolasi virtual di Kubernetes. ResourceQuota dapat diterapkan ke Namespace untuk membatasi total konsumsi resource (CPU, memory, jumlah Pod, PVC, dll.) di namespace tersebut. Admin membuat ResourceQuota dengan namespace target, dan Kubernetes enforcer akan menolak resource baru yang melampaui quota. Relasi: Namespace ← ResourceQuota -[HAS_PROPERTY]-> ResourceQuotaSpec.",
+    "answer": "ResourceQuota is a namespace-scoped resource that enforces aggregate consumption limits within a Kubernetes namespace. Its spec is defined by ResourceQuotaSpec, which contains a hard field — a map from resource name to Quantity — specifying the maximum allowed consumption for compute resources (CPU, memory), object counts (Pods, Services, PersistentVolumeClaims), and storage capacity. The scopes field optionally restricts the quota to only Pods matching certain criteria (such as BestEffort or NotTerminating). The ResourceQuotaStatus tracks enforcement via two parallel Quantity maps: hard (the configured limits) and used (current consumption). A ResourceQuota object takes effect in the namespace where it is created: any request that would cause usage to exceed the hard limits is rejected by the API server.",
     "context": [
-      "Namespace: provides a mechanism for isolating groups of resources within a single cluster",
-      "ResourceQuota: sets aggregate quota restrictions enforced per namespace"
+      "io.k8s.api.core.v1.ResourceQuota: namespace-scoped resource enforcing aggregate consumption limits; spec is ResourceQuotaSpec; status is ResourceQuotaStatus",
+      "io.k8s.api.core.v1.ResourceQuotaSpec: hard field maps resource names to Quantity defining maximum allowed usage; scopes field restricts quota to Pods matching specific criteria",
+      "io.k8s.api.core.v1.ResourceQuotaStatus: hard and used fields are resource-name-to-Quantity maps tracking configured limits and current consumption"
     ],
     "relevant_nodes": [
-      "io.k8s.api.core.v1.Namespace",
-      "io.k8s.api.core.v1.NamespaceCondition",
-      "io.k8s.api.core.v1.NamespaceSpec",
-      "io.k8s.api.core.v1.NamespaceStatus",
       "io.k8s.api.core.v1.ResourceQuota",
-      "io.k8s.api.core.v1.ResourceQuotaSpec"
+      "io.k8s.api.core.v1.ResourceQuotaSpec",
+      "io.k8s.api.core.v1.ResourceQuotaStatus",
+      "io.k8s.api.core.v1.ScopeSelector",
+      "io.k8s.api.core.v1.ScopedResourceSelectorRequirement",
+      "io.k8s.apimachinery.pkg.api.resource.Quantity"
     ],
     "expected_path": [
-      "Namespace -[HAS_PROPERTY]-> NamespaceSpec",
-      "Namespace -[HAS_PROPERTY]-> NamespaceStatus",
-      "NamespaceStatus -[HAS_PROPERTY]-> NamespaceCondition",
       "ResourceQuota -[HAS_PROPERTY]-> ResourceQuotaSpec",
-      "ResourceQuotaSpec -[HAS_PROPERTY]-> ScopeSelector"
+      "ResourceQuota -[HAS_PROPERTY]-> ResourceQuotaStatus",
+      "ResourceQuotaSpec -[HAS_PROPERTY]-> Quantity",
+      "ResourceQuotaSpec -[HAS_PROPERTY]-> ScopeSelector",
+      "ResourceQuotaStatus -[HAS_PROPERTY]-> Quantity",
+      "ScopeSelector -[HAS_PROPERTY]-> ScopedResourceSelectorRequirement"
     ],
     "required_fields": [],
     "expected_yaml_keys": [],
     "key_nodes": [
-      "io.k8s.api.core.v1.Namespace",
       "io.k8s.api.core.v1.ResourceQuota",
-      "io.k8s.api.core.v1.ResourceQuotaSpec"
-    ]
+      "io.k8s.api.core.v1.ResourceQuotaSpec",
+      "io.k8s.api.core.v1.ResourceQuotaStatus",
+      "io.k8s.apimachinery.pkg.api.resource.Quantity"
+    ],
+    "gt_depth": 3,
+    "n_roots": 1
   },
-  "source_reference": "https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/",
-  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/"
+  "source_reference": "https://kubernetes.io/docs/concepts/policy/resource-quotas/",
+  "api_reference": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/",
+  "lang": "en"
 }
